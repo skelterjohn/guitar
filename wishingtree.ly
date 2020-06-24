@@ -5,6 +5,9 @@
   composer = "John Asmuth"
 }
 
+\include "bbarred.ly"
+#(define RH rightHandFinger)
+
 #(set-global-staff-size 23)
  <<
   \relative d'' {
@@ -96,44 +99,45 @@
     <<
       { \voiceOne 
         d'4 e8 fis4 d8 e4 fis8 g4 r8 |
-        fis4 g8 \grace g \glissando a4 fis8 \tuplet 3/2 {a e e~} e4. \fermata d8 |
+        fis4 g8 \grace g \glissando a4 fis8 \tuplet 3/2 {a (e) e~} e4. \fermata d8 |
       }
       \new Voice { \voiceTwo
         r1. r
       }
     >>
     \oneVoice 
-    b'8[ b a] g4. r2. |
     <<
       { \voiceOne 
+        b'8[ b a] g4. r2. |
         a8[ g fis~] fis4.  r2 \tuplet 3/2 { b,8[ b b] } |
       }
       \new Voice { \voiceTwo
-        fis,2. r |
+        g2. r |
+        fis2. r |
       }
     >>
     <<
       { \voiceOne 
-        g''8[ fis e~] e4 d8  cis2. \fermata |
+        g'8[ fis e~] e4 d8  cis2. \fermata |
       }
       \new Voice { \voiceTwo
-        e,,2. a2 \fermata a8 a |
+        e,2. a2 \fermata a,8 a |
       }
     >>
     <<
       { \voiceOne 
-        <a' fis'>4 <a fis'>4 <a fis'>2 r2 |
+        \fbarre #"II" { <a' fis'>4 <a fis'>4 <a fis'>2 } r2 |
         <b g'>4 <b g'>4 <cis a'>2 r2 |
       }
       \new Voice { \voiceTwo
         d,8[ cis d] e fis4~ fis4 r b,8 b |
-        e[ dis e] fis g4~ g r2 |
+        e[ dis e] fis-3 g4~ g r2 |
       }
     >>
     <<
       { \voiceOne
-        <d'' fis, d>4. <cis fis, d> <b g d> r |
-        <d fis, d>4. <cis fis, d> <b g d> r |
+        \fbarre #"VII" { <d'' fis, d>4. <cis fis, d> <b g d>2. } |
+        \fbarre #"VII" { <d fis, d>4. <cis fis, d> <b g d>2. } |
       }
       \new Voice { \voiceTwo
         fis,4 g8 a8 fis4 e4 fis8 g4 r8 |
@@ -142,22 +146,24 @@
     >>
     <<
       { \voiceOne
-        <e' g>2. <d a'> |
+        \set stringNumberOrientations = #'(up)
+        <e'\3 g\2>2. <d a'> |
         <b e>4. <g b e> <a cis>8 <g b> <e a>~ <e a>4. |
       }
       \new Voice { \voiceTwo
-        b'8[ b b~] b4 b8 a d, fis4. g,8 |
+        \set stringNumberOrientations = #'(down)
+        b'8\4[ b b~] b4 b8-0 a d, fis4. g,8 |
         g'4 fis8 e4 d8 e[ d cis~] cis4 a8 |
       }
     >>
     <<
       { \voiceOne
-        e''8[ fis d] e[ fis d] e[ fis d] e[ fis] r |
-        fis8[ g e] fis[ g e] fis[ g e] fis[ g] r |
+        e''8\RH #4 [ fis-1 \RH #3 d-2] \RH #2 e[ fis d] e[ fis-2 d-3] e[ fis-2] r |
+        fis8-3[ g-4 e] fis[ g e] fis-2[ g-3 e] fis[ g] r |
       }
       \new Voice { \voiceTwo
-        d,4 cis8 d4 cis8 d4 e8 fis4 b,8 |
-        e4 dis8 e4 dis8 e4 fis8 g4 d8 |
+        d,4 cis8-3 d4 cis8 d4 e8-1 fis4-4 b,8-1 |
+        e4-2 dis8 e4 dis8-1 e4-1 fis8-4 g4 d8 |
       }
     >>
     <<
@@ -185,21 +191,21 @@
     <<
       { \voiceOne 
         d'4 cis8 d4 cis8 d e fis2 |
-        e4 dis8 e4 dis8 e fis g4. a,8 |
+        e4 dis8 e4 dis8 e fis-3 g4.-4 a,8 |
       }
       \new Voice { \voiceTwo
         r1. |
-        cis,4. dis4. g8[ a cis] b[ cis a] |
+        cis,4. dis4. g8[ a-1 cis-2] b[ cis a] |
       }
     >>
     <<
       { \voiceOne 
         <cis a>4 <b g>8 <cis a>4 <b g>8 <cis a>4 <d b>8 <e cis>4 a,8 |
-        d4 cis8 d4 cis8 d8 d e fis4 d8 |
+        \fbarre #"II" { d4 cis8 d4 cis8 d8 d e } fis4\2 d8 |
       }
       \new Voice { \voiceTwo
         g,,2. r |
-        <d' fis a>2. <fis, b a'> |
+        <d' fis a>2. <fis, b a'>4. r4. |
       }
     >>
     <<
@@ -214,7 +220,7 @@
     >>
     <<
       { \voiceOne 
-        b''4 a8 b4 cis8 a4 d,8 fis4 e8 |
+        \fbarre #"VII" { b''4 a8 b4 cis8 } a4 d,8 fis4 e8 |
         g4 fis8 e4 d8 e[ d cis~] cis4. |
       }
       \new Voice { \voiceTwo

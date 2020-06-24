@@ -29,8 +29,8 @@
     >>
     <<
       { \voiceOne 
-        fis'8 fis g a4. e8 e fis g4. |
-        fis4 g8 a4 fis8 \tuplet 3/2 { a[ e e~] } e r4 \fermata d8 |
+        fis'8-2 fis g-2 a4. e8 e fis g4. |
+        fis4-2 g8-2 a4 fis8 \tuplet 3/2 { a[ e e~] } e r4 \fermata d8 |
       }
       \new Voice { \voiceTwo
         <d a~>8 <d a> a fis4. <b g~>8 <b g> g cis,4. |
@@ -50,7 +50,7 @@
     \oneVoice
     <<
       { \voiceOne 
-        g''4 fis8 e4 d8 e8 d8 cis8 r4 a8  |
+        g''4-3 fis8-2 e4 d8 e8 d8 cis8 r4 a8  |
       }
       \new Voice { \voiceTwo
         b,2. cis8 g' a r4. |
@@ -58,7 +58,7 @@
     >>
     <<
       { \voiceOne 
-        d4 cis8 d4 cis8 d e fis~ fis4 b,8 |
+        d4\RH#4 cis8\RH#3 d4 cis8 d\RH#4 e\RH#3 fis~\RH#2 fis4 b,8 |
         e4 d8 e4 fis8 g4. r4 a,8 |
       }
       \new Voice { \voiceTwo
@@ -99,7 +99,7 @@
     <<
       { \voiceOne 
         d'4 e8 fis4 d8 e4 fis8 g4 r8 |
-        fis4 g8 \grace g \glissando a4 fis8 \tuplet 3/2 {a (e) e~} e4. \fermata d8 |
+        fis4 g8 \grace g16 \glissando a4 fis8 \tuplet 3/2 {a (e) e~} e4. \fermata d8 |
       }
       \new Voice { \voiceTwo
         r1. r
@@ -127,11 +127,11 @@
     <<
       { \voiceOne 
         \fbarre #"II" { <a' fis'>4 <a fis'>4 <a fis'>2 } r2 |
-        <b g'>4 <b g'>4 <cis a'>2 r2 |
+        <b g'-3>4 <b g'-2>4 <cis a'>2 r2 |
       }
       \new Voice { \voiceTwo
         d,8[ cis d] e fis4~ fis4 r b,8 b |
-        e[ dis e] fis-3 g4~ g r2 |
+        e-2[ dis-1 e-1] fis-3 g4~ g r2 |
       }
     >>
     <<

@@ -19,8 +19,8 @@
     <<
       \new Voice = "melody"
       { \voiceOne 
-        d[ d cis] d[ d e] fis4. r8 b, b |
-        e8[ e dis] e[ e fis] g4. r |
+        d[ d cis] d[ d e] fis4. b,8 b b |
+        e4 dis8 e[ e fis] g4. r |
       }
       \new Voice { \voiceTwo
         <fis, a>1. |
@@ -30,17 +30,17 @@
     <<
       { \voiceOne 
         fis'8-2 fis g-2 a4. e8 e fis g4. |
-        fis4-2 g8-2 a4 fis8 \tuplet 3/2 { a[ e e~] } e r4 \fermata d8 |
+        fis4-3 g8-4 a4-4 fis8 \tuplet 3/2 { a[ e e~] } e r4 \fermata d8 |
       }
       \new Voice { \voiceTwo
         <d a~>8 <d a> a fis4. <b g~>8 <b g> g cis,4. |
-        d8[ d b] cis a r g4. r4 \fermata r8 |
+        d8[ d b-2] cis-2 a r g4.-2 r4 \fermata r8 |
       }
     >>
     <<
       { \voiceOne 
         b''4 d,8 b'4. r4. r4 cis8 |
-        a4 d,8 fis4. r4. r4 b,8 |
+        \fbarre "#II" {a4 d,8 fis4.} r4. r4 b,8 |
       }
       \new Voice { \voiceTwo
         e,,1. |

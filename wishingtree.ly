@@ -1,7 +1,7 @@
 \version "2.18.2"
 \header {
   title = "Orange Wishing Tree"
-  subtitle = "draft 1"
+  subtitle = "draft 2"
   composer = "John Asmuth"
 }
 
@@ -40,7 +40,7 @@
     <<
       { \voiceOne 
         b''4 d,8 b'4. r4. r4 cis8 |
-        \fbarre "#II" {a4 d,8 fis4.} r4. r4 b,8 |
+        \fbarre #"II" {a4 d,8 fis4.} r4. r4 b,8 |
       }
       \new Voice { \voiceTwo
         e,,1. |
@@ -62,7 +62,7 @@
         e4 d8 e4 fis8-2 g4.-3 r4 a,8 |
       }
       \new Voice { \voiceTwo
-        fis8[ d g] fis[ d g] fis[ d g] fis[ d] r |
+        fis8[ d a'] fis[ d a'] fis[ e a] fis[ d] r |
         g[ a fis] g[ a fis-4] g[ a cis] b[ cis] r |
       }
     >>
@@ -72,7 +72,7 @@
         d4 cis d8[ e ] fis2~ fis8 d8 |
       }
       \new Voice { \voiceTwo
-        e,8[ fis d] e8[ fis d] e8[ fis d] e8[ fis] r |
+        a,8[ b g] a8[ b gis] a[ b gis] a[ cis] r |
         <fis' a, d,>2. <a d, d,> |
       }
     >>

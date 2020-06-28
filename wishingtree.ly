@@ -63,7 +63,7 @@
       }
       \new Voice { \voiceTwo
         fis8[ d a'] fis[ d a'] fis[ a d] fis,[ d] r |
-        g[ a fis] g[ a d] g[ a cis] b[ cis] r |
+        g[ a fis] g[ a d,] g[ a cis] b[ cis] r |
       }
     >>
     <<

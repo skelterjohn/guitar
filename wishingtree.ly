@@ -58,12 +58,12 @@
     >>
     <<
       { \voiceOne 
-        d4\RH#4 cis8\RH#3 d4 cis8 d\RH#4 e\RH#3 fis~\RH#2 fis4 b,8 |
+        d4 cis8 d4 cis8 d e fis~ fis4 b,8 |
         e4 d8 e4 fis8-2 g4.-3 r4 a,8 |
       }
       \new Voice { \voiceTwo
-        fis8[ d a'] fis[ d a'] fis[ e a] fis[ d] r |
-        g[ a fis] g[ a fis-4] g[ a cis] b[ cis] r |
+        fis8[ d a'] fis[ d a'] fis[ a d] fis,[ d] r |
+        g[ a fis] g[ a d] g[ a cis] b[ cis] r |
       }
     >>
     <<

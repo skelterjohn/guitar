@@ -176,8 +176,8 @@
       }
       \new Voice { \voiceTwo
         a8[ a'-3\4] <c''\3 e'' g''>[ a] a'[ <a' c''>] \bar ":|."
-        e8[ g'\4] \bbarre #"2" { cis''[ g'] b'[ } cis''] |
-        e8[ g'\4] \bbarre #"2" { cis''[ g'] bes'[ } cis''] |
+        e8[ g'\4] \bbarre #"2" { \once \override NoteColumn.force-hshift = #1.25 cis''[ g'] b'[ } cis''] |
+        e8[ g'\4] \bbarre #"2" { \once \override NoteColumn.force-hshift = #1.25 cis''[ g'] bes'[ } cis''] |
       }
       \new Voice { \voiceThree
         |
@@ -204,7 +204,7 @@
       \new Voice { \voiceThree
         s2. |
         s2. |
-        e8[ g'] b'[ e''] fis''[ g''] |
+        \once \override NoteColumn.force-hshift = #0 e8[ g'] b'[ e''] fis''[ g''] |
       }
       \new Voice { \voiceFour
         s2. |
@@ -232,7 +232,7 @@
       \new Voice { \voiceOne
         b'8 cis''[ dis''] e''[ fis''] |
         cis'''4 b''8 s4. |
-        \fbarre #"2" { <a' dis''-3>8[ <a' e''-4>] gis''-4[ \slashedGrace gis'' (fis'')] dis''[ } b'] | \break
+        \fbarre #"2" { <a' dis''-3>8[ <a' e''-4>] gis''-3[ \slashedGrace gis'' (fis'')] dis''[ } b'-0] | \break
       }
       \new Voice { \voiceTwo
         \once \override NoteColumn.force-hshift = #1 b'8 ais'[ a'] gis'[ fis'] |
@@ -268,7 +268,7 @@
       }
       \new Voice { \voiceFour
         s2. |
-        gis8 s8 gis2 |
+        \once \override NoteColumn.force-hshift = #0 gis4~ gis2 |
         a8[ a~] a2 |
       }
     >>

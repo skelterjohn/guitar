@@ -111,7 +111,7 @@
       \new Voice { \voiceTwo
         s2. |
         a'8\5[ a'] e''[ a'] a'[ e''] |
-        d''8\4[ d''] d''[ d''] d''[ fis''] |
+        d''8\4[ d''] d''[ d''] d''[  \once \override NoteColumn.force-hshift = #1.25 fis''] |
       }
       \new Voice { \voiceThree
         |

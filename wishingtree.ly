@@ -19,8 +19,8 @@
     <<
       \new Voice = "melody"
       { \voiceOne 
-        d[ d cis] d[ d e] fis4. r8 \tuplet 3/2 {b,8 b b} |
-        e4 dis8 e[ e fis] g4. r |
+        d[ d cis] d[ d e] fis4. \tweak Y-offset #0 r8 \tuplet 3/2 {b,8 b b} |
+        e4 dis8 e[ e fis] g4. \tweak Y-offset #0 r |
       }
       \new Voice { \voiceTwo
         <fis, a>1. |
@@ -30,17 +30,17 @@
     <<
       { \voiceOne 
         fis'8-2 fis g-2 a4. e8 e fis g4. |
-        fis4-3 g8-4 a4-4 fis8 \tuplet 3/2 { a[ e e~] } e r4 \fermata d8 |
+        fis4-3 g8-4 a4-4 fis8 \tuplet 3/2 { a[ e e~] } e \tweak Y-offset #0 r4 \fermata d8 |
       }
       \new Voice { \voiceTwo
         <d a~>8 <d a> a fis4. <b g~>8 <b g> g cis,4. |
-        d8[ d b-2] cis-2 a r g4.-2 r4 \fermata r8 |
+        d8[ d b-2] cis-2 a r g4.-2 s4. |
       }
     >>
     <<
       { \voiceOne 
-        b''4 d,8 b'4. r4. r4 cis8 |
-        \fbarre #"II" {a4 d,8 fis4.} r4. r4 b,8 |
+        b''4 d,8 b'4. \tweak Y-offset #0 r4. \tweak Y-offset #0 r4 cis8 |
+        \fbarre #"II" {a4 d,8 fis4.} \tweak Y-offset #0 r4. \tweak Y-offset #0 r4 b,8 |
       }
       \new Voice { \voiceTwo
         e,,1. |
@@ -50,15 +50,15 @@
     \oneVoice
     <<
       { \voiceOne 
-        g''4-3 fis8-2 e4 d8-2 e8 d8 cis8 r4 a8  |
+        g''4-3 fis8-2 e4 d8-2 e8 d8 cis8 \tweak Y-offset #0 r4 a8  |
       }
       \new Voice { \voiceTwo
-        b,2. cis8 g' a r4. |
+        b,2. <cis~ g'>4 <cis a'>8 s4. |
       }
     >>
     <<
       { \voiceOne 
-        d4 cis8 d4 cis8 d e fis~ fis4 b,8 |
+        d'4 cis8 d4 cis8 d e fis~ fis4 b,8 |
         e4 d8 e4 fis8-2 g4.-3 r4 a,8 |
       }
       \new Voice { \voiceTwo
@@ -72,14 +72,14 @@
         d4 cis d8[ e ] fis2~ fis8 d8 |
       }
       \new Voice { \voiceTwo
-        a,8[ b g] a8[ b gis] a[ b gis] a[ cis] r |
+        a,8[ b g] a8[ b gis] a b4 a8 cis4 |
         <fis' a, d,>2. <a d, d,> |
       }
     >>
     <<
       { \voiceOne 
         b4 a8 r8 b cis a d, fis~ fis4 d8 |
-        g4 fis8 r g a fis4. r4 b,8 |
+        g4 fis8 r g a fis4. \tweak Y-offset #0 r4 b,8 |
       }
       \new Voice { \voiceTwo
         g2. fis |
@@ -92,7 +92,7 @@
         g'4 fis8 r e[ d cis~] cis4. r4 |
       }
       \new Voice { \voiceTwo
-        <b a g>2. <d, a> |
+        <a g>2. <d, a> |
         r2 g,4 a2. |
       }
     >>
@@ -102,18 +102,18 @@
         fis4 g8 \grace g16 \glissando a4 fis8 \tuplet 3/2 {a (e) e~} e4. \fermata d8 |
       }
       \new Voice { \voiceTwo
-        r1. r
+        s1. s
       }
     >>
     \oneVoice 
     <<
       { \voiceOne 
-        b'8[ b a] g4. r2. |
-        a8[ g fis~] fis4.  r2 \tuplet 3/2 { b,8[ b b] } |
+        b'8[ b a] g4. \tweak Y-offset #0 r2. |
+        a8[ g fis~] fis4. \tweak Y-offset #0 r2 \tuplet 3/2 { b,8[ b b] } |
       }
       \new Voice { \voiceTwo
-        g2. r |
-        fis2. r |
+        g2. s |
+        fis2. s |
       }
     >>
     <<
@@ -127,11 +127,11 @@
     <<
       { \voiceOne 
         \fbarre #"II" { <a' fis'>4 <a fis'>4 <a fis'>2 } r2 |
-        <b g'-3>4 <b g'-2>4 <cis a'>2 r2 |
+        <b g'-3>4 <b g'-2>4 <cis a'>2 \tweak Y-offset #0 r2 |
       }
       \new Voice { \voiceTwo
         d,8[ cis d] e fis4~ fis4 r b,8 b |
-        e-2[ dis-1 e-1] fis-3 g4~ g r2 |
+        e-2[ dis-1 e-1] fis-3 g4~ g s2 |
       }
     >>
     <<
@@ -140,7 +140,7 @@
         \fbarre #"VII" { <d fis, d>4. <cis fis, d> <b g d>2. } |
       }
       \new Voice { \voiceTwo
-        fis,4 g8 a8 fis4 e4 fis8 g4 r8 |
+        fis,4 g8 a8 fis4 e4 fis8 g4 \tweak Y-offset #0 r8 |
         fis4 g8 a4 fis8 e8[ fis8 g8~] g4 d8 |
       }
     >>
@@ -168,7 +168,7 @@
     >>
     <<
       { \voiceTwo 
-        <d'' e,,,>2.  <fis, g,,>2 r4 |
+        <d'' e,,,>2.  <fis, g,,>2 s4 |
         d,4. d d d |
       }
       \new Voice { \voiceOne
@@ -179,12 +179,12 @@
     <<
       { \voiceOne
         <g'' e,>4. <g e,> <g e,> <a d,,> |
-        r1 r8 g4. |
+        s1 s8 g4. |
         <b, e>4. <b e> r2. \fermata |
       }
       \new Voice { \voiceTwo
         b4 a8 b4 a8 b4 cis8 <d a>8 a4~ |
-        a2. r4 r8 e8[(fis)] g~  |
+        a2. \tweak Y-offset #0 r4. e8[(fis)] g~  |
         g8 fis8 e4 cis8a'8 e2. \fermata |
       }
     >>
@@ -194,7 +194,7 @@
         e4 dis8 e4 dis8 e fis-3 g4.-4 a,8 |
       }
       \new Voice { \voiceTwo
-        r1. |
+        s1. |
         cis,4. dis4. g8[ a-1 cis-2] b[ cis a] |
       }
     >>

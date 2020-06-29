@@ -40,7 +40,7 @@
       \new Voice { \voiceOne
         fis8[ a'-3] e''4 r8 e''|
         \fbarre #"2 "{ b8[ <a' dis''>] (e'')[ fis''] g''[ (fis'')] }|
-        a8[ e'] c''4 s8 b'8 | \break
+        a8[ e'-3] c''4 s8 b'8 | \break
       }
       \new Voice { \voiceTwo
         s4 e''8[ c''-1] a'[ e''] |
@@ -65,7 +65,7 @@
         fis8[ e'] <a' b'>[ e'] fis[ <dis' a' b'>] | \break
       }
       \new Voice { \voiceTwo
-        s4 c''8[ a'-3] d'[ d''-3]|
+        s4 c''8[ a'-3] d'[ d''-4]|
         s4 c''8[ a'-2] d'[ b']|
         |
       }
@@ -133,7 +133,7 @@
       \new Voice { \voiceTwo
         g'8\5[ g'] <d'' e'' b''>[ g'] g'[ <d'' e'' b''>] |
         c''8\4[ c''] <e'' g''\3 b''>[ c''] c''[ <e'' g'' b''>] |
-        c''8\4[ c''] <e'' fis''\3 a''>[ c''] c''[ <e'' fis'' a''>] |
+        fis'8\4[ fis'] <e'' fis''\3 a''>[ fis'] fis'[ <e'' fis'' a''>] |
       }
       \new Voice { \voiceThree
         |
@@ -153,7 +153,7 @@
         s4 g''\2 r8 g'' \bar ".|:" \break
       }
       \new Voice { \voiceTwo
-        b'8[ b'] <dis''\3 e'' a''>[ b'] b'[ <b' d'' e'' a''>] |
+        b'8[ b'] <dis''\3 e'' a''>[ b'] b'[ <b' dis'' e'' a''>] |
         c'8\6-3[ c'] <d''\3 e'' g''>[ c'] c'[ <c''\3 e'' g''>] |
         c'8\6[ c'] <d''\3 e'' g''>[ c'] b[ <d'' e'' g''>] |
       }
@@ -172,12 +172,12 @@
       \new Voice { \voiceOne
         s4  g''4-4\2 r8  <c'' e'' fis''-4> |
         s4 <b' cis'' fis''> r8 <cis'' e''> |
-        s4 <b' c'' fis''> r8 <c'' e''> | \break
+        s4 <bes' c'' fis''> r8 <c'' e''> | \break
       }
       \new Voice { \voiceTwo
-        a8[ a'-3\4] <cis''\3 e'' g''>[ a] a'[ <a' c''>] \bar ":|."
+        a8[ a'-3\4] <c''\3 e'' g''>[ a] a'[ <a' c''>] \bar ":|."
         e8[ g'\4] \bbarre #"2" { cis''[ g'] b'[ } cis''] |
-        e8[ g'\4] \bbarre #"2" { c''[ g'] b'[ } c''] |
+        e8[ g'\4] \bbarre #"2" { cis''[ g'] bes'[ } cis''] |
       }
       \new Voice { \voiceThree
         |
@@ -193,7 +193,7 @@
     <<
       \new Voice { \voiceOne
         s4 <c''\3 e''> <c'' e''> |
-        <a' c''>8[ e''] dis''[ e''] \fbarre #"2" { <a' cis''>[ dis''] }   |
+        \fbarre #"2" { <a' c''>8[ e''] dis''[ e''] <a' cis''>[ dis''] }   |
         e''4 \coda s2 | \break
       }
       \new Voice { \voiceTwo

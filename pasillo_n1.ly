@@ -133,7 +133,7 @@
       \new Voice { \voiceTwo
         g'8\5[ g'] <d'' e'' b''>[ g'] g'[ <d'' e'' b''>] |
         c''8\4[ c''] <e'' g''\3 b''>[ c''] c''[ <e'' g'' b''>] |
-        fis'8\4[ fis'] <e'' fis''\3 a''>[ fis'] fis'[ <e'' fis'' a''>] |
+        fis'8\5[ fis'] <e'' fis''\3 a''>[ fis'] fis'[ <e'' fis'' a''>] |
       }
       \new Voice { \voiceThree
         |
@@ -192,12 +192,12 @@
     >>
     <<
       \new Voice { \voiceOne
-        s4 <c''\3 e''> <c'' e''> |
+        s4 <c'' e''> <c'' e''> |
         \fbarre #"2" { <a' c''>8[ e''] dis''[ e''] <a' cis''>[ dis''] }   |
         e''4 \coda s2 | \break
       }
       \new Voice { \voiceTwo
-        a8[ e'] <b'\4 c''>[ a'] <g' c''>[ fis'] |
+        a8[ e'] <b'-4\3 c''>[ a'] <g' c''>[ fis'] |
         s2. |
         e8[ b] fis'[ g'] b'[ e''] |
       }
@@ -254,7 +254,7 @@
       \new Voice { \voiceOne
         s4 b' s4 |
         r8  \fbarre #"4" { b' cis''-4[ <gis' b' dis''>] <b' e''-2>[ fis''-4] } |
-        \fbarre #"9" { <b' eis''>8[ <b'-8 fis''>] gis''[ <eis'' a''>] b''-4[ cis'''] } | \break
+        \fbarre #"9" { <b' eis''>8[ <b'-2 fis''>] gis''[ <eis'' a''>] b''-4[ cis'''] } | \break
       }
       \new Voice { \voiceTwo
         e8[ e8] r8 <e' gis'>8 <e' gis'> 4 |
@@ -269,7 +269,7 @@
       \new Voice { \voiceFour
         s2. |
         \once \override NoteColumn.force-hshift = #0 gis4~ gis2 |
-        a8[ a~] a2 |
+        cis'8[ cis'~] cis'2 |
       }
     >>
     <<
@@ -353,7 +353,7 @@
       \new Voice { \voiceFour
         cis'8[ cis'8~] cis'2 |
         fis8[ fis8~] fis2 |
-        bis8[ bis8~] bis2 |
+        b8[ b8~] b2 |
       }
     >>
     <<

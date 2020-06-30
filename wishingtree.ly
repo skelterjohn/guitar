@@ -12,7 +12,7 @@
 <<
   \relative d'' {
     \partial 4
-    \time 6/4
+    \time 12/8
     \key d \major
     \tempo 4. = 80
     a8 a |

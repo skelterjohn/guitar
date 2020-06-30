@@ -9,12 +9,12 @@
 #(define RH rightHandFinger)
 
 #(set-global-staff-size 23)
- <<
+<<
   \relative d'' {
     \partial 4
     \time 6/4
     \key d \major
-  
+    \tempo 4. = 80
     a8 a |
     <<
       \new Voice = "melody"
@@ -29,18 +29,18 @@
     >>
     <<
       { \voiceOne 
-        fis'8-2 fis g-2 a4. e8 e fis g4. |
+        \bbarre #"II" { fis'8 fis g a4. } e8 e fis g4. |
         fis4-3 g8-4 a4-4 fis8 \tuplet 3/2 { a[ e e~] } e \tweak Y-offset #0 r4 \fermata d8 |
       }
       \new Voice { \voiceTwo
-        <d a~>8 <d a> a fis4. <b g~>8 <b g> g cis,4. |
+        <a d,~>8 <a~ d,> <a d,> fis4. <g a,~>8 <g~ a,> <g a,> cis,4. |
         d8[ d b-2] cis-2 a r g4.-2 s4. |
       }
     >>
     <<
       { \voiceOne 
         b''4 d,8 b'4. \tweak Y-offset #0 r4. \tweak Y-offset #0 r4 cis8 |
-        \fbarre #"II" {a4 d,8 fis4.} \tweak Y-offset #0 r4. \tweak Y-offset #0 r4 b,8 |
+        \fbarre #"II" {<a cis,>4 d,8 fis4.} \tweak Y-offset #0 r4. \tweak Y-offset #0 r4 b,8 |
       }
       \new Voice { \voiceTwo
         e,,1. |
@@ -69,7 +69,7 @@
     <<
       { \voiceOne 
         cis4 b8 cis4 b8 cis4 d8 e4 cis8 |
-        d4 cis d8[ e ] fis2~ fis8 d8 |
+        d4 cis8~ cis[ d8 e ] fis4.~ fis8~ fis8 d8 |
       }
       \new Voice { \voiceTwo
         a,8[ b g] a8[ b gis] a b4 a8 cis4 |
@@ -89,7 +89,7 @@
     <<
       { \voiceOne 
         b''4 a8 b4 cis8 <a d,>4 d,8 fis4 g,8 |
-        g'4 fis8 r e[ d cis~] cis4. r4 |
+        g'4 fis8 r e[ d] cis2. |
       }
       \new Voice { \voiceTwo
         <a g>2. <d, a> |
@@ -99,7 +99,7 @@
     <<
       { \voiceOne 
         d'4 e8 fis4 d8 e4 fis8 g4 r8 |
-        fis4 g8 \grace g16 \glissando a4 fis8 \tuplet 3/2 {a (e) e~} e4. \fermata d8 |
+        fis4 g8 \grace g16 \glissando a4 fis8 \tuplet 4/2 {a (e) e~} e4. \fermata d8 |
       }
       \new Voice { \voiceTwo
         s1. s
@@ -221,23 +221,22 @@
     <<
       { \voiceOne 
         \fbarre #"VII" { b''4 a8 b4 cis8 } a4 d,8 fis4 e8 |
-        g4 fis8 e4 d8 e[ d cis~] cis4. |
+        g4 fis8 e4 d8 e[ d cis~] cis8 \fermata a[ a] |
       }
       \new Voice { \voiceTwo
-        <e, b e' g>2. <a, fis' a d> |
-        b' <cis e>8 <b e> <a~ cis> a4. |
+        <e e' g>2. <a, fis' d'> |
+        b' <cis e>8 <b e> <a~ cis> a8 s4 |
+      }
+    >>
+    <<
+      \time 4/4
+  \key d \major
+      { \voiceOne 
+  d8 cis d cis d e fis d |
+  e d e fis g4. a,8 |
+  cis8 b cis b cis d e a, |
+  d cis d cis d e fis4 \bar "|."
       }
     >>
   }
 >>
-{
-  \time 4/4
-  \key d \major
-  \partial 4
-  a'8 a' |
-  d''8 cis'' d'' cis'' d'' e'' fis'' d'' |
-  e'' d'' e'' fis'' g''4. a'8 |
-  cis''8 b' cis'' b' cis'' d'' e'' a' |
-  d'' cis'' d'' cis'' d'' e'' fis''4
-  \bar "|."
-}

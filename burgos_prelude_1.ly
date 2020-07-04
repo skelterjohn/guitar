@@ -72,7 +72,7 @@
     >>
     <<
       \new Voice { \voiceOne
-        a''8 d' a' d'' \tuplet 3/4 {<b f''> cis' <d' g' d''>} d' g' b' d'' |
+        a''8[ d' a' d'' \tuplet 3/4 {<b d'' f''>] <cis' b' e''> <d' g' d''>[} d' g' b' d''] |
         r8 <cis'' g''>4 <cis'' g''>4 <cis'' g''>8 <e' bes' cis''>2  d''8 e'' | \break
       }
       \new Voice { \voiceTwo
@@ -108,11 +108,11 @@
     >>
     <<
       \new Voice { \voiceOne
-        a''8 d' a' g' \tuplet 3/4 {<d'' f''> <b' e''> <d' b' d''>} d' g' b' d''|
+        a''8[ d' a' g' \tuplet 3/4 {<b d'' f''>] <cis' b' e''> <d' g' d''>[} d' g' b' d'']|
         r8 <cis'' g''>4 <cis'' g''>4 <cis'' g''>8 <e' bes' cis''>2 d''8 e'' | \break
       }
       \new Voice { \voiceTwo
-        a''4 s4 \tuplet 3/4 {<d'' >8 b' <d'>8} s2 |
+        a''4 s4 \tuplet 3/4 {b8 cis' <d'>8} s2 |
         e'4 d' cis' e'2 s4|
       }
       \new Voice { \voiceThree

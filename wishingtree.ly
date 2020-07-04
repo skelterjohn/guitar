@@ -33,7 +33,7 @@
         fis4-3 g8-4 a4-4 fis8 \tuplet 3/2 { a[ e e~] } e \tweak Y-offset #0 r4 \fermata d8 |
       }
       \new Voice { \voiceTwo
-        <a d,~>8 <a~ d,> <a d,> fis4. <g a,~>8 <g~ a,> <g a,> cis,4. |
+        <a d,~>8 <a~ d,> <a d,> fis4. <g b,~>8 <g~ b,> <g b,> cis,4. |
         d8[ d b-2] cis-2 a r g4.-2 s4. |
       }
     >>
@@ -158,12 +158,12 @@
     >>
     <<
       { \voiceOne
-        e''8\RH #4 [ fis-1 \RH #3 d-2] \RH #2 e[ fis d] e[ fis-2 d-3] e[ fis-2] r |
-        fis8-3[ g-4 e] fis[ g e] fis-2[ g-3 e] fis[ g] r |
+        fis''8 [ d a'] fis8 [ d a'] fis8 [ d a'] fis8 [ d] r |
+        g8[ a fis] g8[ a fis] g8[ a fis] g8[ a]  r |
       }
       \new Voice { \voiceTwo
-        d,4 cis8-3 d4 cis8 d4 e8-1 fis4-4 b,8-1 |
-        e4-2 dis8 e4 dis8-1 e4-1 fis8-4 g4 d8 |
+        d,,4 cisd4 cis8 d4 e8 fis4 b,8 |
+        e4 dis8 e4 dis8 e4 fis8 g4 d8 |
       }
     >>
     <<

@@ -19,7 +19,7 @@
       \new Voice { \voiceOne
         \bar ".|:"
         f'8 e' f'8 g' b' e'' g' c' e' g' g' e'' |
-        d'' bes f' gis' d'' f'' e'' \mark "rit." e' g' c'' g'4 | \break
+        d'' bes f' gis' d'' f'' e''-"rit." e' g' c'' g'4 | \break
       }
       \new Voice { \voiceTwo
         s4 f'4 s4 g'4 s2 |
@@ -36,8 +36,8 @@
     >>
     <<
       \new Voice { \voiceOne
-        \mark "a tempo" f'8 e' f'8 g' b' e'' g' c' e' g' g' e'' |
-        d'' bes f' gis' d'' f'' e'' \mark "rit." gis f' b' f'4 | \break
+        f'8 e' f'8 g' b' e'' g' c' e' g' g' e'' |
+        d'' bes f' gis' d'' f'' e''-"rit." gis f' b' f'4 | \break
       }
       \new Voice { \voiceTwo
         s4 f'4 s4 g'4 s2 |
@@ -54,7 +54,7 @@
     >>
     <<
       \new Voice { \voiceOne
-        a'8 \mark "a tempo" f c' d' a' b' c'' a e' g' c'' e''|
+        a'8 f c' d' a' b' c'' a e' g' c'' e''|
         d'' b e' gis' d'' e'' <d' gis' f''>2 e''4 | \break
       }
       \new Voice { \voiceTwo

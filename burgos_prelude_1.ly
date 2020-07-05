@@ -17,7 +17,7 @@
    
     <<
       \new Voice { \voiceOne
-        \bar ".|:"
+        \bar "[|:"
         f'8 e' f'8 g' b' e'' g' c' e' g' g' e'' |
         d'' bes f' gis' d'' f'' e''-"rit." e' g' c'' g'4 | \break
       }
@@ -127,7 +127,7 @@
     <<
       \new Voice { \voiceOne
         f''8 d' gis' c'' f'' c'' <g b'> d' f' g' b' e''|
-        c'' c' e' g' c'' e'' c''2. \bar ":|][|:" \break
+        c'' c' e' g' c'' e'' c''2. \bar ":|.|:" \break
       }
       \new Voice { \voiceTwo
         f''4 s2 <g>4 s2 |
@@ -274,11 +274,11 @@
       \new Voice { \voiceOne
         \time 8/4
         f'8 g' a' d'' b' g' dis' g'16 g' g'8 d'' dis' g'16 g' g'8 d'' cis'' a' |
-        a''4 f'' ais'' e'' r1 | \break
+        a''4 f'' ais'' e'' r1-"D.C. al Fine" \bar ":|]" \break  
       }
       \new Voice { \voiceTwo
         s4 <g a'> s <g dis'> s  <g dis'> s4 cis''4 |
-        d'2 a2 a4 cis'2 e'4-\markup  { D.S. \musicglyph #"scripts.segno" } | \mark "D.C. al fine"
+        d'2 a2 a4 cis'2 e'4 |
       }
       \new Voice { \voiceThree
         |
@@ -291,7 +291,7 @@
     >>
     <<
       \new Voice { \voiceOne
-        |
+       |
         | \break
       }
       \new Voice { \voiceTwo

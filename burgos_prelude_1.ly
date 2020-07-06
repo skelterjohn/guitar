@@ -17,7 +17,7 @@
    
     <<
       \new Voice { \voiceOne
-        \bar "[|:"
+        \bar ".|:"
         f'8 e' f'8 g' b' e'' g' c' e' g' g' e'' |
         d'' bes f' gis' d'' f'' e''-"rit." e' g' c'' g'4 | \break
       }
@@ -181,7 +181,7 @@
     <<
       \new Voice { \voiceOne
         e''8 f'' g'' e'' a'' e'' f''4  d'''8 e'' e'' c''' |
-        b''4 g'8 a' b' d'' c'' a'4 s4. \bar ".|:" \break
+        b''4 g'8 a' b' d'' c'' a'4 s4. \bar "[|:" \break
       }
       \new Voice { \voiceTwo
         s4 cis' b a <e' bes'> <c' a'>  |
@@ -199,7 +199,7 @@
     <<
       \new Voice { \voiceOne
         \time 8/4
-        <e' gis' dis''>4\segno e'8 gis' dis''8 b' dis'' fis''4 a''4 b''4 c'''4 s8 \bar ":|."
+        <e' gis' dis''>4 e'8 gis' dis''8 b' dis'' fis''4 a''4 b''4 c'''4 s8 \bar ":|."
         <e' gis' dis''>4 e'8 gis' dis'' b' r g' a' b' fis'' e'' b'4 <e' c'' fis''> | \break
       }
       \new Voice { \voiceTwo

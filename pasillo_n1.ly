@@ -2,6 +2,7 @@
 \header {
   title = "Pasillo No. 1"
   composer = "Prof. Francisco A. Velasquez"
+  arranger = "Arranged by John Asmuth"
 }
 
 \include "bbarred.ly"
@@ -15,12 +16,14 @@
     r8 
     <<
       \new Voice { \voiceOne
-        b'-0 cis''-2[ dis''-4] e''-0[ fis''-1] |
+        \set fingeringOrientations = #'(left)
+        <b'-0> <cis''-2>[ <dis''-4>] <e''-0>[ <fis''-1>] |
         s4 c'''4 s8 b''8 |
         g8[ g'] e''4 r8 fis'' | \break
       }
       \new Voice { \voiceTwo
-        \once \override NoteColumn.force-hshift = #1 b'-3 ais'-3[ a'-1] g'-0[ fis'-3] |
+        \set fingeringOrientations = #'(left)
+        \once \override NoteColumn.force-hshift = #1 <b'-3> <ais'-3>[ <a'-1>] <g'-0>[ <fis'-3>] |
         s4 c'''8[ b'] g'[ b''] |
         s4 e''8[ b'] g'[ fis''] |
       }
@@ -38,12 +41,14 @@
     >>
     <<
       \new Voice { \voiceOne
-        fis8[ a'-3] e''4 r8 e''|
+        \set fingeringOrientations = #'(left)
+        fis8[ <a'-3>] e''4 r8 e''|
         \fbarre #"2 "{ b8[ <a' dis''>] (e'')[ fis''] g''[ (fis'')] }|
-        a8[ e'-3] c''4 s8 b'8 | \break
+        a8[ <e'-3>] c''4 s8 b'8 | \break
       }
       \new Voice { \voiceTwo
-        s4 e''8[ c''-1] a'[ e''] |
+        \set fingeringOrientations = #'(left)
+        s4 e''8[ <c''-1>] a'[ e''] |
         s2. |
         s4  c''8[ g'~] <g' e'>[ b'] |
       }
@@ -60,13 +65,15 @@
     >>
     <<
       \new Voice { \voiceOne
-        fis8[ d'] c''4-1 s8 d'' |
+        \set fingeringOrientations = #'(left)
+        fis8[ d'] <c''-1>4 s8 d'' |
         g8[ d'] c''4 s8 b' |
         fis8[ e'] <a' b'>[ e'] fis[ <dis' a' b'>] | \break
       }
       \new Voice { \voiceTwo
-        s4 c''8[ a'-3] d'[ d''-4]|
-        s4 c''8[ a'-2] d'[ b']|
+        \set fingeringOrientations = #'(left)
+        s4 c''8[ <a'-3>] d'[ <d''-4>]|
+        s4 c''8[ <a'-2>] d'[ b']|
         |
       }
       \new Voice { \voiceThree
@@ -75,20 +82,23 @@
         |
       }
       \new Voice { \voiceFour
-        fis4-2 fis2 |
-        g4-3 g2 |
-        fis4~ fis fis |
+        \set fingeringOrientations = #'(left)
+        <fis-2>4 fis2 |
+        <g-3>4 g2 |
+        fis4~ fis f |
       }
     >>
     <<
       \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
         s4 c''' s8 b'' |
-        gis8 e'-1 e''4-0 r8 <b'-4 d''-2> |
+        gis8 <e'-1> <e''-0>4 r8 <b'-4 d''-2> |
         a8[ gis'] b'[ f''] e''4 | \break
       }
       \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
         s4 c'''8[ b'] g'[ b''] |
-        s4 e''8[ b'-0] e'[ b'] |
+        s4 e''8[ <b'-0>] e'[ b'] |
         s2 <a' c'' e''>8[ <b' d''>] |
       }
       \new Voice { \voiceThree
@@ -97,8 +107,9 @@
         |
       }
       \new Voice { \voiceFour
+        \set fingeringOrientations = #'(left)
         e4~ e2 |
-        gis4-3~ gis2|
+        <gis-3>4~ gis2|
         a4 a2 |
       }
     >>
@@ -153,8 +164,9 @@
         s4 g''\2 r8 g'' \bar ".|:" \break
       }
       \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
         b'8[ b'] <dis''\3 e'' a''>[ b'] b'[ <b' dis'' e'' a''>] |
-        c'8\6-3[ c'] <d''\3 e'' g''>[ c'] c'[ <c''\3 e'' g''>] |
+        <c'\6-3>8[ c'] <d''\3 e'' g''>[ c'] c'[ <c''\3 e'' g''>] |
         c'8\6[ c'] <d''\3 e'' g''>[ c'] b[ <d'' e'' g''>] |
       }
       \new Voice { \voiceThree
@@ -170,12 +182,14 @@
     >>
     <<
       \new Voice { \voiceOne
-        s4  g''4-4\2 r8  <c'' e'' fis''-4> |
+        \set fingeringOrientations = #'(left)
+        s4  <g''-4\2>4 r8  <c'' e'' fis''-4> |
         s4 <b' cis'' fis''> r8 <cis'' e''> |
         s4 <bes' c'' fis''> r8 <c'' e''> | \break
       }
       \new Voice { \voiceTwo
-        a8[ a'-3\4] <c''\3 e'' g''>[ a] a'[ <a' c''>] \bar ":|."
+        \set fingeringOrientations = #'(left)
+        a8[ <a'-3\4>] <c''\3 e'' g''>[ a] a'[ <a' c''>] \bar ":|."
         e8[ g'\4] \bbarre #"2" { \once \override NoteColumn.force-hshift = #1.25 cis''[ g'] b'[ } cis''] |
         e8[ g'\4] \bbarre #"2" { \once \override NoteColumn.force-hshift = #1.25 cis''[ g'] bes'[ } cis''] |
       }
@@ -197,6 +211,7 @@
         e''4 \coda s2 | \break
       }
       \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
         a8[ e'] <b'-4\3 c''>[ a'] <g' c''>[ fis'] |
         s2. |
         e8[ b] fis'[ g'] b'[ e''] |
@@ -230,9 +245,10 @@
     r8
     <<
       \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
         b'8 cis''[ dis''] e''[ fis''] |
         cis'''4 b''8 s4. |
-        \fbarre #"2" { <a' dis''-3>8[ <a' e''-4>] gis''-3[ \slashedGrace gis'' (fis'')] dis''[ } b'-0] | \break
+        \fbarre #"2" { <a' dis''-3>8[ <a' e''-4>] <gis''-3>[ \slashedGrace gis'' (fis'')] dis''[ } <b'-0>] | \break
       }
       \new Voice { \voiceTwo
         \once \override NoteColumn.force-hshift = #1 b'8 ais'[ a'] gis'[ fis'] |
@@ -252,9 +268,10 @@
     >>
     <<
       \new Voice { \voiceOne
-        s4 b' s4 |
-        r8  \fbarre #"4" { b' cis''-4[ <gis' b' dis''>] <b' e''-2>[ fis''-4] } |
-        \fbarre #"9" { <b' eis''>8[ <b'-2 fis''>] gis''[ <eis'' a''>] b''-4[ cis'''] } | \break
+        \set fingeringOrientations = #'(left)
+        cis''4 b' s4 |
+        r8  \fbarre #"4" { b' <cis''-4>[ <gis' b' dis''>] <b' e''-2>[ <fis''-4>] } |
+        \fbarre #"9" { <b' eis''>8[ <b'-2 fis''>] gis''[ <eis'' a''>] <b''-4>[ cis'''] } | \break
       }
       \new Voice { \voiceTwo
         e8[ e8] r8 <e' gis'>8 <e' gis'> 4 |
@@ -274,7 +291,8 @@
     >>
     <<
       \new Voice { \voiceOne
-        \fbarre #"9" { d'''2-3 cis'''8[ gis''] |
+        \set fingeringOrientations = #'(left)
+        \fbarre #"9" { <d'''-3>2 cis'''8[ gis''] |
         b''4. a''8 s4 }|
         \tweak Y-offset #0 r8 \bbarre #"2" { fis'' gis''[ a''] cis''[ fis''] } \bar ".|:" \break
       }
@@ -358,11 +376,13 @@
     >>
     <<
       \new Voice { \voiceOne
-        r8 gis' b'[ e''] fis''[ gis''-1] |
+        \set fingeringOrientations = #'(left)
+        r8 gis' b'[ e''] fis''[ <gis''-1>] |
         b''2. \mark \markup  { D.C. hasta \musicglyph #"scripts.coda" } \bar #":|."
       }
       \new Voice { \voiceTwo
-        e8[ b-2] fis'-4[ gis'] b'[ e''-2] |
+        \set fingeringOrientations = #'(left)
+        e8[ <b-2>] <fis'-4>[ gis'] b'[ <e''-2>] |
         gis''2. |
       }
       \new Voice { \voiceThree

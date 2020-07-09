@@ -165,8 +165,8 @@
     >>
     <<
       \new Voice { \voiceOne
-        e'8 fis' g' b' g' b' a' f d' a' b' c'' |
-        a' a e' a' b' c'' b'4 <f c' e' a'>2 \bar ":|." \break
+        e'8\RH1 fis'\RH2 g'\RH3 b'\RH4 g'\RH3 b'\RH4 a'\RH3 f\RH1 d'\RH2 a'\RH3 b'\RH2 c''\RH4 |
+        a'\RH3 a\RH1 e'\RH2 a'\RH3 b'\RH2 c''\RH4 b'4\RH3 <f c' e' a'>2 \bar ":|." \break
       }
       \new Voice { \voiceTwo
         |
@@ -183,11 +183,13 @@
     >>
     <<
       \new Voice { \voiceOne
-        e''8 f'' g'' e'' a'' e'' f''4  d'''8 e'' e'' c''' |
-        b''4 g'8 a' b' d'' c'' a'4 s4. \bar "[|:" \break
+        \set fingeringOrientations = #'(left)
+        e''8\RH3 <f''\RH2> <g''-2\RH3> e''\RH2 a''\RH3 e''\RH2 <f''-1\2\RH3>4  d'''8 e'' e'' c''' |
+        b''4 g'8 a' b'\3 d''\2 c''\3 a'4 s4. \bar "[|:" \break
       }
       \new Voice { \voiceTwo
-        s4 cis' b a <e' bes'> <c' a'>  |
+        \set fingeringOrientations = #'(left)
+        s4 <cis'-3> b a <e' bes'> <c' a'>  |
         <d' gis'>4 s4 b'4 s4. s4.  |
       }
       \new Voice { \voiceThree
@@ -202,11 +204,13 @@
     <<
       \new Voice { \voiceOne
         \time 8/4
-        <e' gis' dis''>4 e'8 gis' dis''8 b' dis'' fis''4 a''4 b''4 c'''4 s8 \bar ":|."
-        <e' gis' dis''>4 e'8 gis' dis'' b' r g' a' b' fis'' e'' b'4 <e' c'' fis''> | \break
+        \set fingeringOrientations = #'(left)
+        \bbarre #"IV" { <e' gis' dis''>4 e'8 gis' dis'' b' dis'' } <fis''\2-4>4 a''4 b''4 c'''4 s8 \bar ":|."
+        \bbarre #"IV" { <e' gis' dis''>4 e'8 gis' dis'' b' } r g' a' b' fis'' e'' b'4 <e' c'' fis''> | \break
       }
       \new Voice { \voiceTwo
-        <e' gis'>4 s2 s8 r8 g'4 g' g' g'4 |
+        \set fingeringOrientations = #'(left)
+        <e' gis'>4 s2 s8 r8 <g'-0>4 g' g' g'4 |
         |
       }
       \new Voice { \voiceThree
@@ -237,7 +241,8 @@
     <<
       \new Voice { \voiceOne
         \time 6/4
-        g' a' <e' g' b'> e'' <g g'> b' <gis c''> b' <g g' b'> g' <f e' a'>4 \bar ".|:"
+        \set fingeringOrientations = #'(left)
+        g' <a'-2> <e'-1 g' b'> e'' <g-1 g'> b' <gis c''\3-2> <b'-0> <g g'-3\4 b'-2\3> <g'-0> <f e' a'>4 \bar ".|:"
         \time 15/8
         \fbarre #"III" { c'8 d' f' bes' f'' e'' d'' } <e'' a''>4 <d'' g''> <b' e''> <e'-1 a'-1>8 \bar ":|." \break
       }

@@ -136,12 +136,12 @@
     >>
     <<
       { \voiceOne
-        d'8 d b cis a' g r8 b,4 \grace { cis16 d } cis4 s8 |
-        d4. <cis fis>4. <b g'> r4. |
+        d'8 d b cis4. r8 b4 \grace { cis16 d } cis4 s8 |
+        d4. <cis fis>4. <b g'> <cis a'> |
       }
       \new Voice { \voiceTwo
-        fis,4 g8 a8 fis4 e4 fis8 g4 \tweak Y-offset #0 r8 |
-        fis'4 g8 a4 fis8 e8[ fis8 g8~] g4 d8 |
+        fis,4 g8 \fbarre #"II" {a8 fis4 e4} fis8 g4 \tweak Y-offset #0 r8 |
+        fis4 g8 a4 fis8 e8[ fis8 g8~] g4 d8 |
       }
     >>
     <<
@@ -162,7 +162,7 @@
         g8[ a fis] g8[ a fis] g8[ a fis] g8[ a]  r |
       }
       \new Voice { \voiceTwo
-        d,,4 cis8 d4 cis8 d4 e8 fis4 b,8 |
+        d,,4 cis8 d4 cis8 d4 \fbarre #"II" {e8 fis4 b,8} |
         e4 dis8 e4 dis8 e4 fis8 g4 d8 |
       }
     >>
@@ -179,7 +179,7 @@
     <<
       { \voiceOne
         <g'' e,>4. <g e,> <g e,> <a d,,> |
-        s1 s8 g4. |
+        s1. |
         <b, e>4. <b e> r2. \fermata |
       }
       \new Voice { \voiceTwo

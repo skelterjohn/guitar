@@ -7,7 +7,7 @@
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
-#(define RH rightHandFinger)
+#(set-global-staff-size 15)
 
 <<
   {
@@ -165,8 +165,9 @@
     >>
     <<
       \new Voice { \voiceOne
-        e'8\RH1 fis'\RH2 g'\RH3 b'\RH4 g'\RH3 b'\RH4 a'\RH3 f\RH1 d'\RH2 a'\RH3 b'\RH2 c''\RH4 |
-        a'\RH3 a\RH1 e'\RH2 a'\RH3 b'\RH2 c''\RH4 b'4\RH3 <f c' e' a'>2 \bar ":|." \break
+        \set fingeringOrientations = #'(left)
+        e'8\RH2 fis'\RH3 g'\RH2 b'\RH3 g'\RH2 b'\RH3 <a'-3\RH2> <f-1\RH1> d'\RH2 a'\RH3 b'\RH2 <c''-1\RH3> |
+        a'\RH2 a\RH1 <e'-2\RH2> a'\RH3 b'\RH2 c''\RH3 b'4\RH2 <f c' e' a'>2 \bar ":|." \break
       }
       \new Voice { \voiceTwo
         |

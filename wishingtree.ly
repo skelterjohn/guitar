@@ -99,7 +99,7 @@
     <<
       { \voiceOne 
         d'4 e8 fis4 d8 e4 fis8 g4 r8 |
-        fis4 g8 \grace g16 \glissando a4 fis8 \tuplet 4/2 {a (e) e~} e4. \fermata d8 |
+        fis4 g8 \grace g16 \glissando a4 fis8 \tuplet 3/2 {a (e) e~} e4. \fermata d8 |
       }
       \new Voice { \voiceTwo
         s1. s
@@ -137,7 +137,7 @@
     <<
       { \voiceOne
         d'8 d b cis4. r8 b4 \grace { cis16 d } cis4 s8 |
-        d4. <cis fis>4. <b g'> <cis a'> |
+        d8 d e <cis fis>4. <b g'> <cis e> |
       }
       \new Voice { \voiceTwo
         fis,4 g8 \fbarre #"II" {a8 fis4 e4} fis8 g4 \tweak Y-offset #0 r8 |
@@ -147,12 +147,12 @@
     <<
       { \voiceOne
         \set stringNumberOrientations = #'(up)
-        <e'\3 g\2>2. <d a'> |
+        <e' g>2. <cis fis> |
         <b e>4. <g b e> <a cis>8 <g b> <e a>~ <e a>4. |
       }
       \new Voice { \voiceTwo
         \set stringNumberOrientations = #'(down)
-        b'8\4[ b b~] b4 b8-0 a d, fis4. g,8 |
+        b'8[ b b~] b4 b8 a d, fis4. g,8 |
         g'4 fis8 e4 d8 e[ d cis~] cis4 a8 |
       }
     >>
@@ -211,7 +211,7 @@
     <<
       { \voiceOne 
         b''4 a8 b4 cis8 a4 d,8 fis4 g,8 |
-        g'4 fis8 g4 a8 fis4 a,8 d4 b8 |
+        g'4 fis8 g4 a8 fis4 a,8 d4 <b-3\4>8 |
       }
       \new Voice { \voiceTwo
         g2. fis |

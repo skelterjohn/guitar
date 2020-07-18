@@ -19,22 +19,26 @@
     <<
       \new Voice = "melody"
       { \voiceOne 
+        \set fingeringOrientations = #'(left)
         d[ d cis] d[ d e] fis4. \tweak Y-offset #0 r8 \tuplet 3/2 {b,8 b b} |
         e4 dis8 e[ e fis] g4. \tweak Y-offset #0 r |
       }
       \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
         <fis, a>1. |
         <b g cis,>1. |
       }
     >>
     <<
       { \voiceOne 
+        \set fingeringOrientations = #'(left)
         \bbarre #"II" { fis'8 fis g a4. } e8 e fis g4. |
-        fis4-3 g8-4 a4-4 fis8 \tuplet 3/2 { a[ e e~] } e \tweak Y-offset #0 r4 \fermata d8 |
+        <fis-3>4 <g-4>8 <a-4>4 fis8 \tuplet 3/2 { a[ e e~] } e \tweak Y-offset #0 r4 \fermata d8 |
       }
       \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
         <a d,~>8 <a~ d,> <a d,> fis4. <g b,~>8 <g~ b,> <g b,> cis,4. |
-        d8[ d b-2] cis-2 a r g4.-2 s4. |
+        d8[ d <b-2>] <cis-2> a r <g-2>4. s4. |
       }
     >>
     <<
@@ -50,7 +54,7 @@
     \oneVoice
     <<
       { \voiceOne 
-        g''4-3 fis8-2 e4 d8-2 e8 d8 cis8 \tweak Y-offset #0 r4 a8  |
+        <g''-3>4 <fis-2>8 e4 <d-2>8 e8 d8 cis8 \tweak Y-offset #0 r4 a8  |
       }
       \new Voice { \voiceTwo
         b,2. <cis~ g'>4 <cis a'>8 s4. |
@@ -58,8 +62,9 @@
     >>
     <<
       { \voiceOne 
+        \set fingeringOrientations = #'(left)
         d'4 cis8 d4 cis8 d e fis~ fis4 b,8 |
-        e4 d8 e4 fis8-2 g4.-3 r4 a,8 |
+        e4 d8 e4 <fis-2>8 <g-3>4. r4 a,8 |
       }
       \new Voice { \voiceTwo
         fis8[ d a'] fis[ d a'] fis[ a d] fis,[ d] r |
@@ -126,12 +131,14 @@
     >>
     <<
       { \voiceOne 
+        \set fingeringOrientations = #'(left)
         \fbarre #"II" { <a' fis'>4 <a fis'>4 <a fis'>2 } r2 |
         <b g'-3>4 <b g'-2>4 <cis a'>2 \tweak Y-offset #0 r2 |
       }
       \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
         d,8[ cis d] e fis4~ fis4 r b,8 b |
-        e-2[ dis-1 e-1] fis-3 g4~ g s2 |
+        <e-2>[ <dis-1> <e-1>] <fis-3> g4~ g s2 |
       }
     >>
     <<
@@ -158,12 +165,14 @@
     >>
     <<
       { \voiceOne
-        fis''8 [ d a'] fis8 [ d a'] fis8 [ d a'] fis8 [ d] r |
-        g8[ a fis] g8[ a fis] g8[ a fis] g8[ a]  r |
+        \set fingeringOrientations = #'(left)
+        <fis''-1>8 [ <d-2> <a'-4>] fis8 [ d a'] fis8 [ d a'] fis8 [ d] r |
+        <g-2>8[ <a-4> <fis-2>] <g-2>8[ a fis] g8[ a fis] g8[ a]  r |
       }
       \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
         d,,4 cis8 d4 cis8 d4 \fbarre #"II" {e8 fis4 b,8} |
-        e4 dis8 e4 dis8 e4 fis8 g4 d8 |
+        <e-1>4 <dis-1>8 <e-1>4 dis8 e4 fis8 g4 d8 |
       }
     >>
     <<
@@ -190,12 +199,14 @@
     >>
     <<
       { \voiceOne 
+        \set fingeringOrientations = #'(left)
         d'4 cis8 d4 cis8 d e fis2 |
-        e4 dis8 e4 dis8 e fis-3 g4.-4 a,8 |
+        e4 dis8 e4 dis8 e <fis-3> <g-4>4. a,8 |
       }
       \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
         s1. |
-        cis,4. dis4. g8[ a-1 cis-2] b[ cis a] |
+        cis,4. dis4. g8[ <a-1> <cis-2>] b[ cis a] |
       }
     >>
     <<
@@ -210,6 +221,7 @@
     >>
     <<
       { \voiceOne 
+        \set fingeringOrientations = #'(left)
         b''4 a8 b4 cis8 a4 d,8 fis4 g,8 |
         g'4 fis8 g4 a8 fis4 a,8 d4 <b-3\4>8 |
       }

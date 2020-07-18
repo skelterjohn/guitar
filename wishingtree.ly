@@ -1,7 +1,7 @@
 \version "2.18.2"
 \header {
-  title = "Orange Wishing Tree"
-  subtitle = "draft 3"
+  title = "Wishing Tree"
+  subtitle = "draft 4"
   composer = "John Asmuth"
 }
 
@@ -178,13 +178,13 @@
     >>
     <<
       { \voiceOne
-        <g'' e,>4. <g e,> <g e,> <a d,,> |
-        s1. |
-        <b, e>4. <b e> r2. \fermata |
+        <b'>8. a b a b cis d a~ |
+        <a>2. s2.  |
+        <b e>4. <b e> r2. \fermata |
       }
       \new Voice { \voiceTwo
-        b4 a8 b4 a8 b4 cis8 <d a>8 a4~ |
-        a2. \tweak Y-offset #0 r4. e8[(fis)] g~  |
+        <e,, g'>4. <fis g'> <g a'> <a~ g'>8. <a~ fis'~> |
+        <a fis'>2. \tweak Y-offset #0 r4. e'8[(fis)] g~  |
         g8 fis8 e4 cis8a'8 e2. \fermata |
       }
     >>

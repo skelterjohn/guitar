@@ -1,7 +1,7 @@
 \version "2.18.2"
 \header {
   title = "Wishing Tree"
-  subtitle = "draft 4"
+  subtitle = "draft 5"
   composer = "John Asmuth"
 }
 
@@ -14,7 +14,7 @@
     \partial 4
     \time 12/8
     \key d \major
-    \tempo 4. = 80
+    \tempo 4. = 50
     a8 a |
     <<
       \new Voice = "melody"
@@ -74,7 +74,7 @@
     <<
       { \voiceOne 
         cis4 b8 cis4 b8 cis4 d8 e4 cis8 |
-        d4 cis8~ cis[ d8 e ] fis4.~ fis8~ fis8 d8 |
+        d4 cis8~ cis[ d8 e ] fis4.~ fis4 d8 |
       }
       \new Voice { \voiceTwo
         a,8[ b g] a8[ b gis] a b4 a8 cis4 |
@@ -159,7 +159,7 @@
       }
       \new Voice { \voiceTwo
         \set stringNumberOrientations = #'(down)
-        b'8[ b b~] b4 b8 a d, fis4. g,8 |
+        b'8[ b b~] b4 b8 \bbarre #"II" { a d, fis4. } g,8 |
         g'4 fis8 e4 d8 e[ d cis~] cis4 a8 |
       }
     >>
@@ -187,12 +187,13 @@
     >>
     <<
       { \voiceOne
-        <b'>8. a b a b cis d a~ |
-        <a>2. s2.  |
+        \dynamicUp
+        <b'>8.\< a b a b cis \bbarre #"II" { <d fis>\! cis16 \> d cis \!  |
+        <a>2. } s2.  |
         <b e>4. <b e> r2. \fermata |
       }
       \new Voice { \voiceTwo
-        <e,, g'>4. <fis g'> <g a'> <a~ g'>8. <a~ fis'~> |
+        <e,, g' b>4. <fis g' b> <g a' b> <a~ g' d'>4. |
         <a fis'>2. \tweak Y-offset #0 r4. e'8[(fis)] g~  |
         g8 fis8 e4 cis8a'8 e2. \fermata |
       }
@@ -206,7 +207,7 @@
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
         s1. |
-        cis,4. dis4. g8[ <a-1> <cis-2>] b[ cis a] |
+        cis,4. b4. g'8[ <a-1> <cis-2>] b[ cis a] |
       }
     >>
     <<

@@ -7,7 +7,7 @@
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
-#(set-global-staff-size 15)
+#(set-global-staff-size 25)
 
 <<
   {

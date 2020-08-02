@@ -22,7 +22,7 @@
     shortInstrumentName = #"flt. "
   }
   {
-    \clef "treble_8"
+    \clef "treble"
     \key d \major
     r4 |
     % 1
@@ -59,7 +59,7 @@
     shortInstrumentName = #"cel. "
   }
   {
-    \clef "treble_8"
+    \clef "bass"
     \key d \major
     r4 |
     % 1

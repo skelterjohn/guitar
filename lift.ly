@@ -9,21 +9,19 @@
 
 #(set-global-staff-size 25)
 
+
 <<
   \time 3/4
   \partial 4
-  
-  \chords {
-    b4:m
-  }
   
   \new Staff \with {
     instrumentName = #"Flute "
     shortInstrumentName = #"flt. "
   }
   {
+    \tempo 4 = 144
     \clef "treble"
-    \key d \major
+    \key b \minor
     r4 |
     % 1
     r2. | r2. |
@@ -35,8 +33,8 @@
     fis'2 e'4 | fis'4 e' d' |
     cis'2. | r2. | \break
     % 13
-    e'4 e' e' | e'2 r4 |
-    e'4 e' fis' | g'4 fis' e' |  \break
+    e'2 e'4 | e'2 r4 |
+    e'2 fis'4 | g'4 fis' e' |  \break
     % 17
     fis'2. | r2. |
     r2. | r2. | \bar ":|." \break
@@ -73,9 +71,9 @@
     g4. fis8 e d | cis4 d e | \break
     % 13
     cis2.~ | cis2. |
-    cis2. | d2. | \break
+    r2. | a,4 b, cis | \break
     % 17
-    d2. | r2. |
+    d4 e cis | d2. |
     r2. | r2. | \break
   }
   
@@ -84,7 +82,7 @@
     shortInstrumentName = #"gtr. "
   } {
     \clef "treble_8"
-    \key d \major
+    \key b \minor
     \set stringNumberOrientations = #'(down)
     \set fingeringOrientations = #'(left)
     <gis d' fis' e'-0>4\fermata |
@@ -113,10 +111,10 @@
       fis8 b d' e' d' b | b,8 b d' e' d' b |
       % 29
       fis8 b d' e' d' b | d8 b d' e' d' b |
-      fis8 b d' e' d' b | fis8 b d' e' d' b |
+      fis8 b d' e' d' b | d8 b d' e' d' b |
       % 33
-      a8 c' fis' e' fis' c' | fis8 c' fis' e' fis' c' |
-      e8 c' fis' e' fis' c' | e8 c' fis' e' fis' c' |
+      a8 c' fis' e' fis' c' | e8 c' fis' e' fis' c' |
+      a8 c' fis' e' fis' c' | e8 c' fis' e' fis' c' |
       % 37
       e8 b g' e' g' b | e8 b g' e' g' b |
       e8 b g' e' g' b | e8 b g' e' g' b |
@@ -151,10 +149,10 @@
       fis2. | b,2. |
       % 29
       fis2. | d2. |
-      fis2. | fis2. |
+      fis2. | d2. |
       % 33
-      a2. | fis2. |
-      e2. | e2. |
+      a2. | e2. |
+      a2. | e2. |
       % 37
       e2. | e2. |
       e2. | e2. |

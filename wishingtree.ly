@@ -1,7 +1,6 @@
 \version "2.18.2"
 \header {
   title = "Wishing Tree"
-  subtitle = "draft 5"
   composer = "John Asmuth"
 }
 

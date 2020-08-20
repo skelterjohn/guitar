@@ -28,7 +28,7 @@
         
         d''2.\mf | b'2. | e''2. | s2. | 
         g''4 d''8 e'' g'4 | \fbarre #"III" { a''4 d''8 (e'') } g'4 | b'4 a' e'' | s4 b'8 (c'') d'' e'' | 
-        g''4 d''8 e'' g'4 | a''4 d''8 e'' <g''-1> \glissando \bbarre #"V" { a'' | <b''-3>2.-> | b''2.-> } | 
+        g''4 d''8 e'' g'4 | \fbarre #"III" { a''4 d''8 e'' <g''-1> a'' } | \bbarre #"V" { <b''-3>2.-> | b''2.-> } | 
         
         \bar ".|:" s2.\p | s2. | \bar ":|." 
         

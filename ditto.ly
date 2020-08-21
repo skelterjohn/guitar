@@ -7,8 +7,6 @@
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
-#(set-global-staff-size 27)
-
 <<
   {
     \time 3/4
@@ -57,6 +55,8 @@
         <g' b' d''\harmonic>8 a'\harmonic b' c'' <f' d''> e'' | <e' b' c''>4 g' b' | <g' b'>8 e'' <f''-3> <a''-2> \bbarre #"V" { <e'' b''>4 | <c'' e'' b''>2. } | \break
         
         \bar ":|."
+        
+        \pageBreak
         
         \key e \major
         

@@ -13,7 +13,7 @@
   {
     \time 3/4
     \key c \major
-    \tempo "Adagio"
+    \tempo "Adagio, with sustain"
     
     \set Staff.connectArpeggios = ##t
    
@@ -28,7 +28,7 @@
         
         \break
         
-        <g'-0 b'-0 d''\harmonic>8 a'\harmonic <b'-1\4> <cis''-3> <fis'-1 d''-4>-> <e''-0> | <e' gis' cis''>4 gis'\p \glissando b' |
+        <g'-0 b'-0 d''\harmonic>8 a'\harmonic <b'-1\4> <cis''-3> <fis'-1 d''-4>-> <e''-0> | <e' gis' cis''>4-> gis'\p \glissando b' |
         <g' b'>8 e'' <fis''-4> <a''-2> <e'' b''>4 | <e'' b''>2. |
         
         
@@ -56,7 +56,7 @@
         \bar ".|:"
         
         <e''-0>8 f''\3 <a'' c'''>4 <b''-4>8 <a''> | <b'-0>8 c''\4 g''2\harmonic | <b'-0>8 <f'> c''4 a'' | <e''-2 b''-4>8\< <c''-1\3> <b'-0> <a'-3\4> <g'-0> <b'-0>\! | \break
-        <g' b' d''\harmonic>8 a'\harmonic b' c'' <f' d''>-> e'' | <b' c''>4 g'\p b' | <g' b'>8 e'' <f''-3> <a''-2> \bbarre #"V" { <e'' b''>4 | <c'' e'' b''>2. } | \break
+        <g' b' d''\harmonic>8 a'\harmonic b' c'' <f' d''>-> e'' | <b' c''>4-> g'\p b' | <g' b'>8 e'' <f''-3> <a''-2> \bbarre #"V" { <e'' b''>4 | <c'' e'' b''>2. } | \break
         
         \bar ":|."
         
@@ -81,7 +81,7 @@
         b''8.\harmonic f''16 d'''4-> a''\p | gis''8\< f'' <e''> cis'' gis' <b'>\! |
         
         \break
-        <g' b' d''\harmonic>8 a'\harmonic b' cis'' <fis' d''>-> e'' | <e' gis' cis''>4 gis' \p \glissando b' |
+        <g' b' d''\harmonic>8 a'\harmonic b' cis'' <fis' d''>-> e'' | <e' gis' cis''>4-> gis' \p \glissando b' |
         <g' b'>8 <e''-0> <fis''-1\2> <a''-4\2> <cis'' b''-4>4 | <b''\harmonic e'''\harmonic>2.\arpeggio |
       }
       \new Voice { \voiceTwo

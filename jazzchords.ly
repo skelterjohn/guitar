@@ -1,7 +1,4 @@
 \version "2.18.2"
-\header {
-  title = "jazz chords"
-}
 
 #(define custom-fretboard-table-one (make-fretboard-table))
 \storePredefinedDiagram #custom-fretboard-table-one
@@ -412,6 +409,12 @@ rowSeven= {
     c:m
   }
 }
+
+
+\paper {
+  print-page-number = ##f
+}
+
 \markup {
   X means mute or don't play.
 }

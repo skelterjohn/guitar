@@ -1,4 +1,7 @@
 \version "2.18.2"
+\header {
+  title = "jazz chords"
+}
 
 #(define custom-fretboard-table-one (make-fretboard-table))
 \storePredefinedDiagram #custom-fretboard-table-one
@@ -78,6 +81,7 @@ rowOne = {
   \chordmode{g:m7}
   #guitar-tuning
   #'(
+      (barre 4 2 3)
       (place-fret 6 3 2)
       (mute 5)
       (place-fret 4 3 3)
@@ -140,11 +144,12 @@ rowTwo = {
       (place-fret 3 4 3)
       (place-fret 2 5 4)
       (mute 1))
-#(define custom-fretboard-table-three-3 (make-fretboard-table))
-\storePredefinedDiagram #custom-fretboard-table-three-3
+#(define custom-fretboard-table-three-c (make-fretboard-table))
+\storePredefinedDiagram #custom-fretboard-table-three-c
   \chordmode{g:m}
   #guitar-tuning
   #'(
+      (barre 3 1 3)
       (place-fret 6 3 2)
       (mute 5)
       (place-fret 4 2 1)
@@ -165,7 +170,7 @@ rowThree = {
     \set minorChordModifier = \markup { \super { "-" \whiteTriangleMarkup } }
     g:m7
     
-    \set predefinedDiagramTable = #custom-fretboard-table-three-3
+    \set predefinedDiagramTable = #custom-fretboard-table-three-c
     \set minorChordModifier = \markup { \super "-6" }
     g:m
   }
@@ -177,6 +182,7 @@ rowThree = {
   #guitar-tuning
   #'(
       (barre 1 6 3)
+      (barre 4 2 5)
       (place-fret 6 3 1)
       (place-fret 5 3 1)
       (place-fret 4 5 3)
@@ -241,6 +247,7 @@ rowFour = {
   \chordmode{c:m}
   #guitar-tuning
   #'(
+      (barre 1 3 3)
       (mute 6)
       (place-fret 5 3 2)
       (place-fret 4 2 1)
@@ -252,6 +259,7 @@ rowFour = {
   \chordmode{c:m}
   #guitar-tuning
   #'(
+      (barre 1 3 3)
       (mute 6)
       (place-fret 5 3 2)
       (place-fret 4 1 1)
@@ -382,6 +390,7 @@ rowSix = {
   \chordmode{c:m}
   #guitar-tuning
   #'(
+      (barre 1 4 5)
       (barre 6 1 3)
       (place-fret 6 3 1)
       (place-fret 5 3 1)
@@ -403,28 +412,135 @@ rowSeven= {
     c:m
   }
 }
-
+\markup {
+  X means mute or don't play.
+}
+\markup{}
+\markup {
+  \whiteTriangleMarkup means major, - means minor.
+}
+\markup{}
+\markup {
+  These are movable chords with their roots on the 6th string. They are placed at
+  third position, therefore G.
+}
 \score {
   <<
-    \new ChordNames { \rowOne }
-    \new FretBoards { \rowOne }
-    \break
-    \new ChordNames { \rowTwo }
-    \new FretBoards { \rowTwo }
-    \break
-    \new ChordNames { \rowThree }
-    \new FretBoards { \rowThree }
-    \break
-    \new ChordNames { \rowFour }
-    \new FretBoards { \rowFour }
-    \break
-    \new ChordNames { \rowFive }
-    \new FretBoards { \rowFive }
-    \break
-    \new ChordNames { \rowSix }
-    \new FretBoards { \rowSix }
-    \break
-    \new ChordNames { \rowSeven }
-    \new FretBoards { \rowSeven }
+    \new ChordNames {
+      \override ChordName #'font-size = #8
+      \rowOne
+    }
+    \new FretBoards {
+      \override FretBoard.size = 4
+      \override FretBoard.fret-diagram-details.finger-code = #'in-dot
+      \override FretBoard.fret-diagram-details.dot-color = #'white
+      \override FretBoard.fret-diagram-details.barre-type = #'straight
+      \override FretBoard.fret-diagram-details.number-type = #'roman-upper
+      \override FretBoard.fret-diagram-details.top-fret-thickness = 7
+      \override FretBoard.fret-diagram-details.fret-count = 5
+      \rowOne
+    }
+    
+    \new ChordNames {
+      \override ChordName #'font-size = #8
+      \rowTwo
+    }
+    \new FretBoards {
+      \override FretBoard.size = 4
+      \override FretBoard.fret-diagram-details.finger-code = #'in-dot
+      \override FretBoard.fret-diagram-details.dot-color = #'white
+      \override FretBoard.fret-diagram-details.barre-type = #'straight
+      \override FretBoard.fret-diagram-details.number-type = #'roman-upper
+      \override FretBoard.fret-diagram-details.top-fret-thickness = 7
+      \override FretBoard.fret-diagram-details.fret-count = 5
+      \rowTwo
+    }
+    \new ChordNames {
+      \override ChordName #'font-size = #8
+      \rowThree
+    }
+    \new FretBoards {
+      \override FretBoard.size = 4
+      \override FretBoard.fret-diagram-details.finger-code = #'in-dot
+      \override FretBoard.fret-diagram-details.dot-color = #'white
+      \override FretBoard.fret-diagram-details.barre-type = #'straight
+      \override FretBoard.fret-diagram-details.number-type = #'roman-upper
+      \override FretBoard.fret-diagram-details.top-fret-thickness = 7
+      \override FretBoard.fret-diagram-details.fret-count = 5
+      \rowThree
+    }
+  >>
+}
+\pageBreak
+\markup {
+  \line { X means mute or don't play. }
+}
+\markup{}
+\markup {
+  \whiteTriangleMarkup means major, - means minor.
+}
+\markup{}
+\markup {
+  These are movable chords with their roots on the 5th string. They are placed at
+  third position, therefore C.
+}
+\score {
+  <<
+    \new ChordNames {
+      \override ChordName #'font-size = #8
+      \rowFour
+    }
+    \new FretBoards {
+      \override FretBoard.size = 4
+      \override FretBoard.fret-diagram-details.finger-code = #'in-dot
+      \override FretBoard.fret-diagram-details.dot-color = #'white
+      \override FretBoard.fret-diagram-details.barre-type = #'straight
+      \override FretBoard.fret-diagram-details.number-type = #'roman-upper
+      \override FretBoard.fret-diagram-details.top-fret-thickness = 7
+      \override FretBoard.fret-diagram-details.fret-count = 5
+      \rowFour
+    }
+    \new ChordNames {
+      \override ChordName #'font-size = #8
+      \rowFive
+    }
+    \new FretBoards {
+      \override FretBoard.size = 4
+      \override FretBoard.fret-diagram-details.finger-code = #'in-dot
+      \override FretBoard.fret-diagram-details.dot-color = #'white
+      \override FretBoard.fret-diagram-details.barre-type = #'straight
+      \override FretBoard.fret-diagram-details.number-type = #'roman-upper
+      \override FretBoard.fret-diagram-details.top-fret-thickness = 7
+      \override FretBoard.fret-diagram-details.fret-count = 5
+      \rowFive
+    }
+    \new ChordNames {
+      \override ChordName #'font-size = #8
+      \rowSix
+    }
+    \new FretBoards {
+      \override FretBoard.size = 4
+      \override FretBoard.fret-diagram-details.finger-code = #'in-dot
+      \override FretBoard.fret-diagram-details.dot-color = #'white
+      \override FretBoard.fret-diagram-details.barre-type = #'straight
+      \override FretBoard.fret-diagram-details.number-type = #'roman-upper
+      \override FretBoard.fret-diagram-details.top-fret-thickness = 7
+      \override FretBoard.fret-diagram-details.fret-count = 5
+      \rowSix
+    }
+    \new ChordNames {
+      \override ChordName #'font-size = #8
+      \rowSeven
+    }
+    \new FretBoards {
+      \override FretBoard.size = 4
+      \override FretBoard.fret-diagram-details.finger-code = #'in-dot
+      \override FretBoard.fret-diagram-details.dot-color = #'white
+      \override FretBoard.fret-diagram-details.barre-type = #'straight
+      \override FretBoard.fret-diagram-details.number-type = #'roman-upper
+      \override FretBoard.fret-diagram-details.top-fret-thickness = 7
+      \override FretBoard.fret-diagram-details.fret-count = 5
+      \rowSeven
+    }
   >>
 }

@@ -3,7 +3,7 @@
   title = "Rakuen"
   composer = "Tsuneo Imahori"
   arranger = "Arr. John Asmuth"
-  piece = \markup { \line { \circle 1 "= D"  \circle 5 "= G" \circle 6 "= D" } }
+  piece = \markup { \line { \circle 1 \circle 2 \circle 3 \circle 4 \circle 5 \circle 6 "= D A G D G D" } }
   
 }
 
@@ -135,10 +135,10 @@
         <d'' g' >1 |  <d'' g'>1 |
         \break
         
-        g8 d' g' a' <b' fis'>8 c''16 (b') g'8 d' | c'8 d' g' c' d' g' b d' |
-        g8 d' g' a' <b' fis'>16 (c'') d''8 g'8 d' | c'8 d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c'8 d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'>16 (c'') <d''-0>8 g'8 d' | c'8 d' g' c' d' g' b d' |
         \break
-        \grace f \glissando g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
+        \grace { d (fis) } g8 d'\5 d'\4 g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         \break
         
@@ -149,7 +149,7 @@
         g8 d' g' a' <d'' fis'> a' g' c' | fis' g' a' c' g' a' b g' |
         \break
         
-        g8 d' g' a' <b' fis'> c''16 (b') g'8 d' | c' d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'> \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c' d' g' c' d' g' b d' |
         g8 d' g' a' <b' fis'>16 (c''16) d''8 g'8 d' | c' d' g' c' d' g' b d' |
         \break
         
@@ -160,7 +160,7 @@
         g8 d' <b' g'> g <a' g'>\staccato g' g e'~ | e' g' c'' d'' ees' g' c'' d'' |
         \break
         
-        \grace f \glissando g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
+        \grace { d (fis) } g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         \break
         
@@ -168,29 +168,29 @@
         g8 d' g' a' <d'' fis'> a' g' c' | fis' g' a' c' g' a' b g' |
         \break
         g8 d' g' a' <d'' fis'> a' g' c' | fis' g' a' c' g' a' d' d16 (fis) |
-        g8 d' g' a'16 d'16 <b' g'>8 \staccato <a' fis'>4 <g' e'>8~ | <g' e'>4. <g' e'>2 d16 (fis) |
+        g8 d' g' a'16 d'16 <b'\3 g'\4>8 \staccato <a' fis'>4 <g' e'>8~ | <g' e'>4 r8 <g' e'>4. r4 |
         \break
         
-        g8 d' g' a' <c'' a'> <d'' g'>4 d''8 | g8 d' g' a' <c'' a'>16 d' <d'' g'>4 d''8 |
-        g8 d' g' a' <c'' a'> <d'' g'>4 d''8 | g8 d' g' a' d''2 |
+        g8 d' g' a' <c''\3 a'\2> <d''\2 g'\3>4 d''8\1 | g8 d' g' a' <c'' a'>16 d' <d'' g'>4 d''8 |
+        g8 d' g' a' <c'' a'> <d'' g'>4 d''8 | g8-\markup { "rit." } d' g' a' d''2 |
         
         \break
         
-        c'8 fis' g' a' d fis' g' a' | g b d' g' a' g' d' b | 
-        c'8 fis' g' a' d fis' g' a' | fis b d' g' d'' g' d' b | 
+        <c'-4>8 <fis'-3> g' a' d fis' g' a' | <g-4> <b-3\5> d' g' a' g' d' b | 
+        c'8 fis' g' a' d fis' g' a' | fis b fis' g' d'' g' fis' b | 
         c'8 fis' g' a' d fis' g' a' | g b d' g' d'' g' d' b | 
         c'8 fis' g' a' d fis' g' a' | fis fis' g' a' d'' a' g' fis' | 
-        fis b fis' g' d''2 \fermata |
+        fis-\markup { "rit." } b fis' g' d''2 \fermata |
         \break
         
-        g8 d' g' a' \grace a' \glissando b'4 a'8 (c'') |  f'8 g' c'' f' g' c'' e' d' |
+        g8 d' g' <a'-0> \grace <a'-1\3> \glissando b'4 <a'-0>8 (<c''-3>) |  f'8 g' c'' f' g' c'' e' d' |
         g8 d' g' a' \grace a' \glissando b'4 a'8 (c'') |  f'8 g' c'' f' g' c'' e' d' |
         \break
         g8 d' g' a' \grace a' \glissando b'4 d''8 d''8 | f'8 g' e'' c'' f' b' e' d' |
-        g8 d' \grace a' <d'' (b')> d' <d'' a'> g' g d'~ | d' g' c'' d'' ees' g' c'' d'' |
+        g8 d' \grace a' <d'' (b')> d' <d'' a'> g' g e'~ | e' g' c'' d'' ees' g' c'' d'' |
         \break
         
-        \grace f \glissando g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
+        \grace { d (fis) }  g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         \break
         
@@ -198,11 +198,11 @@
         g8 d' g' a' d'' g' a' d'' | e' g' d'' b' es' g' d'' g' |
         \break
         g8 d' g' a' fis' g' a' d'' c' g' a' fis' c' a' fis'4 |
-        g8 d' g' a' <b' g'> <a' fis'>4 <g' e'>8~ | <g' e'>4. <g' e'>8~ <g' e'>4. r8 |
+        g8 d' g' a' <b' g'> <a' fis'>4 <g' e'>8~ | <g' e'>4 r8 <g' e'>4. r4 |
         \break
         
         g8 d' g' a' <c'' a'>8 <d'' g'>4 d''8 | g8 d' g' a' <c'' a'>8 <d'' g'>4 d''8 |
-        g8 d' g' a' <c'' a'>8 <d'' g'>4 d''8 | g8 d' g' a' d''2 \fermata |
+        g8 d' g' a' <c'' a'>8 <d'' g'>4 d''8 | g8-\markup { "rit." } d' g' a' d''2 \fermata |
         \break
         
         c'8 fis' g' a' d fis' g' a' | g b d' g' a' g' d' b | 
@@ -212,16 +212,16 @@
         c'8 fis' g' a' d fis' g' a' | fis fis' g' a' d'' a' g' fis' |
         \break
         c'8 fis' g' a' d fis' g' a' | g b d' g' a' g' d' b | 
-        c'8 fis' g' a' d fis' g' a' | fis b d' g' d'' g' d' b | 
+        c'8 fis' g' a' d fis' g' a' | fis b fis' g' d'' g' fis' b | 
         \break
         c'8 fis' g' a' d fis' g' a' | g b d' g' d'' g' d' b | 
         c'8 fis' g' a' d fis' g' a' |
         \break
         
-        g8 d' g' a' <b' fis'>8 c''16 (b') g'8 d' | c'8 d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c'8 d' g' c' d' g' b d' |
         g8 d' g' a' <b' fis'>16 (c'') d''8 g'8 d' | c'8 d' g' c' d' g' b d' |
         \break
-        g8 d' g' a' <b' fis'>8 c''16 (b') g'8 d' | c'8 d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c'8 d' g' c' d' g' b d' |
         g8 d' g' a' <b' fis'>16 (c'') d''8 g'8 a \glissando | c'8 g' fis' g' d'' a' g' fis' |
         
         \break
@@ -256,7 +256,7 @@
         g4 s fis' s | s1 |
         g4 s fis' s | s1 |
         g4 s fis' s | s1 |
-        g4 s2 s8 e'4 | s8 s2. |
+        g4 s2 s8 e'4 s8 s2. |
         
         g4 s g s | d'4 s d' s | 
         g4 s g s | d'4 s d' s | 
@@ -264,12 +264,12 @@
         g4 s fis' s | s1 |
         g4 s fis' s | s1 |
         g4 s fis' s | s1 |
-        g4 s2 s8 g8 | s1 |
+        g4 s2 s8 g8 | s2. s8  d16 (fis) |
         
         g4 s2. | g4 s2. | 
         g4 s2. | g4 s2. |
         
-        c'4 s d s | g s a' s |
+        c'4 s d s | g\6 s a' s |
         c' s d s | fis s2. |
         c'4 s d s | g s a' s |
         c' s d s | fis s2. |

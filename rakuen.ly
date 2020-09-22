@@ -187,7 +187,7 @@
         g8 d' g' a' \grace a' \glissando b'4 a'8 (c'') |  f'8 g' c'' f' g' c'' e' d' |
         \break
         g8 d' g' a' \grace a' \glissando b'4 d''8 d''8 | f'8 g' e'' c'' f' b' e' d' |
-        g8 d' \grace a' <d'' (b')> d' <d'' a'> g' g e'~ | e' g' c'' d'' ees' g' c'' d'' |
+        g8 d' \grace a' <d''\1 (b')\2> d' <d''\1 a'\3> g' g e'~ | e' g' c'' d'' ees' g' c'' d'' |
         \break
         
         \grace { d (fis) }  g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |

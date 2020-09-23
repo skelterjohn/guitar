@@ -29,7 +29,9 @@
         \fbarre #"IX" { f'''8 e'' a'' e''' a'' e'' } | d'''8 d'' g'' c''' g'' d'' |
         \bbarre #"V" {c'''8 c'' fis'' a'' fis'' c'' } | bes'' g' e'' a'' e'' bes'' |
         a''8 f' d'' g'' d'' a'' | g'' a' cis'' e'' cis'' a' |
-        f'' g' d'' e'' d'' cis'' |f''8 a' d'' e'' a''4 |
+        f'' g' d'' e'' d'' cis'' |f''8 a' d'' e'' a''4
+        
+        \bar "|."
       }
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)

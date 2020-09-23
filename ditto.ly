@@ -83,6 +83,8 @@
         \break
         <g' b' d''\harmonic>8 a'\harmonic b' cis'' <fis' d''>-> e'' | <e' gis' cis''>4-> gis' \p \glissando b' |
         <g' b'>8 <e''-0> <fis''-1\2> <a''-4\2> <cis'' b''-4>4 | <b''\harmonic e'''\harmonic>2.\arpeggio |
+        
+        \bar "|."
       }
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)

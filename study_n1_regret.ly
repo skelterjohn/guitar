@@ -34,12 +34,12 @@
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(down)
-        e'2.\5 | e'\5 |
+        e'2.\5 | e' |
         dis' | e' |
         f' | g' |
         cis'\6 | d'\5 |
         <dis'-2> | cis' |
-        ais | a |
+        ais | <a-0> |
         ais | d' |
         
       }
@@ -50,13 +50,13 @@
       }
       \new Voice { \voiceFour
         \set fingeringOrientations = #'(left)
-        d'''4 s8 b''4 s8 | c'''4 s8 b''4 s8 |
-        c'''4 s8 b''4 s8 | b''4 s8 d'''4 s8 |
-        d'''4 s8 e'''4 s8 | e'''4 s8 f'''4 s8 |
-        f'''4 s8 e'''4 s8 | d'''4 s8 c'''4 s8 |
-        c'''4 s8 a''4 s8 | bes''4 s8 a''4 bes''8 |
-        a''4 s8 g''4 a''8 | g''4 s8 e''4 s8 |
-        f''4 s8 e''4 cis''8 | f''4 s2|
+        s4 s8 b''4 s8 | s4 s8 b''4 s8 |
+        s4 s8 b''4 s8 | s4 s8 d'''4 s8 |
+        s4 s8 e'''4 s8 | s4 s8 f'''4 s8 |
+        s4 s8 e'''4 s8 | s4 s8 c'''4 s8 |
+        s4 s8 a''4 s8 |s4 s8 a''4 bes''8 |
+        s4 s8 g''4 a''8 | s4 s8 e''4 s8 |
+        s4 s8 e''4 cis''8 | s4 s2|
       }
     >>
     

@@ -107,7 +107,7 @@
       s2. | s2. |
       
       s2. | s2. |
-      s2. | s2.-\markup { \musicglyph #"scripts.coda" } |
+      s2. | s2 s8 \mark \markup { \musicglyph #"scripts.coda" } s8|
       
     }
     \new Voice { \voiceFour
@@ -144,8 +144,8 @@
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
-      <a'-3\4>8\< <g'-0\3> <a'\4> <cis''-2\3> <fis''-4\2> <e''-1\2>\! | a'8\p g' a' cis'' fis'' e'' |
-      <d''-2\3>8\< <b'-0\2> e''\1 <d''\3> <a''-1\1> fis''\! | <d'''-1>8\> b'' <a''-1> fis'' <e''-1\2> <d''-4\3>\! |
+      <a'-3\4>8\< <g'\3> <a'\4> <cis''-2\3> <fis''-4\2> <e''-1\2>\! | a'8\p g' a' cis'' fis'' e'' |
+      <d''-2\3>8\< <b'\2> e''\1 <d''\3> <a''-1\1> fis''\! | <d'''-1>8\> b'' <a''-1> fis'' <e''-1\2> <d''-4\3>\! |
       
       a'8\< g' a' cis'' fis'' e''\! | a'8\p g' a' cis'' fis'' e'' |
       <d''\3>8\< <a'\4> <d''\3> <fis''\2> <a''\1> <d'''\1>\! | fis'''8-\markup {#"VII"} \harmonic e'''-\markup {#"XII"} \harmonic d'''-\markup {#"VII"} \harmonic b''-\markup {#"XII"} \harmonic a'' g'' |
@@ -172,11 +172,13 @@
     \new Voice { \voiceTwo
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(down)
-      <g'-0\3>8 <d'-0\4> <g'-0\3> <g'-1\4> <d''-3\3> <cis''-2\3> | g'8 d' g' g' d'' cis'' |
+      <g'\3>8 <d'\4> <g'\3> <g'-1\4> <d''-3\3> <cis''-2\3> | g'8 d' g' g' d'' cis'' |
       <a'-1\4>8 <fis'-4\5> d''\3 <a'\4> <fis''-3\2> d'' | <b''-3> <g''-2> <fis''-3> d'' <cis''-2\3> <a'-3\4> |
       
       g'8 d' g' g' d'' cis'' | g'8 d' g' g' d'' cis'' |
       <a'\4>8 <fis'\5> <a'\4> <d'\3> <e''\2> <a''\2> | d'''8 \harmonic  b'' \harmonic a'' \harmonic g'' \harmonic fis'' e'' |
+      
+      \set fingeringOrientations = #'(left)
       
       <c'-3>2. | c'2. |
       <b-2>2. | b2. |

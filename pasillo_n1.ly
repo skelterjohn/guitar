@@ -399,7 +399,7 @@
       \new Voice { \voiceOne
         e''4\coda s2 |
         \set harmonicDots = ##t <g''\harmonic b''\harmonic e'''\harmonic>2. |
-        <g' fis'>2. \bar "||"
+        <g' fis'>2. \bar "|."
       }
       \new Voice { \voiceTwo
         e8[ b] fis'[ g'] b'[ e''] |

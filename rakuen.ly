@@ -179,9 +179,9 @@
         \break
         
         <c'-4>8 <fis'-3> g' a' d fis' g' a' | <g-4> <b-3\5> d' g' a' g' d' b | 
-        c'8 fis' g' a' d fis' g' a' | fis b fis' g' d'' g' fis' b | 
+        c'8 fis' g' a' d fis' g' a' | e b fis' g' d'' g' fis' b | 
         c'8 fis' g' a' d fis' g' a' | g b d' g' d'' g' d' b | 
-        c'8 fis' g' a' d fis' g' a' | fis fis' g' a' d'' a' g' fis' | 
+        c'8 fis' g' a' d fis' g' a' | e fis' g' a' d'' a' g' fis' | 
         fis-\markup { "rit." } b fis' g' d''2 \fermata |
         \break
         
@@ -208,16 +208,16 @@
         \break
         
         c'8 fis' g' a' d fis' g' a' | g b d' g' a' g' d' b | 
-        c'8 fis' g' a' d fis' g' a' | fis b d' g' d'' g' d' b |
+        c'8 fis' g' a' d fis' g' a' | e b d' g' d'' g' d' b |
         \break
         c'8 fis' g' a' d fis' g' a' | g b d' g' d'' g' d' b | 
-        c'8 fis' g' a' d fis' g' a' | fis fis' g' a' d'' a' g' fis' |
+        c'8 fis' g' a' d fis' g' a' | e fis' g' a' d'' a' g' fis' |
         \break
         c'8 fis' g' a' d fis' g' a' | g b d' g' a' g' d' b | 
-        c'8 fis' g' a' d fis' g' a' | fis b fis' g' d'' g' fis' b | 
+        c'8 fis' g' a' d fis' g' a' | e b fis' g' d'' g' fis' b | 
         \break
         c'8 fis' g' a' d fis' g' a' | g b d' g' d'' g' d' b | 
-        c'8 fis' g' a' d fis' g' a' |
+        c'8 fis' g' a' e fis' g' a' |
         \break
         
         g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c'8 d' g' c' d' g' b d' |
@@ -272,9 +272,9 @@
         g4 s2. | g4 s2. |
         
         c'4 s d s | g\6 s a' s |
-        c' s d s | fis s2. |
+        c' s d s | e s2. |
         c'4 s d s | g s a' s |
-        c' s d s | fis s2. |
+        c' s d s | e s2. |
         fis4 s2. |
         
         g4 s4 r8 d'8 d''4 | f'4 s8 f'4 s8 e'4 |
@@ -294,13 +294,13 @@
         g4 s a'16[ d'] s4. | g4 s2. |
         
         c'4 s d s | g s a' s |
-        c' s d s | fis s2. |
+        c' s d s | e s2. |
         c'4 s d s | g s a' s |
-        c' s d s | fis s2. |
+        c' s d s | e s2. |
         c'4 s d s | g s a' s |
-        c' s d s | fis s2. |
+        c' s d s | e s2. |
         c'4 s d s | g s a' s |
-        c' s d s |
+        c' s e s |
         
         g4 s fis' s | c'4 s8 c'4 s8 b4 |
         g4 s fis' s | c'4 s8 c'4 s8 b4 |
@@ -321,6 +321,7 @@
         
       }
     >>
+
     
   }
 }

@@ -238,7 +238,7 @@
         
         <e' g e>1 | <e' g e>2 <g e>2 |
         <d' g f>1 | < d' g f>2 < d' g>2 | 
-        < d' g g>1 |  < d' g g>2 < d' g g>2 |
+          < d' g g>1 |  < d' g g>2 <g>4. ( <d>8)  |
         < d' g f>1 |  < d' g f>2 < d' g f>2 |
         < d' g ees>1 |  < d' g f>1 |
         
@@ -316,7 +316,8 @@
         
         s1 | s2 <e'>4. (<d'>8) |
         s1 | s2 <f>4. \glissando <g>8 |
-        s1 | s1 | s1 | s1 | s1 | s1 |
+          s1 | s2 <d' g>2 |
+          s1 | s1 | s1 | s1 |
         
         
       }

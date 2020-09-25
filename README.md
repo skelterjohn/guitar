@@ -1,5 +1,13 @@
 ### original compositions
 
+#### Frog Song (Naked Man Dance)
+
+[score](https://github.com/skelterjohn/guitar/blob/master/frogsong.pdf)
+
+#### Ditto
+
+[score](https://github.com/skelterjohn/guitar/blob/master/ditto.pdf)
+
 ### arrangements
 
 #### Suna no Hoshi by Tsuneo Imahori

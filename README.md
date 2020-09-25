@@ -40,6 +40,8 @@ The first string is the melody, and its first use each measure should be loud an
 with vibrato. The second (and sometimes third) use of that string in each measure
 should be softer, sweeter, and (most importantly) regretful. It's also full of big stretches for the left hand.
 
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/study_n1_regret.pdf)
+
 ## arrangements
 
 ### Suna no Hoshi by Tsuneo Imahori

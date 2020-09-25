@@ -7,6 +7,7 @@
 
 \include "bbarred.ly"
 #(define RH rightHandFinger)
+#(set-global-staff-size 25)
 
 \score {
 <<
@@ -23,13 +24,13 @@
         
         \set fingeringOrientations = #'(left)
         
-        \fbarre #"VII" { d'''8 e'' a'' b'' a'' e'' | c'''8 e'' a'' b'' a'' e'' } |
-        c'''8 f'' a'' \fbarre #"VII" { b'' f'' a'' | b''8 e'' gis'' d''' e'' gis'' } |
-        d'''8 f'' a'' e''' f'' a'' | e'''8 g'' ais'' f''' g'' ais'' |
-        \fbarre #"IX" { f'''8 e'' a'' e''' a'' e'' } | d'''8 d'' g'' c''' g'' d'' |
-        \bbarre #"V" {c'''8 c'' fis'' a'' fis'' c'' } | bes'' g' e'' a'' e'' bes'' |
-        a''8 f' d'' g'' d'' a'' | g'' a' cis'' e'' cis'' a' |
-        f'' g' d'' e'' d'' cis'' |f''8 a' d'' e'' a''4
+        \fbarre #"VII" { <d'''-4>8 <e''-2> <a''-3> <b''-1> a'' e'' | <c'''-2>8 <e''-3> <a''-4> <b''-1> a'' e'' } |
+        <c'''-3>8 <dis''-4> <a''-2> \fbarre #"VII" { <b''-1> a'' dis'' | <b''-1>8 <e''-2> <gis''-3> <d'''-4> gis'' e'' } |
+        <d'''-4>8 <f''-2> <a''-3> <e'''-4> a'' f'' | <e'''-4>8 <g''-3> <ais''-2> <f'''-4> ais'' g''  |
+        \fbarre #"IX" { <f'''-4>8 <e''-1> <a''-2> <e'''-4> a'' e'' } | <d'''-4>8 <d''-2> <g''-3> <c'''-4> g'' d'' |
+        \bbarre #"V" {<c'''-4>8 <c''-1> <fis''-3> <a''-1> fis'' c'' } | <bes''-4> <g'-0> <e''-2> <a''-3> e'' bes'' |
+        <a''-4>8 <g'-0> <d''-2> <g''-3> d'' a'' | g'' a' cis'' e'' cis'' a' |
+        <f''-2> <g'-0> <d''-4> <e''-0> d'' <cis''-3> | <f''-1>8 <a'-2> <d''-3> <e''-0> <a''-4>4
         
         \bar "|."
       }
@@ -42,7 +43,7 @@
         cis'\6 | d'\5 |
         <dis'-2> | cis' |
         ais | <a-0> |
-        ais | d' |
+        <ais-1> | d' |
         
       }
       \new Voice { \voiceThree

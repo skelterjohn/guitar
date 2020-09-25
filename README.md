@@ -25,4 +25,8 @@ From the Trigun soundtrack. Guitar/voice.
 
 #### Pasillo No. 1 by Prof. Francisco A. Velasquez
 
+The original hand-written score for this piece can be found on
+[Bert Alink's site](http://www.knila.nl/index.php?search=latin). The score here
+is a cleaned-up version.
+
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/pasillo_n1.pdf)

@@ -34,6 +34,8 @@ This piece is a guitar-ization of the song I like to sing to my children when
 reading
 [You and Me and the Wishing Tree](https://lmgtfy.app/?q=you+and+me+and+the+wishing+tree).
 
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/wishingtree.pdf)
+
 ### Study No. 1 (Regret)
 
 This is a study I wrote to help smooth out a section in

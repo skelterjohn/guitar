@@ -1,5 +1,9 @@
 # skelterjohn/guitar
 
+All of the scores here are rendered using lilypond. The lilypond source
+files are available
+[here](https://github.com/skelterjohn/guitar/tree/master/lilypond)
+
 ## original compositions
 
 ### Frog Song (Naked Man Dance)

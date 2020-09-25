@@ -2,7 +2,7 @@
 
 All of the scores here are rendered using lilypond. The lilypond source
 files are available
-[here](https://github.com/skelterjohn/guitar/tree/master/lilypond)
+[here](https://github.com/skelterjohn/guitar/tree/master/lilypond).
 
 ## original compositions
 

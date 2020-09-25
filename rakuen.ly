@@ -47,7 +47,7 @@
     r4 d''8 d'' g''8 fis''4 e''8~ e''8 d''4 e'' d''4. |
     
     r1 | r1 | r1 | r2. d''4 |
-    e''2 fis'' | fis''4. g''8~ g'' b'' (g'') (d'') |
+    e''2 fis'' | fis''4. g''8~ g'' b''( g'' d'') |
     e''2 fis'' | fis''4. g''8~ g''4 d'' |
     e''2 fis'' | g''4 a''8 b''4 a''4 g''8 |
     g''2 fis'' | fis'' r |
@@ -63,11 +63,11 @@
     r4 d''8 d'' g'' fis''4 fis''8~ | fis''8 e''4 fis'' e''4. |
     
     r1 | r1 | r1 | r2. d''4 |
-    e''2 fis'' | fis''4. g''8~ g'' b'' (g'') (d'') |
+    e''2 fis'' | fis''4. g''8~ g'' b''( g'' d'') |
     e''2 fis'' | fis''4. g''8~ g''4 d'' |
     e''2 fis'' | g''4 a''8 b''4 a''4 g''8 |
     g''2 fis'' | g'' r4 d''4 |
-    e''2 fis'' | fis''4. g''8~ g'' b'' (g'') (d'') |
+    e''2 fis'' | fis''4. g''8~ g'' b''( g'' d'') |
     e''2 fis'' | fis''4. g''8~ g''4 d'' |
     e''2 fis'' | g''4 (a''8) b''4 a''4 g''8 |
     g''2 fis'' | g'' r |
@@ -137,10 +137,10 @@
         <d'' g' >1 |  <d'' g'>1 |
         \break
         
-        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c'8 d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b' a') } g'8 d' | c'8 d' g' c' d' g' b d' |
         g8 d' g' a' <b' fis'>16 (c'') <d''-0>8 g'8 d' | c'8 d' g' c' d' g' b d' |
         \break
-        \grace { d (fis) } g8 d'\5 d'\4 g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
+        \grace { d (fis } g8) d'\5 d'\4 g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         \break
         
@@ -151,7 +151,7 @@
         g8 d' g' a' <d'' fis'> a' g' c' | fis' g' a' c' g' a' b g' |
         \break
         
-        g8 d' g' a' <b' fis'> \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c' d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'> \tuplet 3/2 { c''16 (b' a') } g'8 d' | c' d' g' c' d' g' b d' |
         g8 d' g' a' <b' fis'>16 (c''16) d''8 g'8 d' | c' d' g' c' d' g' b d' |
         \break
         
@@ -162,7 +162,7 @@
         g8 d' <b' g'> g <a' g'>\staccato g' g e'~ | e' g' c'' d'' ees' g' c'' d'' |
         \break
         
-        \grace { d (fis) } g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
+        \grace { d (fis } g8) d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         \break
         
@@ -185,14 +185,14 @@
         fis-\markup { "rit." } b fis' g' d''2 \fermata |
         \break
         
-        g8 d' g' <a'-0> \grace <a'-1\3> \glissando b'4 <a'-0>8 (<c''-3>) |  f'8 g' c'' f' g' c'' e' d' |
-        g8 d' g' a' \grace a' \glissando b'4 a'8 (c'') |  f'8 g' c'' f' g' c'' e' d' |
+        g8 d' g' <a'-0> \grace <a'-1\3> \glissando b'4 d''4 |  f'8 g' c'' f' g' c'' e' d' |
+        g8 d' g' a' \grace a' \glissando b'4 d''4 |  f'8 g' c'' f' g' c'' e' d' |
         \break
         g8 d' g' a' \grace a' \glissando b'4 d''8 d''8 | f'8 g' e'' c'' f' b' e' d' |
-        g8 d' \grace a' <d''\1 (b')\2> d' <d''\1 a'\3> g' g e'~ | e' g' c'' d'' ees' g' c'' d'' |
+        g8 d' \grace a'( <d''\1 b'\2>) d' <d''\1 a'\3> g' g e'~ | e' g' c'' d'' ees' g' c'' d'' |
         \break
         
-        \grace { d (fis) }  g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
+        \grace { d( fis }  g8) d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         g8 d' d' g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
         \break
         
@@ -220,10 +220,10 @@
         c'8 fis' g' a' e fis' g' a' |
         \break
         
-        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c'8 d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b' a') } g'8 d' | c'8 d' g' c' d' g' b d' |
         g8 d' g' a' <b' fis'>16 (c'') d''8 g'8 d' | c'8 d' g' c' d' g' b d' |
         \break
-        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b') (a') } g'8 d' | c'8 d' g' c' d' g' b d' |
+        g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16 (b' a') } g'8 d' | c'8 d' g' c' d' g' b d' |
         g8 d' g' a' <b' fis'>16 (c'') d''8 g'8 a \glissando | c'8 g' fis' g' d'' a' g' fis' |
         
         \break
@@ -258,7 +258,7 @@
         g4 s fis' s | s1 |
         g4 s fis' s | s1 |
         g4 s fis' s | s1 |
-        g4 s2 s8 e'4 s8 s2. |
+        g4 s2 s8 e'4 s8 s4 ees'4 s |
         
         g4 s g s | d'4 s d' s | 
         g4 s g s | d'4 s d' s | 
@@ -277,8 +277,8 @@
         c' s d s | e s2. |
         fis4 s2. |
         
-        g4 s4 r8 d'8 d''4 | f'4 s8 f'4 s8 e'4 |
-        g4 s4 r8 d'8 d''4 | f'4 s8 f'4 s8 e'4 |
+        g4 s4 r8 d'8 <a'-0>8[( <c''-3>)] | f'4 s8 f'4 s8 e'4 |
+        g4 s4 r8 d'8 <a'-0>8[( <c''-3>)] | f'4 s8 f'4 s8 e'4 |
         g4 s4 r8 d'4. | s4 e''8 c'' s8 b'4 s8 |
         g4 s2 g4 | s1 |
         
@@ -287,7 +287,7 @@
         
         g4 s f' s | e' s ees' s |
         g4 s f' s | e' s ees' s |
-        g4 s fis' s | c' s c' s8  d16 (fis) |
+        g4 s fis' s | c' s c' s8  d16( fis) |
         g4 s2. | s2 s4.  d16 (fis) |
         
         g4 s a'16[ d'] s4. | g4 s a'16[ d'] s4. |

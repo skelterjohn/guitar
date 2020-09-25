@@ -13,13 +13,17 @@
 \markup { "These tabs should help with decyphering this piece's unique tuning." }         
 \markup { "Each major section is included, in order of first appearance." }
 \markup { "Variations are not included, and are best improvised anyway (as Tsuneo Imahori was likely doing)." } 
+\markup { "" }
 
 \score {
   \header {
   piece = \markup { \line { \circle 1 \circle 2 \circle 3 \circle 4 \circle 5 \circle 6 "= D A G D G D" } }
   }
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Intro"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
             <d''~ g' >1 | <d'' g' >2 <d'' g' >2 |
@@ -71,7 +75,10 @@
 
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Melodic A"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           g8 d' g' a' <b' fis'>8 \tuplet 3/2 { c''16( b' a') } g'8 d' | c'8 d' g' c' d' g' b d' |
@@ -103,7 +110,10 @@
 
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Connection"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           \grace { d( fis } g8) d'\5 d'\4 g' g8 d' g' d' | d'8 d' g' d' d' g' d' d' |
@@ -135,7 +145,10 @@
 }
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Verse A1"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           \set fingeringOrientations = #'(left)
@@ -168,7 +181,10 @@
 }
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Verse A2"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           \set fingeringOrientations = #'(left)
@@ -203,7 +219,10 @@
 }
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Pre-chorus"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           \set fingeringOrientations = #'(left)
@@ -236,7 +255,10 @@
 }
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Chorus"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           \set fingeringOrientations = #'(left)
@@ -269,7 +291,10 @@
 }
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Melodic B"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           \set fingeringOrientations = #'(left)
@@ -312,7 +337,10 @@
 }
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Verse B"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           \set fingeringOrientations = #'(left)
@@ -355,7 +383,10 @@
 }
 \score {
   <<
-    \new Staff {
+    \new Staff \with {
+      instrumentName = #"Outro"
+      shortInstrumentName = #""
+    } {
       <<
         \new Voice { \voiceOne
           \set fingeringOrientations = #'(left)

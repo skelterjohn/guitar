@@ -47,7 +47,11 @@ From the Trigun soundtrack. Arranged by ear.
 
 This piece was played during the procession at my wedding. So, I really like it.
 
+Plays great on either classical or acoustic steel-string.
+
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/suna_no_hoshi.pdf)
+
+[recording from OST](https://www.youtube.com/watch?v=E2hLiiRsG2g)
 
 ### Rakuen by Tsuneo Imahori
 From the Trigun soundtrack. Guitar/voice. Arranged by ear.
@@ -58,8 +62,12 @@ with DAGDGD from 1 to 6, which likely accounts for all the poor arrangements I'd
 discovered. I believe what I transcribed below is faithful to what was actually
 played, and (as a bonus) it's not that hard once the tuning is handled.
 
+Best played on an acoustic steel-string guitar.
+
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/rakuen.pdf), 
 [tab cheat sheet](https://github.com/skelterjohn/guitar/blob/master/pdf/rakuen_tab.pdf)
+
+[recording from OST](https://www.youtube.com/watch?v=XDn2EUC4reM)
 
 ### Pasillo No. 1 by Prof. Francisco A. Velasquez
 

@@ -1,6 +1,6 @@
 \version "2.18.2"
 \header {
-  title = "Rakuen tableture cheatsheet"
+  title = "Rakuen tablature cheatsheet"
   composer = "Tsuneo Imahori"
   arranger = "Arr. John Asmuth"
   

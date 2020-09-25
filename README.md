@@ -24,6 +24,22 @@ classical (Alhambra 5P).
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/ditto.pdf)
 
+### Wishing Tree
+
+This piece is a guitar-ization of the song I like to sing to my children when
+reading
+[You and Me and the Wishing Tree](https://lmgtfy.app/?q=you+and+me+and+the+wishing+tree).
+
+### Study No. 1 (Regret)
+
+This is a study I wrote to help smooth out a section in
+[Media Luna](http://www.knila.nl/index.php?search=own) (long page, ctrl-f the
+title).
+
+The first string is the melody, and its first use each measure should be loud and
+with vibrato. The second (and sometimes third) use of that string in each measure
+should be softer, sweeter, and (most importantly) regretful. It's also full of big stretches for the left hand.
+
 ## arrangements
 
 ### Suna no Hoshi by Tsuneo Imahori

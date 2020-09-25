@@ -154,9 +154,13 @@
       
       <fis''-1>4.\< fis''8 g'' fis''\! | fis''4.\p fis''8 g'' <fis''-2> |
       fis''4.\< fis''8 g'' fis''\! | fis''4.\p fis''8 a'' g'' |
+      
+      \break
+      
       g''4.\< g''8 fis'' g'' | g''4. g''8 <d'''-4> \glissando c'''\! |
       
       \fbarre #"VI" { c'''8 ais'' g'' d'' ees'' d'' } | ais'8 <g'-0> <f'-3> <ais-1> <dis-1> <dis'-1> |
+      \break
       d'8 a e' a' <d'' a'> e'' | fis''8 d' bes' d'' <g''-2> \glissando fis'' |
       fis''8\> d' b' fis'' a''4 | a''2.\! |
       

@@ -1,6 +1,6 @@
 # skelterjohn/guitar
 
-All of the scores here are rendered using lilypond. The lilypond source
+Many of the scores here are rendered using lilypond. The lilypond source
 files are available
 [here](https://github.com/skelterjohn/guitar/tree/master/lilypond).
 
@@ -92,3 +92,15 @@ Arranged by ear. You can visit the
 scores, but (at this time) not Prelude No 1.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/burgos_prelude_1.pdf)
+
+## recordings
+
+I can also play things without composing or arranging them myself.
+
+### Media Luna by Bert Alink
+
+This piece is both beautiful and easily "under the fingers".
+
+[score](http://www.knila.nl/index.php?search=own) (long page, ctrl-f the title)
+
+[my recording](https://www.youtube.com/watch?v=dTeBkp3v8tU)

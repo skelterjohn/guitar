@@ -58,9 +58,9 @@ This piece was played during the procession at my wedding. So, I really like it.
 Plays great on either classical or acoustic steel-string.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/suna_no_hoshi.pdf)
-
+|
 [recording from OST](https://www.youtube.com/watch?v=E2hLiiRsG2g)
-
+|
 [my recording](https://www.youtube.com/watch?v=VG2HcP8iLjM)
 
 ### Rakuen by Tsuneo Imahori
@@ -74,9 +74,10 @@ played, and (as a bonus) it's not that hard once the tuning is handled.
 
 Best played on an acoustic steel-string guitar.
 
-[score](https://github.com/skelterjohn/guitar/blob/master/pdf/rakuen.pdf), 
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/rakuen.pdf)
+|
 [tab cheat sheet](https://github.com/skelterjohn/guitar/blob/master/pdf/rakuen_tab.pdf)
-
+|
 [recording from OST](https://www.youtube.com/watch?v=XDn2EUC4reM)
 
 ### Pasillo No. 1 by Prof. Francisco A. Velasquez
@@ -104,5 +105,5 @@ I can also play things without composing or arranging them myself.
 This piece is both beautiful and easily "under the fingers".
 
 [score](http://www.knila.nl/index.php?search=own) (long page, ctrl-f the title)
-
+|
 [my recording](https://www.youtube.com/watch?v=dTeBkp3v8tU)

@@ -8,8 +8,6 @@
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
-#(set-global-staff-size 25)
-
 <<
   {
     \time 6/4

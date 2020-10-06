@@ -2,6 +2,7 @@
 \header {
   title = "Prelude No. 1"
   composer = "Francisco Burgos"
+  arranger = "Arr. John Asmuth"
 }
 
 \include "bbarred.ly"
@@ -145,6 +146,9 @@
         |
       }
     >>
+    
+    \pageBreak
+    
     <<
       \new Voice { \voiceOne
         c'''8 c''\3 d''\3 fis''\2 d'\4 e' <d' b' fis''>4 c' <b e''> |

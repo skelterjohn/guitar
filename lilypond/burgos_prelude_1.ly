@@ -112,7 +112,7 @@
     <<
       \new Voice { \voiceOne
         a''8[ d' a' g' \tuplet 3/4 {<b d'' f''>] <cis' b' e''> <d' g' d''>[} d' g' b' d'']|
-        r8 <cis'' g''>4 <cis'' g''>4 <cis'' g''>8 <e' bes' cis''>2 d''8 e'' | \break
+        r8 <cis'' g''>8 r <cis'' g''> r <cis'' g''>8 <e' bes' cis''>2 d''8 e'' | \break
       }
       \new Voice { \voiceTwo
         a''4 s4 \tuplet 3/4 {b8 cis' <d'>8} s2 |

@@ -73,12 +73,13 @@
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
         \fbarre #"V" {a''8[ d' a' d'' } \tuplet 3/4 {<b d'' f''>] <cis' b' e''> <d' g' d''>[} d' g' b' d''] |
-        r8 <cis'' g''-2>4 <cis'' g''>4 <cis'' g''>8 <e'-1 bes'-3 cis''-1>2 d''8 e'' | \break
+        r8 <cis'' g''-2>8 r <cis'' g''> r <cis'' g''>8 <e'-1 bes'-3 cis''-1>2 d''8 e'' | \break
       }
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(down)
         a''4 s4 \tuplet 3/4 {b8 cis' <d'>} s2 |
-        \bbarre #"II" { <e'>4 <d'-0> <cis'-4> e'2 } s4 |
+        \bbarre #"II" { <e'>4 <d'-4\5> <cis'-4> e'2 } s4 |
       }
       \new Voice { \voiceThree
         |
@@ -208,8 +209,9 @@
       \new Voice { \voiceOne
         \time 8/4
         \set fingeringOrientations = #'(left)
-        \bbarre #"IV" { <e' gis' dis''>4 e'8 gis' dis'' b' dis'' } <fis''\2-4>4 a''4 b''4 c'''4 s8 \bar ":|."
-        \bbarre #"IV" { <e' gis' dis''>4 e'8 gis' dis'' b' } r g' a' b' fis'' e'' b'4 <e' c'' fis''> | \break
+        \set stringNumberOrientations = #'(up)
+        <e'\5-2 gis'\4-1 dis''\3-3>4 e'8 gis' dis'' <b'-0> dis'' <fis''\2-2>4 <a''-1>4 <b''-3>4 <c'''-4>4 s8 \bar ":|."
+        <e' gis' dis''>4 e'8 gis' dis'' b' r g' a' b' fis'' e'' b'4 <e' c'' fis''> | \break
       }
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
@@ -229,7 +231,7 @@
       \new Voice { \voiceOne
         \time 11/8
         \set fingeringOrientations = #'(left)
-        dis'8 e' f'' b' <c''-2> <f-1 a'-3> e' a' c'' e''   c''| \break
+        dis'8 e' f'' b' <c''-2> <f-1 a'-4> e' a' c'' e''   c''| \break
       }
       \new Voice { \voiceTwo
         |

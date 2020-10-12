@@ -151,12 +151,14 @@
     
     <<
       \new Voice { \voiceOne
-        c'''8 c''\3 d''\3 fis''\2 d'\4 e' <d' b' fis''>4 c' <b e''> |
-        c'''8 c'' d'' fis'' d' e' <d' b' fis''>2 c'4 \bar ":|.|:" \break
+        c'''8 c''\3 <d''\3> <fis''\2>4.  <b' fis''>2 <e''>4 |
+        c'''8 c'' d'' <fis''>4. <b' fis''>2 c'4 \bar ":|.|:" \break
       }
       \new Voice { \voiceTwo
-        |
-        |
+        \set stringNumberOrientations = #'(down)
+        \set fingeringOrientations = #'(left)
+        c'''4 s4 <d'-0>8 e' d'4 c' b |
+        c'''4 s4 <d'>8 e' d'2 c'4 |
       }
       \new Voice { \voiceThree
         |
@@ -174,8 +176,8 @@
         a' a <e'-2> a' b' c'' b'4 <f c' e' a'>2 \bar ":|." \break
       }
       \new Voice { \voiceTwo
-        |
-        |
+        s2. a'4 s2 |
+        a'4 s2. <f c'>2 |
       }
       \new Voice { \voiceThree
         |
@@ -189,13 +191,13 @@
     <<
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
-        e''8 <f''> <g''-2> e'' a'' e'' <f''-1\2>4  d'''8 e'' e'' c''' |
-        b''4 g'8 a' b'\3 d''\2 c''\3 a'4 s4. \bar "[|:" \break
+        e''8 <f''-1> <g''-1> <e''-0> <a''-1> <e''-0> <f''-1\2>4  d'''8 e'' e'' c''' |
+        b''8 <e''-0> <g'-0>8 <a'-3\4> <b'-0> <d''-4\3> <c''-1> a'4 s4. \bar "[|:" \break
       }
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
-        s4 <cis'-3> b a <e' bes'> <c' a'>  |
-        <d' gis'>4 s4 b'4 s4. s4.  |
+        s4 <cis'-3> <b-4> a <e' bes'> <c' a'>  |
+        <d' gis'>4 g'4 b'4 s4. s4.  |
       }
       \new Voice { \voiceThree
         |
@@ -211,7 +213,8 @@
         \time 8/4
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
-        <e'\5-2 gis'\4-1 dis''\3-3>4 e'8 gis' dis'' <b'-0> dis'' <fis''\2-2>4 <a''-1>4 <b''-3>4 <c'''-4>4 s8 \bar ":|."
+        \set strokeFingerOrientations = #'(down)
+        <e'\5-2 gis'\4-1 dis''\3-3>4 <e'\RH1>8 <gis'\RH1> <dis''\RH2> <b'-0\RH3> <dis''\RH1> <fis''\2-2>4 <a''-1>4 <b''-3>4 <c'''-4>4 s8 \bar ":|."
         <e' gis' dis''>4 e'8 gis' dis'' b' r g' a' b' fis'' e'' b'4 <e' c'' fis''> | \break
       }
       \new Voice { \voiceTwo
@@ -232,10 +235,10 @@
       \new Voice { \voiceOne
         \time 11/8
         \set fingeringOrientations = #'(left)
-        <dis'-2>8 <e'-3> <f''-1> b' <c''-2> <f-1 a'-4> e' a' c'' e''   c''| \break
+        <dis'-2>8[ <e'-3>] <f''-1>[ b'] <c''-2> <f-1 a'-4>[ e'] a'[ c''] e''[ c''] | \break
       }
       \new Voice { \voiceTwo
-        |
+        s2 s8 <f>4 s2 |
       }
       \new Voice { \voiceThree
         |
@@ -248,12 +251,12 @@
       \new Voice { \voiceOne
         \time 6/4
         \set fingeringOrientations = #'(left)
-        g' <a'-2> <e'-1 g' b'> e'' <g-2 g'> b' <gis-3 c''-4> <b'-0> <g g'-4 b'-0> <g'-0> <f e' a'>4 \bar ".|:"
+        g'8 <a'-2> <e'-1 g' b'> e'' <g-2 g'> b' <gis-3 c''-4> <b'-0> <g g'-4 b'-0>-"rit." <g'-0> <f e' a'>4 \bar ".|:"
         \time 15/8
         \fbarre #"III" { c'8 d' f' bes' f'' e'' d'' } <e'' a''>4 <d'' g''> <b' e''> <e'-1 a'-1>8 \bar ":|." \break
       }
       \new Voice { \voiceTwo
-        s 1. |
+        s4 <e'>4 s4 gis4 g4 s4 |
         s2 s4. r8 g'4 f' d' s8 |
       }
       \new Voice { \voiceThree
@@ -267,14 +270,17 @@
     >>
     <<
       \new Voice { \voiceOne
-        \time 10/4
-        r8 c'8 d' f' bes' f'' e'' d'' \bbarre #"V" { <c'' e''> <c'' e''> c''' c''' } \bbarre #"VII" { <d'' fis''> <d'' fis''> d''' d''' } \bbarre #"IX" { <e'' gis''> <e'' gis''> e''' e''' } \bar ".|:" 
-        \time 6/4
-        r8 <f''>-\markup { "IX" } fis'' <gis''> <d'''> cis''' <a''> <g''> e'''16 e''' e'''8 e''' r8 \bar ":|." \break
+        \set fingeringOrientations = #'(left)
+        \time 7/8
+        <c'-2>8[ <d'-4>] \fbarre #"III" { f'[ bes'] f''[ e'' d''] }
+        \time 7/4
+        \bbarre #"V" { <c'' e''> <c'' e''> c''' c''' } \bbarre #"VII" { <d'' fis''> <d'' fis''> d''' d''' } \bbarre #"IX" { <e'' gis''> <e'' gis''> e''' e''' r4 } \bar ".|:" 
+        \time 5/4
+        <f''>8-\markup { "IX" } fis'' <gis''> <d'''> cis''' <a''> <g''> e'''16 e''' e'''8 e''' \bar ":|." \break
       }
       \new Voice { \voiceTwo
-        s1 <c'' e''>8 <c'' e''>8 s4  <d'' fis''>8  <d'' fis''>8 s4 <e'' gis''>8 <e'' gis''>8 s4 |
-        s2. s8 g''4 s4.|
+        s2 s4. | <c'' e''>8 <c'' e''>8 s4  <d'' fis''>8  <d'' fis''>8 s4 <e'' gis''>8 <e'' gis''>8 s2 |
+        s2 s4 g''4 s4  |
       }
       \new Voice { \voiceThree
         |
@@ -290,11 +296,11 @@
         \time 8/4
         \set fingeringOrientations = #'(left)
         <f'-4>8 g' a' d'' b' g' dis' g'16 g' g'8 d'' dis' g'16 g' g'8 d'' cis'' a' |
-        a''4 f'' ais'' e'' r1-"D.C. al Fine" \bar ":|]" \break  
+        r8-"rit." a''4 f''8~ f'' ais''4 e''8~ e''2-"D.C. al Fine" r4 \bar ":|]" \break  
       }
       \new Voice { \voiceTwo
         s4 <g a'> s <g dis'> s  <g dis'> s4 cis''4 |
-        d'2 a2 a4 cis'2 e'4 |
+        d'2 a2 a4 cis' e' |
       }
       \new Voice { \voiceThree
         |

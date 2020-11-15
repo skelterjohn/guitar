@@ -72,7 +72,7 @@
     <<
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
-        \fbarre #"V" {a''8[ d' a' d'' } \tuplet 3/4 {<b d'' f''>] <cis' b' e''> <d' g' d''>[} d' g' b' d''] |
+        \fbarre #"V" {a''8[ d' a' d'' } \tuplet 3/4 {<b-3 d'' f''>-"C V"] <cis' b' e''>-"C IV" <d'-0 g'-0 d''-2>[} d' g' b' <d''-4>] |
         r8 <cis'' g''-2>8 r <cis'' g''> r <cis'' g''>8 <e'-1 bes'-3 cis''-1>2 d''8 e'' | \break
       }
       \new Voice { \voiceTwo

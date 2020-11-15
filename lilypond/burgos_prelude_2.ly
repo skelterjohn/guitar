@@ -52,19 +52,19 @@
         
         \break
         
-        \fbarre #"IV" { f''4 c''16( b') aes'8 g'( aes') } | <g' c'' f''>4 <g' c'' e''>2 | <a' cis'' f''>4 <g' cis'' e''>2 | <g' cis'' g''>4 <g' cis'' f''>2 |
-        <fis' b' e'' a''>4 <e' a' d'' g''>2 | \fbarre #"IV" { <fis' b' b''>4 <fis' b' a''>2 } | <e' gis' b' gis''>2.\arpeggio | r2 b''4 |
+        \fbarre #"IV" { f''4 c''16( b') aes'8 g'( aes') } | \fbarre #"III" { <g' c'' f''>4 <g' c'' e''>2 } | <a' cis'' f''>4 <g' cis'' e''>2 | <g' cis'' g''>4 <g' cis'' f''>2 |
+        <fis' b' e'' a''>4 <e' a' d'' g''>2 | \fbarre #"IV" { <fis' b' b''-4>4 <fis' b' a''-2>2 } | <e' gis' b' gis''>2.\arpeggio | r2 b''4 |
         
         \key  d \major
         
         \break
         
-        cis'''4 e''8 a'' a'' e''' | \fbarre #"IX" { e'''4 <f'' gis'' d'''> d''\harmonic }  | \fbarre #"VI" {  cis''8 cis' f' gis' d'' cis'' } | \fbarre #"II" { a'8 fis cis' fis' a' cis'' }
-        <b'\2>4 d'' g'' | cis''4 e' a' | <b'\2>8 b' d'' d'' g'' g'' | <b''-1>4 <fis'-3 b'-4 cis''-2 fis''-1>2 |
+        cis'''4 e''8 a'' a'' e''' | \fbarre #"IX" { e'''4 <f'' gis'' d'''> d''\harmonic }  | cis''8 cis' f' gis' d''  \fbarre #"II" { cis''| a'8 fis cis' fis' a' cis'' }
+        <b'\3>4 d'' g'' | cis''4 e' a' | <b'\3>8 b' d'' d'' g'' g'' | <b''-1>4 <fis'-3 b'-4 cis''-2 fis''-1>2 |
         
         \break
         
-        <b'-0>8 <b'-3> \bbarre #"VII" { d'' fis'' b'' d''' } | cis'''8 a'' dis'' e'' b'' g'' | \fbarre #"V" { a''8 fis'' cis'' g' g'' e' } | d'2. |
+        <b'-1\3>8 <b'-0> \bbarre #"VII" { d'' fis'' b'' d''' } | cis'''8 a'' dis'' e'' b'' g'' | \fbarre #"V" { a''8 fis'' cis'' g' g'' e' } | d'2. |
         <a' dis''>2.~ | <a' dis''>2. | <gis' b' e''>2.~ | <gis' b' e''>2.-\markup  { D.C. al \musicglyph #"scripts.coda" }|
         
         \bar "||"
@@ -94,7 +94,7 @@
         e2 b4 | a2.\arpeggio | bes2. | s2. |
         
         gis2. | c'2. | a2. | bes2.
-        s2. | cis'4 dis'2 | e2.\arpeggio | s2. |
+        s2. | cis'4 <dis'-3>2 | e2.\arpeggio | s2. |
         
         a2. | cis'2. | s2. | s2. |
         fis'2. | a2. | fis'2. | <b-1>2. |

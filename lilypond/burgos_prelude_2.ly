@@ -64,14 +64,14 @@
         
         \break
         
-        <b'-1\3>8 <b'-0> \bbarre #"VII" { d'' fis'' b'' d''' } | cis'''8 a'' dis'' e'' b'' g'' | \fbarre #"V" { a''8 fis'' cis'' g' g'' e' } | d'2. |
-        <a' dis''>2.~ | <a' dis''>2. | <gis' b' e''>2.~ | <gis' b' e''>2.-\markup  { D.C. al \musicglyph #"scripts.coda" }|
+        <b'-1\3>8 <b'-0> \bbarre #"VII" { d'' fis'' b'' d''' } | cis'''8 a'' dis'' e'' b'' g'' | a''8 fis'' cis'' g' g'' e' | d'2. |
+        <a' dis''>2.~ | <a' dis''>2. | <gis' b' e''>2.\arpeggio~ | <gis' b' e''>2.-\markup  { D.C. al \musicglyph #"scripts.coda" }|
         
         \bar "||"
         
         \break
         
-        e'4 dis' cis' | b4 <g' cis'' dis''>2 | <gis' cis' e''>2.~ | <gis' cis' e''>2. |
+        e'4 dis' cis' | b4 \fbarre #"IV" { <g' cis'' dis''>2 | <gis' cis' e''>2.~ | <gis' cis' e''>2. } |
         
         \bar "|."
       }
@@ -100,7 +100,7 @@
         fis'2. | a2. | fis'2. | <b-1>2. |
         
         s2. | s2. | s4. a | d'2. |
-        b2.~ | b2. | <e b e'>2.~ | <e b e'>2. |
+        b2.~ | b2. | <e b e'>2.\arpeggio~ | <e b e'>2. |
         
         s2. | s4 cis'2 | <cis'>2.~ | <cis'>2.
         

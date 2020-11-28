@@ -71,7 +71,7 @@
         
         \break
         
-        e'4 dis' cis' | b4 \fbarre #"IV" { <g' cis'' dis''>2 | <gis' cis' e''>2.~ | <gis' cis' e''>2. } |
+        \fbarre #"IV" { e'4 dis' cis' | b4 <g' cis'' dis''>2 | <gis' cis' e''>2.~ | <gis' cis' e''>2. } |
         
         \bar "|."
       }

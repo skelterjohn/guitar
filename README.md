@@ -95,6 +95,8 @@ Arranged by ear. You can visit the
 scores, but (at this time) not Prelude No 1.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/burgos_prelude_1.pdf)
+|
+[my recording](https://www.youtube.com/watch?v=rNKc362oCWo)
 
 ### Prelude No. 2 "Nocturno" by Francisco Burgos
 
@@ -103,8 +105,6 @@ Arranged by ear. You can visit the
 scores, but (at this time) not Prelude No 2.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/burgos_prelude_2.pdf)
-|
-[my recording](https://www.youtube.com/watch?v=rNKc362oCWo)
 
 ## recordings
 

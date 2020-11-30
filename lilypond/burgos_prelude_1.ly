@@ -72,13 +72,15 @@
     <<
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
-        \fbarre #"V" {a''8[ d' a' d'' } \tuplet 3/4 {<b-3 d'' f''>-"C V"] <cis' b' e''>-"C IV" <d'-0 g'-0 d''-2>[} d' g' b' <d''-4>] |
+        \omit TupletNumber
+        \override TupletBracket.bracket-visibility = ##f
+        \fbarre #"V" {a''8[ d' a' d''] } \tuplet 3/2 {<b-3 d'' f''>4-"C V" <cis' b' e''>-"C IV" <d'-0 g'-0 d''-2>} d'8[ g' b' <d''-4>] |
         r8 <cis'' g''-2>8 r <cis'' g''> r <cis'' g''>8 <e'-1 bes'-3 cis''-1>2 d''8 e'' | \break
       }
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(down)
-        a''4 s4 \tuplet 3/4 {b8 cis' <d'>} s2 |
+        a''4 s4 \tuplet 3/2 {b4 cis' <d'>} s2 |
         \bbarre #"II" { <e'>4 <d'-4\5> <cis'-4> e'2 } s4 |
       }
       \new Voice { \voiceThree
@@ -111,11 +113,13 @@
     >>
     <<
       \new Voice { \voiceOne
-        a''8[ d' a' g' \tuplet 3/4 {<b d'' f''>] <cis' b' e''> <d' g' d''>[} d' g' b' d'']|
+        \omit TupletNumber
+        \override TupletBracket.bracket-visibility = ##f
+        a''8[ d' a' g'] \tuplet 3/2 {<b d'' f''>4 <cis' b' e''> <d' g' d''>} d'8[ g' b' d'']|
         r8 <cis'' g''>8 r <cis'' g''> r <cis'' g''>8 <e' bes' cis''>2 d''8 e'' | \break
       }
       \new Voice { \voiceTwo
-        a''4 s4 \tuplet 3/4 {b8 cis' <d'>8} s2 |
+        a''4 s4 \tuplet 3/2 {b4 cis' <d'>} s2 |
         \fbarre #"II" { e'4 d' cis' e'2 } s4|
       }
       \new Voice { \voiceThree

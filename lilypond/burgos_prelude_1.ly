@@ -312,23 +312,5 @@
         |
       }
     >>
-    <<
-      \new Voice { \voiceOne
-       |
-        | \break
-      }
-      \new Voice { \voiceTwo
-        |
-        |
-      }
-      \new Voice { \voiceThree
-        |
-        |
-      }
-      \new Voice { \voiceFour
-        |
-        |
-      }
-    >>
   }
 >>

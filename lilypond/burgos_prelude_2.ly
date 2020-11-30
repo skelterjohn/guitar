@@ -20,6 +20,7 @@
     <<
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(up)
                    
         % A
         \repeat volta 2 {
@@ -47,8 +48,8 @@
         \key c \major
         
         % B
-        e''4 g'8 c'' e'' g'' | <b' dis'' a''>2 <b' dis''>4 | <g' c'' e''>2. | <gis' a' d''>2. |
-        <f''-4\3>8( e'') dis''( e'') \fbarre #"VII" { gis'' b'' } | <c'' g'' d'''>2\arpeggio g''4 | \fbarre #"VI" { g''4 d''16( cis'') bes'8 a'( bes') } | f''4 e''2 |
+        \fbarre #"III" { e''4 g'8 c'' e'' g'' | <b' dis'' a''>2 <b' dis''>4 | <g' c'' e''>2. } | <gis'-4\4 a'-1\3 d''-2\2>2. |
+        <f''>8( e'') dis''( e'') \fbarre #"VII" { gis'' b'' } | <c'' g'' d'''>2\arpeggio g''4 | \fbarre #"VI" { g''4 d''16( cis'') bes'8 a'( bes') } | f''4 e''2 |
         
         \break
         
@@ -90,7 +91,7 @@
         a2. | <a fis'>2. | a'2. | a2. 
         
         % B
-        c'2. | c'2. | c'2 a4~ | a2 gis4 |
+        c'2. | c'2. | c'2 a4~ | a2 <gis-3>4 |
         e2 b4 | a2.\arpeggio | bes2. | s2. |
         
         gis2. | c'2. | a2. | bes2.

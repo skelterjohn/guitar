@@ -252,12 +252,12 @@
         \time 6/4
         \set fingeringOrientations = #'(left)
         g'8 <a'-3> <e'-2 g' b'> e'' <g-1 g'-0> <b'-0> <gis-1 gis'-3 c''-2> <b'-0> <g-1 g'-3 b'-2 b'-0>-"rit." <g'-0> <f e' a'>4 \bar ".|:"
-        \time 15/8
-        \fbarre #"III" { c'8 d' f' bes' f'' e'' d'' } <e'' a''>4 <d'' g''> <b' e''> <e'-1 a'-1>8 \bar ":|." \break
+        \time 14/8
+        \fbarre #"III" { c'8 d' f' bes' f'' e'' d'' } <e'' a''>4 <d'' g''> <b' e''> <e'-1 a'-1>8 | \bar ":|." \break
       }
       \new Voice { \voiceTwo
         s4 <e'>4 g4 gis4 g4 s4 |
-        s2 s4. r8 g'4 f' d' s8 |
+        s2 s4. r8 g'4 f' d' |
       }
       \new Voice { \voiceThree
         |

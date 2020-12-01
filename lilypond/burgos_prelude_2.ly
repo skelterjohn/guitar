@@ -1,9 +1,11 @@
+% Copyright Francisco Burgos
+
 \version "2.20.0"
 \header {
   title = "Prelude No. 2"
   subtitle = "Nocturno"
   composer = "Francisco Burgos"
-  arranger = "Arr. John Asmuth"
+  tagline = "Transcription by John Asmuth, copyright Francisco Burgos"
 }
 
 \include "bbarred.ly"

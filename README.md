@@ -61,7 +61,7 @@ Plays great on either classical or acoustic steel-string.
 |
 [recording from OST](https://www.youtube.com/watch?v=E2hLiiRsG2g)
 |
-[my recording](https://www.youtube.com/watch?v=VG2HcP8iLjM)
+[composer's recording](https://www.youtube.com/watch?v=VG2HcP8iLjM)
 
 ### Rakuen by Tsuneo Imahori
 From the Trigun soundtrack. Guitar/voice. Arranged by ear.
@@ -78,7 +78,7 @@ Best played on an acoustic steel-string guitar.
 |
 [tab cheat sheet](https://github.com/skelterjohn/guitar/blob/master/pdf/rakuen_tab.pdf)
 |
-[recording from OST](https://www.youtube.com/watch?v=XDn2EUC4reM)
+[composer's recording](https://www.youtube.com/watch?v=XDn2EUC4reM)
 
 ### Pasillo No. 1 by Prof. Francisco A. Velasquez
 
@@ -105,6 +105,8 @@ Arranged by ear. You can visit the
 scores, but (at this time) not Prelude No 2.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/burgos_prelude_2.pdf)
+|
+[composer's recording](https://www.burgosguitar.com/music-and-videos?wix-music-track-id=5203516087861248&wix-music-comp-id=comp-jad4el5h)
 
 ## recordings
 

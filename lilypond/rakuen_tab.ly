@@ -1,8 +1,11 @@
+% Copyright Tsuneo Imahori. No license granted.
+
 \version "2.18.2"
 \header {
   title = "Rakuen tablature cheatsheet"
   composer = "Tsuneo Imahori"
   arranger = "Arr. John Asmuth"
+  tagline = "Transcription by John Asmuth, copyright Tsuneo Imahori. No license granted."
   
 }
 

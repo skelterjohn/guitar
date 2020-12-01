@@ -1,8 +1,10 @@
+% Copyright Tsuneo Imahori. No license granted.
+
 \version "2.18.2"
 \header {
   title = "Rakuen"
   composer = "Tsuneo Imahori"
-  arranger = "Arr. John Asmuth"
+  tagline = "Transcription by John Asmuth, copyright Tsuneo Imahori. No license granted."
   piece = \markup { \line { \circle 1 \circle 2 \circle 3 \circle 4 \circle 5 \circle 6 "= D A G D G D" } }
   
 }

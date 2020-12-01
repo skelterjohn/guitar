@@ -1,9 +1,12 @@
+% Copyright Tsuneo Imahori. No license granted.
+
 \version "2.18.2"
 \header {
   title = "Suna no Hoshi"
   subtitle = "Sandy Planet"
   composer = "Tsuneo Imahori"
   arranger = "Arr. John Asmuth"
+  tagline = "Transcription by John Asmuth, copyright Tsuneo Imahori. No license granted."
   piece = \markup { \line { \circle 6 "= D" } }
   
 }

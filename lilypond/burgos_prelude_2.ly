@@ -50,12 +50,12 @@
         \key c \major
         
         % B
-        \fbarre #"III" { e''4 g'8 c'' e'' g'' | <b' dis'' a''>2 <b' dis''>4 | <g' c'' e''>2. } | <gis'-4\4 a'-1\3 d''-2\2>2. |
+        \fbarre #"III" { e''4 g'8 c'' e'' g'' | <b' dis'' a''>2 <b' dis''>4 } | <g'-0 c''-1 e''-0>2. | <gis'-4\4 a'-1\3 d''-2\2>2. |
         <f''>8( e'') dis''( e'') \fbarre #"VII" { gis'' b'' } | <c'' g'' d'''>2\arpeggio g''4 | \fbarre #"VI" { g''4 d''16( cis'') bes'8 a'( bes') } | f''4 e''2 |
         
         \break
         
-        \fbarre #"IV" { f''4 c''16( b') aes'8 g'( aes') } | \fbarre #"III" { <g' c'' f''>4 <g' c'' e''>2 } | <a' cis'' f''>4 <g' cis'' e''>2 | <g' cis'' g''>4 <g' cis'' f''>2 |
+        \fbarre #"IV" { f''4 c''16( b') aes'8 g'( aes') } | <g' c'' f''>4 <g' c'' e''>2 | <a' cis'' f''>4 <g' cis'' e''>2 | <g' cis'' g''>4 <g' cis'' f''>2 |
         <fis' b' e'' a''>4 <e' a' d'' g''>2 | \fbarre #"IV" { <fis' b' b''-4>4 <fis' b' a''-2>2 } | <e' gis' b' gis''>2.\arpeggio | r2 b''4 |
         
         \key  d \major
@@ -63,7 +63,7 @@
         \break
         
         cis'''4 e''8 a'' a'' e''' | \fbarre #"IX" { e'''4 <f'' gis'' d'''> d''\harmonic }  | cis''8 cis' f' gis' d''  \fbarre #"II" { cis''| a'8 fis cis' fis' a' cis'' }
-        <b'\3>4 d'' g'' | cis''4 e' a' | <b'\3>8 b' d'' d'' g'' g'' | <b''-1>4 <fis'-3 b'-4 cis''-2 fis''-1>2 |
+        <b'\3>4 d'' g'' | cis''4 e' a' | <b'\3>8 b' d'' d'' g'' g'' | \fbarre #"II" { <b''>4 <fis' b' cis'' fis''>2 } |
         
         \break
         
@@ -93,14 +93,14 @@
         a2. | <a fis'>2. | a'2. | a2. 
         
         % B
-        c'2. | c'2. | c'2 a4~ | a2 <gis-3>4 |
+        c'2. | c'2. | <c'-3>2 a4~ | a2 <gis-3>4 |
         e2 b4 | a2.\arpeggio | bes2. | s2. |
         
-        gis2. | c'2. | a2. | bes2.
+        gis2. | <c'-1>2. | a2. | bes2.
         s2. | cis'4 <dis'-3>2 | e2.\arpeggio | s2. |
         
         a2. | cis'2. | s2. | s2. |
-        fis'2. | a2. | fis'2. | <b-1>2. |
+        fis'2. | a2. | fis'2. | <b>2. |
         
         s2. | s2. | s4. a | d'2. |
         b2.~ | b2. | <e b e'>2.\arpeggio~ | <e b e'>2. |

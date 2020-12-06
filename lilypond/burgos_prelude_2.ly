@@ -8,6 +8,8 @@
   tagline = "Transcription by John Asmuth, copyright Francisco Burgos. No license granted."
 }
 
+\paper { ragged-last = ##t }
+
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
@@ -51,7 +53,7 @@
         
         % B
         \fbarre #"III" { e''4 g'8 c'' e'' g'' | <b' dis'' a''>2 <b' dis''>4 } | <g'-0 c''-1 e''-0>2. | <gis'-4\4 a'-1\3 d''-2\2>2. |
-        <f''>8( e'') dis''( e'') \fbarre #"VII" { gis'' b'' } | <c'' g'' d'''>2\arpeggio g''4 | \fbarre #"VI" { g''4 d''16( cis'') bes'8 a'( bes') } | f''4 e''2 |
+        <f''>8( e'') dis''( e'') <gis''-1> <b''-4> | <c'' g'' d'''>2\arpeggio g''4 | \fbarre #"VI" { g''4 d''16( cis'') bes'8 a'( bes') } | f''4 e''2 |
         
         \break
         
@@ -93,7 +95,7 @@
         
         % B
         c'2. | c'2. | <c'-3>2 a4~ | a2 <gis-3>4 |
-        e2 b4 | a2.\arpeggio | bes2. | s2. |
+        e2 <b-3>4 | a2.\arpeggio | bes2. | s2. |
         
         gis2. | <c'-1>2. | a2. | bes2.
         s2. | cis'4 <dis'-3>2 | e2.\arpeggio | s2. |

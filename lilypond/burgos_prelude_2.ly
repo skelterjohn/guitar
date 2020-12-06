@@ -56,9 +56,8 @@
         \break
         
         \fbarre #"IV" { f''4 c''16( b') aes'8 g'( aes') } | <g' c'' f''>4 <g' c'' e''>2 | <a' cis'' f''>4 <g' cis'' e''>2 | <g' cis'' g''>4 <g' cis'' f''>2 |
-        <fis' b' e'' a''>4 <e' a' d'' g''>2 | \fbarre #"IV" { <fis' b' b''-4>4 <fis' b' a''-2>2 } | <e' gis' b' gis''>2.\arpeggio | r2 b''4 |
+        <fis' b' e'' a''>4 <e' a' d'' g''>2 | \fbarre #"IV" { <fis' b' b''-4>4 <fis' b' a''-2>2 } |<e' gis' b' gis''>2.\arpeggio | \key  d \major r2 b''4 |
         
-        \key  d \major
         
         \break
         

@@ -61,7 +61,7 @@ Plays great on either classical or acoustic steel-string.
 |
 [recording from OST](https://www.youtube.com/watch?v=E2hLiiRsG2g)
 |
-[composer's recording](https://www.youtube.com/watch?v=VG2HcP8iLjM)
+[my recording](https://www.youtube.com/watch?v=VG2HcP8iLjM)
 
 ### Rakuen by Tsuneo Imahori
 From the Trigun soundtrack. Guitar/voice. Arranged by ear.

@@ -47,9 +47,10 @@
       
       \time 4/8
       cis'''8 b' e'' e''' d'''4 c'''
-      fis''-"rit" e''
+      \time 1/4
+      fis''8-"rit" e''
       
-      
+      \time 4/8
       e'''8 e'' g'' b'' d''' b' d'' b''
       cis''' fis'' d'' \glissando a'
       
@@ -72,7 +73,7 @@
       
       \time 4/8
       <fis' g' b'> cis'' <g' d''> e'' a''4 \glissando d'''
-      <fis' a' d'' e''>2
+      <a' d'' e''>2
       
       \bar "|."
       
@@ -84,7 +85,7 @@
       s2 s2 s4
       s2 s2 s4
       c'2 cis' s4
-      s2 a2 s2
+      s2 a2 s4
       s2 s2 d'2
       a4 e4 d'2 s4
       s2 s2 s4

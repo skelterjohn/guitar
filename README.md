@@ -48,10 +48,16 @@ should be softer, sweeter, and (most importantly) regretful. It's also full of b
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/study_n1_regret.pdf)
 
-## arrangements
+### Fantasy No. 1
+
+This piece is intended to invoke the feel of a Final Fantasy wistful flashback seen.
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/fantasy_1.pdf)
+
+## Transcriptions
 
 ### Suna no Hoshi by Tsuneo Imahori
-From the Trigun soundtrack. Arranged by ear.
+From the Trigun soundtrack. Transcribed by ear.
 
 This piece was played during the procession at my wedding. So, I really like it.
 
@@ -64,10 +70,10 @@ Plays great on either classical or acoustic steel-string.
 [my recording](https://www.youtube.com/watch?v=VG2HcP8iLjM)
 
 ### Rakuen by Tsuneo Imahori
-From the Trigun soundtrack. Guitar/voice. Arranged by ear.
+From the Trigun soundtrack. Guitar/voice. Transcribed by ear.
 
 I found numerous terrible tabs for this piece before I decided to just sit down
-and arrange it myself from the mp3. I discovered that the tuning is quite unusual,
+and transcribe it myself from the mp3. I discovered that the tuning is quite unusual,
 with DAGDGD from 1 to 6, which likely accounts for all the poor arrangements I'd
 discovered. I believe what I transcribed below is faithful to what was actually
 played, and (as a bonus) it's not that hard once the tuning is handled.
@@ -91,8 +97,9 @@ is a cleaned-up version.
 ### Prelude No. 1 by Francisco Burgos
 
 Arranged by ear. You can visit the
-[composer's website](https://www.burgosguitar.com/) and purchase other
-scores, but (at this time) not Prelude No 1.
+[composer's website](https://www.burgosguitar.com/) and
+[purchase the original score](https://franciscoburgos.musicaneo.com/sheetmusic/sm-519839_prelude_1_for_guitar_music_notation_and_tablature.html)
+if you like. I made my score before the original was available.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/burgos_prelude_1.pdf)
 |

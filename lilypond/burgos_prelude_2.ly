@@ -35,15 +35,15 @@
         gis''4 b'8 e'' gis'' b'' | \fbarre #"II" { a''4 a' dis'' } | \fbarre #"IV" { dis''4 fis'8 c'' dis'' fis'' | e''4 gis'2 } |
         \mark \markup { \musicglyph #"scripts.coda" }
         \key c \major
-        <g' c'' e''>4-"ponticello" e''8 d'' e'' f'' | g''2. | c''4 e'8 a' b' c'' \grace{ b'16( c'' } b'2) a'4 |        
+        <g' c'' e''>4-"ponticello" e''8 d'' e'' f'' | g''2. | c''4 e'8 a' b' c'' \grace{ b'16( c'' } b'4) a'2 |        
         \break
         
-        <a'-3 c''-2>4 c''8 b' c'' <d''-4> | d''4 a' c'' | d''4 d''8 c'' d'' <e''-4> | } \alternative {
+        <a'-3 c''-2>4-"crescendo" c''8 b' c'' <d''-4> | d''4 a' c'' | d''4 d''8 c'' d'' <e''-4> | } \alternative {
           { e''2. |}
           { <e''-4>4 <b'-3> d'' |}
         } 
         
-        <e''-0>4 c''8 e''\2 e''\1 b'' | <b' e'' a''>2 d''4 | <e'' a' f'>2.~ | <e'' a' f'>2. |
+        <e''-0>4\f c''8 e''\2 e''\1 b'' | <b' e'' a''>2-> d''4\p | <e'' a' f'>2.~ | <e'' a' f'>2. |
         
         \bar "||"
         

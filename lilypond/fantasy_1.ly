@@ -29,24 +29,24 @@
       \set stringNumberOrientations = #'(up)
       
       \bar ".|:"
-      e'''8 e'' g'' b'' d''' b' d'' b''
+      e'''8 e''\3 g'' b'' d''' b'\2 d''\3 b''
       \time 1/4
       cis'''-"rit" a''
       \bar ":|.|:"
       
       \time 4/8
-      g''8 d'' e'' \glissando g'' a'' g' cis''' b''
+      g''8\2 d''\3 e'' \glissando g'' a'' g'\3 cis''' b''
       \time 1/4
       cis'''-"rit" a''
       \bar ":|."
       
       \time 4/8
-      b''8 a'' e'' fis'' g'' bes'' fis'' e''
+      <b''-1>8 <a''-4> <e''-3> <fis''-1> <g''-1> bes'' <fis''-1> <e''-3>
       \time 1/4
       b''-"rit" d'''
       
       \time 4/8
-      cis'''8 b' e'' e''' d'''4 c'''
+      cis'''8 b'\2 e''\3 e''' d'''4 c'''
       \time 1/4
       fis''8-"rit" e''
       
@@ -60,13 +60,13 @@
       
       \bar ".|:"
       \time 4/8
-      cis'''8 b' d'' e'' b'' g' g'' d'''
+      cis'''8 b'\2 d''\3 e''\1 b''\2 g' g'' d'''
       \time 1/4
       e'''-"rit" d'''
       \bar ":|.|:"
       
       \time 4/8
-      fis''8 e'' d'' \glissando e'' fis'' d' d'' d'''
+      fis''8\1 e'' d''\2 \glissando e'' fis'' d' d'' d'''
       \time 1/4
       b''-"rit" a''
       \bar ":|."

@@ -27,14 +27,17 @@
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
+      \bar ".|:"
       e'''8 e'' g'' b'' d''' b' d'' b''
       \time 1/4
       cis''' a''
+      \bar ":|.|:"
       
       \time 4/8
       g''8 d'' e'' \glissando g'' a'' g' cis''' b''
       \time 1/4
       cis''' a''
+      \bar ":|."
       
       \time 4/8
       b''8 a'' e'' fis'' g'' bes'' fis'' e''
@@ -53,15 +56,18 @@
       \time 1/4
       b''4
       
+      \bar ".|:"
       \time 4/8
       cis'''8 b' d'' e'' b'' g' g'' d'''
       \time 1/4
       e''' d'''
+      \bar ":|.|:"
       
       \time 4/8
       fis''8 e'' d'' \glissando e'' fis'' d' d'' d'''
       \time 1/4
       b'' a''
+      \bar ":|."
       
       \time 4/8
       <fis' g' b'> cis'' <g' d''> e'' a''4 \glissando d'''

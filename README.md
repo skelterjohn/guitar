@@ -98,8 +98,7 @@ is a cleaned-up version.
 
 Arranged by ear. You can visit the
 [composer's website](https://www.burgosguitar.com/) and
-[purchase the original score]
-(https://franciscoburgos.musicaneo.com/sheetmusic/sm-519839_prelude_1_for_guitar_music_notation_and_tablature.html)
+[purchase the original score](https://franciscoburgos.musicaneo.com/sheetmusic/sm-519839_prelude_1_for_guitar_music_notation_and_tablature.html)
 if you like. I made my score before the original was available.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/burgos_prelude_1.pdf)

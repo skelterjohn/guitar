@@ -24,9 +24,9 @@
   fis'''8
   
   <<
-    \new Voice { \voiceOne
+    \new Voice { \voiceTwo
       \set fingeringOrientations = #'(left)
-      \set stringNumberOrientations = #'(up)
+      \set stringNumberOrientations = #'(down)
       
       \bar ".|:"
       e'''8 e''\3 g'' b'' d''' b'\2 d''\3 b''
@@ -46,7 +46,7 @@
       b''-"rit" d'''
       
       \time 4/8
-      cis'''8 b'\2 e''\3 e''' d'''4 c'''
+      cis'''8 b'\2 e''\3 e''' d'''4 a''
       \time 1/4
       fis''8-"rit" e''
       
@@ -72,16 +72,36 @@
       \bar ":|."
       
       \time 4/8
-      <fis' g' b'> cis'' <g' d''> e'' a''4 \glissando d'''
-      <a' d'' e''>2
+      s s s s s2
+      <d' fis' a' e''>2
       
       \bar "|."
       
     }
-    \new Voice { \voiceTwo
+    \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
+      e'''4 s4 d'''4 s4 s4
+      g''4 s4 a''4 s4 s4
+      b''4 s4 g''4 s4 s4
+      cis'''4 s4 d'''4 s4 s4
+      e'''4 s4 d'''4 s4 cis'''4 s4
+      s4 s4 s2 s4
+      cis'''4 s4 b''4 s4 s4
+      fis''4 s4 fis''4 s4 s4
+      b'8 cis'' d'' e'' a''4 \glissando d''' \fermata s
+      
+    }
+    \new Voice { \voiceThree
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      
+    
+    }
+    \new Voice { \voiceFour
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
       s2 s2 s4
       s2 s2 s4
       c'2 cis' s4
@@ -90,17 +110,7 @@
       a4 e4 d'2 s4
       s2 s2 s4
       s2 s2 s4
-      d'4 <a d'> <g g' b'>2 d'
-      
-    }
-    \new Voice { \voiceThree
-      \set fingeringOrientations = #'(left)
-      \set stringNumberOrientations = #'(up)
-    
-    }
-    \new Voice { \voiceFour
-      \set fingeringOrientations = #'(left)
-      \set stringNumberOrientations = #'(up)
+      <d' fis' g'>4 <a d' g'> <g g' b'>2 
     
     }
   >>

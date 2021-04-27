@@ -73,7 +73,8 @@
       
       \time 4/8
       s s s s s2
-      <d' fis' a' e''>2
+      s s 
+      <d' a' d'' e''>2
       
       \bar "|."
       
@@ -90,7 +91,8 @@
       s4 s4 s2 s4
       cis'''4 s4 b''4 s4 s4
       fis''4 s4 fis''4 s4 s4
-      b'8 cis'' d'' e'' a''4 \glissando d''' \fermata s
+      b'8 cis'' d'' e'' a''4 \glissando d'''
+      e''8 fis'' g'' a'' \glissando e'''2 \fermata-"—"
       
     }
     \new Voice { \voiceThree
@@ -111,7 +113,7 @@
       s2 s2 s4
       s2 s2 s4
       <d' fis' g'>4 <a d' g'> <g g' b'>2 
-    
+      <d' g' cis''>4 <a g' b'>
     }
   >>
 }

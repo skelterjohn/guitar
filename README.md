@@ -115,6 +115,8 @@ scores, but (at this time) not Prelude No 2.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/burgos_prelude_2.pdf)
 |
+[my recording](https://www.youtube.com/watch?v=Gbnjhe-nD18)
+|
 [composer's recording](https://soundcloud.com/francisco-burgos/prelude-2-nocturno-by)
 
 ## recordings

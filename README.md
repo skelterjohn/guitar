@@ -54,6 +54,14 @@ This piece is intended to invoke the feel of a Final Fantasy wistful flashback s
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/fantasy_1.pdf)
 
+### Study No. 2 (Inversion)
+
+I watched
+[Andrew York's video on improvisation for guitar](https://www.youtube.com/watch?v=DyWv4uWG-MU)
+and put this together to help me practice chord inversions.
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/inversion.pdf)
+
 ## Transcriptions
 
 ### Suna no Hoshi by Tsuneo Imahori

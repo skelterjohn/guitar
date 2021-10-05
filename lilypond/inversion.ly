@@ -46,7 +46,7 @@
       e b <gis' b'> | \break
       
       \time 9/8
-      <e' a' c''>4.~<e' a' c''>~<e' a' c''> |
+      <a e' a'>4.~<a e' a'>~<a e' a'> |
       <b e' g'>~<b e' g'>~<b e' g'> | 
       <c' f' a'>~<c' f' a'>~<c' f' a'> |
       <c' e' g'>~<c' e' g'>~<c' e' g'> |

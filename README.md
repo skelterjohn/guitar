@@ -73,6 +73,8 @@ Plays great on either classical or acoustic steel-string.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/suna_no_hoshi.pdf)
 |
+[tab](https://github.com/skelterjohn/guitar/blob/master/pdf/suna_no_hoshi_tab.pdf)
+|
 [recording from OST](https://www.youtube.com/watch?v=E2hLiiRsG2g)
 |
 [my recording](https://www.youtube.com/watch?v=VG2HcP8iLjM)

@@ -350,7 +350,7 @@
       <d''-2\3>8\< <b'\2> e''\1 <d''\3> <a''-1\1> fis''\2\! | <d'''-1>8\> b''\2 <a''-1> fis''\2 <e''-1\2> <d''-4\3>\! |
       
       <a'-3\4>8\< <g'\3> <a'\4> <cis''-2\3> <fis''-4\2> <e''-1\2>\! | <a'-3\4>8 <g'\3> <a'\4> <cis''-2\3> <fis''-4\2> <e''-1\2> |
-      <d''\3>8\< <a'\4> <d''\3> <fis''\2> <a''\1> <d'''\1>\! | fis'''8\2-\markup {#"VII"} \harmonic e'''\1-\markup {#"XII"} \harmonic d'''\3-\markup {#"VII"} \harmonic b''\2-\markup {#"XII"} \harmonic a''\1 g''\1 |
+      <d''\3>8\< <a'\4> <d''\3> <fis''\2> <a''\1> <d'''\1>\! | \harmonicByFret #7 fis'''8\2-\markup {#"VII"} \harmonic e'''\1-\markup {#"XII"} \harmonic \harmonicByFret #7 d'''\3-\markup {#"VII"} \harmonic b''\2-\markup {#"XII"} \harmonic a''\1 g''\1 |
       
       \break
       
@@ -380,7 +380,7 @@
       <a'-1\4>8 <fis'-4\5> d''\3 <a'\4> <fis''-3\2> d''\3 | <b''-3\2> <g''-2\3> <fis''-3\2> d''\3 <cis''-2\3> <a'-3\4> |
       
       <g'\3>8 <d'\4> <g'\3> <g'-1\4> <d''-3\3> <cis''-2\3> | <g'\3>8 <d'\4> <g'\3> <g'-1\4> <d''-3\3> <cis''-2\3> |
-      <a'\4>8 <fis'\5> <a'\4> <d''\3> <e''\2> <a''\2> | d'''8\3 \harmonic  b''\2 \harmonic a''\4 \harmonic g''\3 \harmonic fis''\2 e''\2 |
+      <a'\4>8 <fis'\5> <a'\4> <d''\3> <e''\2> <a''\2> | \harmonicByFret #7 d'''8\3 \harmonic  b''\2 \harmonic \harmonicByFret #7  a''\4 \harmonic g''\3 \harmonic fis''\2 e''\2 |
       
       \set fingeringOrientations = #'(left)
       

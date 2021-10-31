@@ -27,6 +27,8 @@ dreadnought), which has a much brighter sound and long sustain compared to my
 classical (Alhambra 5P).
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/ditto.pdf)
+|
+[tab](https://github.com/skelterjohn/guitar/blob/master/pdf/ditto_tab.pdf)
 
 ### Wishing Tree
 

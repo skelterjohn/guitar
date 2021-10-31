@@ -22,26 +22,29 @@
       \set stringNumberOrientations = #'(up)
       
       \time 9/8
-      a8 e' c'' c' a' e'' e' c'' a'' |
-      e b g' g e' b' b g' e'' |
-      f c' a' a f' c'' c' a' f'' |
-      c' g' e'' e' c'' g'' g' e'' c''' |
+      a8 <e'-2> <c''-1> <c'-3> <a'-2> e'' <e'-1> <c''-3\3> <a''-4> |
+      e <b-1> g' <g-3> <e'-2> b' b g' e'' |
+      \break
+      <f-1> <c'-3> <a'-2> a <f'-3> <c''-1> <c'-3> <a'-2> <f''-1> |
+      <c'-3> g' e'' <e'-2> <c''-1> <g''-4> g' <e''-1\2> <c'''-4> |
       \time 3/8
       e b gis' | \break
       
       \time 9/8
-      a8 e' b' c' a' d'' e' c'' g'' |
-      e b f' g e' a' b g' d'' |
-      f c' g' a f' b' c' a' e'' |
-      c' g' d'' e' c'' f'' g' e'' b'' |
+      a8 <e'-2> b' <c'-3> <a'-2> <d''-4> <e'-2> <c''-1> <g''-4> |
+      e <b-2> <f'-4> <g-3> <e'-1> <a'-2> <b-1> g' <d''-4> |
+      \break
+      <f-1> <c'-3> g' a <f'-4> b' <c'-3> <a'-2> e'' |
+      <c'-3> g' <d''-4> <e'-2> <c''-1> <f''-1> g' <e''-1\2> <b''-3> |
       \time 3/8
       e b <g' d''> | \break
       
       \time 9/8
-      a8 e' d'' c' a' f'' e' c'' b'' |
-      e b a' g e' c'' b g' f'' |
-      f c' b' a f' d'' c' a' g'' |
-      c' g' f'' e' c'' a'' g' e'' d''' |
+      <a-1\6>8-V <e'-2\5> <d''-3\3> <c'-4\6> <a'-3\4> <f''-2\2> <e'-3\5> <c''-1\3> <b''-4\1> |
+      <e>-I <b-2> <a'-3> <g-4> <e'-2> <c''-1> <b-2> g' <f''-1> |
+      \break
+      <f-1> <c'-3> b' a <f'-3> <d''-4> <c'-3> <a'-2> <g''-4> |
+      <c'-1>-III g' <f''-4\2> <e'-3>-V <c''-1> <a''-1> <g'-3\5>-VIII <e''-2\3> <d'''-4> |
       \time 3/8
       e b <gis' b'> | \break
       
@@ -56,8 +59,9 @@
       
       
       \time 9/8
-      c''8 e' a e'' a' c' a'' c'' e' |
-      g' b e b' e' g e'' g' b |
+      <c''-1>8 <e'-2> a e'' <a'-1> <c'-2> <a''-4> <c''-3> <e'-1> |
+      g' <b-1> e b' <e'-2> <g-3> e'' g' b |
+      \break
       a' c' f c'' f' a f'' a' c' |
       e'' g' c' g'' c'' e' c''' e'' g' |
       \time 3/8
@@ -66,6 +70,7 @@
       \time 9/8
       b'8 e' a d'' a' c' g'' c'' e' |
       f' b e a' e' g d'' g' b |
+      \break
       g' c' f b' f' a e'' a' c' |
       d'' g' c' f'' c'' e' b'' e'' g' |
       \time 3/8
@@ -74,6 +79,7 @@
       \time 9/8
       d''8 e' a f'' a' c' b'' c'' e' |
       a' b e c'' e' g f'' g' b |
+      \break
       b' c' f d'' f' a g'' a' c' |
       f'' g' c' a'' c'' e' d''' e'' g' |
       \time 3/8

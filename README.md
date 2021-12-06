@@ -151,7 +151,7 @@ talented young composer from Iceland currently studying in the United States. Th
 difficulty levels jump around quite a bit, but different things are difficult for 
 different people.
 
-I aim to eventually record all elevent pieces, though Landslög XI is quite challening.
+I aim to eventually record all elevent pieces, though Landslög XI is quite challenging.
 
 [free score](https://www.gullibjornsson.org/guitar-music)
 |

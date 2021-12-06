@@ -142,3 +142,19 @@ This piece is both beautiful and easily "under the fingers".
 [score](http://www.knila.nl/index.php?search=own) (long page, ctrl-f the title)
 |
 [my recording](https://www.youtube.com/watch?v=dTeBkp3v8tU)
+
+### Landslög by Gulli Björnsson
+
+A friend described these pieces as "modern but not avant garde". Gulli Björnsson is a
+talented young composer from Iceland currently studying in the United States. This
+"Landslög" suite has eleven movements, theoretically in increasing difficulty. The
+difficulty levels jump around quite a bit, but different things are difficult for 
+different people.
+
+I aim to eventually record all elevent pieces, though Landslög XI is quite challening.
+
+[free score](https://www.gullibjornsson.org/guitar-music)
+|
+[my recordings as a playlist](https://www.youtube.com/playlist?list=PLlOF4Fl9p6cIwTdAb9qjwClSkAwOufHOU)
+|
+[composer's recording](https://www.youtube.com/watch?v=J8SPDieQpBo)

@@ -9,6 +9,8 @@
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
+\markup { \italic "with sustain wherever possible" }
+
 <<
 \new Staff \with {
   \consists "Span_arpeggio_engraver"
@@ -17,6 +19,7 @@
   \set Staff.connectArpeggios = ##t
   % \partial 4
   \key a \minor
+  \tempo 4 = 60
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
@@ -31,14 +34,14 @@
       
       \break
       
-      e''2. r4 g'' d''~ |
+      e''2. r4 <g''-4> <d''-3>~ |
       d''4 b'2 dis''2. |
       r2. r2. | 
       r2. r2 r8 b' |
       
       \break
       
-      b'4 c'' d'' e'' g'' gis'' |
+      b'4 <c''-2> d'' e'' <g''> <gis''> |
       a''4 g'' e''~e'' b'2 |
       e''2. e'' |
       r2. r2. |
@@ -50,6 +53,7 @@
       cis''2. e''4 d''2 |
       r4 dis'' e'' r4 e'' d'' |
       r4 dis'' e'' r4 e'' d'' |
+      r4 dis''2 r2. |
       r4 dis''2 r2. \bar "|."
       
     }
@@ -62,7 +66,12 @@
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       
+      a8 e' gis'2 f8 <c'-2> g'2 |
       a8 e' gis'2 f8 c' g'2 |
+      a8 e' gis'2 f8 c' g'2 |
+      a8 e' gis'2 f8 c' g'2 |
+      
+      a8 <e'-3> <gis'>2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
@@ -73,10 +82,6 @@
       a8 e' gis'2 f8 c' g'2 |
       
       a8 e' gis'2 f8 c' g'2 |
-      a8 e' gis'2 f8 c' g'2 |
-      a8 e' gis'2 f8 c' g'2 |
-      a8 e' gis'2 f8 c' g'2 |
-      
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 r2. |
     }

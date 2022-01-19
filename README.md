@@ -64,6 +64,10 @@ and put this together to help me practice chord inversions.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/inversion.pdf)
 
+### No Feedback
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/no_feedback.pdf)
+
 ## Transcriptions
 
 ### Suna no Hoshi by Tsuneo Imahori

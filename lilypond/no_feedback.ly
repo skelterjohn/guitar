@@ -50,7 +50,7 @@
       cis''2. e''4 d''2 |
       r4 dis'' e'' r4 e'' d'' |
       r4 dis'' e'' r4 e'' d'' |
-      r4 dis''2 r2. |
+      r4 dis''2 r2. \bar "|."
       
     }
     \new Voice { \voiceTwo

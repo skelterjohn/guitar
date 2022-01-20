@@ -19,7 +19,7 @@
   \set Staff.connectArpeggios = ##t
   % \partial 4
   \key a \minor
-  \tempo 4 = 60
+  \tempo 8 = 80
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
@@ -35,14 +35,14 @@
       \break
       
       e''2. r4 <g''-4> <d''-3>~ |
-      d''4 b'2 dis''2. |
+      d''4 b'2 r4 dis''2 |
       r2. r2. | 
       r2. r2 r8 b' |
       
       \break
       
-      b'4 <c''-2> d'' e'' <g''> <gis''> |
-      a''4 g'' e''~e'' b'2 |
+      b'4 <c''-2> d'' e'' <g''> <b'> |
+      b'4 g'' e''~e'' d''2 |
       e''2. e'' |
       r2. r2. |
       

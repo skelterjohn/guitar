@@ -30,19 +30,23 @@
       r2. r2. |
       r2. r2 r8 e''~ |
       e''4 dis''2 e''2. |
+      \bar ".|:"
       r4 dis'' e''~ e'' dis''2 |
       
       \break
       
       e''2. r4 <g''-4> <d''-3>~ |
       d''4 b'2 r4 dis''2 |
+      \bar ":|."
       r2. r2. | 
       r2. r2 r8 b' |
       
       \break
       
+      \bar ".|:"
       b'4 <c''-2> d'' e'' <g''> <b'> |
       b'4 g'' e''~e'' d''2 |
+      \bar ":|."
       e''2. e'' |
       r2. r2. |
       
@@ -50,7 +54,7 @@
       
       r2. r2. |
       r4 cis''2 r4 d''2 |
-      cis''2. e''4 d''2 |
+      dis''4 cis'' e''~ e'' d''2 |
       r4 dis'' e'' r4 e'' d'' |
       r4 dis'' e'' r4 e'' d'' |
       r4 dis''2 r2. |

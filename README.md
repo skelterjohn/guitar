@@ -66,6 +66,8 @@ and put this together to help me practice chord inversions.
 
 ### No Feedback
 
+A simple piece with a repeating bass line. Has a few left-hand stretches but nothing too complicated. Perhaps best played as a meditation exersize at 2am.
+
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/no_feedback.pdf)
 
 ## Transcriptions

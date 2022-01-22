@@ -71,7 +71,7 @@
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      a8~ <a e'>~ <a e' gis'>2 f8~ <f c'>~ <f c' g'>2 |
+      a8~\mf <a e'>~ <a e' gis'>2 f8~ <f c'>~ <f c' g'>2 |
       a8-"sim." e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
@@ -86,7 +86,7 @@
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       
-      a8\p e' gis'2 f8 c' g'2 |
+      a8\mp e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |

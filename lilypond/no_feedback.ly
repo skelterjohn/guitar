@@ -19,7 +19,7 @@
   \set Staff.connectArpeggios = ##t
   % \partial 4
   \key a \minor
-  \tempo 8 = 80
+  \tempo 4 = 60
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
@@ -30,8 +30,8 @@
       r2. r2. |
       r2. r2 r8 e''~ |
       e''4 dis''2 e''2. |
-      \bar ".|:"
       r4 dis'' e''~ e'' dis''2 |
+      \bar ".|:"
       
       \break
       
@@ -47,23 +47,24 @@
       b'4 <c''-2> d'' e'' <g''> <b'> |
       b'4 fis'' e''~e'' d''2 |
       \bar ":|."
-      e''2. e'' |
+      e''2. r2. |
       r2. r2. |
       
       \break
       
-      r2. r2. |
       \bar ".|:"
-      r4 cis''2 r4 d''2 |
+      r4-\markup { \italic sweetly } cis''2 r4 d''2 |
       e''4 cis'' e''~ e'' d''2 |
       \bar ":|."
+      r2 b'4 r2 b'4 |
+      r2 b'4 r2 b'4 |
       
-      r2. r2. |
-      r2. r2. |
+      \break
+      
       r4 dis'' e'' r4 e'' d'' |
       r4 dis'' e'' r4 e'' d'' |
-      r4 dis''2 r2. |
-      r4 dis''2 r2. \bar "|."
+      r4 b'2 r2. |
+      r4-"rit." dis''2\fermata r2. \bar "|."
       
     }
     \new Voice { \voiceTwo
@@ -85,16 +86,15 @@
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       
+      a8\p e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
-      a8 e' gis'2 f8 c' g'2 |
-      a8 e' gis'2 f8 c' g'2 |
+      a8\> e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       
       a8 e' gis'2 f8 c' g'2 |
-      a8 e' gis'2 f8 c' g'2 |
-      a8 e' gis'2 r2. |
+      a8 e' gis'2 r2. \! |
     }
     \new Voice { \voiceThree
       \set fingeringOrientations = #'(left)

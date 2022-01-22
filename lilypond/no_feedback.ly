@@ -45,7 +45,7 @@
       
       \bar ".|:"
       b'4 <c''-2> d'' e'' <g''> <b'> |
-      b'4 g'' e''~e'' d''2 |
+      b'4 fis'' e''~e'' d''2 |
       \bar ":|."
       e''2. e'' |
       r2. r2. |
@@ -53,8 +53,13 @@
       \break
       
       r2. r2. |
+      \bar ".|:"
       r4 cis''2 r4 d''2 |
-      dis''4 cis'' e''~ e'' d''2 |
+      e''4 cis'' e''~ e'' d''2 |
+      \bar ":|."
+      
+      r2. r2. |
+      r2. r2. |
       r4 dis'' e'' r4 e'' d'' |
       r4 dis'' e'' r4 e'' d'' |
       r4 dis''2 r2. |
@@ -66,7 +71,7 @@
       \set stringNumberOrientations = #'(up)
       
       a8~ <a e'>~ <a e' gis'>2 f8~ <f c'>~ <f c' g'>2 |
-      a8-"sim" e' gis'2 f8 c' g'2 |
+      a8-"sim." e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       
@@ -80,6 +85,8 @@
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       
+      a8 e' gis'2 f8 c' g'2 |
+      a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |
       a8 e' gis'2 f8 c' g'2 |

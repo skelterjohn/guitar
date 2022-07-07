@@ -190,7 +190,7 @@
       
       \fbarre "VIII" {
       \time 4/4
-      c'8 e'' g'' e''' c' e'' g'' e''' c' e'' g'' e''' c' e'' g'' e'''
+      c'8-"poco meno" e'' g'' e''' c' e'' g'' e''' c' e'' g'' e''' c' e'' g'' e'''
       }
       \fbarre "VII" {
       \time 4/4

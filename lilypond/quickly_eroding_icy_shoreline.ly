@@ -61,11 +61,13 @@
             
       \break
       
+      \fbarre "II" {
       \time 6/8
-      b8 fis' c'' b fis' c'' b fis' c'' b fis' c''
+      b8 <fis'-2> <c''-3> b fis' c'' b fis' c'' b fis' c''
       \time 4/4
-      b8 fis' e'' fis'' b fis' e'' fis'' b fis' e'' fis'' b fis' e'' c''
-            
+      b8 <fis'-2> <e''-4> <fis''-1> b fis' e'' fis'' b fis' e'' fis'' b fis' e'' <c''-3>
+      }
+      
       \break
       
       \time 6/8
@@ -73,30 +75,30 @@
       \time 4/4
       a8 e' d'' e'' a e' d'' e'' a e' d'' e'' a e' d'' e''
       \time 6/8
-      g8 b c'' c' e' b' d' fis' a' fis' (g' fis')
+      <g-3>8 <b-2> <c''-1> <c'-2> <e'-1> b' <d'-4> <fis'-3> <a'-1> fis' (g' fis')
             
       \break
       
       \time 6/8
-      c'8 e' g' c' e' g' c' e' g' c' e' g'
+      <c'-4>8 <e'-2> g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      c'8 e' g' e'' c' e' a' e'' c' e' b' e'' c' e' c'' e''
+      <c'-4>8 <e'-2> <g'-0> e'' c' e' <a'-3> e'' c' e' <b'-0> e'' c' e' <c''-1> e''
             
       \break
       
       \time 6/8
-      b8 a' c'' b a' c'' b a' c'' b a' c''
+      <b-2>8 <a'-3> <c''-1> b a' c'' b a' c'' b a' c''
       \time 4/4
       b8 fis' g' c'' b fis' g' c'' b fis' g' c'' b fis' g' c''
             
       \break
       
       \time 6/8
-      a8 a' b' a a' b' a a' b' a a' b'
+      a8 <a'-2> b' a a' b' a a' b' a a' b'
       \time 4/4
-      a8 e' a' b' a fis' a' b' a fis' g' b' a fis' a' b'
+      a8 <e'-1> <a'-2> b' a <fis'-4> a' b' a fis' g' b' a fis' a' b'
       \time 6/8
-      a'8 b' (c'') g' a' b' fis' g' (a') fis' (g' fis')
+      a'8\4 b'\3 (c'') g'\4 a'\3 b'\2 fis'\4 g'\3 (a') fis'\4 (g' fis')
       
       \break
       
@@ -204,6 +206,13 @@
       
       \time 6/8
       b8 d' g' d' g' b'  b d' g' d' g' b'
+      \time 6/8
+      b8 d' g' d' g' b'  b d' g' d' g' b'
+      
+      \break
+      
+      \time 4/4
+      b8 d' g' b' d' g' b' fis'' b d' g' b' d' g' b' fis''
       \time 4/4
       b8 d' g' b' d' g' b' fis'' b d' g' b' d' g' b' fis''
       

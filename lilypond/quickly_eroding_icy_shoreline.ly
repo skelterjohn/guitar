@@ -75,7 +75,7 @@
       \time 4/4
       a8 e' d'' e'' a e' d'' e'' a e' d'' e'' a e' d'' e''
       \time 6/8
-      <g-3>8 <b-2> <c''-1> <c'-2> <e'-1> b' <d'-4> <fis'-3> <a'-1> fis' (g' fis')
+      <g-3>8 <b-2> <c''-1> <c'-2> <e'-1> b' <d'-4>-"rit." <fis'-3> <a'-1> fis' (g' fis') \shortfermata 
             
       \break
       
@@ -98,7 +98,7 @@
       \time 4/4
       a8 <e'-1> <a'-2> b' a <fis'-4> a' b' a fis' g' b' a fis' a' b'
       \time 6/8
-      a'8\4 b'\3 (c'') g'\4 a'\3 b'\2 fis'\4 g'\3 (a') fis'\4 (g' fis')
+      a'8\4 b'\3 (c'') g'\4 a'\3 b'\2 fis'\4-"rit." g'\3 (a') fis'\4 (g' fis') \shortfermata 
       
       \break
       
@@ -137,11 +137,13 @@
             
       \break
       
+      \fbarre "II" {
       \time 6/8
       b8 fis' c'' b fis' c'' b fis' c'' b fis' c''
       \time 4/4
       b8 fis' e'' fis'' b fis' e'' fis'' b fis' e'' fis'' b fis' e'' c''
-            
+      }
+      
       \break
       
       \time 6/8
@@ -149,7 +151,7 @@
       \time 4/4
       a8 e' d'' e'' a e' d'' e'' a e' d'' e'' a e' d'' e''
       \time 6/8
-      g8 b c'' c' e' b' d' fis' a' fis' (g' fis')
+      g8 b c'' c' e' b' d'-"rit." fis' a' fis' (g' fis') \shortfermata 
       
       \break
       
@@ -182,7 +184,7 @@
       \time 6/8
       d''8\4 fis''\3 b''\2 d'' fis'' b'' d'' fis'' b'' d'' fis'' b''
       \time 4/4
-      d''8 fis'' b'' a''' d'' fis'' b'' g''' d'' fis'' b'' fis''' d'' fis'' b'' d'' \harmonic 
+      d''8-"molto rit." fis'' b'' a''' d'' fis'' b'' g''' d'' fis'' b'' fis''' d'' fis'' b'' d'' \harmonic \shortfermata 
       
       \break
       
@@ -212,9 +214,9 @@
       \break
       
       \time 4/4
-      b8 d' g' b' d' g' b' fis'' b d' g' b' d' g' b' fis''
+      b8-"molto rit." d' g' b' d' g' b' fis'' b d' g' b' d' g' b' fis''
       \time 4/4
-      b8 d' g' b' d' g' b' fis'' b d' g' b' d' g' b' fis''
+      b8 d' g' b' d' g' b' fis'' b d' g' b' d' g' b' fis'' \fermata
       
       \bar "|."
       

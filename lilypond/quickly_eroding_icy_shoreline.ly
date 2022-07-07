@@ -24,10 +24,10 @@
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       \numericTimeSignature
-      \override BreathingSign.text = \markup { \musicglyph "scripts.virgula" }
+      
       
       \time 6/8
-      g8 e' b' g e' b' g e' b' g e' b' 
+      g8 \autoLineBreaksOff e' b' g e' b' g e' b' g e' b'
       \time 4/4
       g8 e' b' e'' g e' b' e'' g e' b' e'' g e' b' e''
       
@@ -55,9 +55,9 @@
       \break
       
       \time 6/8
-      c'8 e' g' c' e' g' c' e' g' c' e' g'
+      <c'-4>8 <e'-2> g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      c'8 e' g' e'' c' e' a' e'' c' e' b' e'' c' e' c'' e''
+      <c'-4>8 <e'-2> <g'-0> e'' c' e' <a'-3> e'' c' e' <b'-0> e'' c' e' <c''-1> e''
             
       \break
       
@@ -80,9 +80,9 @@
       \break
       
       \time 6/8
-      <c'-4>8 <e'-2> g' c' e' g' c' e' g' c' e' g'
+      <c'>8 <e'> g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      <c'-4>8 <e'-2> <g'-0> e'' c' e' <a'-3> e'' c' e' <b'-0> e'' c' e' <c''-1> e''
+      <c'>8 <e'> <g'> e'' c' e' <a'> e'' c' e' <b'> e'' c' e' <c''> e''
             
       \break
       
@@ -213,10 +213,10 @@
       
       \break
       
-      \time 4/4
-      b8-"molto rit." d' g' b' d' g' b' fis'' b d' g' b' d' g' b' fis''
-      \time 4/4
-      b8 d' g' b' d' g' b' fis'' b d' g' b' d' g' b' fis'' \fermata
+      \time 9/8
+      b8-"molto rit." d' g' d' g' b' g' b' fis'' b d' g' d' g' b' g' b' fis''
+      \time 9/8
+      b8 d' g' d' g' b' g' b' fis'' b d' g' d' g' b' g' b' fis'' \fermata
       
       \bar "|."
       

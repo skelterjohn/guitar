@@ -82,7 +82,7 @@
       \time 6/8
       <c'>8\p \< <e'> g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      <c'>8 <e'> <g'> e''-- c' e' <a'> e''-- c' e' <b'> e''-- c' e' <b'> e''--\!
+      <c'>8 <e'> <g'> e''-- c' e' <g'> e''-- c' e' <g'> e''-- c' e' <g'> e''--\!
             
       \break
       
@@ -98,7 +98,7 @@
       \time 4/4
       a8 <e'-1> <a'-2> b' a <fis'-4> a' b' a fis' g' b' a fis' a' b'
       \time 6/8
-      a'8\4\> b'\3 (c'') g'\4 a'\3 b'\2 fis'\4-"rit." g'\3 (a') fis'\4 (g' fis') \shortfermata \!
+      a'8\> b' (c'') g' (a') b' fis'\4-"rit." g'\3 (a') fis'\4 (g' fis') \shortfermata \!
       
       \break
       
@@ -207,16 +207,16 @@
       \break
       
       \time 6/8
-      b8 d' g' d' g' b'  b d' g' d' g' b'
+      b8\< d' g' d' g' b'  b d' g' d' g' b'
       \time 6/8
-      b8 d' g' d' g' b'  b d' g' d' g' b'
+      b8 d' g' d' g' b'  b d' g' d' g' b'\!
       
       \break
       
       \time 9/8
-      b8-"molto rit." d' g' d' g' b' g' b' fis'' b d' g' d' g' b' g' b' fis''
+      b8\mf\>-"molto rit." d' g' d' g' b' g' b' fis''-- b d' g' d' g' b' g' b' fis''--
       \time 9/8
-      b8 d' g' d' g' b' g' b' fis'' b d' g' d' g' b' g' b' fis'' \fermata
+      b8 d' g' d' g' b' g' b' fis''-- b d' g' d' g' b' g' b' fis''-- \fermata \mp \!
       
       \bar "|."
       

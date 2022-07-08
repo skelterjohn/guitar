@@ -55,9 +55,9 @@
       \break
       
       \time 6/8
-      <c'-4>8\< <e'-2> g' c' e' g' c' e' g' c' e' g'
+      <c'-3>8\< <e'-1> g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      <c'-4>8 <e'-2> <g'-0> e'' c' e' <a'-3> e'' c' e' <b'-0> e'' c' e' <c''-1> e''\!
+      <c'-3>8 <e'-1> <g'-0> e'' c' e' <a'-2> e'' c' e' <b'-0> e'' c' e' <b'> e''\!
             
       \break
       
@@ -82,7 +82,7 @@
       \time 6/8
       <c'>8\p \< <e'> g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      <c'>8 <e'> <g'> e''-- c' e' <a'> e''-- c' e' <b'> e''-- c' e' <c''> e''--\!
+      <c'>8 <e'> <g'> e''-- c' e' <a'> e''-- c' e' <b'> e''-- c' e' <b'> e''--\!
             
       \break
       
@@ -133,7 +133,7 @@
       \time 6/8
       c'8 e' g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      c'8\< e' g' e''-- c' e' a' e''-- c' e' b' e''-- c' e' c'' e''--\!
+      c'8\< e' g' e''-- c' e' a' e''-- c' e' b' e''-- c' e' b' e''--\!
             
       \break
       

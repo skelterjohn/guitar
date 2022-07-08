@@ -48,7 +48,7 @@
       \break
       
       \time 4/4
-      fis'8 \p g' (a') b' fis' g' (a') b' fis' g' (a') b' fis' g' (a') b'
+      <fis'-4>8 \p g' (a') b' fis' g' (a') b' fis' g' (a') b' fis' g' (a') b'
       \time 6/4
       fis'8 g' (a') b' e'' b' fis' g' (a') b' e'' b' fis' g' (a') b' e'' b' fis' g' (a') b' e'' b'
             

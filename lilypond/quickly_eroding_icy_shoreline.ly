@@ -207,16 +207,16 @@
       \break
       
       \time 4/4
-      b8\< d' g' b' d' g' b' fis''-> b d' g' b' d' g' b' fis''->
+      b8\< d' g' b' d' g' b' fis''-- b d' g' b' d' g' b' fis''--
       \time 4/4
-      b8 d' g' b' d' g' b' fis''-> b d' g' b' d' g' b' fis''->\!
+      b8 d' g' b' d' g' b' fis''-- b d' g' b' d' g' b' fis''--\!
       
       \break
       
       \time 4/4
-      b8\mf\>-"molto rit." d' g' b' d' g' b' fis''-> b d' g' b' d' g' b' fis''->
+      b8\mf\>-"molto rit." d' g' b' d' g' b' fis''-- b d' g' b' d' g' b' fis''--
       \time 4/4
-      b8 d' g' b' d' g' b' fis''-> b d' g' b' d' g' b' fis''-> \fermata \mp \!
+      b8 d' g' b' d' g' b' fis''-- b d' g' b' d' g' b' fis''-- \fermata \mp \!
       
       \bar "|."
       

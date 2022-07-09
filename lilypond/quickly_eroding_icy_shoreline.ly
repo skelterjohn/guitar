@@ -206,17 +206,17 @@
       
       \break
       
-      \time 6/8
-      b8\< d' g' d' g' b'  b d' g' d' g' b'
-      \time 6/8
-      b8 d' g' d' g' b'  b d' g' d' g' b'\!
+      \time 4/4
+      b8\< d' g' b' d' g' b' fis''-> b d' g' b' d' g' b' fis''->
+      \time 4/4
+      b8 d' g' b' d' g' b' fis''-> b d' g' b' d' g' b' fis''->\!
       
       \break
       
-      \time 9/8
-      b8\mf\>-"molto rit." d' g' d' g' b' g' b' fis''-- b d' g' d' g' b' g' b' fis''--
-      \time 9/8
-      b8 d' g' d' g' b' g' b' fis''-- b d' g' d' g' b' g' b' fis''-- \fermata \mp \!
+      \time 4/4
+      b8\mf\>-"molto rit." d' g' b' d' g' b' fis''-> b d' g' b' d' g' b' fis''->
+      \time 4/4
+      b8 d' g' b' d' g' b' fis''-> b d' g' b' d' g' b' fis''-> \fermata \mp \!
       
       \bar "|."
       

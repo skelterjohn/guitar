@@ -119,12 +119,12 @@
       \time 6/8
       e'8 g' b' e' g' b' e' g' b' e' g' b'
       \time 4/4
-      e'8\! \ff g' b' g''-- e' g' b' g''-- e' g' b' g''-- \> e' g' b' g''--\!
+      e'8\! \ff g' b' g''-- e' g' b' g''-- e' g' b' g''-- e' g' b' g''--
       
       \break
       
       \time 4/4
-      fis'8 g' (a') b' fis' g' (a') b' fis' g' (a') b' fis' g' (a') b'
+      fis'8\mf g' (a') b' fis' g' (a') b' fis' g' (a') b' fis' g' (a') b'
       \time 6/4
       fis'8 g' (a') b' e'' b' fis' g' (a') b' e'' b' fis' g' (a') b' e'' b' fis' g' (a') b' e'' b'
       
@@ -139,7 +139,7 @@
       
       \fbarre "II" {
       \time 6/8
-      b8\mf fis' c'' b fis' c'' b fis' c'' b fis' c''
+      b8\f fis' c'' b fis' c'' b fis' c'' b fis' c''
       \time 4/4
       b8 fis' e'' fis'' b fis' e'' fis'' b fis' e'' fis'' b fis' e'' c''
       }

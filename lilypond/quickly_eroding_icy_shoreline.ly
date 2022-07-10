@@ -57,7 +57,7 @@
       \time 6/8
       <c'-3>8\< <e'-1> g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      <c'-3>8 <e'-1> <g'-0> e'' c' e' <a'-2> e'' c' e' <b'-0> e'' c' e' <b'> e''\!
+      <c'-3>8 <e'-1> <g'-0> e'' c' e' <a'-2> e'' c' e' <b'-0> e'' c' e' <c''-4\3> e''\!
             
       \break
       
@@ -133,7 +133,7 @@
       \time 6/8
       c'8 e' g' c' e' g' c' e' g' c' e' g'
       \time 4/4
-      c'8\< e' g' e''-- c' e' a' e''-- c' e' b' e''-- c' e' b' e''--\!
+      c'8\< e' g' e''-- c' e' a' e''-- c' e' b' e''-- c' e' c'' e''--\!
             
       \break
       
@@ -207,7 +207,7 @@
       \break
       
       \time 4/4
-      b8\< d' g' b' d' g' b' fis''-- b d' g' b' d' g' b' fis''--
+      b8\<-"poco accel" d' g' b' d' g' b' fis''-- b d' g' b' d' g' b' fis''--
       \time 4/4
       b8 d' g' b' d' g' b' fis''-- b d' g' b' d' g' b' fis''--\!
       

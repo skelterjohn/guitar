@@ -18,7 +18,7 @@
   \set Staff.connectArpeggios = ##t
   % \partial 4
   \key e \minor
-  \tempo 4. = 120
+  \tempo moderato
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)

@@ -172,7 +172,7 @@
             g8 d' g' a' <d'' fis'> a' g' c' | fis' g' a' c' g' a' b g' |
             \break
             g8 d' g' a' <d'' fis'> a' g' c' | fis' g' a' c' g' a' d' d16 (fis) |
-            g8 d' g' a'16 d'16 <b'\3 g'\4>8 \staccato <a' fis'>4 <g' e'>8~ | <g' e'>4 r8 <g' e'>4. r4 |
+            g8 d' g' a'16 d'16 <b'\2 g'\3>8 \staccato <a'\2 fis'\4>4 <g' e'>8~ | <g' e'>4 r8 <g' e'>4. r4 |
             \break
             
             g8 d' g' a' <c''\3 a'\2> <d''\2 g'\3>4 d''8\1 | g8 d' g' a' <c'' a'>16 d' <d'' g'>4 d''8 |
@@ -364,7 +364,7 @@
                 g8 d' g' a' <d'' fis'> a' g' c' | fis' g' a' c' g' a' b g' |
                 \break
                 g8 d' g' a' <d'' fis'> a' g' c' | fis' g' a' c' g' a' d' d16 (fis) |
-                g8 d' g' a'16 d'16 <b'\3 g'\4>8 \staccato <a' fis'>4 <g' e'>8~ | <g' e'>4 r8 <g' e'>4. r4 |
+                g8 d' g' a'16 d'16 <b'\2 g'\3>8 \staccato <a'\2 fis'\4>4 <g' e'>8~ | <g' e'>4 r8 <g' e'>4. r4 |
                 \break
                 
                 g8 d' g' a' <c''\3 a'\2> <d''\2 g'\3>4 d''8\1 | g8 d' g' a' <c''\3 a'\2>16 d' <d''\2 g'\3>4 d''8 |
@@ -404,13 +404,13 @@
                 c'8 fis' g' a' d fis' g' a' | g\6 b d' g' a' g' d' b | 
                 c'8 fis' g' a' d fis' g' a' | e b fis' g' d'' g' fis' b |
                 \break
-                c'8 fis' g' a' d fis' g' a' | g b d' g' d'' g' d' b | 
+                c'8 fis' g' a' d fis' g' a' | g\6 b d' g' d'' g' d' b | 
                 c'8 fis' g' a' d fis' g' a' | e fis' g' a' d'' a' g' fis' |
                 \break
-                c'8 fis' g' a' d fis' g' a' | g b d' g' a' g' d' b | 
+                c'8 fis' g' a' d fis' g' a' | g\6 b d' g' a' g' d' b | 
                 c'8 fis' g' a' d fis' g' a' | e b fis' g' d'' g' fis' b | 
                 \break
-                c'8 fis' g' a' d fis' g' a' | g b d' g' d'' g' d' b | 
+                c'8 fis' g' a' d fis' g' a' | g\6 b d' g' d'' g' d' b | 
                 c'8 fis' g' a' d fis' g' a' |
                 \break
                 
@@ -462,7 +462,7 @@
                 
                 c'4 s d s | g\6 s a' s |
                 c' s d s | e s2. |
-                c'4 s d s | g s a' s |
+                c'4 s d s | g\6 s a' s |
                 c' s d s | e s2. |
                 e4 s2. |
                 
@@ -482,7 +482,7 @@
                 g4 s a'16[ d'] s4. | g4 s a'16[ d'] s4. |
                 g4 s a'16[ d'] s4. | g4 s2. |
                 
-                c'4 s d s | g s a' s |
+                c'4 s d s | g\6 s a' s |
                 c' s d s | e s2. |
                 c'4 s d s | g s a' s |
                 c' s d s | e s2. |

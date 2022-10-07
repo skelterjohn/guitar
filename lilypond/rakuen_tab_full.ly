@@ -5,7 +5,7 @@
   title = "Rakuen"
   composer = "Tsuneo Imahori"
   tagline = "Transcription by John Asmuth, copyright Tsuneo Imahori. No license granted."
-  piece = \markup { \line { \circle 1 \circle 2 \circle 3 \circle 4 \circle 5 \circle 6 "= D A G D G D" } }
+  piece = \markup { \line { \circle 6 \circle 5 \circle 4 \circle 3 \circle 2 \circle 1 "= D G D G A D" } }
   
 }
 
@@ -324,10 +324,10 @@
             \set Staff.stringTunings = \stringTuning <d g d' g' a' d''>
             << 
               {
-                <d''~ g' >1 | <d'' g' >2 <d'' g' >2 |
-                <d''~ g' >1 | <d'' g' >2 <d'' g' >2 | 
-                <d''~ g' >1 |  <d'' g'>2 <d'' g' >2 |
-                <d''~ g' >1 |  <d'' g'>2 <d'' g' >2 |
+                <d''~ g'~ >1 | <d'' g' >2 <d'' g' >2 |
+                <d''~ g'~ >1 | <d'' g' >2 <d'' g' >2 | 
+                <d''~ g'~ >1 |  <d'' g'>2 <d'' g' >2 |
+                <d''~ g'~ >1 |  <d'' g'>2 <d'' g' >2 |
                 <d'' g' >1 |  <d'' g'>1 |
                 \break
                 
@@ -425,11 +425,11 @@
                 <d'' g'>2 <d'' g'>2 | <d'' g' g e'>1 \arpeggio |
               }
               {
-                <e' g e>1 | <e' g e>2 <g e>2 |
-                <d' g f>1 | < d' g f>2 < d' g>2 | 
-                  < d' g g>1 |  < d' g g>2 <g\6>4. ( <d>8)  |
-                < d' g f>1 |  < d' g f>2 < d' g f>2 |
-                < d' g ees>1 |  < d' g f>1 |
+                <e'~ g~ e~>1 | <e' g e>2 <g e>2 |
+                <d'~ g~ f~>1 | < d' g f>2 < d' g>2 | 
+                <d'~ g~ g~>1 |  < d' g g>2 <g\6>4. ( <d>8)  |
+                <d'~ g~ f~>1 |  < d' g f>2 < d' g f>2 |
+                <d' g ees>1 |  < d' g f>1 |
                 
                 g4 s fis' s | c'4 s8 c'4 s8 b4 |
                 g4 s fis' s | c'4 s8 c'4 s8 b4 |

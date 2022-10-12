@@ -1,8 +1,8 @@
 \version "2.20.0"
 \header {
   title = "Quickly Eroding Icy Shoreline"
-  composer = "Gulli Björnsson"
-  arranger = "Arr. John Asmuth"
+  composer = "John Asmuth"
+  arranger = "Var. Eroding Icy Shoreline by Gulli Björnsson"
 }
 
 \paper { ragged-last = ##t }

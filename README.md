@@ -6,6 +6,15 @@ files are available
 
 ## original compositions
 
+### Quickly Eroding Icy Shoreline (var)
+
+A variation on Gulli Björnsson's "Eroding Icy Shoreline". It follows the
+original piece phrase by phrase, in a very different style.
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/quickly_eroding_icy_shoreline.pdf)
+|
+[recording](https://www.youtube.com/watch?v=PTqMrPJhIuE)
+
 ### Frog Song (Naked Man Dance)
 
 This piece was written after a weekend of listening to various works by
@@ -69,6 +78,8 @@ and put this together to help me practice chord inversions.
 A simple piece with a repeating bass line. Has a few left-hand stretches but nothing too complicated. Perhaps best played as a meditation exersize at 2am.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/no_feedback.pdf)
+|
+[recording](https://youtu.be/Cpl9k0rCWcI)
 
 ## Transcriptions
 

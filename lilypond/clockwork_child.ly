@@ -10,22 +10,65 @@
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
+detuning_tail = {
+  e8 e e e e e e | e e e e e e e e |
+  dis8 dis dis dis dis dis dis dis | dis dis dis dis dis dis dis dis |
+  
+  e8 e e e e e e e | e e e e e e e e |
+  dis dis dis dis dis dis dis dis | dis dis dis dis dis dis dis dis |
+  
+  cis8 cis cis cis cis cis cis cis | cis cis cis cis cis cis cis cis |
+  dis dis dis dis dis dis dis dis | dis dis dis dis dis dis dis dis |
+}
+
+detuning_instructions = {
+  <e-0>8-"open string, detuning, retuning"
+  \detuning_tail
+}
+
+detuning_csharp = {
+  e8-\markup{ "leave" \circle 6 "on C-sharp if preferred" }
+  \detuning_tail
+}
+
+detuning = {
+  e8
+  \detuning_tail
+}
+
+bflatstoking = { bes'8\staccato r4 bes'8\staccato r4 bes'8\staccato r | }
+
+fullcyclerest = { 
+  r1 r1 r1 r1 |
+  r1 r1 r1 r1 |
+  r1 r1 r1 r1 |
+}
+
 <<
 \new Staff \with {
   \consists "Span_arpeggio_engraver"
   instrumentName = #"Child"
-  shortInstrumentName = #"E."
+  shortInstrumentName = #"Ch."
 }
 {
+  \tempo 4 = 100
   \set Staff.connectArpeggios = ##t
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      r1 r1 r1 r1
-      r1 r1 r1 r1
-      r1 r1
+      \fullcyclerest
+      
+      \break
+      
+      \fullcyclerest
+      
+      \break
+      
+      \fullcyclerest
+      
+      \break
       
     }
     \new Voice { \voiceTwo
@@ -48,7 +91,7 @@
 \new Staff \with {
   \consists "Span_arpeggio_engraver"
   instrumentName = #"Clockwork"
-  shortInstrumentName = #"C."
+  shortInstrumentName = #"Cl."
 }
 {
   \set Staff.connectArpeggios = ##t
@@ -57,9 +100,16 @@
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      r1 r1 r1 r1
-      r1 r1 r1 r1
-      r1 r1
+      \fullcyclerest
+      
+      \fullcyclerest
+      
+      bes'8[ aes' e'] bes'[ aes' e'] r4 | bes'8[ aes' e'] bes'[ aes' e'] r4 |
+      bes'8[ g' dis'] bes'[ g' dis'] r4 | bes'8[ g' dis'] bes'[ g' dis'] r4 |
+      bes'8[ aes' e'] bes'[ aes' e'] r4 | bes'8[ aes' e'] bes'[ aes' e'] r4 |
+      bes'8[ g' dis'] bes'[ g' dis'] r4 | bes'8[ g' dis'] bes'[ g' dis'] r4 |
+      bes'8[ g' cis'] bes'[ g' cis'] r4 | bes'8[ g' cis'] bes'[ g' cis'] r4 |
+      bes'8[ g' dis'] bes'[ g' dis'] r4 | bes'8[ g' dis'] bes'[ g' dis'] r4 |
       
     }
     \new Voice { \voiceTwo
@@ -91,9 +141,15 @@
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      r1 r1 r1 r1
-      r1 r1 r1 r1
-      r1 r1
+      \fullcyclerest
+      
+      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
+      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
+      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
+       
+      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
+      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
+      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
       
     }
     \new Voice { \voiceTwo
@@ -127,13 +183,10 @@
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      <e-0>8-"open string, detuning" e e e e e e e | e e e e e e e e |
-      <dis-0>8 dis dis dis dis dis dis dis | dis dis dis dis dis dis dis dis |
       
-      <e-0>8 e e e e e e e | e e e e e e e e |
-      <dis-0> dis dis dis dis dis dis dis | dis dis dis dis dis dis dis dis |
-      
-      <cis-0>8 cis cis cis cis cis cis cis | dis dis dis dis dis dis dis dis |
+      \detuning_instructions
+      \detuning
+      \detuning_csharp
     }
     \new Voice { \voiceTwo
       \set fingeringOrientations = #'(left)

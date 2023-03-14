@@ -6,6 +6,14 @@ files are available
 
 ## original compositions
 
+### Distance
+
+The first measure is a melody that has been stuck in my head for a long
+time. Perhaps from an anime theme song? Not sure. The piece is playable
+on one guitar but would probably be fun and sound nice with two.
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/distance.pdf)
+
 ### Quickly Eroding Icy Shoreline (var)
 
 A variation on Gulli Björnsson's "Eroding Icy Shoreline". It follows the

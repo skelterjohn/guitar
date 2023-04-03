@@ -11,37 +11,40 @@
 #(define RH rightHandFinger)
 
 detuning_tail = {
-  e8 e e e e e e | e e e e e e e e |
-  dis8 dis dis dis dis dis dis dis | dis dis dis dis dis dis dis dis |
+  \repeat tremolo 8 {e8} |
+  \repeat tremolo 8 {dis8} | \repeat tremolo 8 {dis} |
   
-  e8 e e e e e e e | e e e e e e e e |
-  dis dis dis dis dis dis dis dis | dis dis dis dis dis dis dis dis |
+  \repeat tremolo 8 {e8} | \repeat tremolo 8 {e} |
+  \repeat tremolo 8 {dis}| \repeat tremolo 8 {dis} |
   
-  cis8 cis cis cis cis cis cis cis | cis cis cis cis cis cis cis cis |
-  dis dis dis dis dis dis dis dis | dis dis dis dis dis dis dis dis |
+  \repeat tremolo 8 {cis8} | \repeat tremolo 8 {dis} |
 }
 
 detuning_instructions = {
-  <e-0>8-"open string, detuning, retuning"
+  <e-0>8-"open string, detuning, retuning" e e e e e e e |
   \detuning_tail
 }
 
 detuning_csharp = {
-  e8-\markup{ "leave" \circle 6 "on C-sharp if preferred" }
+  \repeat tremolo 8 {e8-\markup{ "leave" \circle 6 "on C-sharp if preferred"}} |
   \detuning_tail
 }
 
 detuning = {
-  e8
+  \repeat tremolo 8 {e8} |
   \detuning_tail
 }
 
-bflatstoking = { bes'8\staccato r4 bes'8\staccato r4 bes'8\staccato r | }
+bf_stoking = { bes'8\staccato r4 bes'8\staccato r4 bes'8\staccato r | }
+bfef_stoking = { <bes' ees''>8\staccato r4 <bes' ees''>8\staccato r4 <bes' ees''>8\staccato r | }
+bfcf_stoking = { <bes' ces''>8\staccato r4 <bes' ces''>8\staccato r4 <bes' ces''>8\staccato r | }
+bfdf_stoking = { <bes' des''>8\staccato r4 <bes' des''>8\staccato r4 <bes' des''>8\staccato r | }
+bfa_stoking = { <bes' a'>8\staccato r4 <bes' a'>8\staccato r4 <bes' a'>8\staccato r | }
 
 fullcyclerest = { 
-  r1 r1 r1 r1 |
-  r1 r1 r1 r1 |
-  r1 r1 r1 r1 |
+  r1 | r1 | r1 | r1 |
+  r1 | r1 | r1 | r1 |
+  r1 | r1 |
 }
 
 <<
@@ -51,7 +54,7 @@ fullcyclerest = {
   shortInstrumentName = #"Ch."
 }
 {
-  \tempo 4 = 100
+  \tempo 4 = 140
   \set Staff.connectArpeggios = ##t
   <<
     \new Voice { \voiceOne
@@ -60,15 +63,23 @@ fullcyclerest = {
       
       \fullcyclerest
       
-      \break
+      \break \bar "||"
       
       \fullcyclerest
       
-      \break
+      \break \bar "||"
       
       \fullcyclerest
       
-      \break
+      \break \bar "||"
+      
+      r1 | r1 |
+      r4 e''4 fis'' e'' | fis''2~ fis''4 e'' |
+      fis''2 g'' | fis''4 g'' fis''4~ fis''8 g'' |
+      g''2 g'' | <f'' g''>2 <f'' g''> |
+      <e'' g''>4. <e'' aes''>4. <e'' g''>4 | <dis'' aes''>4. <dis'' g''>4. <dis'' aes''>4 |
+      
+      \break \bar "||"
       
     }
     \new Voice { \voiceTwo
@@ -104,13 +115,17 @@ fullcyclerest = {
       
       \fullcyclerest
       
-      bes'8[ aes' e'] bes'[ aes' e'] r4 | bes'8[ aes' e'] bes'[ aes' e'] r4 |
-      bes'8[ g' dis'] bes'[ g' dis'] r4 | bes'8[ g' dis'] bes'[ g' dis'] r4 |
-      bes'8[ aes' e'] bes'[ aes' e'] r4 | bes'8[ aes' e'] bes'[ aes' e'] r4 |
-      bes'8[ g' dis'] bes'[ g' dis'] r4 | bes'8[ g' dis'] bes'[ g' dis'] r4 |
-      bes'8[ g' cis'] bes'[ g' cis'] r4 | bes'8[ g' cis'] bes'[ g' cis'] r4 |
-      bes'8[ g' dis'] bes'[ g' dis'] r4 | bes'8[ g' dis'] bes'[ g' dis'] r4 |
+      \repeat percent 3 {
+        bes'4 r8 bes'4 r8 bes'4 | r8 bes'4 r8 bes'4 r8 bes'8~ | bes'8 r8 bes'4 r8 bes'4 r8 |
+      }
+      bes'8\< bes' bes' bes' bes' bes' bes' bes'\! | 
       
+      r1 | r1 |
+      \repeat percent 2 {
+        aes'8 bes' ces'' des'' ces'' bes' aes' bes' | ces''8 des'' ces'' bes' aes' bes' ces'' des'' | ces'' bes'8 aes' bes' ces'' des'' ces'' bes' |
+      }
+      aes'8 bes' ces'' des'' ces'' bes' aes' bes' | ces''8 des'' ces'' bes' aes' bes' ces'' des'' |
+       
     }
     \new Voice { \voiceTwo
       \set fingeringOrientations = #'(left)
@@ -129,6 +144,7 @@ fullcyclerest = {
     }
   >>
 }
+
 \new Staff \with {
   \consists "Span_arpeggio_engraver"
   instrumentName = #"Fire"
@@ -143,13 +159,13 @@ fullcyclerest = {
       
       \fullcyclerest
       
-      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
-      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
-      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
+      \repeat percent 10 {bes'8\staccato r4 bes'8\staccato r4 bes'8\staccato r | }
        
-      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
-      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
-      \bflatstoking \bflatstoking \bflatstoking \bflatstoking
+      \repeat percent 10 {bes'8\staccato r4 bes'8\staccato r4 bes'8\staccato r | }
+       
+      \repeat percent 2 {\bfef_stoking} \repeat percent 2 {\bfcf_stoking}
+      \repeat percent 2 {\bfdf_stoking} \repeat percent 2 {\bfcf_stoking}
+      \repeat percent 2 {\bfa_stoking}
       
     }
     \new Voice { \voiceTwo
@@ -187,6 +203,7 @@ fullcyclerest = {
       \detuning_instructions
       \detuning
       \detuning_csharp
+      \detuning
     }
     \new Voice { \voiceTwo
       \set fingeringOrientations = #'(left)

@@ -10,6 +10,10 @@
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
+\markup {
+  For one guitar or two (stems up vs stems down).
+}
+
 <<
 \new Staff \with {
   \consists "Span_arpeggio_engraver"
@@ -18,13 +22,12 @@
   \set Staff.connectArpeggios = ##t
   % \partial 4
   \key e \minor
-  \tempo 8=100
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      \time 6/8
+      \time 6/8 
       
       e''8 d'' g'' b'~ b' a' |
       e''8 d'' g'' b'~ b' a' |
@@ -51,8 +54,6 @@
       e''8 d'' g'' b'~ b' a' |
       e''8 d'' g'' b'~ b' a' |
       
-      \break
-      
       c''16( b') a'8~a' b' a' fis'' |
       g''16( fis'') e''8 d'' b' g' a' |
       b'8 g' e'' b' g' a' |
@@ -67,8 +68,6 @@
       c''8 b'16( c'') d''8 a'~ a' b' |
       e''8 d''16( e'') fis''8 g''16( fis'') a''8 g''16( fis'') |
       e''16( d'') c''( b') a'( b') c''8~ c'' <d''>8 |
-      
-      \break
       
       <e''>8 d'' g' b' a' d' |
       <e''>8 d'' g' b' a' d' |

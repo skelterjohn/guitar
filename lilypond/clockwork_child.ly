@@ -305,30 +305,34 @@ fullcyclespace = {
     instrumentName = #"Child"
     shortInstrumentName = #"Ch."
   } {
-    \tempo 4 = 140
     \set Staff.connectArpeggios = ##t
     <<
-      \new Voice { \voiceOne
+      \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
                 
         %interlude
         %1
-        r1 | r1 | r1 | r1 | r1 |
-        r2.. e'''16 e''' | e'''1 |
-        r1 | r1 |
+        r1 | r1 | r1 |
+        r1 | r1 | r2.. e'''16 e''' |
         \break \bar "||"
         
+        e'''4~ e'''8 d'''8\staccato r2 | r1 | r1 |
+        r1 | r1 | r2.. e'''16 e''' |
+        \break \bar "||"
         
+        e'''4~ e'''8 d'''8\staccato r2 | r1 | r1 |
+        r1 | r1 | r2.. e'''16 e''' |
+        \break \bar "||"
         
-      }
-      \new Voice { \voiceTwo
-        \set fingeringOrientations = #'(left)
-        \set stringNumberOrientations = #'(up)
+        e'''4~ e'''8 d'''8\staccato r2 | r1 | r1 |
+        r1 | r1 | r2.. e'''16 e''' |
+        \break \bar "||"
         
-        %interlude
-        %1
-        s1 | s1 | s1 | s1 | s1 | s1 | s1 | s1 | s1 |
+        e'''4~ e'''8 d'''8\staccato r2 | r1 | r1 |
+        r1 | r1 | r1 |
+        \break \bar "||"
+        
       }
     >>
   }
@@ -343,19 +347,18 @@ fullcyclespace = {
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        %interlude
         %1
-        r1 | r1 | r1 | r1 | r1 | r1 | r1 | r1 | r1 |
+        r1 | r1 | r1 |
+        r1 | r1 | r1 |
         
-      }
-      \new Voice { \voiceTwo
-        \set fingeringOrientations = #'(left)
-        \set stringNumberOrientations = #'(up)
-        
-        %interlude
-        %1 
-        s1 | s1 | s1 | s1 | s1 | s1 | s1 | s1 | s1 |
-  
+        \repeat unfold 4 {
+          \repeat percent 3 {
+            cis''8 d'' cis'' d'' cis'' d'' cis'' d'' |
+          }
+          \repeat percent 3 {
+            cis''8 d'' cis'' d'' cis'' d'' cis'' d'' |
+          }
+        }
       }
     >>
     
@@ -372,11 +375,33 @@ fullcyclespace = {
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        %interlude
-        
         %1
-        r1 | r1 | r1 | r1 | r1 | r1 | r1 | r1 | r1 |
-  
+        r1 | r1 | r1 |
+        r1 | r1 | r1 |
+        
+        \repeat percent 3 {
+          bes'4_\markup {"pizz." \draw-dashed-line #'(5 . 0)}\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
+        }
+        \repeat percent 3 {
+          bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
+        }
+        
+        \repeat unfold 2 {
+          \repeat percent 3 {
+            bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
+          }
+          \repeat percent 3 {
+            bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
+          }
+        }
+        
+        \repeat percent 3 {
+          bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
+        }
+        \repeat percent 2 {
+          bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
+        }
+        bes'8 bes' bes' bes' bes' bes' bes' bes' |
       }
     >>
   }
@@ -392,21 +417,41 @@ fullcyclespace = {
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        \key cis \minor
+        \key g \major
         
         %interlude
         
         %1
-        e4_\markup {"pizz." \draw-dashed-line #'(75 . 0) }\staccato e\staccato e\staccato e\staccato | 
-        e4\staccato r2. |
-        r1 |
-        e4\staccato e\staccato e\staccato e\staccato | 
+        e4_\markup {"pizz." \draw-dashed-line #'(5 . 0) }\staccato e\staccato e\staccato e\staccato | 
         e4\staccato r2. |
         r1 |
         e4\staccato e\staccato e\staccato e\staccato | 
         e4\staccato r2. |
         r1 |
         
+        \repeat percent 2 {
+          e4\staccato e\staccato e\staccato e\staccato | 
+          e4\staccato r2. |
+          r1 |
+        }
+        
+        \repeat percent 2 {
+          e4\staccato e\staccato e\staccato e\staccato | 
+          e4\staccato r2. |
+          r1 |
+        }
+        
+        \repeat percent 2 {
+          e4\staccato e\staccato e\staccato e\staccato | 
+          fis4\staccato fis\staccato fis\staccato fis\staccato |
+          g4\staccato g\staccato g\staccato g\staccato |
+        }
+        
+        \repeat percent 2 {
+          e4_"nat." e e e | 
+          fis4 fis fis fis |
+          g4 g g g |
+        }
       }
     >>
   }
@@ -421,7 +466,6 @@ fullcyclespace = {
     instrumentName = #"Child"
     shortInstrumentName = #"Ch."
   } {
-    \tempo 4 = 140
     \set Staff.connectArpeggios = ##t
     <<
       \new Voice { \voiceOne

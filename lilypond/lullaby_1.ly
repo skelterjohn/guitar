@@ -37,16 +37,13 @@
       \break \bar "||"
       
       a''2. | a''2. | a''2.~ | a''2. |
-      \break \bar ":|."
+      \break \bar ":|.|:"
       
       g''2 f''4 | e''2. | f''2 e''4 | d''2. |
-      \break \bar "||"
-      
-      g''2 f''4 | e''2. | f''2 e''4 | d''2. |
-      \break \bar "||"
+      \break \bar ":|.|:"
       
       c''2. | b'2. | a'2.~ | a'2. |
-      \break \bar "||"
+      \break \bar ":|."
       
       r2. | e''4 gis''2\fermata |
       \bar "|."
@@ -58,34 +55,23 @@
   \set Staff.stringTunings = \stringTuning <e a d' g' b' e''>
   << 
     {
-    \repeat unfold 4 {
-      r2. |
-    }
-    \break \bar ".|:"
-    
-    e''2. | a''2. | b''2. | c'''2. |
-    \break \bar "||"
-    
-    e''2. | a''2. | d''2.~ | d''2. |
-    \break \bar "||"
-    
-    d''2. | e''2. | gis''2. | e''2. |
-    \break \bar "||"
-    
-    a''2. | a''2. | a''2.~ | a''2. |
-    \break \bar ":|."
-    
-    g''2 f''4 | e''2. | f''2 e''4 | d''2. |
-    \break \bar "||"
-    
-    g''2 f''4 | e''2. | f''2 e''4 | d''2. |
-    \break \bar "||"
-    
-    c''2. | b'2. | a'2.~ | a'2. |
-    \break \bar "||"
-    
-    r2. | e''4 gis''2\fermata |
-    \bar "|."
+      \repeat unfold 4 {
+        r2. |
+      }
+      
+      e''2. | a''2. | b''2. | c'''2. |
+      
+      e''2. | a''2. | d''2.~ | d''2. |
+      
+      d''2. | e''2. | gis''2. | e''2. |
+      
+      a''2. | a''2. | a''2.~ | a''2. |
+      
+      g''2 f''4 | e''2. | f''2 e''4 | d''2. |
+      
+      c''2. | b'2. | a'2.~ | a'2. |
+      
+      r2. | e''4 gis''2\fermata |
     }
   >>
 }
@@ -131,13 +117,6 @@
         d'8 a' <d'' f''> a' <d'' f''> a' |
       }
       
-      \repeat unfold 2 {
-        a8 e' <a' cis''> e' <a' cis''> e' |
-      }
-      \repeat unfold 2 {
-        d'8 a' <d'' f''> a' <d'' f''> a' |
-      }
-      
       a8 e' <a' c''> e' <a' c''> e' |
       e8 b <e' gis'> b <e' gis'> b |
       a8 e' <a' c''> e' <a' c''> e' |
@@ -173,13 +152,6 @@
       }
       \repeat unfold 2 {
         a4 s2 |
-      }
-      
-      \repeat unfold 2 {
-        a4 s2 |
-      }
-      \repeat unfold 2 {
-        d'4 s2 |
       }
       
       \repeat unfold 2 {

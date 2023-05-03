@@ -1,4 +1,7 @@
 \version "2.20.0"
+combinedbreak=\break
+solobreak={}
+solopage={}
 \include "clockwork_common.ly"
 
 <<

@@ -1,4 +1,7 @@
 \version "2.20.0"
+combinedbreak={}
+solobreak=\break
+solopage=\pageBreak
 \include "clockwork_common.ly"
 
 \compressMMRests <<

@@ -1,5 +1,27 @@
 \version "2.20.0"
-\include "clockwork_common.ly"
+\header {
+  title = "Maker Fire Clockwork Child"
+  composer = "John Asmuth"
+  tagline = ""
+}
+
+\paper { ragged-last = ##t }
+
+\include "../bbarred.ly"
+#(define RH rightHandFinger)
+
+fullcyclerest = { 
+  R1*10 |
+}
+fullcyclespace = { 
+  s1 | s1 | s1 | s1 |
+  s1 | s1 | s1 | s1 |
+  s1 | s1 |
+}
+
+\include "clockwork_child_a.ly"
+\include "clockwork_child_b.ly"
+\include "clockwork_child_c.ly"
 
 <<
   \new Staff \with {
@@ -15,6 +37,7 @@
         \set stringNumberOrientations = #'(up)
         
         \mark \markup \circle A
+        
         \child_a_one
       }
     >>

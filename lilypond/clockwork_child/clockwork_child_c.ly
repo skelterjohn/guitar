@@ -49,15 +49,19 @@ child_c_one={
 child_c_two={
   %1
   \fullcyclespace
+  \break \bar "||"
   
   %2
   \fullcyclespace
+  \break \bar "||"
   
   %3
   \fullcyclespace
+  \break \bar "||"
   
   %4
   \fullcyclespace
+  \break \bar "||"
   
   %5
   s1 s1
@@ -69,9 +73,11 @@ child_c_two={
   \repeat tremolo 16 {ais''32} \repeat tremolo 16 {gis''32} |
   \repeat tremolo 12 {b''32} \repeat tremolo 4 {ais''32} \repeat tremolo 8 {gis''32} \repeat tremolo 8 { ais''32 } |
   \repeat tremolo 16 {gis''32} \repeat tremolo 16 {fisis''32} |
+  \break \bar "||"
   
   \repeat tremolo 12 {cis'''32} \repeat tremolo 4 {b''32} \repeat tremolo 12 {ais''32} \repeat tremolo 4 {gis''32} |
   \repeat tremolo 12 {fisis''32} \repeat tremolo 4 {f''32} \repeat tremolo 12 {e''32} d''8 |
+  \break \bar "||"
   
 }
 
@@ -85,6 +91,7 @@ clockwork_c_one={
   }
   <e''>8^"div."[ <d''> <cis''>] <e''>[ <d''> <cis''>] <e''>[ <d''> |
   <cis''>8] <e''>[ <d''> <cis''>] <e''>[ <d''> <cis''> <b'>] |
+  \break \bar "||"
   
   %2
   \repeat percent 4 {
@@ -92,6 +99,7 @@ clockwork_c_one={
   }
   <e''>8[ <d''> <cis''>] <e''>[ <d''> <cis''>] <e''>[ <d''> |
   <cis''>8] <e''>[ <d''> <cis''>] <e''>[ <d''> <cis''> <b'>] |
+  \break \bar "||"
   
   %3 4 5
   \repeat unfold 3 {
@@ -99,9 +107,11 @@ clockwork_c_one={
       <e''>8[ <d''> <cis''>] <e''>[ <d''> <cis''>] <e''>[ <d''> |
       <cis''>8] <e''>[ <d''> <cis''>] <e''>[ <d''> <cis''> <b'>] |
     }
+    \break \bar "||"
   }
   
   R1*2 |
+  \break \bar "||"
 }
 
 clockwork_c_two={
@@ -109,6 +119,7 @@ clockwork_c_two={
   \repeat unfold 8 s1 |
   <g'>8[ <fis'> <e'>] <g'>[ <fis'> <e'>] <g'>[ <fis'> |
   <e'>8] <g'>[ <fis'> <e'>] <g'>[ <fis'> <e'> <d'>] |
+  \break \bar "||"
   
   %2
   \repeat percent 4 {
@@ -116,6 +127,7 @@ clockwork_c_two={
   }
   <g'>8[ <fis'> <e'>] <g'>[ <fis'> <e'>] <g'>[ <fis'> |
   <e'>8] <g'>[ <fis'> <e'>] <g'>[ <fis'> <e'> <d'>] |
+  \break \bar "||"
   
   %3 4 5
   \repeat unfold 3 {
@@ -123,14 +135,17 @@ clockwork_c_two={
       <g'>8[ <fis'> <e'>] <g'>[ <fis'> <e'>] <g'>[ <fis'> |
       <e'>8] <g'>[ <fis'> <e'>] <g'>[ <fis'> <e'> <d'>] |
     }
+    \break \bar "||"
   }
         
   s1 | s1 |
+  \break \bar "||"
 }
 
 fire_c_one={
   %1
   \fullcyclerest
+  \break \bar "||"
 
   %2 3 4 5
   \repeat unfold 4 {
@@ -142,12 +157,12 @@ fire_c_one={
     }
     <des' ges' bes' des''>8\staccato r4 <des' ges' bes' des''>8\staccato r4 <des' ges' bes' des''>4\staccato |
     <des' ges' bes' des''>8\staccato r4 <des' ges' bes' eeses''>8\staccato r4 <des' ges' bes' des''>4\staccato |
+    \break \bar "||"
   }
 
   %tumble2
-  \set fingeringOrientations = #'(left)
-  \set stringNumberOrientations = #'(up)
   R1*2 |
+  \break \bar "||"
 }
 
 maker_c_one={
@@ -163,8 +178,10 @@ maker_c_one={
     }
     <e bes>4 <e bes>8 <e ces'>4 <e ces'>8 <e des'>4 |
     <e des'>4 <e des'>8 <e ces'>4 <e ces'>8 <e bes>4 |
+    \break \bar "||"
   }
   
   %tumble2
   R1*2 |
+  \break \bar "||"
 }

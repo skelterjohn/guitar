@@ -22,6 +22,7 @@ child_b_two={
 clockwork_b_one={
   %1
   R1*6 |
+  \break \bar "||"
   
   \repeat unfold 4 {
     \repeat percent 3 {
@@ -30,6 +31,7 @@ clockwork_b_one={
     \repeat percent 3 {
       cis''8 d'' cis'' d'' cis'' d'' cis'' d'' |
     }
+    \break \bar "||"
   }
 }
 
@@ -43,6 +45,7 @@ fire_b_one={
   \repeat percent 3 {
     bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
   }
+  \break \bar "||"
   
   \repeat unfold 2 {
     \repeat percent 3 {
@@ -51,6 +54,7 @@ fire_b_one={
     \repeat percent 3 {
       bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
     }
+  \break \bar "||"
   }
   
   \repeat percent 3 {
@@ -59,7 +63,9 @@ fire_b_one={
   \repeat percent 2 {
     bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
   }
+  \break \bar "||"
   bes'8 bes' bes' bes' bes' bes' bes' bes' |
+  \break \bar "||"
 }
 
 maker_b_one={
@@ -70,28 +76,33 @@ maker_b_one={
   e4\staccato e\staccato e\staccato e\staccato | 
   e4\staccato r2. |
   R1 |
+  \break \bar "||"
   
   \repeat percent 2 {
     e4\staccato e\staccato e\staccato e\staccato | 
     e4\staccato r2. |
     R1 |
   }
+  \break \bar "||"
   
   \repeat percent 2 {
     e4\staccato e\staccato e\staccato e\staccato | 
     e4\staccato r2. |
     R1 |
   }
+  \break \bar "||"
   
   \repeat percent 2 {
     e4\staccato e\staccato e\staccato e\staccato | 
     fis4\staccato fis\staccato fis\staccato fis\staccato |
     g4\staccato g\staccato g\staccato g\staccato |
   }
+  \break \bar "||"
   
   \repeat percent 2 {
     e4_"nat." e e e | 
     fis4 fis fis fis |
     g4 g g g |
   }
+  \break \bar "||"
 }

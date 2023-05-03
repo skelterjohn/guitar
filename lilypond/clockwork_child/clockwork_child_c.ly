@@ -4,11 +4,10 @@ child_c_one={
   \key fis \minor
 
   %1
-  \fullcyclerest
+  R1*10
   \combinedbreak \bar "||"
-
   %2
-  \fullcyclerest
+  R1*10
   \combinedbreak \bar "||"
 
   \solopage
@@ -20,6 +19,7 @@ child_c_one={
   e'''4. d'''8 cis'''4 d''' | cis'''2 b'' |
   d'''4. cis'''8 b''4 cis''' | b''2 ais'' |
   \combinedbreak \bar "||"
+  \solobreak
   
   %4
   e'''8 e''' e''' d''' cis''' cis''' d''' d''' | cis'''8 cis''' cis''' cis''' b'' b'' b'' b'' |
@@ -29,16 +29,19 @@ child_c_one={
   \repeat tremolo 12 {e'''32^"trem."} \repeat tremolo 4 {d'''32} \repeat tremolo 8 {cis'''32} \repeat tremolo 8 { d'''32 } |
   \repeat tremolo 16 {cis'''32} \repeat tremolo 16 {b''32} |
   \combinedbreak \bar "||"
+  \solobreak
   
   %5
   \repeat tremolo 12 {d'''32} \repeat tremolo 4 {cis'''32} \repeat tremolo 8 {b''32} \repeat tremolo 8 { cis'''32 } |
   \repeat tremolo 16 {b''32} \repeat tremolo 16 {ais''32} |
   \repeat tremolo 12 {e'''32^"div."} \repeat tremolo 4 {d'''32} \repeat tremolo 8 {cis'''32} \repeat tremolo 8 { d'''32 } |
   \repeat tremolo 16 {cis'''32} \repeat tremolo 16 {b''32} |
+  \solobreak
   \repeat tremolo 12 {d'''32} \repeat tremolo 4 {cis'''32} \repeat tremolo 8 {b''32} \repeat tremolo 8 { cis'''32 } |
   \repeat tremolo 16 {b''32} \repeat tremolo 16 {ais''32} |   
   \repeat tremolo 12 {e'''32} \repeat tremolo 4 {d'''32} \repeat tremolo 8 {cis'''32} \repeat tremolo 8 { d'''32 } |
   \repeat tremolo 16 {cis'''32} \repeat tremolo 16 {b''32} |
+  \solobreak
   \repeat tremolo 12 {d'''32} \repeat tremolo 4 {cis'''32} \repeat tremolo 8 {b''32} \repeat tremolo 8 { cis'''32 } |
   \repeat tremolo 16 {b''32} \repeat tremolo 16 {ais''32} |
   \combinedbreak \bar "||"
@@ -50,11 +53,10 @@ child_c_one={
         
 child_c_two={
   %1
-  \fullcyclespace
+  R1*10
   \combinedbreak \bar "||"
-  
   %2
-  \fullcyclespace
+  R1*10
   \combinedbreak \bar "||"
   
   %3
@@ -64,6 +66,7 @@ child_c_two={
   %4
   \fullcyclespace
   \combinedbreak \bar "||"
+  \solobreak
   
   %5
   s1 s1
@@ -150,6 +153,7 @@ clockwork_c_two={
 }
 
 fire_c_one={
+  \solopage
   %1
   \fullcyclerest
   \combinedbreak \bar "||"

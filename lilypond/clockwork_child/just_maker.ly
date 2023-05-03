@@ -23,6 +23,10 @@ solopage=\pageBreak
         \mark \markup \circle C
         \maker_c_one
       }
+      \new Voice { \voiceTwo
+        
+        s1^"open string, detuning, retuning"
+      }
     >>
   }
 >>

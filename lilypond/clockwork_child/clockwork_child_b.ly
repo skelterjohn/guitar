@@ -2,8 +2,7 @@
 
 child_b_two={
   %1
-  R1*3 |
-  R1*2 | r2.. e'''16 e''' |
+  R1*5 | r2.. e'''16 e''' |
   \combinedbreak \bar "||"
   
   e'''4~ e'''8 d'''8\staccato r2 | R1*4 | r2.. e'''16 e''' |
@@ -65,7 +64,6 @@ fire_b_one={
   \repeat percent 2 {
     bes'4\staccato bes'8\staccato bes'4\staccato bes'8\staccato bes'4\staccato | 
   }
-  \combinedbreak \bar "||"
   bes'8 bes' bes' bes' bes' bes' bes' bes' |
   \combinedbreak \bar "||"
   \break

@@ -18,14 +18,17 @@ child_a_one={
   %4
   \fullcyclerest
   \combinedbreak \bar "||"
+  \solobreak
   
   %5
-  R1*2 |
+  r1 r1 |
   c'''4. b''8 ais''4 b'' | ais''1 |
   c'''4. b''8 ais''4 b'' | ais''2 gis'' |
+  \combinedbreak
   c'''4. b''8 ais''4 b'' | ais''1 |
   c'''4. b''8 ais''4 b'' | ais''8 b'' ais'' b'' ais''8 b'' ais'' b'' |
-  \solobreak \combinedbreak \bar "||"
+  \combinedbreak \bar "||"
+  \solobreak
   
   %6
   c'''4. b''8 ais''4 b'' | ais''2 gis'' |
@@ -118,22 +121,24 @@ fire_a_one={
     }
     <bes' des''>8\staccato r4 <bes' des''>8\staccato r4 <bes' des''>8\staccato r |
     <bes' des''>8\staccato r4 <bes' des''>8\staccato r4 <bes' des'' e''>4-> |
-    \combinedbreak \bar "||"
+    \bar "||"
+    \combinedbreak
     \solobreak
   }
+  \bar "||"
   
   %tumble
   ces''8 des'' ces'' des'' ces''8 des'' ces'' des'' | 
   R1*2 |
   \combinedbreak \bar "||"
-  \solopage
+  \solobreak
 }
 
 maker_a_one={
   \key cis \minor
           
   %1
-  <e-0>8-"open string, detuning, retuning" e e e e e e e |
+  <e-0>8 e e e e e e e |
   \repeat tremolo 8 {e8_"sim."} |
   \repeat tremolo 8 {<dis-0>8} | \repeat tremolo 8 {dis} |
   \repeat tremolo 8 {<e-0>8} | \repeat tremolo 8 {e} |
@@ -142,43 +147,17 @@ maker_a_one={
   \combinedbreak \bar "||"
   \solobreak
   
-  %2
-  \repeat tremolo 8 {<e>8} |
-  \repeat tremolo 8 {e8} |
-  \repeat tremolo 8 {<dis>8} | \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<e>8} | \repeat tremolo 8 {e} |
-  \repeat tremolo 8 {<dis>}| \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<cis-0>8-\markup{ "leave" \circle 6 "on C#"}} | \repeat tremolo 8 {<dis-2>} |
-  \combinedbreak \bar "||"
-  
-  %3
-  \repeat tremolo 8 {<e-3>8} |
-  \repeat tremolo 8 {e8} |
-  \repeat tremolo 8 {<dis-2>8} | \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<e>8} | \repeat tremolo 8 {e} |
-  \repeat tremolo 8 {<dis>}| \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<cis>8} | \repeat tremolo 8 {<dis>} |
-  \combinedbreak \bar "||"
-  \solobreak
-  
-  %4
-  \repeat tremolo 8 {<e>8} |
-  \repeat tremolo 8 {e8} |
-  \repeat tremolo 8 {<dis>8} | \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<e>8} | \repeat tremolo 8 {e} |
-  \repeat tremolo 8 {<dis>}| \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<cis>8} | \repeat tremolo 8 {<dis>} |
-  \combinedbreak \bar "||"
-  
-  %5
-  \repeat tremolo 8 {<e>8} |
-  \repeat tremolo 8 {e8} |
-  \repeat tremolo 8 {<dis>8} | \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<e>8} | \repeat tremolo 8 {e} |
-  \repeat tremolo 8 {<dis>}| \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<cis>8} | \repeat tremolo 8 {<dis>} |
-  \combinedbreak \bar "||"
-  \solobreak
+  %2 %3 %4 %5
+  \repeat unfold 4 {
+    \repeat tremolo 8 {<e>8} |
+    \repeat tremolo 8 {e8} |
+    \repeat tremolo 8 {<dis>8} | \repeat tremolo 8 {dis} |
+    \repeat tremolo 8 {<e>8} | \repeat tremolo 8 {e} |
+    \repeat tremolo 8 {<dis>}| \repeat tremolo 8 {dis} |
+    \repeat tremolo 8 {<cis>8} | \repeat tremolo 8 {<dis>} |
+    \combinedbreak \bar "||"
+    \solobreak
+  }
   
   %6
   \repeat tremolo 8 {<e>8} |
@@ -186,7 +165,7 @@ maker_a_one={
   \repeat tremolo 8 {<dis>8} | \repeat tremolo 8 {dis} |
   \repeat tremolo 8 {<e>8} | \repeat tremolo 8 {e} |
   \repeat tremolo 8 {<dis>}| \repeat tremolo 8 {dis} |
-  \repeat tremolo 8 {<e-0>8_\markup{"back up to" \circle 6 "=E"}} | \repeat tremolo 8 {<e>} |
+  \repeat tremolo 8 {<e>8} | \repeat tremolo 8 {<e>} |
   \combinedbreak \bar "||"
   \solobreak
   

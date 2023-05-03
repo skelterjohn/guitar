@@ -35,14 +35,14 @@
       e''2. | a''2. | d''2.~ | d''2. |
       \break \bar "||"
       
-      d''2. | e''2. | gis''2. | e''2. \mark \markup { \musicglyph "scripts.coda" } |
+      d''2. | e''2. | gis''2. | e''2. |
       \break \bar "||"
       
       a''2. | a''2. | a''2.~ | a''2. |
       \break \bar ":|.|:"
       
       \mark \markup { \circle B }
-      g''2 f''4 | e''2. | f''2 e''4 | d''2.^\markup { \circle A "to" \musicglyph "scripts.coda" "then" \circle C } |
+      g''2 f''4 | e''2. | f''2 e''4 | d''2. |
       \break \bar ":|."
       
       
@@ -52,6 +52,11 @@
       
       \bar "|."
       
+    }
+    \new Voice { \voiceTwo
+      \repeat unfold 15 { s2. } s4 s4.... s64^\markup { \musicglyph "scripts.coda" }
+      
+      \repeat unfold 7 { s2. } s4 s4.... s64^\markup { \circle A "to" \musicglyph "scripts.coda" "then" \circle C }
     }
   >>
 }

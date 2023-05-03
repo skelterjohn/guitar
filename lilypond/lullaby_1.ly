@@ -10,7 +10,7 @@
 \include "bbarred.ly"
 #(define RH rightHandFinger)
 
-<<
+\new StaffGroup <<
 \new Staff \with {
   \consists "Span_arpeggio_engraver"
 }

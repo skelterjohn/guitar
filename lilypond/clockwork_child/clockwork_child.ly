@@ -45,6 +45,7 @@ solopage={}
         \child_c_two
       }
     >>
+    \mark \markup \circle D
   }
   \new Staff \with {
     \consists "Span_arpeggio_engraver"

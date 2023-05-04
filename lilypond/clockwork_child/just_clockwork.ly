@@ -39,6 +39,15 @@ solopage=\pageBreak
         \clockwork_c_two
       }
     >>
+    <<
+      \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(up)
+        
+        \mark \markup \circle D
+        \clockwork_d_one
+      }
+    >>
   }
   
 >>

@@ -75,6 +75,14 @@ solopage={}
         \clockwork_c_two
       }
     >>
+    <<
+      \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(up)
+        
+        \clockwork_d_one
+      }
+    >>
   }
   
   \new Staff \with {
@@ -109,6 +117,7 @@ solopage={}
         \maker_a_one
         \maker_b_one
         \maker_c_one
+        \maker_d_one
       }
     >>
   }

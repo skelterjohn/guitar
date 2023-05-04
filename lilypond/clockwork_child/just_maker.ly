@@ -27,7 +27,6 @@ solopage=\pageBreak
         s1^"open string, detuning, retuning"
       }
     >>
-    \set Staff.connectArpeggios = ##t
     <<
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
@@ -41,6 +40,15 @@ solopage=\pageBreak
         \set stringNumberOrientations = #'(up)
         
         \maker_c_two
+      }
+    >>
+    <<
+      \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(up)
+        
+        \mark \markup \circle D
+        \maker_d_one
       }
     >>
   }

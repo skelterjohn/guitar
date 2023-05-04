@@ -22,3 +22,4 @@ fullcyclespace = {
 \include "clockwork_child_a.ly"
 \include "clockwork_child_b.ly"
 \include "clockwork_child_c.ly"
+\include "clockwork_child_d.ly"

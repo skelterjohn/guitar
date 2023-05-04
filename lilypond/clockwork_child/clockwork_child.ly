@@ -10,32 +10,32 @@ solopage={}
     instrumentName = #"Child"
     shortInstrumentName = #"Ch."
   } {
-    \tempo 4 = 140
     \set Staff.connectArpeggios = ##t
+    \mark \markup \circle A
+    \tempo_a
     <<
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        \mark \markup \circle A
         \child_a_one
       }
     >>
+    \mark \markup \circle B
     <<
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        \mark \markup \circle B
         \child_b_two
       }
     >>
+    \mark \markup \circle C
     <<
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        \mark \markup \circle C
         \child_c_one
       }
       \new Voice { \voiceTwo

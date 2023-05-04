@@ -18,6 +18,7 @@ solopage=\pageBreak
         \set stringNumberOrientations = #'(up)
         
         \mark \markup \circle A
+        \tempo_a
         
         \child_a_one
       }

@@ -94,7 +94,7 @@ clockwork_c_one={
   %1
   R1*2 |
   \repeat percent 3 {
-    e''8 d'' e'' d'' e'' fis'' e'' d'' | cis''8 b' cis'' b' cis'' b' ais' b' |
+    e''8 d'' e'' d'' e'' d'' e'' d'' | cis''8 b' cis'' b' cis'' b' ais' b' |
   }
   <e''>8^"div."[ <d''> <cis''>] <e''>[ <d''> <cis''>] <e''>[ <d''> |
   <cis''>8] <e''>[ <d''> <cis''>] <e''>[ <d''> <cis''> <b'>] |
@@ -103,7 +103,7 @@ clockwork_c_one={
   
   %2
   \repeat percent 4 {
-    e''8 d'' e'' d'' e'' fis'' e'' d'' | cis''8 b' cis'' b' cis'' b' ais' b' |
+    e''8 d'' e'' d'' e'' d'' e'' d'' | cis''8 b' cis'' b' cis'' b' ais' b' |
   }
   <e''>8[ <d''> <cis''>] <e''>[ <d''> <cis''>] <e''>[ <d''> |
   <cis''>8] <e''>[ <d''> <cis''>] <e''>[ <d''> <cis''> <b'>] |
@@ -132,7 +132,7 @@ clockwork_c_two={
   
   %2
   \repeat percent 4 {
-    g'8 fis' g' fis' g' a' g' fis' | e'8 d' e' d' e' d' cis' d' |
+    g'8 fis' g' fis' g' fis' g' fis' | e'8 d' e' d' e' d' cis' d' |
   }
   <g'>8[ <fis'> <e'>] <g'>[ <fis'> <e'>] <g'>[ <fis'> |
   <e'>8] <g'>[ <fis'> <e'>] <g'>[ <fis'> <e'> <d'>] |
@@ -157,6 +157,7 @@ fire_c_one={
   %1
   \fullcyclerest
   \combinedbreak \bar "||"
+  \solobreak
 
   %2 3 4 5
   \repeat unfold 4 {
@@ -198,4 +199,7 @@ maker_c_one={
   %tumble2
   R1*2 |
   \combinedbreak \bar "||"
+}
+maker_c_two={
+  s1_\mf
 }

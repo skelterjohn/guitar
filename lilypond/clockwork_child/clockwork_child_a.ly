@@ -1,5 +1,8 @@
 % clockwork child, section A
 
+
+tempo_a={\tempo 4 = 140}
+
 child_a_one={
   \key a \major
   
@@ -39,8 +42,11 @@ child_a_one={
   \combinedbreak \bar "||"
   
   %tumble
-  ais''8 b'' ais'' b'' ais''8 b'' ais'' b''| 
-  R1*2 |
+  ais''8 b'' ais'' b'' ais''8 b'' ais'' b''|
+  c'''4. b''8 ais''4 b'' |
+  ais''8 b'' ais'' b'' ais''8 b'' ais'' b''|
+  c'''4. b''8 ais''8 b'' r4 |
+  R1*2
   \solobreak \combinedbreak \bar "||"
 }
 
@@ -75,7 +81,10 @@ clockwork_a_one={
   
   %tumble
   g'8 aes' g' aes' g' aes' g' aes' |
-  R1*2 |
+  bes'8[ aes' g'] bes'[ aes' g'] bes'[ aes'] |
+  g'8 aes' g' aes' g' aes' g' aes' |
+  bes'8[ aes' g'] bes' g' aes' r4 |
+  R1*2
   \combinedbreak \bar "||"
   \solobreak
 }
@@ -129,7 +138,10 @@ fire_a_one={
   
   %tumble
   ces''8 des'' ces'' des'' ces''8 des'' ces'' des'' | 
-  R1*2 |
+  <bes' ees''>8\staccato r4 <bes' ees''>8\staccato r4 <bes' ees''>8\staccato r |
+  ces''8 des'' ces'' des'' ces''8 des'' ces'' des'' | 
+  <bes' ees''>8\staccato r4 <bes' ees''>8\staccato ces''8 des'' r4 |
+  R1*2
   \combinedbreak \bar "||"
   \solobreak
 }
@@ -138,7 +150,7 @@ maker_a_one={
   \key cis \minor
           
   %1
-  <e-0>8 e e e e e e e |
+  <e-0>8_\mf e e e e e e e |
   \repeat tremolo 8 {e8_"sim."} |
   \repeat tremolo 8 {<dis-0>8} | \repeat tremolo 8 {dis} |
   \repeat tremolo 8 {<e-0>8} | \repeat tremolo 8 {e} |
@@ -156,8 +168,9 @@ maker_a_one={
     \repeat tremolo 8 {<dis>}| \repeat tremolo 8 {dis} |
     \repeat tremolo 8 {<cis>8} | \repeat tremolo 8 {<dis>} |
     \combinedbreak \bar "||"
-    \solobreak
+  \solobreak
   }
+  \solobreak
   
   %6
   \repeat tremolo 8 {<e>8} |
@@ -170,8 +183,11 @@ maker_a_one={
   \solobreak
   
   %tumble
-  e4_\markup {"pizz. B." \draw-dashed-line #'(5 . 0) }\staccato e\staccato e\staccato e\staccato |
-  e16(f e8\staccato) r2. | R1 |
+  e4_\f\staccato e\staccato e\staccato e\staccato |
+  e4\staccato e\staccato e\staccato e\staccato |
+  e4\staccato e\staccato e\staccato e\staccato |
+  e4\staccato e\staccato e\staccato e16_\markup {"pizz. B."}(f e8\staccato) |
+  R1*2
   \combinedbreak \bar "||"
   \solobreak
 }

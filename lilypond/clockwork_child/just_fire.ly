@@ -17,6 +17,7 @@ solopage=\pageBreak
         \set stringNumberOrientations = #'(up)
         
         \mark \markup \circle A
+        \tempo_a
         \fire_a_one
         \mark \markup \circle B
         \fire_b_one

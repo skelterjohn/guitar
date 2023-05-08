@@ -4,6 +4,7 @@
 tempo_a={\tempo 4 = 140}
 
 child_a_one={
+  \mark \markup \circle A
   \key a \major
   
   %1
@@ -51,6 +52,7 @@ child_a_one={
 }
 
 clockwork_a_one={
+  \mark \markup \circle A
   \key f \minor
   
   %1
@@ -90,6 +92,7 @@ clockwork_a_one={
 }
 
 fire_a_one={
+  \mark \markup \circle A
   \key ees \minor
   
   %1
@@ -147,6 +150,7 @@ fire_a_one={
 }
 
 maker_a_one={
+  \mark \markup \circle A
   \key cis \minor
           
   %1

@@ -17,7 +17,6 @@ solopage=\pageBreak
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        \mark \markup \circle A
         \tempo_a
         
         \child_a_one
@@ -28,7 +27,6 @@ solopage=\pageBreak
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        \mark \markup \circle B
         \child_b_two
       }
     >>
@@ -37,7 +35,6 @@ solopage=\pageBreak
         \set fingeringOrientations = #'(left)
         \set stringNumberOrientations = #'(up)
         
-        \mark \markup \circle C
         \child_c_one
       }
       \new Voice { \voiceTwo
@@ -45,6 +42,20 @@ solopage=\pageBreak
         \set stringNumberOrientations = #'(up)
         
         \child_c_two
+      }
+    >>
+    <<
+      \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(up)
+        
+        \child_d_one
+      }
+      \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(up)
+        
+        \child_d_two
       }
     >>
   }

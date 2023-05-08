@@ -1,6 +1,7 @@
 % clockwork child, section C
 
 child_c_one={
+  \mark \markup \circle C
   \key fis \minor
 
   %1
@@ -48,7 +49,7 @@ child_c_one={
   
   \repeat tremolo 12 {e'''32} \repeat tremolo 4 {d'''32} \repeat tremolo 12 {e'''32} \repeat tremolo 4 {d'''32} |
   \repeat tremolo 12 {e'''32} \repeat tremolo 4 {d'''32} \repeat tremolo 12 {e'''32} d'''8 |
-  \combinedbreak \bar "||"
+  \solobreak \combinedbreak \bar "||"
 }
         
 child_c_two={
@@ -82,11 +83,11 @@ child_c_two={
   
   \repeat tremolo 12 {cis'''32} \repeat tremolo 4 {b''32} \repeat tremolo 12 {ais''32} \repeat tremolo 4 {gis''32} |
   \repeat tremolo 12 {fisis''32} \repeat tremolo 4 {f''32} \repeat tremolo 12 {e''32} d''8 |
-  \combinedbreak \bar "||"
-  
+  \solobreak \combinedbreak \bar "||"
 }
 
 clockwork_c_one={
+  \mark \markup \circle C
   \key b \minor
   
   \solopage
@@ -120,7 +121,7 @@ clockwork_c_one={
   }
   
   R1*2 |
-  \combinedbreak \bar "||"
+  \solobreak \combinedbreak \bar "||"
 }
 
 clockwork_c_two={
@@ -149,10 +150,11 @@ clockwork_c_two={
   }
         
   s1 | s1 |
-  \combinedbreak \bar "||"
+  \solobreak \combinedbreak \bar "||"
 }
 
 fire_c_one={
+  \mark \markup \circle C
   \solopage
   %1
   \fullcyclerest
@@ -180,6 +182,7 @@ fire_c_one={
 }
 
 maker_c_one={
+  \mark \markup \circle C
   \key e \minor
         
   %1 2 3 4 5
@@ -198,7 +201,7 @@ maker_c_one={
   
   %tumble2
   R1*2 |
-  \combinedbreak \bar "||"
+  \solobreak \combinedbreak \bar "||"
 }
 maker_c_two={
   s1_\mf

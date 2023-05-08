@@ -1,6 +1,7 @@
 % clockwork child, section B
 
 child_b_two={
+  \mark \markup \circle B
   %1
   R1*5 | r2.. e'''16 e''' |
   \combinedbreak \bar "||"
@@ -19,6 +20,7 @@ child_b_two={
 }
 
 clockwork_b_one={
+  \mark \markup \circle B
   %1
   R1*6 |
   \combinedbreak \bar "||"
@@ -54,6 +56,7 @@ clockwork_b_one={
 }
 
 fire_b_one={
+  \mark \markup \circle B
   %1
   R1*6 |
   
@@ -88,6 +91,7 @@ fire_b_one={
 }
 
 maker_b_one={
+  \mark \markup \circle B
   %1
   e4_\markup {"pizz." \draw-dashed-line #'(5 . 0) }_\p\staccato e\staccato e\staccato e\staccato | 
   e4\staccato r2. |

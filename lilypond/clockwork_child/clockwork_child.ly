@@ -11,7 +11,6 @@ solopage={}
     shortInstrumentName = #"Ch."
   } {
     \set Staff.connectArpeggios = ##t
-    \mark \markup \circle A
     \tempo_a
     <<
       \new Voice { \voiceOne
@@ -21,7 +20,6 @@ solopage={}
         \child_a_one
       }
     >>
-    \mark \markup \circle B
     <<
       \new Voice { \voiceTwo
         \set fingeringOrientations = #'(left)
@@ -30,7 +28,6 @@ solopage={}
         \child_b_two
       }
     >>
-    \mark \markup \circle C
     <<
       \new Voice { \voiceOne
         \set fingeringOrientations = #'(left)
@@ -45,7 +42,20 @@ solopage={}
         \child_c_two
       }
     >>
-    \mark \markup \circle D
+    <<
+      \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(up)
+        
+        \child_d_one
+      }
+      \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
+        \set stringNumberOrientations = #'(up)
+        
+        \child_d_two
+      }
+    >>
   }
   \new Staff \with {
     \consists "Span_arpeggio_engraver"
@@ -100,6 +110,7 @@ solopage={}
         \fire_a_one
         \fire_b_one
         \fire_c_one
+        \fire_d_one
       }
     >>
   }

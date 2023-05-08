@@ -8,8 +8,8 @@ child_d_one={
   g'''4. fis'''8 e'''4 g''' | fis'''2 cis'''2 |
   g'''4. fis'''8 e'''4 g''' | fis'''1 |
   g'''4. fis'''8 e'''4 g''' | fis'''2 cis'''2 |
-  g'''4. fis'''8 e'''4 g''' | bes'''8 bes''' bes''' bes''' |
-  \repeat tremolo 16 {bes'''32^"trem."} |
+  g'''4. fis'''8 e'''4 g''' | \repeat unfold 8 bes'''8 |
+  \repeat tremolo 32 {bes'''32^"trem."} |
   \repeat tremolo 32 {b'''32^"trem."} |
   \solobreak \combinedbreak \bar "||" 
 }

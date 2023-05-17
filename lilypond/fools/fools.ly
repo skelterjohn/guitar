@@ -1,5 +1,6 @@
 \version "2.20.0"
 
+solopage={}
 \include "fools_common.ly"
 
 <<

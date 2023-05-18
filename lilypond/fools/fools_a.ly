@@ -2,10 +2,9 @@
 fools_one_a={
   \set Staff.connectArpeggios = ##t
   \time 12/8
+  \key a \major
   \partial 2.
   <<
-    \set Staff.connectArpeggios = ##t
-    \key a \major
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
@@ -29,7 +28,7 @@ fools_one_a={
       \bar "||" \break
       
       R1.*4 |
-      \bar "||" \break
+      \bar "||"
       
       \repeat unfold 4 {
         \repeat unfold 4 {e'8 e'16 e' e'8} |
@@ -62,7 +61,7 @@ fools_one_a={
       \bar "||" \break
       
       R1.*4 |
-      \bar "||" \break
+      \bar "||"
       
       \repeat unfold 4 {
         \repeat unfold 4 {e'8 e'16 e' e'8} |
@@ -70,7 +69,7 @@ fools_one_a={
       \bar "||" \break
       
       R1.*4 |
-      \bar "||" \break
+      \bar "||"
       
       \repeat unfold 2 {
         \repeat unfold 2 {
@@ -84,8 +83,7 @@ fools_one_a={
       \tuplet 3/2 {cis'''16( d''' cis'''} e''8) e''
       \tuplet 3/2 {b''16( cis''' b''} e''8) e''
       \tuplet 3/2 {a''16( b'' a''} e''8) e'' | \noBreak 
-      gis'8 b' d'' e'' gis'' b'' e'''4\staccato r2 |
-      \bar "|." \break
+      gis'8 b' d'' e'' gis'' b'' e'''8 e'''16 e''' e'''8 e'''8 e'''16 e''' e'''8 |
     }
   >>
 }
@@ -191,10 +189,7 @@ fools_two_a={
       b'8_"nat." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' e' d' | \noBreak 
-      r4. r8 e32 b e' gis' r8 <b gis' e''>4\staccato r2 |
-      \bar "|." \break
-      
-      \solopage
+      r4. r8 e32 b e' gis' r8 <b gis' e''>8 e''16 e'' e''8 e'' e''16 e'' e''8 |
     }
   >>
 }
@@ -290,8 +285,7 @@ fools_three_a={
       \repeat unfold 3 {
         d''8. cis''16( b'8) cis'' b' a' b' gis'16( a') b'8 gis'16( a') b'( cis'' b'8) |
       } \noBreak 
-      r4. r8 r8 e'32 a' d'' a'' b''4\staccato r2 |
-      \bar "|." \break
+      r4. r8 r8 e'32 a' d'' a'' b''8 b''16 b'' b''8 b''8 b''16 b'' b''8 |
     }
   >>
 }
@@ -307,7 +301,7 @@ fools_four_a={
       
       r4. r4. |
 
-      <b e' b' e'' gis'' b''>8 r4 r4. r4. r4. |
+      <b e' b' e'' gis'' b''>8_"VII-E maj."\staccato r4 r4. r4. r4. |
       R1.*3 |
       \bar "||"
       
@@ -417,8 +411,8 @@ fools_four_a={
       \repeat unfold 6 {d'8 gis'} |
       \noBreak 
       e8 fis g a b d'
-      e'4\staccato s2 |
-      \bar "|." \break
+      <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8
+      <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8 |
       
       \solopage
     }
@@ -436,7 +430,6 @@ fools_four_a={
       \repeat unfold 4 {e8. b} |
       \repeat unfold 4 {e8. b} |
       s1. |
-      \bar "|." \break
     }
   >>
 }

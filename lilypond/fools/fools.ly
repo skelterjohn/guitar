@@ -10,6 +10,8 @@ solopage={}
     shortInstrumentName = #"G1."
   } {
     \fools_one_a 
+    \fools_one_b 
+    \bar "|."
   }
   \new Staff \with {
     \consists "Span_arpeggio_engraver"
@@ -17,6 +19,8 @@ solopage={}
     shortInstrumentName = #"G2."
   } {
     \fools_two_a
+    \fools_two_b
+    \bar "|."
   }
   
   \new Staff \with {
@@ -25,6 +29,8 @@ solopage={}
     shortInstrumentName = #"G3."
   } {
     \fools_three_a
+    \fools_three_b
+    \bar "|."
   }
   \new Staff \with {
     \consists "Span_arpeggio_engraver"
@@ -32,5 +38,7 @@ solopage={}
     shortInstrumentName = #"G4."
   } {
     \fools_four_a
+    \fools_four_b
+    \bar "|."
   }
 >>

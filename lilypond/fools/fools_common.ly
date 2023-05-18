@@ -11,3 +11,4 @@
 #(define RH rightHandFinger)
 
 \include "fools_a.ly"
+\include "fools_b.ly"

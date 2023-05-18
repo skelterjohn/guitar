@@ -9,5 +9,7 @@ solopage={\pageBreak}
     shortInstrumentName = #"G4."
   } {
     \fools_four_a 
+    \fools_four_b
+    \bar "|."
   }
 >>

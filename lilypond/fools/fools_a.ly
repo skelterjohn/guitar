@@ -170,8 +170,8 @@ fools_two_a={
       
       R1.*3 | r2. cis'''8 b'' a'' gis'' fis'' e'' |
       \bar "||"
-      
-      R1.*4 |
+            
+      d''1. | b'1. | a'1. | <gis' b'>1. |
       \bar "||" \break
       
       \repeat unfold 2 {
@@ -268,7 +268,9 @@ fools_three_a={
       b8 cis' d' \tuplet 3/2 {fis'16( gis' fis'} d'8) cis' e'2. |
       \bar "||" \break
             
-      d''1. | b'1. | a'1. | <gis' b'>1. |
+      b'4. cis'' a' b' | d'' e'' b' fis'' |
+      b'4. cis'' a' b' | d'' e'' b' gis'' |
+      \bar "||" \break
       \bar "||"
       
       R1.*4 |

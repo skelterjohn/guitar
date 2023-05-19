@@ -9,7 +9,9 @@ fools_one_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      e8 fis g a b d' |
+      g8 fis e fis b d' |
+      
+      \mark \markup { \circle "A" }
       
       \repeat unfold 4 {e'8\RH #1 e'16\RH #2 e'\RH #1 e'8\RH #3 } |
       \repeat unfold 3 {
@@ -60,7 +62,8 @@ fools_one_a={
       }
       \bar "||" \break
       
-      R1.*4 |
+      b'4. cis'' a' b' | d'' e'' b' fis'' |
+      b'4. cis'' a' b' | d'' e'' b' gis'' |
       \bar "||"
       
       \repeat unfold 4 {
@@ -84,6 +87,7 @@ fools_one_a={
       \tuplet 3/2 {b''16( cis''' b''} e''8) e''
       \tuplet 3/2 {a''16( b'' a''} e''8) e'' | \noBreak 
       gis'8 b' d'' e'' gis'' b'' e'''8 e'''16 e''' e'''8 e'''8 e'''16 e''' e'''8 |
+      \bar "||"
     }
   >>
 }
@@ -98,7 +102,9 @@ fools_two_a={
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
-      r4. r8 e32 b e' gis' r8 |
+      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 |
+      
+      \mark \markup { \circle "A" }
       
       R1.*2 |
       b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
@@ -189,7 +195,9 @@ fools_two_a={
       b'8_"nat." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' e' d' | \noBreak 
-      r4. r8 e32 b e' gis' r8 <b gis' e''>8 e''16 e'' e''8 e'' e''16 e'' e''8 |
+      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <b gis' e''>8[ e''16 e'' e''8] e''[ e''16 e'' e''8] |
+      
+      \bar "||"
     }
   >>
 }
@@ -204,7 +212,9 @@ fools_three_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      r4. r8 r8 e'32 a' d'' a'' |
+      r4. r8 r8 \tuplet 3/2 {a'16 d'' a''} |
+      
+      \mark \markup { \circle "A" }
       
       R1.*4 |
       \bar "||" \break
@@ -267,11 +277,32 @@ fools_three_a={
       r4. \tuplet 3/2 {gis'16( a' gis'} d'8) d' r4. \tuplet 3/2 {e'16( fis' e'} a8) a |
       b8 cis' d' \tuplet 3/2 {fis'16( gis' fis'} d'8) cis' e'2. |
       \bar "||" \break
-            
-      b'4. cis'' a' b' | d'' e'' b' fis'' |
-      b'4. cis'' a' b' | d'' e'' b' gis'' |
+    }
+  >>
+  <<
+    \new Voice { \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      
+      \repeat unfold 2 {
+        \repeat unfold 12 fis''8
+        \repeat unfold 12 gis''8
+      }
       \bar "||" \break
-      \bar "||"
+    }
+    \new Voice { \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      \repeat unfold 4 {
+        \repeat unfold 8 b'8. 
+      }
+      \bar "||" \break
+    }
+  >>
+  <<
+    \new Voice { \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
       
       R1.*4 |
       \bar "||" \break
@@ -287,7 +318,8 @@ fools_three_a={
       \repeat unfold 3 {
         d''8. cis''16( b'8) cis'' b' a' b' gis'16( a') b'8 gis'16( a') b'( cis'' b'8) |
       } \noBreak 
-      r4. r8 r8 e'32 a' d'' a'' b''8 b''16 b'' b''8 b''8 b''16 b'' b''8 |
+      r4. r8 r8 \tuplet 3/2 {a'16 d'' a''} b''8 b''16 b'' b''8 b''8 b''16 b'' b''8 |
+      \bar "||"
     }
   >>
 }
@@ -302,6 +334,8 @@ fools_four_a={
       \set stringNumberOrientations = #'(up)
       
       r4. r4. |
+      
+      \mark \markup { \circle "A" }
 
       <b e' b' e'' gis'' b''>8_"VII-E maj."\staccato r4 r4. r4. r4. |
       R1.*3 |
@@ -350,7 +384,6 @@ fools_four_a={
       \bar "||"
     }
   >>
-  
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
@@ -382,13 +415,33 @@ fools_four_a={
       \tuplet 3/2 {b''16( cis''' b''} e''8) e'' r4. \tuplet 3/2 {a''16( b'' a''} e''8) e'' r4. |
       d''8 e'' fis'' \tuplet 3/2 {a''16( b'' a''} e''8) fis'' gis''2. | 
       \bar "||" \break
-      
-      
+    }
+  >>
+  <<
+    \new Voice { \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
       
       \repeat unfold 2 {
-        d'8 e d' e d' e d' e d' e d' e | e'8 e e' e e' e e' e e' e e' e |
-      }      
+        \repeat unfold 12 d'8 |
+        \repeat unfold 12 e'8 |
+      }
       \bar "||" \break
+    }
+    \new Voice { \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      
+      \repeat unfold 2 {
+        \repeat unfold 8 e8. |
+        \repeat unfold 8 e8. |
+      }
+    }
+  >>
+  <<
+    \new Voice { \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
       
       R1.*2
       fis''8. e''16 d''8 e'' cis'' d''  e'' cis''16( d'') e''8 cis''16( d'') e''( fis'' e''8) |
@@ -432,6 +485,7 @@ fools_four_a={
       \repeat unfold 4 {e8. b} |
       \repeat unfold 4 {e8. b} |
       s1. |
+      \bar "||"
     }
   >>
 }

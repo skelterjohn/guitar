@@ -3,6 +3,7 @@ fools_one_a={
   \set Staff.connectArpeggios = ##t
   \time 12/8
   \key a \major
+  \tempo 4.=80
   \partial 2.
   <<
     \new Voice { \voiceOne
@@ -95,6 +96,7 @@ fools_one_a={
 
 fools_two_a={
   \set Staff.connectArpeggios = ##t
+  \tempo 4.=80
   \key a \major
   \time 12/8
   \partial 2.
@@ -204,6 +206,7 @@ fools_two_a={
   
 fools_three_a={
   \set Staff.connectArpeggios = ##t
+  \tempo 4.=80
   \key a \major
   \time 12/8
   \partial 2.
@@ -325,6 +328,7 @@ fools_three_a={
 }
 fools_four_a={
   \set Staff.connectArpeggios = ##t
+  \tempo 4.=80
   \key a \major
   \time 12/8
   \partial 2.

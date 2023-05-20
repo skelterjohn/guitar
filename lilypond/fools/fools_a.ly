@@ -10,7 +10,7 @@ fools_one_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      g8 fis e fis b d' |
+      g8. fis16 e8 fis b d' |
       
       \mark \markup { \circle "A" }
       

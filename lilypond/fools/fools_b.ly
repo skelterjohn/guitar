@@ -50,7 +50,7 @@ fools_one_b={
       \bar "||" \break
       
       R1*4 |
-      \bar "||" \break
+      \bar "||"
       
       d''2 \tuplet 3/2 {e''8 d''~d''} \tuplet 3/2 {cis''8 d'' e''} |
       d''2 \tuplet 3/2 {e''8 d''~d''} \tuplet 3/2 {cis''8 d'' e''} |
@@ -88,9 +88,9 @@ fools_two_b={
       
       \mark \markup { \circle "B" }
       
-      R1 * 4 |
-      R1 * 4 |
-      R1 * 4 |
+      R1 * 4 | \bar "||"
+      R1 * 4 | \bar "||"
+      R1 * 4 | \bar "||"
       
       R1 * 1 |
       b'4 cis'' \tuplet 3/2 {b'8 cis'' d''} \tuplet 3/2{e'' fis'' a''} |
@@ -113,7 +113,6 @@ fools_two_b={
       \tuplet 6/4 {a'4 b' cis'' e'' fis'' a'' } |
       b''1 |
       R1 |
-      
       \bar "||" \break
       
       R1 * 1 |
@@ -130,6 +129,7 @@ fools_two_b={
       R1 |
       r2 \tuplet 3/2 {a'4 b' cis''} |
       d''4 cis'' b' a' gis' fis' e' gis' |
+      \bar "||" \break
     }
   >>
 }

@@ -198,7 +198,6 @@ fools_two_a={
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' e' d' | \noBreak 
       r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <b gis' e''>8[ e''16 e'' e''8] e''[ e''16 e'' e''8] |
-      
       \bar "||"
     }
   >>
@@ -220,7 +219,7 @@ fools_three_a={
       \mark \markup { \circle "A" }
       
       R1.*4 |
-      \bar "||" \break
+      \bar "||"
       
       \repeat unfold 2 {
         d''8. cis''16( b'8) cis'' b' a' b' gis'16( a') b'8 gis'16( a') b'( cis'' b'8) |
@@ -308,7 +307,7 @@ fools_three_a={
       \set stringNumberOrientations = #'(up)
       
       R1.*4 |
-      \bar "||" \break
+      \bar "||"
       
       \solopage
       
@@ -346,13 +345,13 @@ fools_four_a={
       \bar "||"
       
       R1.*4 |
-      \bar "||"
+      \bar "||" \break
       
       fis''8. e''16 d''8 e'' cis'' d''  e'' cis''16( d'') e''8 cis''16( d'') e''( fis'' e''8) |
       fis''8. e''16 d''8 e'' cis'' d''  e'' gis''16 gis'' gis''8 gis''8 gis''16 gis'' gis''8 |
       fis''8. e''16 d''8 e'' cis'' d''  e'' cis''16( d'') e''8 cis''16( d'') e''( fis'' e''8) |
       fis''8. e''16 d''8 e'' cis'' d''  e'' gis''16( a'') b''8 b''8 b''16 cis''' d'''8 |
-      |
+      \bar "||" \break
     }
   >>
   

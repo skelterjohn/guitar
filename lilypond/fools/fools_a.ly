@@ -384,7 +384,7 @@ fools_four_a={
       \bar "||" 
       
       R1.*4 |
-      \bar "||"
+      \bar "||" 
     }
   >>
   <<
@@ -468,7 +468,7 @@ fools_four_a={
       \repeat unfold 6 {e'8 gis'} |
       \repeat unfold 6 {d'8 gis'} |
       \noBreak 
-      e8 fis g a b d'
+      g8. fis16 e8 fis b d'
       <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8
       <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8 |
       

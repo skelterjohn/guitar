@@ -186,10 +186,14 @@ fools_three_b={
         \bar "||" \break
       }
 
-      \repeat unfold 4 {
-        \tuplet 3/2 {e''8 cis'' e''} \tuplet 3/2 {cis'' e'' cis''}
-        \tuplet 3/2 {fis''8 cis'' fis''} \tuplet 3/2 {cis'' fis'' cis''} |
-      }
+      \tuplet 3/2 {e''8\>_"down to zero" cis'' e''} \tuplet 3/2 {cis'' e'' cis''}
+      \tuplet 3/2 {fis''8 cis'' fis''} \tuplet 3/2 {cis'' fis'' cis''} |
+      \tuplet 3/2 {e''8 cis'' e''} \tuplet 3/2 {cis'' e'' cis''}
+      \tuplet 3/2 {fis''8 cis'' fis''} \tuplet 3/2 {cis'' fis'' cis''} |
+      \tuplet 3/2 {e''8 cis'' e''} \tuplet 3/2 {cis'' e'' cis''}
+      \tuplet 3/2 {fis''8 cis'' fis''} \tuplet 3/2 {cis'' fis'' cis''} |
+      \tuplet 3/2 {e''8 cis'' e''} \tuplet 3/2 {cis'' e'' cis''}
+      \tuplet 3/2 {fis''8 cis'' fis''} \tuplet 3/2 {cis'' fis'' cis''\!} |
     }
         
   >>
@@ -236,9 +240,12 @@ fools_four_b={
         \bar "||" \break
       }
       
-      \repeat unfold 4 {
-        \repeat unfold 8 a8 |
-      }
+      a8\>_"down to zero"
+      \repeat unfold 7 a8 |
+      \repeat unfold 8 a8 |
+      \repeat unfold 8 a8 |
+      \repeat unfold 7 a8
+      a8\! |
     }
   >>
 }

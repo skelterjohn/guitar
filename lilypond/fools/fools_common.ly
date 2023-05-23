@@ -12,3 +12,4 @@
 
 \include "fools_a.ly"
 \include "fools_b.ly"
+\include "fools_c.ly"

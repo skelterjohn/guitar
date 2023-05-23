@@ -48,6 +48,7 @@ fools_one_b={
       \tuplet 12/8 {g'8 e'16([ fis')] g'8 e'16([ fis') g'(a')] g'8~} g'2 |
       R1 |
       \bar "||" \break
+      \solopage
       
       R1*4 |
       \bar "||"
@@ -105,7 +106,7 @@ fools_two_b={
       
       \tuplet 6/4 {cis''4 b' a' gis' fis' e'} |
       r2 \tuplet 3/2 {cis''4 b' a'} |
-      \tuplet 3/2 {gis'4 fis' e'~} e'2 |
+      \tuplet 3/2 {g'4 fis' e'~} e'2 |
       R1 |
       \bar "||" \break
       
@@ -194,6 +195,7 @@ fools_three_b={
       \tuplet 3/2 {fis''8 cis'' fis''} \tuplet 3/2 {cis'' fis'' cis''} |
       \tuplet 3/2 {e''8 cis'' e''} \tuplet 3/2 {cis'' e'' cis''}
       \tuplet 3/2 {fis''8 cis'' fis''} \tuplet 3/2 {cis'' fis'' cis''\!} |
+      \bar "||" \break
     }
         
   >>
@@ -246,6 +248,7 @@ fools_four_b={
       \repeat unfold 8 a8 |
       \repeat unfold 7 a8
       a8\! |
+      \solopage
     }
   >>
 }

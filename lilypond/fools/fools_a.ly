@@ -471,7 +471,7 @@ fools_four_a={
       g8. fis16 e8 fis b d'
       <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8
       <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8 |
-      
+      \break
       \solopage
     }
     \new Voice { \voiceTwo

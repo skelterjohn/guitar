@@ -178,7 +178,7 @@ fools_four_c={
       \repeat unfold 6 {e'8 gis'} |
       \repeat unfold 6 {d'8 gis'} |
       \noBreak 
-      g8. fis16 e8 fis b d'
+      g8 fis e8 fis b d'
       <b e' b' e'' gis'' b''>8\staccato r4
       r4. |
       \break

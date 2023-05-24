@@ -10,7 +10,7 @@ fools_one_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      g8. fis16 e8 fis b d' |
+      g8 fis e8 fis b d' |
       
       \mark \markup { \circle "A" }
       
@@ -468,7 +468,7 @@ fools_four_a={
       \repeat unfold 6 {e'8 gis'} |
       \repeat unfold 6 {d'8 gis'} |
       \noBreak 
-      g8. fis16 e8 fis b d'
+      g8 fis e8 fis b d'
       <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8
       <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8 |
       \break

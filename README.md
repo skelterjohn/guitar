@@ -6,6 +6,26 @@ files are available
 
 ## original compositions
 
+### Fools Rushing In
+
+This is a guitar orchestra piece, some obvious inspiration from
+Cancion y Danza.
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/fools.pdf)
+|
+[score g1](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_one.pdf)
+|
+[score g2](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_two.pdf)
+|
+[score g3](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_three.pdf)
+|
+[score g4](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_four.pdf)
+|
+[score g1](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_one.pdf)
+|
+[recording](https://www.youtube.com/watch?v=unBusSodF70)
+
+
 ### Distance
 
 The first measure is a melody that has been stuck in my head for a long

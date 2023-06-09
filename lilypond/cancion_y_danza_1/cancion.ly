@@ -13,7 +13,7 @@ cancion_one={
     a''4.~a''8 b'' c''' |
     d'''8. e'''16 d'''8~ d''' c''' a'' |
     bes''8 a'' bes''~ bes'' c''' bes'' |
-    a''8. g''16 f''8 <a' e''> <b' g''> <cis'' f''> |
+    a''8. g''16 f''8 <e''> <g''> <f''> |
     \alternative {
       \volta 1 {
         d''4.~ d''8 d'' e'' |
@@ -31,15 +31,15 @@ cancion_one={
   f''4 e''8 d''8. e''16 d'' c'' |
   c''4. c'''8 d''' a'' |
   c'''8 b''4~ b'' g''8 |
-  a''2 d''8 e'' |
+  <d' fis' d'' a''>2\arpeggio d''8 e'' |
   
   f''4 e''8~ e'' g'' f'' |
-  d''4.~ d''8 f'' g'' |
-  a''4 \grace{bes''8( a'' g''} a''8~) a'' c''' b'' |
-  a''4.~ a''8 b'' c''' |
+  d''4.~d''8 f'' g'' |
+  a''8. bes''16 a''8~ a'' c''' b'' |
+  a''4.~a''8 b'' c''' |
   d'''8. e'''16 d'''8~ d''' c''' a'' |
-  b''8 a'' b''~ b'' c'' b'' |
-  a''8. g''16 f''8 <a' e''> <b' g''> <cis'' f''> |
+  bes''8 a'' bes''~ bes'' c''' bes'' |
+  a''8. g''16 f''8 <e''> <g''> <f''> |
   d''2. |
 }
 
@@ -52,39 +52,39 @@ cancion_two={
   \bar ".|:"
   
   \repeat volta 2 {
-    a'4 a'8 <g' b'>4 cis''8 |
-    <f' a'>4 <d' f' a'>8 <d' f' a'>4. |
+    a'4 a'8 <b'>4 cis''8 |
+    <a'>4 <d' a'>8\staccato <d' a'>4. |
     <c'' f''>4 <c''>8 <d''>4. |
-    <a' c'' e''>4 <a' c'' e''>8 <a' c'' e''>4. |
-    e''4 e''8 <g' b' fis''>4. |
-    <g' e''>4 <g' e''>8 <d'' f''>4. |
-    <e' b'>4 f'8 g'4 e'8 |
+    <c'' e''>4 <c'' e''>8\staccato <c'' e''>4. |
+    <d a a' d'' e'' e''>4\arpeggio e''8 <g' b' fis''>4. |
+    <e''>4 <e''>8 <f''>4. |
+    <bes'>4. <a'>8 <b' > <cis'' > |
     \alternative {
       \volta 1 {
-        <f' a'>4 <d' f' a'>8 <d' f' a'>4. |
+        <a'>4 <d' a'>8\staccato <d' a'>4. |
       }
       \volta 2 {
-        <f' a'>4 <d' f' a'>8 <d' f' a'>8 r4 |
+        <a'>4 <d' a'>8\staccato <d' a'>8 r4 |
       }
     }
   }
   e''4 e''8 f''4 g''8 |
   <e'' a''>4.~ <e'' a''>8 r4 |
-  <f' c'' f''>4. e''4. |
-  <f'' a''>2 r4 |
-  <g' d''>4 cis''16 a' g'8 <e' a'>4 |
+  <f''>4. e''4. |
+  <d a d' f'' a'' d'''>2.\arpeggio |
+  <d''>4 c''16 a' g'8 <a'>4 |
   f'4. c''8 d'' a' |
-  c''8 b'4~ <g'~ b'>4 g'16 g' |
-  d''2 r4 |
+  c''8 b'4~ <b'>4 r8 |
+  <d' fis' d'' a''>2.\arpeggio |
   
-  a'4 a'8 <g' b'>4 cis''8 |
-  <f' a'>4 <d' f' a'>8 <d' f' a'>4. |
-  <f' c'' f''>4 <f' c''>8 <g' d''>4. |
-  <a' c'' e''>4 <a' c'' e''>8 <a' c'' e''>4. |
-  e''4 e''8 <g' b' fis''>4. |
-  <g' e''>4 <g' e''>8 <d'' f''>4. |
-  <e' b'>4 f'8 g'4 e'8 |
-  <f' a'>4 <d' f' a'>8 <d' f' a'>4. |
+  a'4 a'8 <b'>4 cis''8 |
+  <a'>4 <d' a'>8\staccato <d' a'>4. |
+  <c'' f''>4 <c''>8 <d''>4. |
+  <c'' e''>4 <c'' e''>8\staccato <c'' e''>4. |
+  <d a a' d'' e'' e''>4\arpeggio e''8 <g' b' fis''>4. |
+  <e''>4 <e''>8 <f''>4. |
+  <b'>4. <a'>8 <b' > <cis'' > |
+  <a'>4 <d' a'>8\staccato <d' a'>4. |
 }
 
 cancion_three={
@@ -97,38 +97,38 @@ cancion_three={
   
   \repeat volta 2 {
     r4. <g'>4 a'8 |
-    f'2. |
+    f'4 f'8\staccato f'4. |
     a'4 a'8 g'4. |
     a'2. |
-    <a' d''>4 <a' d''>2 |
-    r2. |
-    r2. |
+    <d a a' d'' e'' e''>4\arpeggio <a' d''>2 |
+    <g'>4 <g'>8 <d''>4. |
+    <e'>4 f'8 g'4 e'8 |
     \alternative {
       \volta 1 {
-        r2. |
+        <f'>4 <f'>8\staccato <f'>4. |
       }
       \volta 2 {
-        r2. |
+        <f'>4 <f'>8\staccato <f'>8 r4 |
       }
     }
   }
   r2. |
   r2. |
-  r2. |
-  r2. |
-  r2. |
-  r2. |
-  r2. |
-  r2. |
+  <f' c'' >4. c'4. |
+  <d a d' f'' a'' d'''>2.\arpeggio |
+  <g'>2 <e'>4 |
+  <c'>4. r4. |
+  r4. <g'~>4 g'16 g' |
+  <d' fis' d'' a''>2.\arpeggio |
   
-  r2. |
-  r2. |
-  r2. |
-  r2. |
-  r2. |
-  r2. |
-  r2. |
-  r2. |
+  r4. <g'>4 a'8 |
+  f'4 f'8\staccato f'4. |
+  a'4 a'8 g'4. |
+  a'2. |
+  <d a a' d'' e'' e''>4\arpeggio <a' d''>2 |
+  <g'>4 <g'>8 <d''>4. |
+  <e'>4 f'8 g'4 e'8 |
+  <f'>4 <f'>8\staccato <f'>4. |
 }
 
 cancion_four={
@@ -142,11 +142,20 @@ cancion_four={
   \repeat volta 2 {
     d4. a |
     d2. |
-    <f'>4 <f'>8 <e'>4. |
-    e'2. |
-    <d a>4 <d a>2 |
+    <<
+      \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
+        a2. | a2. |
+      }
+      \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
+        <f>4 <f>8 <e>4. |
+        e2. |   
+      }
+    >>
+    <d a a' d'' e'' e''>4\arpeggio <d a>2 |
     c'4 c'8 d'4. |
-    e4. a4. |
+    g4. a4. |
     \alternative {
       \volta 1 {
         d2. |
@@ -158,18 +167,27 @@ cancion_four={
   }
   a4. a |
   a2. |
-  r4. <c' d'>4 c'16 b |
-  <d a d'>2. |
-  c'8 <a e'>4 b r8 |
-  <f c>4. r4. |
-  r4. <e' g'>4 c'8 |
-  <d' fis'>2 r4 |
+  r4. <d'>4 c'16 bes |
+  <d a d' f'' a'' d'''>2.\arpeggio |
+  c'8 <a e'>4 bes4.|
+  <f>4. r4. |
+  r4. <e'>4 c'8 |
+  <d' fis' d'' a''>2.\arpeggio |
   
   d4. a4. |
   d2. |
-  r2. |
-  r2. |
-  <f a>4 <f a>2 |
+    <<
+      \new Voice { \voiceOne
+        \set fingeringOrientations = #'(left)
+        a2. | a2. |
+      }
+      \new Voice { \voiceTwo
+        \set fingeringOrientations = #'(left)
+        <f>4 <f>8 <e>4. |
+        e2. |   
+      }
+    >>
+  <d a a' d'' e'' e''>4\arpeggio <f a>2 |
   c'4 c'8 d'4. |
   g4. a4. |
   d2. |

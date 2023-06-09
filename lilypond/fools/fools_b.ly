@@ -1,7 +1,15 @@
 
 fools_one_b={
   \set Staff.connectArpeggios = ##t
-  \tempo 4=80
+  \tempo \markup {
+    \concat {
+      (
+      \smaller \general-align #Y #DOWN \note {4.} #1
+      " = "
+      \smaller \general-align #Y #DOWN \note {4} #1
+      )
+    }
+  }
   \numericTimeSignature \time 4/4
   <<
     \new Voice { \voiceOne
@@ -76,7 +84,15 @@ fools_one_b={
   
 fools_two_b={
   \set Staff.connectArpeggios = ##t
-  \tempo 4=80
+  \tempo \markup {
+    \concat {
+      (
+      \smaller \general-align #Y #DOWN \note {4.} #1
+      " = "
+      \smaller \general-align #Y #DOWN \note {4} #1
+      )
+    }
+  }
   \numericTimeSignature \time 4/4
   <<
     \new Voice { \voiceOne
@@ -137,7 +153,15 @@ fools_two_b={
   
 fools_three_b={
   \set Staff.connectArpeggios = ##t
-  \tempo 4=80
+  \tempo \markup {
+    \concat {
+      (
+      \smaller \general-align #Y #DOWN \note {4.} #1
+      " = "
+      \smaller \general-align #Y #DOWN \note {4} #1
+      )
+    }
+  }
   \numericTimeSignature \time 4/4
   <<
     \new Voice { \voiceOne
@@ -203,7 +227,15 @@ fools_three_b={
 
 fools_four_b={
   \set Staff.connectArpeggios = ##t
-  \tempo 4=80
+  \tempo \markup {
+    \concat {
+      (
+      \smaller \general-align #Y #DOWN \note {4.} #1
+      " = "
+      \smaller \general-align #Y #DOWN \note {4} #1
+      )
+    }
+  }
   \numericTimeSignature \time 4/4
   <<
     \new Voice { \voiceOne

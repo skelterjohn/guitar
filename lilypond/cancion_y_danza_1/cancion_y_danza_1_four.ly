@@ -9,8 +9,8 @@ allpage={}
 \score {<<
   \new Staff \with {
     \consists "Span_arpeggio_engraver"
-    instrumentName = #"Guitar 1"
-    shortInstrumentName = #"G1."
+    instrumentName = #"Guitar 4"
+    shortInstrumentName = #"G4."
   } {
     \cancion_four
     \bar "||"
@@ -20,8 +20,8 @@ allpage={}
 \score {<<
   \new Staff \with {
     \consists "Span_arpeggio_engraver"
-    instrumentName = #"Guitar 1"
-    shortInstrumentName = #"G1."
+    instrumentName = #"Guitar 4"
+    shortInstrumentName = #"G4."
   } {
     \danza_four
     \bar "|."

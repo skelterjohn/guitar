@@ -5,6 +5,7 @@ gb={b'8 b'16 b' b'8}
 gc={cis''8 cis''16 cis'' cis''8}
 
 danza_one={
+  \set strokeFingerOrientations = #'(down)
   \tempo 4.=80
   
   \time 6/8
@@ -54,11 +55,11 @@ danza_one={
   <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>4. |
   
   \repeat unfold 2 {
-    <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
-    <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
-    <d a d'>8 <d a d'> <d a d'> <d' g'>4. |
-    <d a d'>8\staccato <d a d'>16 <d a d'> <d a d'>8\staccato <d a d'>8\staccato <d a d'>16 <d a d'> <d a d'>8\staccato |
-    <d a d'>8\staccato <d a d'>16 <d a d'> <d a d'>8\staccato <d a d'>4. |
+    <d\RH1 a d'>8 <d\RH1 a d'> <d\RH1 a d'> <d\RH1 a d'>4. |
+    <d\RH1 a d'>8 <d\RH1 a d'> <d\RH1 a d'> <d\RH1 a d'>4. |
+    <d\RH1 a d'>8 <d\RH1 a d'> <d\RH1 a d'> <d' g'>4. |
+    <d\RH1 a d'>8 <d\RH4 a d'>16 <d\RH3 a d'> <d\RH2 a d'>8 <d\RH1 a d'>8 <d\RH4 a d'>16 <d\RH3 a d'> <d\RH2 a d'>8 |
+    <d\RH1 a d'>8 <d\RH4 a d'>16 <d\RH3 a d'> <d\RH2 a d'>8 <d\RH1 a d'>4. |
   }
   \bar ":|.|:"
   
@@ -68,14 +69,14 @@ danza_one={
     e'4. fis'4 g'8 
     \alternative {
       \volta 1 {
-        <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>4. |
+        <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>4. |
       }
       \volta 2 {
-        <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 |
+        <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 |
       }
     }
   }
-  <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 |
+  <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 |
   
   <d a d' a'>2.\fermata |
 }
@@ -160,6 +161,7 @@ danza_two={
 }
 
 danza_three={
+  \set strokeFingerOrientations = #'(down)
   \tempo 4.=80
   \time 6/8
   \key d \major
@@ -233,11 +235,11 @@ danza_three={
   <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>4. |
   
   \repeat unfold 2 {
-    <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
-    <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
-    <d a d'>8 <d a d'> <d a d'> <d' g'>4. |
-    <d a d'>8\staccato <d a d'>16 <d a d'> <d a d'>8\staccato <d a d'>8\staccato <d a d'>16 <d a d'> <d a d'>8\staccato |
-    <d a d'>8\staccato <d a d'>16 <d a d'> <d a d'>8\staccato <d a d'>4. |
+    <d\RH1 a d'>8 <d\RH1 a d'> <d\RH1 a d'> <d\RH1 a d'>4. |
+    <d\RH1 a d'>8 <d\RH1 a d'> <d\RH1 a d'> <d\RH1 a d'>4. |
+    <d\RH1 a d'>8 <d\RH1 a d'> <d\RH1 a d'> <d' g'>4. |
+    <d\RH1 a d'>8 <d\RH4 a d'>16 <d\RH3 a d'> <d\RH2 a d'>8 <d\RH1 a d'>8 <d\RH4 a d'>16 <d\RH3 a d'> <d\RH2 a d'>8 |
+    <d\RH1 a d'>8 <d\RH4 a d'>16 <d\RH3 a d'> <d\RH2 a d'>8 <d\RH1 a d'>4. |
   }
   \bar ":|.|:"
   
@@ -247,14 +249,14 @@ danza_three={
     a8 a a a4 a8 |
     \alternative {
       \volta 1 {
-        <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>4. |
+        <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>4. |
       }
       \volta 2 {
-        <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 |
+        <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 |
       }
     }
   }
-  <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 |
+  <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 |
   
   <d a d' a'>2.\fermata |
     

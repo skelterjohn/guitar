@@ -43,6 +43,8 @@ allpage={\pageBreak}
 >>
 }
 
+\pageBreak
+
 \score {<<
   \new Staff \with {
     \consists "Span_arpeggio_engraver"

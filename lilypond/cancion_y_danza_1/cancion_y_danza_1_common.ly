@@ -6,7 +6,10 @@
   tagline = ""
 }
 
-\paper { ragged-last = ##t }
+\paper {
+  ragged-last = ##t
+  ragged-bottom = ##t
+}
 
 \include "../bbarred.ly"
 #(define RH rightHandFinger)

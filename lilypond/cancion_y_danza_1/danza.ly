@@ -5,6 +5,8 @@ gb={b'8 b'16 b' b'8}
 gc={cis''8 cis''16 cis'' cis''8}
 
 danza_one={
+  \tempo 4.=80
+  
   \time 6/8
   \key d \major
   \ga \ga |
@@ -75,10 +77,11 @@ danza_one={
   }
   <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 |
   
-  <d a d' a'>2. |
+  <d a d' a'>2.\fermata |
 }
 
 danza_two={
+  \tempo 4.=80
   \time 6/8
   \key d \major
   
@@ -153,10 +156,11 @@ danza_two={
   }
   
   R2. |
-  <d a d' a' d'' a''>2.\arpeggio |
+  <d a d' a' d'' a''>2.\arpeggio\fermata |
 }
 
 danza_three={
+  \tempo 4.=80
   \time 6/8
   \key d \major
   
@@ -252,11 +256,12 @@ danza_three={
   }
   <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 |
   
-  <d a d' a'>2. |
+  <d a d' a'>2.\fermata |
     
 }
 
 danza_four={
+  \tempo 4.=80
   \time 6/8
   \key d \major
   
@@ -332,5 +337,5 @@ danza_four={
   }
   
   R2. |
-  <d a d' a' d'' a''>2.\arpeggio |
+  <d a d' a' d'' a''>2.\arpeggio\fermata |
 }

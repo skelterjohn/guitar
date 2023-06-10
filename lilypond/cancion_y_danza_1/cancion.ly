@@ -1,4 +1,5 @@
 cancion_one={
+  \tempo 4=40
   \time 6/8
   \key d \minor
   \partial 4
@@ -11,6 +12,9 @@ cancion_one={
     d''4.~d''8 f'' g'' |
     a''8. bes''16 a''8~ a'' c''' b'' |
     a''4.~a''8 b'' c''' |
+    
+    \allbreak
+    
     d'''8. e'''16 d'''8~ d''' c''' a'' |
     bes''8 a'' bes''~ bes'' c''' bes'' |
     a''8. g''16 f''8 <e''> <g''> <f''> |
@@ -23,7 +27,9 @@ cancion_one={
       }
     }
   }
-    
+   
+  \allbreak
+   
   c'''8 a''4 bes''8 c''' e''' |
   d'''4. cis'''8 a'' d''' |
   c'''4 bes''8 a''16 bes'' c'''8 d'''16 e'''|
@@ -31,19 +37,23 @@ cancion_one={
   f''4 e''8 d''8. e''16 d'' c'' |
   c''4. c'''8 d''' a'' |
   c'''8 b''4~ b'' g''8 |
-  <d' fis' d'' a''>2\arpeggio d''8 e'' |
+  <d' fis' d'' a''>2\arpeggio\fermata d''8 e'' |
+  
+  \solobreak
   
   f''4 e''8~ e'' g'' f'' |
   d''4.~d''8 f'' g'' |
-  a''8. bes''16 a''8~ a'' c''' b'' |
+  a''4 \grace{bes''16( a'' g''} a''8)~ a'' c''' b'' |
   a''4.~a''8 b'' c''' |
   d'''8. e'''16 d'''8~ d''' c''' a'' |
   bes''8 a'' bes''~ bes'' c''' bes'' |
   a''8. g''16 f''8 <e''> <g''> <f''> |
-  d''2. |
+  d''2.\fermata |
+  \solopage
 }
 
 cancion_two={
+  \tempo 4=40
   \time 6/8
   \key d \minor
   \partial 4
@@ -75,7 +85,7 @@ cancion_two={
   <d''>4 c''16 a' g'8 <a'>4 |
   f'4. c''8 d'' a' |
   c''8 b'4~ <b'>4 r8 |
-  <d' fis' d'' a''>2.\arpeggio |
+  <d' fis' d'' a''>2.\arpeggio\fermata |
   
   a'4 a'8 <b'>4 cis''8 |
   <a'>4 <d' a'>8\staccato <d' a'>4. |
@@ -84,10 +94,12 @@ cancion_two={
   <d a a' d'' e'' e''>4\arpeggio e''8 <g' b' fis''>4. |
   <e''>4 <e''>8 <f''>4. |
   <b'>4. <a'>8 <b' > <cis'' > |
-  <a'>4 <d' a'>8\staccato <d' a'>4. |
+  <a'>4\fermata <d' a'>8\staccato <d' a'>4.\fermata |
+  \solopage
 }
 
 cancion_three={
+  \tempo 4=40
   \time 6/8
   \key d \minor
   \partial 4
@@ -119,7 +131,7 @@ cancion_three={
   <g'>2 <e'>4 |
   <c'>4. r4. |
   r4. <g'~>4 g'16 g' |
-  <d' fis' d'' a''>2.\arpeggio |
+  <d' fis' d'' a''>2.\arpeggio\fermata |
   
   r4. <g'>4 a'8 |
   f'4 f'8\staccato f'4. |
@@ -128,10 +140,12 @@ cancion_three={
   <d a a' d'' e'' e''>4\arpeggio <a' d''>2 |
   <g'>4 <g'>8 <d''>4. |
   <e'>4 f'8 g'4 e'8 |
-  <f'>4 <f'>8\staccato <f'>4. |
+  <f'>4\fermata <f'>8\staccato <f'>4.\fermata |
+  \solopage
 }
 
 cancion_four={
+  \tempo 4=40
   \time 6/8
   \key d \minor
   \partial 4
@@ -172,7 +186,7 @@ cancion_four={
   c'8 <a e'>4 bes4.|
   <f>4. r4. |
   r4. <e'>4 c'8 |
-  <d' fis' d'' a''>2.\arpeggio |
+  <d' fis' d'' a''>2.\arpeggio\fermata |
   
   d4. a4. |
   d2. |
@@ -190,5 +204,6 @@ cancion_four={
   <d a a' d'' e'' e''>4\arpeggio <f a>2 |
   c'4 c'8 d'4. |
   g4. a4. |
-  d2. |
+  d2.\fermata |
+  \solopage
 }

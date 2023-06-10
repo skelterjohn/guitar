@@ -1,6 +1,9 @@
 \version "2.24.0"
 
 solopage={}
+solobreak={}
+allbreak={\break}
+allpage={\pageBreak}
 \include "cancion_y_danza_1_common.ly"
 
 \score {<<

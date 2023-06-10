@@ -37,7 +37,6 @@ danza_one={
   \ga \gg
   \gf d'8 r4 |
   e'4. fis'4 g'8
-  \mark "44"
   <d' a'>8 <d' a'>16 <d' a'> <d' a'>8 <d' a'>4. |
   
   \gb \gc |
@@ -83,14 +82,14 @@ danza_two={
   \time 6/8
   \key d \major
   
-  r2. |
+  R2.  |
   
   \repeat volta 2 {
     r4. r8 fis'' g'' |
     a''8. g''16 fis''8 e'' fis'' g'' |
-    fis''8 d''4. fis''8  g'' |
-    a''8. g''16 fis''8 g'' a'' b'' |
-    a''4.~ a''8 fis''8 g'' |
+    fis''8 d''4 r4. |
+    R2. |
+    r4. r8 fis''8 g'' |
     a''8. g''16 fis''8 e'' fis'' g'' |
     fis''8 d''4 r8 e''16 fis'' g'' a'' |
     g''8. fis''16 e''8 d'' cis'' e'' |
@@ -105,18 +104,18 @@ danza_two={
   }
   
   a''8. g''16 fis''8 g'' a'' b'' |
-  a'' fis''4~ fis''8 fis''16 g'' a'' b'' |
-  a''8. g''16 fis''8 g'' a'' b'' |
-  a''4.~ a''8 fis'' g'' |
+  a'' fis''4 r4. |
+  R2. |
+  r4. r8 fis'' g'' |
   a''8. g''16 fis''8 e'' fis'' g'' |
   fis''8 d''4 r8 e''16 fis'' g'' a'' |
   g''8. fis''16 e''8 d'' cis'' e'' |
   d''4.~ d''8 fis''16 g'' a'' b'' |
   
   a''8. g''16 fis''8 g'' a'' b'' |
-  a'' fis''4~ fis''8 fis''16 g'' a'' b'' |
-  a''8. g''16 fis''8 g'' a'' b'' |
-  a''4.~ a''8 fis''8 g''
+  a''8 fis''4 r4. |
+  R2. |
+  r4. r8 fis''8 g'' |
   
   \bar ".|:"
   
@@ -153,7 +152,8 @@ danza_two={
     }
   }
   
-  r2. r2. |
+  R2. |
+  <d a d' a' d'' a''>2.\arpeggio |
 }
 
 danza_three={
@@ -260,75 +260,77 @@ danza_four={
   \time 6/8
   \key d \major
   
-  r2. |
+  R2.  |
   
   \repeat volta 2 {
-    r4. r8 fis'' g'' |
-    a''8. g''16 fis''8 e'' fis'' g'' |
-    fis''8 d''4. fis''8  g'' |
+    R2. |
+    R2. |
+    r4. r8 fis''8  g'' |
     a''8. g''16 fis''8 g'' a'' b'' |
-    a''4.~ a''8 fis''8 g'' |
-    a''8. g''16 fis''8 e'' fis'' g'' |
-    fis''8 d''4 r8 e''16 fis'' g'' a'' |
-    g''8. fis''16 e''8 d'' cis'' e'' |
+    a''4. r4. |
+    R2. |
+    r4. r8 g'16 a' b' d'' |
+    b'8. a'16 g'8 fis' e' g' |
     \alternative {
       \volta 1 {
-        d''2.
+        fis'2.
       }
       \volta 2 {
-        d''4.~ d''8 fis''16 g'' a'' b'' |
+        fis'4. r4. |
       }
     }
   }
   
+  R2. |
+  r4. r8 fis''16 g'' a'' b'' |
   a''8. g''16 fis''8 g'' a'' b'' |
-  a'' fis''4~ fis''8 fis''16 g'' a'' b'' |
-  a''8. g''16 fis''8 g'' a'' b'' |
-  a''4.~ a''8 fis'' g'' |
-  a''8. g''16 fis''8 e'' fis'' g'' |
-  fis''8 d''4 r8 e''16 fis'' g'' a'' |
-  g''8. fis''16 e''8 d'' cis'' e'' |
-  d''4.~ d''8 fis''16 g'' a'' b'' |
+  a''4. r4. |
+  R2. |
+  r4. r8 g'16 a' b' d'' |
+  b'8. a'16 g'8 fis' e' g' |
+  fis'4. r4. |
   
+  R2. |
+  r4. r8 fis''16 g'' a'' b'' |
   a''8. g''16 fis''8 g'' a'' b'' |
-  a'' fis''4~ fis''8 fis''16 g'' a'' b'' |
-  a''8. g''16 fis''8 g'' a'' b'' |
-  a''4.~ a''8 fis''8 g''
+  a''4. r4.
   
   \bar ".|:"
   
-  a''8. g''16 fis''8 e'' fis'' g'' |
-  fis'' d''4 r8 e''16 fis'' g'' a'' |
-  g''8. fis''16 e''8 d'' cis'' e'' |
-  d''4.~ d''8 fis''16 g'' a'' b'' |
+  R2. |
+  r4. r8 g'16 a' b' d'' |
+  b'8. a'16 g'8 fis' e' g' |
+  fis'4.~ fis'8 a'16 b' d'' e'' |
   
-  c'''8. b''16 a''8~ a'' fis''16 g'' a'' b'' |
-  c'''8. b''16 a''8~ a'' fis''16 g'' a'' b'' |
-  c'''8. b''16 a''8 cis''' d''' b'' |
-  a''2. |
+  fis''8. e''16 d''8~ d'' a'16 b' d'' e'' |
+  fis''8. e''16 d''8~ d'' a'16 b' d'' e'' |
+  fis''8. e''16 d''8 g'' fis'' e'' |
+  d''2. |
   
-  r4. r8 fis''16 g'' a'' b'' |
-  c'''8. b''16 a''8~ a'' fis''16 g'' a'' b'' |
-  c'''8. b''16 a''8~ a'' fis''16 g'' a'' b'' |
-  c'''8. b''16 a''8 cis''' d''' b'' |
-  a''2. |
+  r4. r8 a'16 b' d'' e'' |
   
-  r4. r8 fis'' g'' 
+  fis''8. e''16 d''8~ d'' a'16 b' d'' e'' |
+  fis''8. e''16 d''8~ d'' a'16 b' d'' e'' |
+  fis''8. e''16 d''8 g'' fis'' e'' |
+  d''2. |
+  
+  r4. r8 a' b' 
   \bar ":|.|:"
   
   \repeat volta 2 {
-    a''8. g''16 fis''8 e'' fis'' g'' |
-    fis''8 d''4 r8 e''16 fis'' g'' a'' |
-    g''8. fis''16 e''8 d'' cis'' e'' |
+    d''8. b'16 a'8 g' a' c'' |
+    b'8 g'4 r8 a'16 a' a' a' |
+    a'8. a'16 a'8 g' g' g' |
     \alternative {
       \volta 1 {
-        d''4.~ d''8 fis'' g'' | 
+        a'4.~ a'8 a' b'  | 
       }
       \volta 2 {
-        d''2. |
+        a'2. |
       }
     }
   }
   
-  r2. r2. |
+  R2. |
+  <d a d' a' d'' a''>2.\arpeggio |
 }

@@ -19,7 +19,7 @@ danza_two={
     \ga \gg |
     \ga \ga |
     \ga \gb |
-    \gc d''8 a'16 a' a'8 |
+    \gc d''8 a'16 a' a'8 | \solobreak
     \ga \gg |
     \gf d'4. |
     e'4. fis'4 g'8
@@ -31,7 +31,7 @@ danza_two={
         <d' a'>8 <d' a'>16 <d' a'> <d' a'>8 <d' a'>4. |
       }
     }
-  }
+  }\solobreak
   
   \gb \gc |
   \ga r4. |
@@ -45,14 +45,14 @@ danza_two={
   \gb \gc |
   \ga r4. |
   \gc \gb |
-  \ga \ga |
+  \ga \ga | \solobreak
   
   \bar ".|:"
   
   \ga \gg |
   \gf d'4. |
   e'4._\< fis'4 g'8_\! |
-  <d\RH1 a d' a'>8\strumUp_\f <d\RH4 a d' a'>16\strumDown <d\RH3 a d' a'>\strumDown <d\RH2 a d' a'>8\strumDown <d\RH1 a d' a'>4.\strumUp |
+  <d\RH1 a d' a'>8\strumUp_\f <d\RH4 a d' a'>16\strumDown <d\RH3 a d' a'>\strumDown <d\RH2 a d' a'>8\strumDown <d\RH1 a d' a'>4.\strumUp | \solobreak
   
   \allbreak
   
@@ -111,13 +111,14 @@ danza_one={
     g''8. fis''16 e''8 d'' cis'' e'' |
     \alternative {
       \volta 1 {
-        d''2.
+        d''2. \solobreak
       }
       \volta 2 {
         d''4.~ d''8 fis''16 g'' a'' b'' |
       }
     }
   }
+  \allpage
   
   a''8. g''16 fis''8 g'' a'' b'' |
   a'' fis''4 r4. |
@@ -143,7 +144,7 @@ danza_one={
   c'''8. b''16 a''8~ a'' fis''16 g'' a'' b'' |
   c'''8. b''16 a''8~ a'' fis''16 g'' a'' b'' |
   c'''8. b''16 a''8 cis''' d''' b'' |
-  a''2. |
+  a''2. | \solobreak
   
   r4. r8 fis''16 g'' a'' b'' |
   c'''8. b''16 a''8~ a'' fis''16 g'' a'' b'' |
@@ -224,7 +225,7 @@ danza_three={
       d4. d4. |
     }
   >>
-  
+  \solobreak
   d'4. d'4. |
   <<
     \new Voice { \voiceTwo
@@ -244,20 +245,20 @@ danza_three={
   d'4. c'4. |
   b4. g4. |
   a8_\< a a a4 a8_\! |
-  <d\RH1 a d' a'>8\strumUp_\f <d\RH4 a d' a'>16\strumDown <d\RH3 a d' a'>\strumDown <d\RH2 a d' a'>8\strumDown <d\RH1 a d' a'>4.\strumUp |
+  <d\RH1 a d' a'>8\strumUp_\f <d\RH4 a d' a'>16\strumDown <d\RH3 a d' a'>\strumDown <d\RH2 a d' a'>8\strumDown <d\RH1 a d' a'>4.\strumUp | \solobreak
   
   <d\RH1 a d'>8\strumUp_\mf <d\RH1 a d'>\strumUp <d\RH1 a d'>\strumUp <d\RH1 a d'>4.\strumUp |
   <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
   <d a d'>8 <d a d'> <d a d'> <d' g'>4. |
   <d\RH1 a d'>8\strumUp_\mp <d\RH4 a d'>16\strumDown <d\RH3 a d'>\strumDown <d\RH2 a d'>8\strumDown <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
-  <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 <d a d'>4. |
+  <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 <d a d'>4. | \solobreak
   
   <d a d'>8_\mf <d a d'> <d a d'> <d a d'>4. |
   <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
   <d a d'>8 <d a d'> <d a d'> <d' g'>4. |
   
   <d a d'>8_\mp <d a d'>16 <d a d'> <d a d'>8 <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
-  <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 <d a d'>4. |
+  <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 <d a d'>4. | \solobreak
   
   \bar ":|.|:"
   
@@ -298,7 +299,7 @@ danza_four={
     b'8. a'16 g'8 fis' e' g' |
     \alternative {
       \volta 1 {
-        fis'2.
+        fis'2. \solobreak
       }
       \volta 2 {
         fis'4. r4. |
@@ -313,7 +314,7 @@ danza_four={
   R2. |
   r4. r8 g'16 a' b' d'' |
   b'8. a'16 g'8 fis' e' g' |
-  fis'4. r4. |
+  fis'4. r4. | \solobreak
   
   R2. |
   r4. r8 fis''16 g'' a'' b'' |

@@ -6,6 +6,12 @@ allbreak={\break}
 allpage={\pageBreak}
 \include "cancion_y_danza_1_common.ly"
 
+
+\paper {
+  ragged-last = ##t
+  ragged-bottom = ##f
+}
+
 \score {<<
   \new Staff \with {
     \consists "Span_arpeggio_engraver"

@@ -59,7 +59,7 @@ danza_two={
   <d\RH1 a d'>8\strumUp_\mf <d\RH1 a d'>\strumUp <d\RH1 a d'>\strumUp <d\RH1 a d'>4.\strumUp |
   <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
   <d a d'>8 <d a d'> <d a d'> <d' g'>4. |
-  <d\RH1 a d'>8\strumUp_\mp <d\RH4 a d'>16\strumDown <d\RH3 a d'>\strumDown <d\RH2 a d'>8\strumDown <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
+  <d a d'>8_\mp <d a d'>16 <d a d'> <d a d'>8 <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
   <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 <d a d'>4. |
   
   \allbreak
@@ -81,14 +81,14 @@ danza_two={
     e'4. fis'4 g'8 
     \alternative {
       \volta 1 {
-        <d\RH1 a d' a'>8_\mf <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>4. |
+        <d a d' a'>8_\mf <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>4. |
       }
       \volta 2 {
-        <d\RH1 a d' a'>8_\<_\p <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 |
+        <d a d' a'>8_\<_\p <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 |
       }
     }
   }
-  <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8_\! |
+  <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8_\! |
   
   <d a d' a' d'' a''>2.\arpeggio\fermata_\ff |
 }
@@ -169,7 +169,7 @@ danza_one={
     }
   }
   
-  <d\RH1 a d' a'>8_\< <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8_\! |
+  <d\RH1 a d' a'>8_\<\strumUp <d\RH4 a d' a'>16\strumDown <d\RH3 a d' a'>\strumDown <d\RH2 a d' a'>8\strumDown <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8_\! |
   <d a d' a' d'' a''>2.\arpeggio\fermata_\ff |
 }
 
@@ -250,7 +250,7 @@ danza_three={
   <d\RH1 a d'>8\strumUp_\mf <d\RH1 a d'>\strumUp <d\RH1 a d'>\strumUp <d\RH1 a d'>4.\strumUp |
   <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
   <d a d'>8 <d a d'> <d a d'> <d' g'>4. |
-  <d\RH1 a d'>8\strumUp_\mp <d\RH4 a d'>16\strumDown <d\RH3 a d'>\strumDown <d\RH2 a d'>8\strumDown <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
+  <d a d'>8_\mp <d a d'>16 <d a d'> <d a d'>8 <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
   <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 <d a d'>4. | \solobreak
   
   <d a d'>8_\mf <d a d'> <d a d'> <d a d'>4. |
@@ -268,14 +268,14 @@ danza_three={
     a8 a a a4 a8 |
     \alternative {
       \volta 1 {
-        <d\RH1 a d' a'>8_\mf <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>4. |
+        <d a d' a'>8_\mf <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>4. |
       }
       \volta 2 {
-        <d\RH1 a d' a'>8_\<_\p <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 |
+        <d a d' a'>8_\<_\p <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 |
       }
     }
   }
-  <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8_\! |
+  <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8 <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8_\! |
   
   <d a d' a' d'' a''>2.\arpeggio\fermata |
     
@@ -357,6 +357,6 @@ danza_four={
     }
   }
   
-  <d\RH1 a d' a'>8_\< <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8 <d\RH1 a d' a'>8 <d\RH4 a d' a'>16 <d\RH3 a d' a'> <d\RH2 a d' a'>8_\! |
+  <d\RH1 a d' a'>8_\<\strumUp <d\RH4 a d' a'>16\strumDown <d\RH3 a d' a'>\strumDown <d\RH2 a d' a'>8\strumDown <d a d' a'>8 <d a d' a'>16 <d a d' a'> <d a d' a'>8_\! |
   <d a d' a' d'' a''>2.\arpeggio\fermata_\ff |
 }

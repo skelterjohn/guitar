@@ -13,15 +13,13 @@ Cancion y Danza.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/fools.pdf)
 |
-[score g1](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_one.pdf)
+[score guitar 1](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_one.pdf)
 |
-[score g2](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_two.pdf)
+[score guitar 2](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_two.pdf)
 |
-[score g3](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_three.pdf)
+[score guitar 3](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_three.pdf)
 |
-[score g4](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_four.pdf)
-|
-[score g1](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_one.pdf)
+[score guitar 4](https://github.com/skelterjohn/guitar/blob/master/pdf/fools_four.pdf)
 |
 [recording](https://www.youtube.com/watch?v=unBusSodF70)
 
@@ -108,6 +106,22 @@ A simple piece with a repeating bass line. Has a few left-hand stretches but not
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/no_feedback.pdf)
 |
 [recording](https://youtu.be/Cpl9k0rCWcI)
+
+## Arrangements
+
+### Cancion y Danza by Antonio Ruiz-Pipo
+
+A four-part arrangement.
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/cancion_y_danza_1.pdf)
+|
+[score guitar 1](https://github.com/skelterjohn/guitar/blob/master/pdf/cancion_y_danza_1_one.pdf)
+|
+[score guitar 2](https://github.com/skelterjohn/guitar/blob/master/pdf/cancion_y_danza_1_two.pdf)
+|
+[score guitar 3](https://github.com/skelterjohn/guitar/blob/master/pdf/cancion_y_danza_1_three.pdf)
+|
+[score guitar 4](https://github.com/skelterjohn/guitar/blob/master/pdf/cancion_y_danza_1_four.pdf)
 
 ## Transcriptions
 

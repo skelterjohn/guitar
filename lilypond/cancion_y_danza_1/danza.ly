@@ -28,7 +28,16 @@ danza_two={
         \ga \ga |
       }
       \volta 2 {
-        <d' a'>8 <d' a'>16 <d' a'> <d' a'>8 <d' a'>4. |
+        <<
+          \new Voice { \voiceOne
+            \set fingeringOrientations = #'(left)
+            <d' a'>8 <d' a'>16 <d' a'> <d' a'>8 <d' a'>4. |
+          }
+          \new Voice { \voiceTwo
+            \set fingeringOrientations = #'(left)
+            d4. d4. |
+          }
+        >>|
       }
     }
   }\solobreak

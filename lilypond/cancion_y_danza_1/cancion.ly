@@ -54,7 +54,7 @@ cancion_one={
   r4. <d'>4 d'''16^"rit."_\< e'''_\! |
   <d a d' f'' a'' d'''>2\arpeggio_\ff d''8_\mp e'' |
   f''4 e''8 d''8. e''16^"rit." d'' c'' |
-  <f c' f'' c''>4.\arpeggio\shortfermata r4. |
+  <f c' f' c''>4.\arpeggio\shortfermata r4. |
   r4. <e'>4 c'8 |
   <d' fis' d'' a''>2\arpeggio\fermata d''8 e'' |\noPageBreak \noBreak
   
@@ -131,7 +131,7 @@ cancion_two={
   <f''>4. e''4 c'16^"rit."_\< bes_\! |
   <d a d' f'' a'' d'''>2\arpeggio_\ff r4_\mp |
   <d''>4 c''16 a' g'8 <a'>4^"rit." |
-  <f c' f'' c''>4.\arpeggio\shortfermata c''8 d'' a' |
+  <f c' f' c''>4.\arpeggio\shortfermata c''8 d'' a' |
   c''8 b'4~ <b'>4 r8 |
   <d' fis' d'' a''>2.\arpeggio\fermata |
   
@@ -139,8 +139,8 @@ cancion_two={
   <a'>4 <d' a'>8\staccato_\> <d' a'>4._\! |
   <c'' f''>4 <c''>8 <d''>4. |
   <c'' e''>4 <c'' e''>8\staccato_\> <c'' e''>4._\! |
-  <d a a' d'' e'' e''>4\arpeggio_\mf <d a a' d'' e'' e''>8-> <fis''>4._\mp |
-  <e''>4 <e''>8 <f''>4. |
+  <d a a' d'' e'' e''>4\arpeggio_\mf <d a a' d'' e'' e''>8-> <fis''>4. |
+  <e''>4_\mp <e''>8 <f''>4. |
   <<
     \new Voice { \voiceOne
       <bes'>4. <a'>8 <b' > <cis'' > |
@@ -148,7 +148,7 @@ cancion_two={
     }
     \new Voice { \voiceTwo
       g4. a4. |
-      d2. |
+      d2.\fermata |
     }
   >>
   \solopage
@@ -206,7 +206,7 @@ cancion_three={
   <f' c'' >4. c'4 c'16^"rit."_\< bes_\! |
   <d a d' f'' a'' d'''>2\arpeggio_\ff r4_\mp |
   <g'>2 <e'>4^"rit." |
-  <f c' f'' c''>4.\arpeggio\shortfermata r4. |
+  <f c' f' c''>4.\arpeggio\shortfermata r4. |
   r4. <g'~>4 g'16 g' |
   <d' fis' d'' a''>2.\arpeggio\fermata |
   
@@ -214,8 +214,8 @@ cancion_three={
   f'4 f'8\staccato_\> f'4._\! |
   a'4 a'8 g'4. |
   <e a'>2. |
-  <d a a' d'' e'' e''>4\arpeggio_\mf <d a a' d'' e'' e''>8-> <g' b'>4._\mp |
-  <g'>4 <g'>8 <d''>4. |
+  <d a a' d'' e'' e''>4\arpeggio_\mf <d a a' d'' e'' e''>8-> <g' b'>4. |
+  <g'>4_\mp <g'>8 <d''>4. |
     <<
       \new Voice { \voiceOne
         <e'>4 f'8 g'4 e'8 |
@@ -223,7 +223,7 @@ cancion_three={
       }
       \new Voice { \voiceTwo
         g4. a4. |
-        d2. |
+        d2.\fermata |
       }
     >>
   \solopage
@@ -285,7 +285,7 @@ cancion_four={
   c'''4 bes''8 a''16 bes'' c'''8 d'''16^"rit."_\< e'''_\!|
   <d a d' f'' a'' d'''>2\arpeggio_\ff r4_\mp |
   c'8 <a e'>4 bes4.^"rit." |
-  <f c' f'' c''>4.\arpeggio\shortfermata c'''8 d''' a'' |
+  <f c' f' c''>4.\arpeggio\shortfermata c'''8 d''' a'' |
   c'''8 b''4~ b'' g''8 |
   <d' fis' d'' a''>2.\arpeggio\fermata |
   
@@ -304,7 +304,7 @@ cancion_four={
   d'''8._\mf e'''16 d'''8~ d'''4. |
   <<
     \new Voice{\voiceTwo
-      c'4 c'8 d'4. |
+      c'4_\mp c'8 d'4. |
     }
     \new Voice{\voiceOne
       r4. r8 c''' bes'' |

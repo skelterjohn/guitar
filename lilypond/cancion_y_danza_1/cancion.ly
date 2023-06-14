@@ -54,7 +54,7 @@ cancion_one={
   r4. <d'>4 d'''16^"rit."_\< e'''_\! |
   <d a d' f'' a'' d'''>2\arpeggio_\ff d''8_\mp e'' |
   f''4 e''8 d''8. e''16^"rit." d'' c'' |
-  c''4.-> r4. |
+  <f c' f'' c''>4.\arpeggio\shortfermata r4. |
   r4. <e'>4 c'8 |
   <d' fis' d'' a''>2\arpeggio\fermata d''8 e'' |\noPageBreak \noBreak
   
@@ -130,8 +130,8 @@ cancion_two={
   a''2. |
   <f''>4. e''4 c'16^"rit."_\< bes_\! |
   <d a d' f'' a'' d'''>2\arpeggio_\ff r4_\mp |
-  <d''>4 c''16 a' g'8 <a'>4 |
-  f'4.-> c''8 d'' a' |
+  <d''>4 c''16 a' g'8 <a'>4^"rit." |
+  <f c' f'' c''>4.\arpeggio\shortfermata c''8 d'' a' |
   c''8 b'4~ <b'>4 r8 |
   <d' fis' d'' a''>2.\arpeggio\fermata |
   
@@ -205,8 +205,8 @@ cancion_three={
   e''2. |
   <f' c'' >4. c'4 c'16^"rit."_\< bes_\! |
   <d a d' f'' a'' d'''>2\arpeggio_\ff r4_\mp |
-  <g'>2 <e'>4 |
-  <c'>4.-> r4. |
+  <g'>2 <e'>4^"rit." |
+  <f c' f'' c''>4.\arpeggio\shortfermata r4. |
   r4. <g'~>4 g'16 g' |
   <d' fis' d'' a''>2.\arpeggio\fermata |
   
@@ -284,8 +284,8 @@ cancion_four={
   >>
   c'''4 bes''8 a''16 bes'' c'''8 d'''16^"rit."_\< e'''_\!|
   <d a d' f'' a'' d'''>2\arpeggio_\ff r4_\mp |
-  c'8 <a e'>4 bes4.|
-  <f>4.-> c'''8 d''' a'' |
+  c'8 <a e'>4 bes4.^"rit." |
+  <f c' f'' c''>4.\arpeggio\shortfermata c'''8 d''' a'' |
   c'''8 b''4~ b'' g''8 |
   <d' fis' d'' a''>2.\arpeggio\fermata |
   

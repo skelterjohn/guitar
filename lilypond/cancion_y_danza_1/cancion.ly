@@ -31,7 +31,7 @@ cancion_one={
     
     d'''8._\mf e'''16 d'''8~ d''' c'''_\> a''_\! |
     bes''8_\mp a'' bes''~ bes''4. |
-    r4. <e''>8 <g''> <f''> |
+    r4. <a'>8 <b' > <cis''> |
     \alternative {
       \volta 1 {
         d''4.~ d''8 d'' e'' |
@@ -54,9 +54,9 @@ cancion_one={
   r4. <d'>4 d'''16^"rit."_\< e'''_\! |
   <d a d' f'' a'' d'''>2\arpeggio_\ff d''8_\mp e'' |
   f''4 e''8 d''8. e''16^"rit." d'' c'' |
-  <f c' f' c''>4.\arpeggio\shortfermata r4. |
-  r4. <e'>4 c'8 |
-  <d' fis' d'' a''>2\arpeggio\fermata d''8 e'' |\noPageBreak \noBreak
+  <f c' f' c''>4.\arpeggio\shortfermata c''8 d'' a' |
+  c''8 b'4~ <b'>4. |
+  r2\fermata d''8 e'' |\noPageBreak \noBreak
   
   f''4 e''8~ e'' g'' f'' |
   d''2. |
@@ -74,7 +74,7 @@ cancion_one={
   >>
   d'''8._\mf e'''16 d'''8~ d''' c'''_\> a''_\! |
   bes''8_\mp a'' bes''~ bes''4. |
-  r4. <e''>8^"rit." <g''> <f''> |
+  r4. <a'>8^"rit." <b' > <cis'' > |
   d''2.\fermata |
   \solopage
 }
@@ -95,14 +95,7 @@ cancion_two={
     <c'' e''>4 <c'' e''>8\staccato_\> <c'' e''>4._\! |
     <d a  e''>4->_\mf <d a  e''>8 <fis''>4. |
     <e''>4_\mp <e''>8 <f''>4. |
-    <<
-      \new Voice { \voiceOne
-        <bes'>4. <a'>8 <b' > <cis'' > |
-      }
-      \new Voice { \voiceTwo
-        g4. a4. |
-      }
-    >>
+    <bes'>4. r4. |
     \alternative {
       \volta 1 {
         <<
@@ -131,8 +124,15 @@ cancion_two={
   <f''>4. e''4 c'16^"rit."_\< bes_\! |
   <d a d' f'' a'' d'''>2\arpeggio_\ff r4_\mp |
   <d''>4 c''16 a' g'8 <a'>4^"rit." |
-  <f c' f' c''>4.\arpeggio\shortfermata c''8 d'' a' |
-  c''8 b'4~ <b'>4 r8 |
+  <f c' f' c''>4.\arpeggio\shortfermata r4. |
+  r4.<<
+    \new Voice {\voiceTwo
+      <e'>4 <c'>8 |
+    }
+    \new Voice {\voiceOne
+      r4 g''8 |
+    }
+  >>
   <d' fis' d'' a''>2.\arpeggio\fermata |
   
   a'4 a'8 <b'>4 cis''8 |
@@ -141,13 +141,12 @@ cancion_two={
   <c'' e''>4 <c'' e''>8\staccato_\> <c'' e''>4._\! |
   <d a a' d'' e'' e''>4\arpeggio_\mf <d a a' d'' e'' e''>8-> <fis''>4. |
   <e''>4_\mp <e''>8 <f''>4. |
+  bes'4. r4.
   <<
     \new Voice { \voiceOne
-      <bes'>4. <a'>8 <b' > <cis'' > |
       <a'>4\fermata <d' a'>8\staccato_\> <d' a'>4.\fermata_\! |
     }
     \new Voice { \voiceTwo
-      g4. a4. |
       d2.\fermata |
     }
   >>
@@ -286,8 +285,8 @@ cancion_four={
   <d a d' f'' a'' d'''>2\arpeggio_\ff r4_\mp |
   c'8 <a e'>4 bes4.^"rit." |
   <f c' f' c''>4.\arpeggio\shortfermata c'''8 d''' a'' |
-  c'''8 b''4~ b'' g''8 |
-  <d' fis' d'' a''>2.\arpeggio\fermata |
+  c'''8 b''4~ b''4. |
+  r2. |
   
   d4. a4. |
   <<

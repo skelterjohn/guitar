@@ -11,7 +11,6 @@
   ragged-bottom = ##t
 }
 
-
 arrow =
 \tweak stencil
 #(lambda (grob)
@@ -39,10 +38,6 @@ arrow =
 strumUp = \tweak arpeggio-direction #UP \arrow
 strumDown = \tweak arpeggio-direction #DOWN \arrow
 
-
-upstrum = {
-\override Arpeggio.stencil = #point-stencil
-}
 
 \include "../bbarred.ly"
 #(define RH rightHandFinger)

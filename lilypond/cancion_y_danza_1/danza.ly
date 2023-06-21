@@ -31,11 +31,11 @@ danza_two={
         <<
           \new Voice { \voiceOne
             \set fingeringOrientations = #'(left)
-            <d' a'>8 <d' a'>16 <d' a'> <d' a'>8 <d' a'>4. |
+            <d' a'>8\strumUp <d' a'>16 <d' a'> <d' a'>8 <d' a'>4. |
           }
           \new Voice { \voiceTwo
             \set fingeringOrientations = #'(left)
-            d4. d4. |
+            d4.\strumUp d4. |
           }
         >>|
       }
@@ -68,7 +68,7 @@ danza_two={
   <d\RH1 a d'>8\strumUp_\mf <d\RH1 a d'>\strumUp <d\RH1 a d'>\strumUp <d\RH1 a d'>4.\strumUp |
   <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
   <d a d'>8 <d a d'> <d a d'> <d' g'>4. |
-  <d a d'>8_\mp <d a d'>16 <d a d'> <d a d'>8 <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
+  <d\RH1 a d'>8\strumUp_\mp <d\RH4 a d'>16\strumDown <d\RH3 a d'>\strumDown <d\RH2 a d'>8\strumDown <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
   <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 <d a d'>4. |
   
   \allbreak
@@ -227,7 +227,7 @@ danza_three={
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
-      <d' a'>8 <d' a'>16 <d' a'> <d' a'>8 <d' a'>4. |
+      <d' a'>4. <d' a'>4. |
     }
     \new Voice { \voiceTwo
       \set fingeringOrientations = #'(left)
@@ -259,7 +259,7 @@ danza_three={
   <d\RH1 a d'>8\strumUp_\mf <d\RH1 a d'>\strumUp <d\RH1 a d'>\strumUp <d\RH1 a d'>4.\strumUp |
   <d a d'>8 <d a d'> <d a d'> <d a d'>4. |
   <d a d'>8 <d a d'> <d a d'> <d' g'>4. |
-  <d a d'>8_\mp <d a d'>16 <d a d'> <d a d'>8 <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
+  <d\RH1 a d'>8\strumUp_\mp <d\RH4 a d'>16\strumDown <d\RH3 a d'>\strumDown <d\RH2 a d'>8\strumDown <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 |
   <d a d'>8 <d a d'>16 <d a d'> <d a d'>8 <d a d'>4. | \solobreak
   
   <d a d'>8_\mf <d a d'> <d a d'> <d a d'>4. |

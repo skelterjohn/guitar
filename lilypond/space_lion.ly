@@ -61,7 +61,8 @@ loose_a={
       \tuplet 3/4 {g8 a b} a2_\!_\mf~ | a2 fis2_\> s1*0_\! |
       e1_\p |
       r2 a,4 e |
-      d8 cis b,2 a,4 |
+      \tuplet 3/4 {d4 cis b,~} |
+      b,2. a,4 |
       \alternative {
         \volta 1 {
           a,1 |
@@ -104,7 +105,7 @@ loose_a={
             e'1 |
           }
           
-          r1
+          r1 r1|
           
           \alternative {
             \volta 1 {
@@ -164,14 +165,15 @@ loose_a={
           <b, d>1 |
           <a, cis>1~ |
           <a, cis>1 |
-          <b, d>1~ |
+          <g, b,>1~ |
+          <g, b,>1 |
           
           \alternative {
             \volta 1 {
-              <b, d>1 |
+              <e, a,>1 |
             }
             \volta 2 {
-              r1 |
+              <e, a,>1 |
             }
           }
         }
@@ -216,13 +218,15 @@ loose_a={
       \loose_a
       \loose_a
       \loose_g
+      \loose_g
+     
     
       \alternative {
         \volta 1 {
-          \loose_g
+          r1
         }
         \volta 2 {
-          <fis b e' a' cis'' fis''>1 |
+          r1 |
         }
       }
     }

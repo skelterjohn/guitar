@@ -134,9 +134,9 @@ RHi = \rightHandFinger #2
 RHm = \rightHandFinger #3
 RHa = \rightHandFinger #4
 RHx = \rightHandFinger #5
-RHu = \tweak staff-padding 3.5 \rightHandFinger \strokeUp
-RHd = \tweak staff-padding 3.5 \rightHandFinger \strokeDown
-RHg = \tweak staff-padding 3.5 \rightHandFinger \golpe
+RHu = \tweak staff-padding 5 \rightHandFinger \strokeUp
+RHd = \tweak staff-padding 5 \rightHandFinger \strokeDown
+RHg = \tweak staff-padding 5 \rightHandFinger \golpe
 
 headsOff = {
   \hide TabNoteHead

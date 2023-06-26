@@ -284,6 +284,38 @@ in_g={
   <g b d' g' b' g''\RHd>2.^"G" \bar "|."
 }
 
+in_a={
+  \key a \major
+  \time 3/4
+  \set strokeFingerOrientations = #'(up)
+  
+  \repeat volta 2 {
+    <e a e' a' cis'' e''\RHd>8^"A" <e a e' a' cis'' e''\RHu>8 <e a e' a' cis'' e''\RHd> <e a e' a' cis'' e''\RHu>8 <e a e' a' cis'' e''\RHd>4
+    <e b d' gis' b' e''\RHd>4^"E7" <e b d' gis' b' e''\RHd>4 <e a e' a' cis'' e''\RHd>4^"A" |
+  }
+  <e a e' a' cis'' e''\RHd>8^"A" <e a e' a' cis'' e''\RHu>8 <e a e' a' cis'' e''\RHd>4 r8 e''8 |
+  a''8 gis'' fis'' e'' fis'' e'' | d'' b' \tuplet 3/2 {cis''8 d'' e''\2} \tuplet 3/2 {cis''8 d'' e''\2} |
+  d''16 cis'' b' cis'' \tuplet 3/2 {d''8 cis'' b'} a'4 |
+
+  \repeat volta 3 {
+    <e a e' a' cis'' e''\RHd>8^"A" <e a e' a' cis'' e''\RHu>8 <e a e' a' cis'' e''\RHd> <e a e' a' cis'' e''\RHu>8 <e a e' a' cis'' e''\RHd>4
+    <e b d' gis' b' e''\RHd>4^"E7" <e b d' gis' b' e''\RHd>4 <e a e' a' cis'' e''\RHd>4^"A" |
+    <e a e' a' cis'' e''\RHd>8^"A" <e a e' a' cis'' e''\RHu>8 <e a e' a' cis'' e''\RHd>4 r8 e''8 |
+    
+    a''8 gis'' fis'' e'' d'' cis'' |
+    b' a' \tuplet 3/2 {gis' a' b'\3} \tuplet 3/2 {gis' a' b'\3} |
+    a'16 b'\3 a' gis' \tuplet 3/2 {a'8 gis' fis'} e'4 |
+    <e b d' gis' b' e''\RHd>8^"E7" <e b d' gis' b' e''\RHu>8 <e b d' gis' b' e''\RHd>4 \tuplet 3/2 {gis'8 a' b'} |
+    \tuplet 3/2 {cis''8 d'' e''} <d' a' d'' fis''\RHd>8^"D" <d' a' d'' fis''\RHu>8 <d' a' d'' fis''\RHd>4 |
+    \tuplet 3/2 {e'8 fis' gis'} \tuplet 3/2 {a' b' d''} <e a e' a' cis'' e''\RHd>4^"A" |
+    \tuplet 3/2 {a8 b cis'} \tuplet 3/2 {d'8 e' d'} \tuplet 3/2 {cis'8 b a}
+    <e b d' gis' b' e''\RHd>8^"E7" <e b d' gis' b' e''\RHu>8 <e b d' gis' b' e''\RHd>4 r4^\golpe |
+    \tuplet 3/2 {e8 fis gis} \tuplet 3/2 {a8 b cis'} \tuplet 3/2 {b8 a gis} |
+  }
+  \break
+  <e a e' a' cis'' e''\RHd>2.^"A" \bar "|."
+}
+
 \score {
   <<
     \new ChordNames {
@@ -540,6 +572,28 @@ in_g={
       \context TabStaff {
         \set Staff.stringTunings = \stringTuning <e a d' g' b' e''>
         \in_g
+      }
+    >>
+  >>
+}
+
+\pageBreak
+
+\score {
+  \header {
+    piece = "Sevillanas in A"
+  }
+  \new StaffGroup <<
+    <<
+      \context Staff \with {
+        \consists "Span_arpeggio_engraver"
+        connectArpeggios = ##t
+      } {    
+        \in_a
+      }
+      \context TabStaff {
+        \set Staff.stringTunings = \stringTuning <e a d' g' b' e''>
+        \in_a
       }
     >>
   >>

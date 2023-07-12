@@ -42,12 +42,13 @@ ldp={g''8\RHp}
       R2.*92 |
       
       \mark \markup \box "E"
+      
       \repeat volta 7	{
-        r4^"pizz."_"x7"
+        r4^"pizz."_"x7"^"C XII"
         <<
           \new Voice{ \voiceOne 
             \set fingeringOrientations = #'(left)
-            <e'''-1>_\pp^"a 2"^"XII" <d'''-3> |
+            <e'''-1>_\pp^"a 2" <d'''-3> |
           }
           \new Voice{ \voiceTwo
             \set fingeringOrientations = #'(left up)
@@ -62,18 +63,18 @@ ldp={g''8\RHp}
       <<
         \new Voice{ \voiceOne 
           \set fingeringOrientations = #'(left)
-          \oneVoice r4 \voiceOne <e'''-1>^"XII" <e'''-4>^"X" |
+          \oneVoice r4 \voiceOne <e'''-1> <e'''> |
           \repeat volta 9 {
-            \oneVoice r4_"x9" \voiceOne <f'''-2>^"XII" <d'''-3> |
+            \oneVoice r4_"x9" \voiceOne <f'''-2> <d'''-3> |
           }
           \set Score.currentBarNumber = #110
-          \oneVoice r4 \voiceOne <e'''-1>^"XII" <d'''-3> |
+          \oneVoice r4 \voiceOne <e'''-1> <d'''-3> |
         }
         \new Voice{ \voiceTwo
           \set fingeringOrientations = #'(left up)
           s4 <d''-1 d'''-3> 
           \set fingeringOrientations = #'(left)
-          <c''-1 b''-3> |
+          <c''-2 b''-1> |
             
           \repeat volta 9 {
             s4 <d''-1 d'''-3> \arpeggioParenthesis <b'-2 d''-1> \arpeggio |
@@ -93,19 +94,19 @@ ldp={g''8\RHp}
       g''4~g''16 <f''-2>( <e''-1>) <d''-3> e''4~ |
       e''4 r8 <bes''-1--> <c'''-3-->[ <des'''-4-->~] |
       des'''8 <des'''-->4 <des'''-->8 <des'''--> <des'''--> |
-      \tuplet 3/2 { <des'''-->8 <des'''--> <des'''--> } <des'''-->8 <c'''-2>16( <bes''-1>) des'''8 <c'''>16( <bes''>) |
+      \tuplet 3/2 { <des'''-->8 <des'''--> <des'''--> } <des'''-->8 <c'''-3>16( <bes''-1>) des'''8 <c'''>16( <bes''>) |
       <<
         \new Voice { \voiceTwo
           \set fingeringOrientations = #'(left)
-          des'''16( c''') bes'' <aes''-4\2> <g''-3>( <f''-1>) <e''-1>8~ e''4 |
+          des'''16( c''') bes'' <aes''-4\2> <g''-3>( <f''-1>) <e''-1>8~ e''4~ |
+          e''2~ e''8 \oneVoice r8 |
         }
         \new Voice {\voiceOne
           \hideNotes
-          s4 s16 a''16 \glissando g''8 s4 |
+          s4 s16 a''16 \glissando g''8 s4 | s2. |
           \unHideNotes
         }
       >>
-      e''2~ e''8 r8 |
       <d''-1>4. <e''-3>8 d''16( e'') <f''-4>8~ |
       f''4 <g''-1>8 <aes''-2> \tuplet 3/2 {<f''-4--> <g''-1--> <e''-3-->} |
       <d''-1>16( <e''-3>) d'' <c''-3>~ c''8 bes'->~ bes'4~ |
@@ -123,7 +124,7 @@ ldp={g''8\RHp}
       g''4~ g''16 <f''-2>( <e''-1>) <d''-3> e''4~ |
       e''4 r8 <bes''-1-->8 <c'''-3-->[ <des'''-4-->~] |
       des'''8 des'''4-- des'''8-- des'''--[ des'''--] |
-      \tuplet 3/2 {des'''8-- des'''8-- des'''8--} des'''8-- <c'''-2>16( <bes''-1>) des'''8 c'''16( bes'') |
+      \tuplet 3/2 {des'''8-- des'''8-- des'''8--} des'''8-- <c'''-3>16( <bes''-1>) des'''8 c'''16( bes'') |
       <<
         \new Voice {
           \set fingeringOrientations = #'(left)
@@ -266,7 +267,7 @@ ldp={g''8\RHp}
         }
       >> |
       <d'-0>4. <e'-2>8 d'16( e') <f'-3>8~ |
-      f'4 <g'-0>8 <bes'-1> \tuplet 3/2 {<f'-2>8_- <g'-4>_- <e'-1>_-} |
+      f'4 <g'-0>8 <aes'-1> \tuplet 3/2 {<f'-2>8_- <g'-4>_- <e'-1>_-} |
       <d'-0>16( <e'-2>) d' <c'-3>~ 8 <bes-1>~ 4~ |
       <bes>16 c' bes c' <d'-0>( <e'-1>) d' <c'-1> <d'-3>( c') <bes-4> <aes-2> |
       <bes-4>16( <aes-2>) <g-1>8 r4^"pizz."^"div."

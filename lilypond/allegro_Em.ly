@@ -270,6 +270,11 @@ notes={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       \tuplet 2/3 { <b' e'' g''>8 <ais' b' e'' > } \tuplet 2/3 {<ais' e'' fis''> <ais' b' e''>}
+      fis''8. a'' <a'' dis'''>8 b''32( cis''') dis'''( e''') fis'''8 |
+      \tuplet 2/3 { <b' e'' g''>8 <ais' e'' fis''> } \tuplet 2/3 {<ais' b' e''> <b' d '' e''>}
+      r16 e'' a''( e'') c'''( e'') b''( c''') fis'' b'' b'8 |
+      \tuplet 2/3 { <g' b' g''>8 <g' b' e''> } \tuplet 2/3 {<ais' b' fis''>8 <g' b' e''>} |
+      <fis' a'>16 dis''( e'') fis'' b dis'' r <a' dis'' fis''(> g'') a'' b fis'' |
     }
     \new Voice{ \voiceOne
       \set fingeringOrientations = #'(left)
@@ -284,8 +289,202 @@ notes={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       e8 8 8 8 8 8 |
+      s4. <b' fis''>4. |
+      e8 8 8 8 8 8 |
+      a4. b4 <b fis' b'>8 |
+      s2. |
+      b4 8 4 8 |
+      
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      s2. |
+      \once\override Slur.control-points =
+      #'((1 . 1) (2 . 2) (3 . 1) (4 . 0))
+      <dis' a' c''(>16 b') a' 
+      \once\override Slur.control-points =
+      #'((1 . 1) (2 . 2) (3 . 1) (3.5 . 0))
+      <fis' c'' dis''(> b') c'' s4. |
+      s2. |
+      \once \override Beam.positions = #'(-3 . -1) <e' a' c''>8 c'' e'' dis''4 b8 \glissando |
+      e8 8 8 8 8 8 |
     }
   >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      <g' b' g''>16 fis'' e'' dis'' e'' b' c'' a' c'' e'' a'' c''' |
+      <e'' g'' b''>16 g'' e'' <fis'' a'' dis'''> a'' fis'' e'''( b'') b'' b' b' b |
+      r16 b'8 8 8 8 8 16 |
+      a'16 b' c'' dis'' e'' fis'' g''8 8 8 |
+      e''16 ais' b' c'' fis'' e'' g'' ais' b' c'' e'' c'' |
+      fis''16 a' fis'' a' b' a' e''4. |
+    }
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      s16  \grace {fis''( g''} \hideNotes fis'')\unHideNotes s4 s4. |
+      s2. |
+      b'8 c'' g' a' <a' c''> <a' dis''> |
+      s4. \tweak Y-offset #.5 r16 b' ais' b' c''( b') |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      e4. a |
+      b8. b' e4. |
+      e2. |
+      a'4 fis'8 e'4. |
+      c'4. a |
+      b4. e16( g) b e' g' b' |
+    }
+  >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      
+      \tweak Y-offset #4 r32 \repeat unfold 3 b''
+      \tweak Y-offset #4 r \repeat unfold 3 b''
+      \tweak Y-offset #4 r \repeat unfold 3 g''
+      \tweak Y-offset #4 r \repeat unfold 3 a''
+      \tweak Y-offset #4 r \repeat unfold 3 a''
+      \tweak Y-offset #4 r \repeat unfold 3 a'' |
+      
+      \tweak Y-offset #4 r32 \repeat unfold 3 a''
+      \tweak Y-offset #4 r \repeat unfold 3 a''
+      \tweak Y-offset #4 r \repeat unfold 3 fis''
+      \tweak Y-offset #4 r \repeat unfold 3 g''
+      \tweak Y-offset #4 r \repeat unfold 3 g''
+      \tweak Y-offset #4 r \repeat unfold 3 g'' |
+
+      a'16 b' c'' e'' a'' g'' fis'' dis'' e'' c''( b') g' |
+      fis'16 a' c'' e''~ e'' dis'' <b e' g' b' e''>4. |
+      r16 b' c'' e'' a'' b'' c''' b'' a'' g'' fis'' e'' |
+      r16 g'' fis'' d'' b' g' b'( c'') e'' g'' b''( c''') |
+    }
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      e8 ais' b' a b' c'' |
+      c'8 e' b e ais'16( b') c''( b') |
+      a4. c' |
+      a4 b8 e8 16 16 16 16 |
+      a4. d' |
+      g4. c' |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+  >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      r16 c'' e'' a'' b'' c''' b'' a'' g'' fis'' e'' dis'' |
+      e''16 b' g'' e'' b'' g'' e'' f''32 gis'' f'''16 e''' d''' b'' |
+      c'''16[ a'' e''] a''[ e'' c''] fis''[ c'' a'] e''[ c'' a'] |
+      dis''16 fis' a' dis'' fis'' dis'' b''[ g'' e''] g''[ e'' b'] |
+      r16 a' b' c''( b') a' dis'' ais''( b') dis'' fis'' dis'' |
+      <g' b' g''>8. 16 16 16 <ais' b' fis''>8. 16 16 16 |
+    }
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      fis'4. b |
+      e4. e |
+      a4. a |
+      c'4 b8 e4. |
+      fis4. b |
+      <e b e'>4. <e e'> |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+  >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      dis'''16 c'''( b'') a''( g'') fis'' e'' g' e' \glissando fis' g' b' | 
+      <g' b' g''>8. 16 16 16 <ais' b' fis''>8. 16 16 16 |
+      fis'16 a' c'' e'' b dis''  <g' b' e''>8 16 16 16 16 |
+      <g' b' g''>8. 16 16 16 <ais' b' fis''>8. 16 16 16 |
+      dis'''16 c'''( b'') a''( g'') fis'' e'' g' e' \glissando fis' g' b' |
+      g'8. 16 16 16 <b fis'>8 16 16 16 16 |
+    }
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      e2. |
+      <e b e'>4. <e e'> |
+      a4 b8 <e b e'>4. |
+      <e b e'>4. <e e'> |
+      e2. |
+      <e b e'>4. e |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+  >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      r16 a'32( b') c''16 e'' b dis' <e' g' b' e''>4. |
+    }
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      a4 b8 <e b>8 b32( a) g( fis) e8 |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+  >>
+  
+  \bar "|."
 }
 
 \score {

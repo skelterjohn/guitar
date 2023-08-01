@@ -29,7 +29,7 @@ notes={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       e4. e' |
-      dis'4. dis' |
+      dis'4 s8 dis'4. |
       e2. |
       a4. b4 8 |
       e4. e |
@@ -145,6 +145,8 @@ notes={
       b16 b' dis' b' a' b' c'' b' b' b' a' b' |
     }
     \new Voice{ \voiceTwo 
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
       s2. |
       s2. |
       s2. |
@@ -161,6 +163,127 @@ notes={
       a4. b |
       e4. e |
       b8 dis' a' c'' b' a' |
+    }
+  >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne 
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      g'16 e' g' b'( c'') e'' c'''( b'') a'' g'' fis'' e'' |
+      \tuplet 3/2 { b16[ b' b''] } \tuplet 3/2 { b16[ b' b''] } \tuplet 3/2 { dis'16[ b' b''] } e'16 ais' b' g' e8 |
+      r8 e''32 a'' c'''( e''') c'''8 d'16 a' fis'8 \glissando d''\harmonic |
+      r8 d'''32( c''') b'' a''( g''8) fis''16[ dis'' e'' b' b'''8\harmonic] |
+      r8 c''32 e'' a''( b'') c'''8 b''8 \glissando fis''' b'''8\harmonic |
+      r16 g' b' e'' fis'' g'' gis''32( a'') b''( c''') d'''16( b'') e'''8\harmonic |
+    }
+    \new Voice{ \voiceTwo 
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      c'4. a |
+      b8 b dis' e'4 e8 |
+      a4. d'4 s8 |
+      g'4. c' |
+      fis'4. b''16 b'~ 4 |
+      e4. e |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+    }
+  >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne 
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      r16 b' c'' e'' a''( e'') c'''( e'') b''( e'') a''( e'') |
+      dis''16 e'' fis'' g'' a'' fis'' b''( c''') a''( b'') g'' e'' |
+      c''16 a' c'' e'' c'' a' fis' b' fis'' b' dis''' b' |
+      <g''\harmonic b''\harmonic e'''\harmonic>2. |
+      b'16 g' fis'' e'' g' b' a' c'' <a' b'> e'' <a' fis''> c'' |
+      a'16 b'( c'') a' fis'' a' g' b' <g' e''> fis'' <g' e''> b' |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      a4. fis' |
+      c'4 b8 e4. |
+      fis'4. b4 8 |
+      e8 16 16 16 16 e g b e' g' b' |
+      e4. a |
+      dis'4 b8 e4. |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      s2. |
+      s2. |
+      s2. |
+      s2. |
+      s4. \override Beam.positions = #'(-2.5 . -2.5) \tweak Stem.X-offset #1.3 \tweak X-offset #1.3 a'8 8 8 |
+      s4. \override Beam.positions = #'(-3.5 . -3.5) \tweak Stem.X-offset #1.3 \tweak X-offset #1.3 g'8 8 8 |
+    }
+  >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      e'16 g' b' g''( fis'') e'' g'' c'' c''' b'' a'' g'' |
+      fis''4 b''8 g'8 b' \glissando e'' |
+      \grace{ b''16( c'''} b''16) g'' e'' b' e''' b' r16 d'''32( c''') b''16 c''' a'' e'' |
+      b16 fis' b' dis'' fis'' dis'' <g' b' g''>4 s8 |
+      r16 fis'32 c'' e''16 c'' a'' e'' fis''( g'') c''' b'' a'' g'' |
+      fis''16 a'' c''' e'''~ e''' dis''' e'''8 32( b'') g'' fis'' e''8 |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      c'4. a |
+      b4. e |
+      e4. a |
+      s4. \override Beam.positions = #'(-3 . -6) g'16 fis' e' d' c' b |
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      s2. |
+      \tweak Y-offset #0 r16 fis' b' dis'' b' a' s16 <b' e''>8 8 16 |
+      s2. |
+      b4 s8 e4. |
+      a4. c |
+      a4 b8 e4 <e g' b' e''>8-> |
+    }
+  >>
+  
+  \break
+  
+  <<
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      \tuplet 2/3 { <b' e'' g''>8 <ais' b' e'' > } \tuplet 2/3 {<ais' e'' fis''> <ais' b' e''>}
+    }
+    \new Voice{ \voiceOne
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      \hideNotes
+      \omit TupletNumber 
+      \tuplet 2/3 { g''8 \glissando b' } \tuplet 2/3 {fis''\glissando b'}
+      \undo \omit TupletNumber 
+      \unHideNotes
+    }
+    \new Voice{ \voiceTwo
+      \set fingeringOrientations = #'(left)
+      \set stringNumberOrientations = #'(up)
+      e8 8 8 8 8 8 |
     }
   >>
 }

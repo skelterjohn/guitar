@@ -113,7 +113,7 @@ ldp={g''8\RHp}
       bes'16 <c''-3> <bes'-1> c'' <d''-1>( <e''-3>) d'' <c''-1> <d''-3>( c'') bes' aes' |
       <bes'-3>16->( <aes'-1>) <g'-0>8~ g'8 <f'-1>->~ f'4~ |
       f'4~ f'16 <g'-3>( <f'-1>) <ees'-4>~ ees'4~ |
-      ees'4 <f'-3>16( <ees'-1>) f' <des'-4>~ des'4 |
+      ees'4 <f'-3>16( <ees'-1>) f' <des'-4>~ des'4~ |
       des'4~ des'16 <des'-2>16( <ees'-4>) des' <f'-3>( ees') <des'-4> <c'-3>~ |
       
       \mark \markup \box "G"
@@ -144,7 +144,7 @@ ldp={g''8\RHp}
       bes'16 <c''-3> <bes'-1> c'' <d''-1>( <e''-3>) d'' <c''-1> <d''-3>( c'') <bes'-3> <aes'-1> |
       <bes'-3>16_>( <aes'-1>) <g'-0>8~ g' <f'-1>_>~ f'4~ |
       f'4~ f'16 <g'-3>( <f'-1>) <ees'-4>~ ees'4~ |
-      ees'4 <f'-3>16( <ees'-1>) f' <des'-4>~ des'4 |
+      ees'4 <f'-3>16( <ees'-1>) f' <des'-4>~ des'4~ |
       des'4~ des'16 <des'-2>( <ees'-4>) des' <f'-3>( ees') <des'-4> <c'-3>~ |
       
       \mark \markup \box "H"

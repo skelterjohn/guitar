@@ -3,7 +3,7 @@
 \include "common.ly"
 
 \header {
-  title = "Du bist die Ruh'"
+  title = "Doobeydee-Roo"
   composer = "Shubert"
 }
 

@@ -31,7 +31,9 @@ fools_one_b={
       R1*4 |
       \bar "||"
       
-      R1*4 |
+      R1 * 1 |
+      b'4 cis'' \tuplet 3/2 {b'8 cis'' d''} \tuplet 3/2{e'' fis'' a''} |
+      gis''1 | r2 fis''4 gis'' |
       \bar "||"
       
       d''2 \tuplet 3/2 {e''8 d''~d''} \tuplet 3/2 {cis''8 d'' e''} |
@@ -58,7 +60,9 @@ fools_one_b={
       \bar "||" \break
       \solopage
       
-      R1*4 |
+      R1 * 1 |
+      b'4 cis'' \tuplet 3/2 {b'8-"rubato" cis'' d''} \tuplet 3/2{e'' fis'' a''} |
+      gis''1 | r2 fis''4 gis'' |
       \bar "||"
       
       d''2 \tuplet 3/2 {e''8 d''~d''} \tuplet 3/2 {cis''8 d'' e''} |
@@ -120,7 +124,7 @@ fools_two_b={
       gis''1 |
       \bar "||" \break
       
-      \tuplet 6/4 {cis''4 b' a' gis' fis' e'} |
+      \tuplet 6/4 {cis'''4 b'' a'' gis'' fis'' e''} |
       r2 \tuplet 3/2 {cis''4 b' a'} |
       \tuplet 3/2 {g'4 fis' e'~} e'2 |
       R1 |
@@ -133,7 +137,7 @@ fools_two_b={
       \bar "||" \break
       
       R1 * 1 |
-      b'4 cis'' \tuplet 3/2 {b'8 cis'' d''} \tuplet 3/2{e'' fis'' a''} |
+      b'4 cis'' \tuplet 3/2 {b'8-"rubato" cis'' d''} \tuplet 3/2{e'' fis'' a''} |
       gis''1 | r2 fis''4 gis'' |
       \bar "||" \break
       
@@ -243,7 +247,7 @@ fools_four_b={
       \set stringNumberOrientations = #'(up)
       
       \noBreak
-      \repeat unfold 4 e4 |
+      e4-"metronomic" e4 e4 e4 |
       \bar "||"
       
       \mark \markup { \circle "B" }

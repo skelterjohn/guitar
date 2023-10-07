@@ -129,7 +129,7 @@ ldp={g''8\RHp}
         \new Voice {
           \set fingeringOrientations = #'(left)
           des'''16( c''') bes'' <aes''-4\2> <g''-3>->( <f''-1>) <e''-1>8~ e''4~ |
-      
+          e''2~ e''8 r8 |
         }
         \new Voice {\voiceOne
           \hideNotes
@@ -137,7 +137,6 @@ ldp={g''8\RHp}
           \unHideNotes
         }
       >>
-      e''2~ e''8 r8 |
       <d''-1>4. <e''-3>8 d''16( e'') <f''-4>8~ |
       f''4 <g''-1>8 <aes''-2> \tuplet 3/2 {<f''-4-->8 <g''-1--> <e''-3-->} |
       <d''-1>16( <e''-3>) d'' <c''-3>~ c''8 <bes'-1>->~ bes'4~ |

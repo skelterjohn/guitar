@@ -10,12 +10,13 @@ fools_one_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      g8 fis e8 fis b d' |
+      g8. fis16 e8 fis b d' |
       
       \mark \markup { \circle "A" }
       
       \repeat unfold 4 {e'8\RH #1 e'16\RH #2 e'\RH #1 e'8\RH #3 } |
-      \repeat unfold 3 {
+      {e'8_\> e'16 e' e'8} {e'8 e'16 e' e'8} {e'8 e'16 e' e'8} {e'8 e'16 e' e'8_\!} |
+      \repeat unfold 2 {
         \repeat unfold 4 {e'8 e'16 e' e'8} |
       }
       \bar "||" \break
@@ -72,7 +73,13 @@ fools_one_a={
       }
       \bar "||" \break
       
-      R1.*4 |
+      \repeat unfold 2 {
+        \repeat unfold 4 {e'8 e'16 e' e'8} |
+      }
+      
+      {e'8 16 16 8} {fis'8 16 16 8} {gis'8 16 16 8} {a'8 16 16 8} |
+      {b'8 16 16 8} {cis''8 16 16 8} {d''8 16 16 8} {gis''8 16 16 8} |
+      
       \bar "||"
       
       \repeat unfold 2 {
@@ -87,7 +94,7 @@ fools_one_a={
       \tuplet 3/2 {cis'''16( d''' cis'''} e''8) e''
       \tuplet 3/2 {b''16( cis''' b''} e''8) e''
       \tuplet 3/2 {a''16( b'' a''} e''8) e'' | \noBreak 
-      gis'8 b' d'' e'' gis'' b'' e'''8 e'''16 e''' e'''8 e'''8 e'''16 e''' e'''8 |
+      gis'8. b'16 d''8 e'' gis'' b'' e'''8-> e'''16 e''' e'''8 e'''8-> e'''16 e''' e'''8 |
       \bar "||"
     }
   >>
@@ -197,7 +204,7 @@ fools_two_a={
       b'8_"nat." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' e' d' | \noBreak 
-      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <b gis' e''>8[ e''16 e'' e''8] e''[ e''16 e'' e''8] |
+      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <b gis' e''>8->[ e''16 e'' e''8] e''->[ e''16 e'' e''8] |
       \bar "||"
     }
   >>
@@ -320,7 +327,7 @@ fools_three_a={
       \repeat unfold 3 {
         d''8. cis''16( b'8) cis'' b' a' b' gis'16( a') b'8 gis'16( a') b'( cis'' b'8) |
       } \noBreak 
-      r4. r8 r8 \tuplet 3/2 {a'16 d'' a''} b''8 b''16 b'' b''8 b''8 b''16 b'' b''8 |
+      r4. r8 r8 \tuplet 3/2 {a'16 d'' a''} b''8-> b''16 b'' b''8 b''8-> b''16 b'' b''8 |
       \bar "||"
     }
   >>
@@ -468,9 +475,9 @@ fools_four_a={
       \repeat unfold 6 {e'8 gis'} |
       \repeat unfold 6 {d'8 gis'} |
       \noBreak 
-      g8 fis e8 fis b d'
-      <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8
-      <b e' b' e'' gis'' b''>8 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8 |
+      g8. fis16 e8 fis b d'
+      <b e' b' e'' gis'' b''>8-> <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8
+      <b e' b' e'' gis'' b''>8-> <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8 |
       \break
       \solopage
     }

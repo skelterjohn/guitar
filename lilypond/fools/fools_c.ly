@@ -15,7 +15,7 @@ fools_one_c={
         \repeat unfold 4 {e'8 e'16 e' e'8}
       }
       \repeat unfold 2 {e'8 e'16 e' e'8}
-      e'8\staccato r4 e'8\staccato r4 |
+      e'8->\staccato r4 e'8->\staccato r4 |
       \bar "||" \break
       
       b'4. cis'' a' b' | d'' e'' b' fis'' |
@@ -39,7 +39,7 @@ fools_one_c={
       \tuplet 3/2 {cis'''16( d''' cis'''} e''8) e''
       \tuplet 3/2 {b''16( cis''' b''} e''8) e''
       \tuplet 3/2 {a''16( b'' a''} e''8) e'' | \noBreak 
-      gis'8 b' d'' e'' gis'' b'' e'''8\staccato r4 r4.  |
+      gis'8. b'16 d''8 e'' gis'' b'' e'''8->\staccato r4 r4.  |
       \bar "||"
     }
   >>
@@ -60,7 +60,7 @@ fools_two_c={
       b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
-      b'8 a' gis' a' gis' d' e'4. e' |
+      b'8 a' gis' a' gis' d' e'8->\staccato r4 e'8->\staccato r4 |
       \bar "||" \break
       
       \repeat unfold 2{
@@ -78,7 +78,7 @@ fools_two_c={
       b'8_"nat." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' e' d' | \noBreak 
-      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <b gis' e''>8\staccato r4 r4. |
+      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <b gis' e''>8->\staccato r4 r4. |
       \bar "||"
     }
   >>
@@ -135,7 +135,7 @@ fools_three_c={
       \repeat unfold 3 {
         d''8. cis''16( b'8) cis'' b' a' b' gis'16( a') b'8 gis'16( a') b'( cis'' b'8) |
       } \noBreak 
-      r4. r8 r8 \tuplet 3/2 {a'16 d'' a''} b''8\staccato r4 r4. |
+      r4. r8 r8 \tuplet 3/2 {a'16 d'' a''} b''8->\staccato r4 r4. |
       \bar "||"
     }
   >>
@@ -178,8 +178,8 @@ fools_four_c={
       \repeat unfold 6 {e'8 gis'} |
       \repeat unfold 6 {d'8 gis'} |
       \noBreak 
-      g8 fis e8 fis b d'
-      <b e' b' e'' gis'' b''>8\staccato r4
+      g8. fis16 e8 fis b d'
+      <b e' b' e'' gis'' b''>8->\staccato r4
       r4. |
       \break
       \solopage

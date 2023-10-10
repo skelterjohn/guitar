@@ -39,7 +39,7 @@ fools_one_c={
       \tuplet 3/2 {cis'''16( d''' cis'''} e''8) e''
       \tuplet 3/2 {b''16( cis''' b''} e''8) e''
       \tuplet 3/2 {a''16( b'' a''} e''8) e'' | \noBreak 
-      gis'8. b'16 d''8 e'' gis'' b'' e'''8->\staccato r4 r4.  |
+      gis'8 b' d''8 e'' gis'' b'' e'''8->\staccato r4 r4.  |
       \bar "||"
     }
   >>
@@ -178,7 +178,7 @@ fools_four_c={
       \repeat unfold 6 {e'8 gis'} |
       \repeat unfold 6 {d'8 gis'} |
       \noBreak 
-      g8. fis16 e8 fis b d'
+      g8 fis e8 fis b d'
       <b e' b' e'' gis'' b''>8->\staccato r4
       r4. |
       \break

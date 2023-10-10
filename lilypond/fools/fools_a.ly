@@ -10,7 +10,7 @@ fools_one_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      g8. fis16 e8 fis b d' |
+      g8 fis e8 fis b d' |
       
       \mark \markup { \circle "A" }
       
@@ -94,7 +94,7 @@ fools_one_a={
       \tuplet 3/2 {cis'''16( d''' cis'''} e''8) e''
       \tuplet 3/2 {b''16( cis''' b''} e''8) e''
       \tuplet 3/2 {a''16( b'' a''} e''8) e'' | \noBreak 
-      gis'8. b'16 d''8 e'' gis'' b'' e'''8-> e'''16 e''' e'''8 e'''8-> e'''16 e''' e'''8 |
+      gis'8 b' d''8 e'' gis'' b'' e'''8-> e'''16 e''' e'''8 e'''8-> e'''16 e''' e'''8 |
       \bar "||"
     }
   >>
@@ -262,7 +262,7 @@ fools_three_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      b'4. cis'' a' b' | d'' e'' b' fis'' |
+      b'4.-"div." cis'' a' b' | d'' e'' b' fis'' |
       b'4. cis'' a' b' | d'' e'' b' gis'' |
       \bar "||" \break
     }
@@ -390,7 +390,8 @@ fools_four_a={
       R1.*4 |
       \bar "||" 
       
-      R1.*4 |
+      b'4. cis'' a' b' | d'' e'' b' fis'' |
+      b'4. cis'' a' b' | d'' e'' b' gis'' |
       \bar "||" 
     }
   >>
@@ -475,7 +476,7 @@ fools_four_a={
       \repeat unfold 6 {e'8 gis'} |
       \repeat unfold 6 {d'8 gis'} |
       \noBreak 
-      g8. fis16 e8 fis b d'
+      g8 fis e8 fis b d'
       <b e' b' e'' gis'' b''>8-> <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8
       <b e' b' e'' gis'' b''>8-> <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>16 <b e' b' e'' gis'' b''>8 |
       \break

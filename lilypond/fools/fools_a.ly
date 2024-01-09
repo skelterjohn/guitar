@@ -85,6 +85,7 @@ fools_one_a={
       }
       \bar "||" \break
       
+      <>_\mf
       \repeat unfold 2 {
         \repeat unfold 4 {e'8 e'16 e' e'8} |
       }

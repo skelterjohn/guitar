@@ -207,6 +207,7 @@ fools_three_b={
           \tuplet 3/2 {gis''8 cis'' gis''} \tuplet 3/2 {cis'' gis'' cis''}
           \tuplet 3/2 {a''8 cis'' a''} \tuplet 3/2 {cis'' a'' cis''_\!} |
           <>_\>
+          <>_\mf
           \repeat unfold 4 {
             \tuplet 3/2 {a''8 cis'' a''} \tuplet 3/2 {cis'' a'' cis''}
           }
@@ -218,7 +219,7 @@ fools_three_b={
           \tuplet 3/2 {fis''8 d'' fis''} \tuplet 3/2 {d'' fis'' d''}
         }
         <>_\!
-        <>_\f
+        <>_\mf
         \repeat unfold 4 {
           \tuplet 3/2 {gis''8 d'' gis''} \tuplet 3/2 {d'' gis'' d''}
         }
@@ -290,6 +291,7 @@ fools_four_b={
           \repeat unfold 8 {a8 a8} |
           <>_\!
           <>_\>
+          <>_\mf
           \repeat unfold 8 {g8 e8} |
           <>_\!
           \bar "||" \break
@@ -300,7 +302,7 @@ fools_four_b={
         \repeat unfold 4 d'8
         \repeat unfold 4 d'8
         <>_\!
-        <>_\f
+        <>_\mf
         \repeat unfold 8 {e'8 e'} |
         \bar "||" \break
         

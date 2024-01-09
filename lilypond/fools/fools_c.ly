@@ -24,7 +24,7 @@ fools_one_c={
       
       R1.*2 |
       fis''8. e''16 d''8 e'' cis'' d''  e'' cis''16( d'') e''8 cis''16( d'') e''( fis'' e''8) |
-      fis''8. e''16 d''8 e'' cis'' d''  e'' gis''16( a'') b''8 b''8 b''16 cis''' d'''8 |
+      fis''8. e''16 d''8 e'' cis'' d''  e'' gis''16( a'') b''8 b''8 b''16( cis''') d'''8 |
       \bar "||" \break
 
       <>_\f

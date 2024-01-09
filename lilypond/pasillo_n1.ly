@@ -1,8 +1,8 @@
-\version "2.18.2"
+\version "2.24.1"
 \header {
   title = "Pasillo No. 1"
   composer = "Prof. Francisco A. Velasquez"
-  arranger = "Arranged by John Asmuth"
+  tagline = "Transcribed by John Asmuth"
 }
 
 \include "bbarred.ly"

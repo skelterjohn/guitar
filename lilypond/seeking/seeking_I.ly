@@ -7,7 +7,7 @@
 
 \paper { ragged-last = ##t }
 
-\include "bbarred.ly"
+
 #(define RH rightHandFinger)
 
 <<

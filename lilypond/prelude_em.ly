@@ -1,6 +1,6 @@
 \version "2.20.0"
 \header {
-  title = "Prelude in E minor"
+  title = "Seeking Never Finding I: prelude in E minor"
   composer = "John Asmuth"
   tagline = ""
 }
@@ -97,7 +97,7 @@
       \repeat unfold 8 {\tuplet 3/2 {r16 e'' b'' }}
       \repeat unfold 8 {\tuplet 3/2 {r16 e'' b'' }}
       
-      e''1\harmonic\fermata^"VII" |
+      e''1\harmonic\fermata^"VII" | \bar "||"
     }
     \new Voice { \voiceTwo
       \set fingeringOrientations = #'(left)

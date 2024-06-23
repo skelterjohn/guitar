@@ -31,14 +31,14 @@
       }
       
       \repeat volta 2 {
-        e''16^"x2" e''8 8 8 8 8 8 8 16~ | 
+        e''16\mp^"x2" e''8 8 8 8 8 8 8 16~ | 
       }
       
       
       \repeat volta 2 {
-        e''16^"x2" e''8 8 8 8 8 8 8 16~ | 
-        e''16^"x2" e''8 8 8 8 8 8 8 16~ | 
-        e''16^"x4" e''8 8 8 8 8 8 8 16~ |
+        e''16\mf e''8 8 8 8 8 8 8 16~ | 
+        e''16 e''8 8 8 8 8 8 8 16~ | 
+        e''16^"x2" e''8 8 8 8 8 8 8 16~ |
       }
       
       e''16^"x2" e''8 8 8 8 8 8 8 16~ | 
@@ -54,11 +54,11 @@
       
       \break
       
-      e''16^"x2" e''8 8 8 8 8 8 8 16~ |
+      e''16\mp^"x2" e''8 8 8 8 8 8 8 16~ |
       
-      e''16 e''8 8 8 8 8 8 8 16~ |
-      e''16 e''8 8 8 8 8 8 8 16~ |
-      e''16 e''8 8 8 8 8 8 8 16~ |
+      e''16^"x2" e''8 8 8 8 8 8 8 16~ |
+      e''16^"x2" e''8 8 8 8 8 8 8 16~ |
+      e''16^"x2" e''8 8 8 8 8 8 8 16~ |
       
       \break
       
@@ -97,14 +97,14 @@
       \repeat unfold 8 {\tuplet 3/2 {r16 e'' b'' }}
       \repeat unfold 8 {\tuplet 3/2 {r16 e'' b'' }}
       
-      e''1\harmonic\fermata |
+      e''1\harmonic\fermata^"VII" |
     }
     \new Voice { \voiceTwo
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
      
-      e''8 8 8 8 8 8 8 8 |
-      d''8 fis'' d'' fis'' d'' fis'' d'' fis''  |
+      e''8\pp\< 8 8 8 8 8 8 8\! |
+      d''8\>\mf fis'' d'' fis'' d'' fis'' d'' fis''\! |
       
       e''8\2 8 8 8 8 8 8 8 |
       
@@ -117,11 +117,11 @@
       <e' g' e''>8 8 8 8 8 8 8 8 |
       <d' g' e''>8 8 8 8 8 8 8 8 |
       <c' d' c'' e''>8 8 8 8 8 8 8 8 |
-      <e' g' e''>8 8 8 8 8 8 8 8 |
+      <e' g' e''>8\< 8 8 8 8 8 8 8 |
       <d' g' e''>8 8 8 8 8 8 8 8 |
       <c' d' c'' e''>8 8 8 8 8 8 8 8 |
       <a e' g' e''>8 8 8 8 8 8 8 8 |
-      <e a e' g' e''>8 8 8 8 8 8 8 8 |
+      <e a e' g' e''>8 8 8 8 8 8 8 8\!\ff |
       
       e''8 8 8 8 8 8 8 8 |
       
@@ -149,16 +149,16 @@
       b8 b' b b' b b' b b' |
       c'8 b' c' b' c' b' c' b' |
       
-      a8 b' a b' a b' a b' |
+      a8\mf\< b' a b' a b' a b' |
       a8 b' a b' a b' a b' |
       a8 c'' a c'' a c'' a c'' |
       
       a8 b' a b' a b' a b' |
       a8 b' a b' a b' a b' |
-      a8 d'' a d'' a d'' a d'' |
+      a8 d'' a d'' a d'' a d''\! |
       
-      e8 e'' e e'' e e'' e e'' |
-      e8 e'' e e'' e e'' e e'' |
+      e8\f\> e'' e e'' e e'' e e'' |
+      e8_"rit." e'' e e'' e e'' e e''\! |
       
       s1 |
     }

@@ -35,40 +35,42 @@ loose_a={
   }
   {
     \set Staff.connectArpeggios = ##t
-    \clef bass
+    \clef tenor
+    \key e \major
     \repeat volta 2 {
       \repeat volta 2 {
-        r4^"with great rubato" dis4._\<_\pp \tuplet 2/3 {dis8 dis8} |
-        dis4 dis4. \tuplet 2/3 {dis8 dis8} |
-        dis4 dis4. \tuplet 2/3 {dis8 dis8_\!} |
-        dis4_\mp e e b, |
-        cis1_\> s1*0_\! |
-        r2. a,8 b, |
-        cis4 cis4. \tuplet 2/3 {cis8 d} |
-        cis4 b,4 a,4 gis,4 |
-        a,2. gis,4 |
-        fis,1_\> s1*0_\! |
-        r4 e,_\< a, cis_\! |
-        d4 cis4. \tuplet 2/3 {b,8 a,} |
-        a,1~ | a,1~_\> | a,1_\! |
+        r4^"with great rubato" dis'4._\<_\pp \tuplet 2/3 {8 8} |
+        dis'4 4. \tuplet 2/3 {8 8} |
+        dis'4 4. \tuplet 2/3 {8 8_\!} |
+        dis'4_\mp e' e' b |
+        cis'1_\> s1*0_\! |
+        r2. a8 b |
+        cis'4 4. \tuplet 2/3 {8 d'} |
+        cis'4 b4 a4 gis4 |
+        a2. gis4 |
+        fis1_\> s1*0_\! |
+        r4 e_\< a cis'_\! |
+        d'4 cis'4. \tuplet 2/3 {b8 a} |
+        a1~ | a1~_\> | a1_\! |
       }
       
-      \tuplet 3/4 {a,4_\p_\< cis e_\!} |
-      g2._\sfp_\<~ g4_\! |
-      fis4_\> e2 d4_\! |
-      cis8 d e2. | 
-      \tuplet 3/4 {a,4_\< cis e} |
-      \tuplet 3/4 {g8 a b} a2_\!_\mf~ | a2 fis2_\> s1*0_\! |
-      e1_\p |
-      r2 a,4 e |
-      \tuplet 3/4 {d4 cis b,~} |
-      b,2. a,4 |
+      \key d \major
+      \tuplet 3/4 {a4_\p_\< cis' e'_\!} |
+      g'1_\sfp_\< <>_\! |
+      fis'4_\> e'2 d'4_\! |
+      cis'8 d' e'2. | 
+      \tuplet 3/4 {a4_\< cis' e'} |
+      \tuplet 3/4 {g'8 a' b'} a'2_\!_\mf~ | a'2 fis'2_\> <>_\! |
+      e'1_\p |
+      r2 a4 e' |
+      \tuplet 3/4 {d'4 cis' b~} |
+      b2. a4 |
       \alternative {
         \volta 1 {
-          a,1 |
+          a1 |
         }
         \volta 2 {
-          b,1 |
+          b1 |
         }
       }
     }
@@ -81,6 +83,7 @@ loose_a={
     <<
       \new Staff {
         \clef treble
+        \key e \major
         \repeat volta 2 {
           \repeat volta 2 {
             R1*4 |
@@ -96,6 +99,7 @@ loose_a={
             a'1 |
           }
           
+          \key d \major
           r1 |
           
           \repeat unfold 2 {
@@ -139,6 +143,7 @@ loose_a={
       }
       \new Staff {
         \clef bass
+        \key e \major
         \repeat volta 2 {
           \repeat volta 2 {
             R1*4 |
@@ -155,6 +160,7 @@ loose_a={
             r1|
           }
           
+          \key d \major
           r1 |
           
           <b, d>1~ |
@@ -188,7 +194,7 @@ loose_a={
   {
     \set Staff.connectArpeggios = ##t
     \clef treble
-  
+    \key e \major
     \repeat volta 2 {
       \repeat volta 2 {
         <fis b fis' b' dis''>1_\mp~ |
@@ -208,6 +214,7 @@ loose_a={
         <a e' a' cis'' e''>1 |
       }
     
+      \key d \major
       r1 |
       \loose_g
       \loose_g

@@ -27,14 +27,7 @@ loose_a={
   <a' cis'' e'' e''>4
 }
 
-<<
-  \new Staff \with {
-    \consists "Span_arpeggio_engraver"
-      instrumentName = #"Trombone"
-      shortInstrumentName = #"T."
-  }
-  {
-    \set Staff.connectArpeggios = ##t
+trobone_all={
     \clef tenor
     \key e \major
     \repeat volta 2 {
@@ -74,6 +67,17 @@ loose_a={
         }
       }
     }
+}
+
+<<
+  \new Staff \with {
+    \consists "Span_arpeggio_engraver"
+      instrumentName = #"Trombone"
+      shortInstrumentName = #"T."
+  }
+  {
+    \set Staff.connectArpeggios = ##t
+    \trobone_all
   }
   \new PianoStaff \with {
     \consists "Span_arpeggio_engraver"
@@ -237,5 +241,18 @@ loose_a={
         }
       }
     }
+  }
+>>
+
+
+<<
+  \new Staff \with {
+    \consists "Span_arpeggio_engraver"
+      instrumentName = #"Trombone"
+      shortInstrumentName = #"T."
+  }
+  {
+    \set Staff.connectArpeggios = ##t
+    \trobone_all
   }
 >>

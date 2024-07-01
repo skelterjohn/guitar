@@ -69,6 +69,161 @@ trobone_all={
     }
 }
 
+piano_all={
+  <<
+    \new Staff {
+      \clef treble
+      \key e \major
+      \repeat volta 2 {
+        \repeat volta 2 {
+          R1*4 |
+          r2 r4 cis'8 e' |
+          a'8 b' cis'' e'' a''2 |
+          \tuplet 3/4 {gis''4 a'' gis''} |
+          \tuplet 3/4 {gis''4 a'' gis''} |
+          a''2. gis''4 |
+          fis''1 |
+          r1 |
+          r1 |
+          r2 e'8 a' b' cis'' e'' cis'' b' a'~ a'2~ |
+          a'1 |
+        }
+        
+        \key d \major
+        r1 |
+        
+        \repeat unfold 2 {
+          \tuplet 3/4 {g'8 fis' e'} \tuplet 3/4 {g'8 fis' e'} |
+          \tuplet 3/4 {fis'8 e' d'} \tuplet 3/4 {e'8 d' b} |
+          \tuplet 3/4 {cis'4 d' e'~} |
+          e'1 |
+        }
+        
+        r1 r1|
+        
+        \alternative {
+          \volta 1 {
+            r1
+          }
+          \volta 2 {
+            r1
+          }
+        }
+      }
+    }
+    \new Dynamics {
+      \repeat volta 2 {
+        \repeat volta 2 {
+          R1*4 |
+          r1\sustainOn r1
+          r1\sustainOff
+          R1*5
+          r1\sustainOn r1
+          r1\sustainOff
+        }
+        \alternative {
+          \volta 1 {
+            
+          }
+          \volta 2 {
+            
+          }
+        }
+      }
+    }
+    \new Staff {
+      \clef bass
+      \key e \major
+      \repeat volta 2 {
+        \repeat volta 2 {
+          R1*4 |
+          a,8_\mp b, cis e a8 b r4 |
+          r1 |
+          fis1 |
+          f1 |
+          e1 |
+          dis1 |
+          r1 |
+          r1 |
+          a,8 e a b r2 |
+          r1 |
+          r1|
+        }
+        
+        \key d \major
+        r1 |
+        
+        <b, d>1~ |
+        <b, d>1 |
+        <a, cis>1~ |
+        <a, cis>1 |
+        <b, d>1~ |
+        <b, d>1 |
+        <a, cis>1~ |
+        <a, cis>1 |
+        <g, b,>1~ |
+        <g, b,>1 |
+        
+        \alternative {
+          \volta 1 {
+            <e, a,>1 |
+          }
+          \volta 2 {
+            <e, a,>1 |
+          }
+        }
+      }
+    }
+  >>
+}
+
+guitar_all={
+  \clef treble
+  \key e \major
+  \repeat volta 2 {
+    \repeat volta 2 {
+      <fis b fis' b' dis''>1_\mp~ |
+      <fis b fis' b' dis''>1 |
+      <fis b fis' b' dis''>1~ |
+      <fis b fis' b' dis''>1 |
+      <e a e' a' cis''>1~ |
+      <e a e' a' cis''>1 |
+      <cis' f' b' cis''>1 |
+      <d' fis' a' cis''>1 |
+      <a e' a' cis''>1 |
+      <b fis' b' dis''>1 |
+      <a e' a' cis''>1 |
+      <a fis' a' d'' e''>1 |
+      <a e' a' cis'' e''>1~ |
+      <a e' a' cis'' e''>1~ |
+      <a e' a' cis'' e''>1 |
+    }
+  
+    \key d \major
+    r1 |
+    \loose_g
+    \loose_g
+    \loose_a
+    \loose_a
+    \loose_g
+    \loose_g
+    \loose_a
+    \loose_a
+    \loose_g
+    \loose_g
+   
+  
+    \alternative {
+      \volta 1 {
+        r1
+      }
+      \volta 2 {
+        r1 |
+      }
+    }
+  }
+}
+
 <<
   \new Staff \with {
     \consists "Span_arpeggio_engraver"
@@ -84,111 +239,7 @@ trobone_all={
       instrumentName = #"Piano"
       shortInstrumentName = #"P."
   } {
-    <<
-      \new Staff {
-        \clef treble
-        \key e \major
-        \repeat volta 2 {
-          \repeat volta 2 {
-            R1*4 |
-            r2 r4 cis'8 e' |
-            a'8 b' cis'' e'' a''2 |
-            \tuplet 3/4 {gis''4 a'' gis''} |
-            \tuplet 3/4 {gis''4 a'' gis''} |
-            a''2. gis''4 |
-            fis''1 |
-            r1 |
-            r1 |
-            r2 e'8 a' b' cis'' e'' cis'' b' a'~ a'2~ |
-            a'1 |
-          }
-          
-          \key d \major
-          r1 |
-          
-          \repeat unfold 2 {
-            \tuplet 3/4 {g'8 fis' e'} \tuplet 3/4 {g'8 fis' e'} |
-            \tuplet 3/4 {fis'8 e' d'} \tuplet 3/4 {e'8 d' b} |
-            \tuplet 3/4 {cis'4 d' e'~} |
-            e'1 |
-          }
-          
-          r1 r1|
-          
-          \alternative {
-            \volta 1 {
-              r1
-            }
-            \volta 2 {
-              r1
-            }
-          }
-        }
-      }
-      \new Dynamics {
-        \repeat volta 2 {
-          \repeat volta 2 {
-            R1*4 |
-            r1\sustainOn r1
-            r1\sustainOff
-            R1*5
-            r1\sustainOn r1
-            r1\sustainOff
-          }
-          \alternative {
-            \volta 1 {
-              
-            }
-            \volta 2 {
-              
-            }
-          }
-        }
-      }
-      \new Staff {
-        \clef bass
-        \key e \major
-        \repeat volta 2 {
-          \repeat volta 2 {
-            R1*4 |
-            a,8_\mp b, cis e a8 b r4 |
-            r1 |
-            fis1 |
-            f1 |
-            e1 |
-            dis1 |
-            r1 |
-            r1 |
-            a,8 e a b r2 |
-            r1 |
-            r1|
-          }
-          
-          \key d \major
-          r1 |
-          
-          <b, d>1~ |
-          <b, d>1 |
-          <a, cis>1~ |
-          <a, cis>1 |
-          <b, d>1~ |
-          <b, d>1 |
-          <a, cis>1~ |
-          <a, cis>1 |
-          <g, b,>1~ |
-          <g, b,>1 |
-          
-          \alternative {
-            \volta 1 {
-              <e, a,>1 |
-            }
-            \volta 2 {
-              <e, a,>1 |
-            }
-          }
-        }
-      }
-    >>
+    \piano_all
   }
   \new Staff \with {
     \consists "Span_arpeggio_engraver"
@@ -197,53 +248,9 @@ trobone_all={
   }
   {
     \set Staff.connectArpeggios = ##t
-    \clef treble
-    \key e \major
-    \repeat volta 2 {
-      \repeat volta 2 {
-        <fis b fis' b' dis''>1_\mp~ |
-        <fis b fis' b' dis''>1 |
-        <fis b fis' b' dis''>1~ |
-        <fis b fis' b' dis''>1 |
-        <e a e' a' cis''>1~ |
-        <e a e' a' cis''>1 |
-        <cis' f' b' cis''>1 |
-        <d' fis' a' cis''>1 |
-        <a e' a' cis''>1 |
-        <b fis' b' dis''>1 |
-        <a e' a' cis''>1 |
-        <a fis' a' d'' e''>1 |
-        <a e' a' cis'' e''>1~ |
-        <a e' a' cis'' e''>1~ |
-        <a e' a' cis'' e''>1 |
-      }
-    
-      \key d \major
-      r1 |
-      \loose_g
-      \loose_g
-      \loose_a
-      \loose_a
-      \loose_g
-      \loose_g
-      \loose_a
-      \loose_a
-      \loose_g
-      \loose_g
-     
-    
-      \alternative {
-        \volta 1 {
-          r1
-        }
-        \volta 2 {
-          r1 |
-        }
-      }
-    }
+    \guitar_all
   }
 >>
-
 
 <<
   \new Staff \with {
@@ -254,5 +261,27 @@ trobone_all={
   {
     \set Staff.connectArpeggios = ##t
     \trobone_all
+  }
+>>
+
+<<
+  \new PianoStaff \with {
+    \consists "Span_arpeggio_engraver"
+      instrumentName = #"Piano"
+      shortInstrumentName = #"P."
+  } {
+    \piano_all
+  }
+>>
+
+<<
+  \new Staff \with {
+    \consists "Span_arpeggio_engraver"
+      instrumentName = #"Guitar"
+      shortInstrumentName = #"G."
+  }
+  {
+    \set Staff.connectArpeggios = ##t
+    \guitar_all
   }
 >>

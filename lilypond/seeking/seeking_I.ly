@@ -1,6 +1,6 @@
 \version "2.20.0"
 \header {
-  title = "Seeking Never Finding I: prelude in E minor"
+  title = "Seeking Never Finding I: Prelude in E minor"
   composer = "John Asmuth"
   tagline = ""
 }

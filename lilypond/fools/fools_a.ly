@@ -132,25 +132,25 @@ fools_two_a={
       r4. r8 \tuplet 3/2 {e16_\f e' gis'} r8 |
       
       R1.*2 |
-      b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
+      b'8^"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       \bar "||" \break
       
       \repeat unfold 2 {
-        b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
+        b'8^"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
         b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       }
       \bar "||" \break
       
-      b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
+      b'8^"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
-      b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
+      b'8^"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' r4 e'8 r4 |
       \bar "||" \break
       
       \repeat unfold 2{
-        <a d' a' d'' fis'' a''>8_"pizz."^"V-D maj."\staccato r4 r4. r4. r4. |
-        <b e' b' e'' gis'' b''>8^"VII-E maj."\staccato r4 r4. r4. r4. |
+        <a d' a' d'' fis'' a''>8^"pizz."_"V-D maj."\staccato r4 r4. r4. r4. |
+        <b e' b' e'' gis'' b''>8_"VII-E maj."\staccato r4 r4. r4. r4. |
       }
       \bar "||" \break
     }
@@ -210,13 +210,13 @@ fools_two_a={
       \bar "||" \break
       
       \repeat unfold 2 {
-        b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
+        b'8^"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
         b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       }
       \bar "||" \break
       
       \repeat unfold 2 {
-        b'8_"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
+        b'8^"pizz." a' gis' a' gis' d' e' gis' a' gis' e' d' |
         b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       }
       \bar "||" \break

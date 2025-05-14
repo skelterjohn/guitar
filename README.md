@@ -6,6 +6,14 @@ files are available
 
 ## original compositions
 
+### Seeking Never Finding
+
+Two movements, which I wrote just before my fingers stopped working.
+
+[prelude](https://github.com/skelterjohn/guitar/blob/master/pdf/seeking_1.pdf)
+|
+[cancion](https://github.com/skelterjohn/guitar/blob/master/pdf/seeking_2.pdf)
+
 ### Fools Rushing In
 
 This is a guitar orchestra piece, some obvious inspiration from

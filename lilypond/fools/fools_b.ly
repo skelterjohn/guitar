@@ -138,7 +138,7 @@ fools_two_b={
       <>_\mf
       \tuplet 6/4 {cis'''4 b'' a'' gis'' fis'' e''} |
       r2 \tuplet 3/2 {cis''4 b' a'} |
-      \tuplet 3/2 {g'4 fis' e'~} e'2 |
+      \tuplet 3/2 {g'4-> fis'-> e'->~} e'2 |
       R1 |
       \bar "||" \break
       
@@ -238,6 +238,7 @@ fools_three_b={
         <>_\!
         \bar "||" \break
       }
+     
 
       \tuplet 3/2 {e''8\>_"down to zero" cis'' e''} \tuplet 3/2 {cis'' e'' cis''}
       \tuplet 3/2 {fis''8 cis'' fis''} \tuplet 3/2 {cis'' fis'' cis''} |

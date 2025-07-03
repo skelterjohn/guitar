@@ -17,8 +17,8 @@ fools_one_a={
       
       <>_\f
       
-      \repeat unfold 4 {e'8\RH #1 e'16\RH #2 e'\RH #1 e'8\RH #3 } |
-      {e'8_\> e'16 e' e'8} {e'8 e'16 e' e'8} {e'8 e'16 e' e'8} {e'8 e'16 e' e'8_\!} |
+      \repeat unfold 4 {e'8\staccato\RH #1 e'16\RH #2 e'\RH #1 e'8\RH #3 } |
+      {e'8_\>^"sim." e'16 e' e'8} {e'8 e'16 e' e'8} {e'8 e'16 e' e'8} {e'8 e'16 e' e'8_\!} |
       
       <>_\mp
       
@@ -74,7 +74,7 @@ fools_one_a={
       
       <>\f
       
-      b'4. cis'' a' b' | d'' e'' b' fis'' |
+      b'4.^"dolce" cis'' a' b' | d'' e'' b' fis'' |
       b'4. cis'' a' b' | d'' e'' b' gis'' |
       \bar "||"
       
@@ -161,7 +161,7 @@ fools_two_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      gis''8._"nat." a''16 b''8 r4. cis'''8. b''16 a''8 r4. |
+      gis''8.^"nat." a''16 b''8 r4. cis'''8. b''16 a''8 r4. |
       d'''8. cis'''16 b''8 cis''' b'' a'' b''2. |
       gis''8. a''16 b''8 r4. cis'''8. b''16 a''8 r4. |
       d'''8. cis'''16 b''8 cis''' b'' a'' b''2. |
@@ -223,10 +223,10 @@ fools_two_a={
       
       <>\f
       
-      b'8_"nat." a' gis' a' gis' d' e' gis' a' gis' e' d' |
+      b'8^"nat." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' e' d' | \noBreak 
-      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <b gis' e''>8->_\ff[ e''16 e'' e''8] e''->[ e''16 e'' e''8] |
+      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <e''>8->_\ff[ e''16 e'' e''8] e''->[ e''16 e'' e''8] |
       \bar "||"
     }
   >>
@@ -266,7 +266,7 @@ fools_three_a={
       
       <>\mf
       
-      b'4. cis'' a' b' | d'' e'' b' fis'' |
+      b'4.^"dolce" cis'' a' b' | d'' e'' b' fis'' |
       b'4. cis'' a' b' | d'' e'' b' gis'' |
       \bar "||" \break
       
@@ -311,8 +311,8 @@ fools_three_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      r4. \tuplet 3/2 {<gis'\4>16( a' gis'} <d'>8) d' r4. \tuplet 3/2 {<e'\5>16( fis' e'} <a>8) a |
-      b8 cis' d' \tuplet 3/2 {fis'16( gis' fis'} d'8) <cis'-1> <e'-4\5>2. |
+      r4. \tuplet 3/2 {<gis'\4>16( a' gis'} <d'-0>8) d' r4. \tuplet 3/2 {<e'\5>16( fis' e'} <a-0>8) a |
+      b8 cis' d' \tuplet 3/2 {fis'16( gis' fis'} <d'-0>8) <cis'-1> <e'-4\5>2. |
       r4. \tuplet 3/2 {gis'16( a' gis'} d'8) d' r4. \tuplet 3/2 {e'16( fis' e'} a8) a |
       b8 cis' d' \tuplet 3/2 {fis'16( gis' fis'} d'8) cis' e'2. |
       \bar "||" \break
@@ -458,7 +458,7 @@ fools_four_a={
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      \tuplet 3/2 {b''16( cis''' b''} e''8) e'' r4. \tuplet 3/2 {a''16( b'' a''} e''8) e'' r4. |
+      \tuplet 3/2 {b''16( cis''' b''} <e''-0>8) e'' r4. \tuplet 3/2 {a''16( b'' a''} <e''-0>8) e'' r4. |
       <d''-3\3>8 <e''-1\2> fis'' \tuplet 3/2 {a''16( b'' a''} <e''-0>8) fis'' gis''2. | 
       \tuplet 3/2 {b''16( cis''' b''} e''8) e'' r4. \tuplet 3/2 {a''16( b'' a''} e''8) e'' r4. |
       d''8 e'' fis'' \tuplet 3/2 {a''16( b'' a''} e''8) fis'' gis''2. | 

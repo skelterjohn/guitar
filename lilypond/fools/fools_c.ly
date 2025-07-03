@@ -18,7 +18,7 @@ fools_one_c={
       e'8->\staccato r4 e'8->\staccato r4 |
       \bar "||" \break
       
-      b'4._\f cis'' a' b' | d'' e'' b' fis'' |
+      b'4._\f^"dolce" cis'' a' b' | d'' e'' b' fis'' |
       b'4. cis'' a' b' | d'' e'' b' gis'' |
       \bar "||" \break
       
@@ -81,7 +81,7 @@ fools_two_c={
       b'8^"nat." a' gis' a' gis' d' e' gis' a' gis' e' d' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' b' cis'' |
       b'8 a' gis' a' gis' d' e' gis' a' gis' e' d' | \noBreak 
-      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <b gis' e''>8->\staccato\ff r4 r4. |
+      r4. r8 \tuplet 3/2 {e16 e' gis'} r8 <e''>8->\staccato\ff r4 r4. |
       \bar "||"
     }
   >>

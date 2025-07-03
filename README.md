@@ -6,6 +6,16 @@ files are available
 
 ## original compositions
 
+### Breakfast around the Sun
+
+Four parts. Used musescore for the first time in a serious way, since typing
+is hard these days. Inspirations include Gulli Bjornsson, Olga Amelkina-Vera,
+and Ray Lynch.
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/breakfast.pdf)
+|
+[midi/interactive score](https://musescore.com/user/100491475/scores/24896446)
+
 ### Seeking Never Finding
 
 Two movements, which I wrote just before my fingers stopped working. In

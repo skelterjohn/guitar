@@ -26,8 +26,8 @@
       \time 3/4
       
       \repeat volta 2 {
-        b''2 a''8 b'' |
-        cis'''2~ 8 \acciaccatura{d'''(} b'') |
+        <b''-4>2 a''8 b'' |
+        cis'''2~ 8 \acciaccatura{<d'''-4>\glissando(} <b''-4>) |
         b''2 a''8 b'' |
         \acciaccatura{cis'''(} <e''>2.) |
         
@@ -63,7 +63,7 @@
       \set fingeringOrientations = #'(left)
       \set stringNumberOrientations = #'(up)
       
-      <g' d''>2. |
+      <g' d''-1>2. |
       <g' e''>2. |
       <g' e''>2. |
       b'2. |
@@ -108,9 +108,9 @@
       s2. |
       s2. |
       s2. |
-      d''4 cis'' b' |
+      <d''-1>4 <cis''-1> <b'-1> |
       
-      b'4. a'8 g'4 |
+      <b'-0>4. a'8 g'4 |
       <a' e''>4. b'8 cis''4 |
       s2. |
       s2. |

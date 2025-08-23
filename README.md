@@ -6,6 +6,15 @@ files are available
 
 ## original compositions
 
+
+### Haze Dance
+
+Three parts. Theme stolen from a 90s anime intro, and La La Land.
+
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/haze_dance.pdf)
+|
+[midi/interactive score](https://musescore.com/user/100491475/scores/27091708)
+
 ### Breakfast around the Sun
 
 Four parts. Used musescore for the first time in a serious way, since typing

@@ -23,7 +23,7 @@ and Ray Lynch.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/breakfast.pdf)
 |
-[midi/interactive score](https://musescore.com/user/100491475/scores/24896446)
+[midi/interactive score](https://musescore.com/user/100491475/scores/26191882)
 
 ### Seeking Never Finding
 

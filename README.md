@@ -25,6 +25,14 @@ and Ray Lynch.
 
 [score](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun.pdf)
 |
+[guitar 1](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun-Classical_Guitar_1.pdf)
+|
+[guitar 2](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun-Classical_Guitar_2.pdf)
+|
+[guitar 3](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun-Classical_Guitar_3.pdf)
+|
+[guitar 4](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun-Classical_Guitar_4.pdf)
+|
 [midi/interactive score](https://musescore.com/user/100491475/scores/26191882)
 
 ### Seeking Never Finding

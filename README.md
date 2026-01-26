@@ -23,7 +23,7 @@ Four parts. Used musescore for the first time in a serious way, since typing
 is hard these days. Inspirations include Gulli Bjornsson, Olga Amelkina-Vera,
 and Ray Lynch.
 
-[score](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast around the Sun.pdf)
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%22around%22the%22Sun.pdf)
 |
 [midi/interactive score](https://musescore.com/user/100491475/scores/26191882)
 

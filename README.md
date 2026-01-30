@@ -2,7 +2,9 @@
 
 Many of the scores here are rendered using lilypond. The lilypond source
 files are available
-[here](https://github.com/skelterjohn/guitar/tree/master/lilypond).
+[here](https://github.com/skelterjohn/guitar/tree/master/lilypond). More
+recently, a typing alergy has had me use musescore a bit more. The musescore
+files can be found [here](https://github.com/skelterjohn/guitar/tree/master/musescore).
 
 ## original compositions
 
@@ -21,9 +23,17 @@ Four parts. Used musescore for the first time in a serious way, since typing
 is hard these days. Inspirations include Gulli Bjornsson, Olga Amelkina-Vera,
 and Ray Lynch.
 
-[score](https://github.com/skelterjohn/guitar/blob/master/pdf/breakfast.pdf)
+[score](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun.pdf)
 |
-[midi/interactive score](https://musescore.com/user/100491475/scores/24896446)
+[guitar 1](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun-Classical_Guitar_1.pdf)
+|
+[guitar 2](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun-Classical_Guitar_2.pdf)
+|
+[guitar 3](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun-Classical_Guitar_3.pdf)
+|
+[guitar 4](https://github.com/skelterjohn/guitar/blob/master/pdf/Breakfast%20around%20the%20Sun-Classical_Guitar_4.pdf)
+|
+[midi/interactive score](https://musescore.com/user/100491475/scores/26191882)
 
 ### Seeking Never Finding
 

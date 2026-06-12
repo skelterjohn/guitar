@@ -1,0 +1,134 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.5;
+  color: #2c2416;
+  background: #f7f3eb;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #d4c9b8;
+  padding-bottom: 1rem;
+}
+
+.page-header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  font-weight: normal;
+  letter-spacing: 0.02em;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b5d4a;
+  font-size: 0.95rem;
+}
+
+.catalog-section {
+  margin-bottom: 2.5rem;
+}
+
+.catalog-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: normal;
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+  color: #4a3f30;
+}
+
+.composition-card {
+  background: #fff;
+  border: 1px solid #e0d6c8;
+  border-radius: 4px;
+  padding: 1rem 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.composition-card h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+  font-weight: normal;
+}
+
+.pdf-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pdf-link {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: system-ui, sans-serif;
+  text-decoration: none;
+  color: #3d3428;
+  background: #ede6da;
+  border: 1px solid #d4c9b8;
+  border-radius: 3px;
+}
+
+.pdf-link:hover {
+  background: #e2d9ca;
+}
+
+.viewer-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.viewer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-bottom: 1px solid #e0d6c8;
+  flex-shrink: 0;
+}
+
+.viewer-toolbar a {
+  color: #4a3f30;
+  text-decoration: none;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+
+.viewer-toolbar a:hover {
+  text-decoration: underline;
+}
+
+.viewer-title {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #6b5d4a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewer-frame {
+  flex: 1;
+  border: none;
+  width: 100%;
+  background: #525659;
+}

@@ -1,0 +1,67 @@
+# Guitar site — Cloud Build pipeline
+#
+# Prerequisites (one-time GCP setup):
+#   - GCS bucket with public read on pdf/ prefix (allUsers: storage.objectViewer)
+#   - Bucket CORS allowing GET/HEAD from your Cloud Run URL and custom domain
+#   - Artifact Registry repo for container images
+#   - Cloud Build service account: storage.objectAdmin on bucket, Cloud Run Admin, AR Writer
+#
+# Substitutions (set when triggering the build):
+#   _REGION        — e.g. us-east4
+#   _AR_REPO       — e.g. us-east4-docker.pkg.dev/PROJECT/guitar
+#   _SERVICE       — Cloud Run service name, e.g. guitar-site
+#   _PDF_BUCKET    — GCS bucket name (without gs://)
+#   _PDF_BASE_URL  — public URL prefix for PDFs, e.g. https://storage.googleapis.com/BUCKET/pdf
+#
+# Example:
+#   gcloud builds submit --config=build-site.yaml \
+#     --substitutions=_REGION=us-east4,_AR_REPO=us-east4-docker.pkg.dev/PROJECT/guitar,_SERVICE=guitar-site,_PDF_BUCKET=YOUR_BUCKET,_PDF_BASE_URL=https://storage.googleapis.com/YOUR_BUCKET/pdf
+
+substitutions:
+  _REGION: us-east4
+  _AR_REPO: us-east4-docker.pkg.dev/PROJECT/guitar
+  _SERVICE: guitar-site
+  _PDF_BUCKET: YOUR_BUCKET
+  _PDF_BASE_URL: https://storage.googleapis.com/YOUR_BUCKET/pdf
+
+steps:
+  - name: gcr.io/cloud-builders/gsutil
+    args:
+      - -m
+      - rsync
+      - -r
+      - -d
+      - -h
+      - Content-Type:application/pdf
+      - pdf/
+      - gs://${_PDF_BUCKET}/pdf/
+
+  - name: gcr.io/cloud-builders/docker
+    dir: site
+    args:
+      - build
+      - --build-arg
+      - VITE_PDF_BASE_URL=${_PDF_BASE_URL}
+      - --tag=${_AR_REPO}/site:v$SHORT_SHA
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_AR_REPO}/site:v$SHORT_SHA
+
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - -q
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image=${_AR_REPO}/site:v$SHORT_SHA
+      - --platform=managed
+      - --region=${_REGION}
+      - --allow-unauthenticated
+      - --revision-suffix=v$SHORT_SHA
+      - --port=8080
+
+images:
+  - ${_AR_REPO}/site:v$SHORT_SHA

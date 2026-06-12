@@ -1,0 +1,128 @@
+{
+  "sections": [
+    {
+      "id": "original-compositions",
+      "title": "Original compositions",
+      "pieces": [
+        {
+          "title": "Haze Dance",
+          "pdfs": [{ "label": "score", "file": "haze_dance.pdf" }]
+        },
+        {
+          "title": "Breakfast around the Sun",
+          "pdfs": [
+            { "label": "score", "file": "Breakfast around the Sun.pdf" },
+            { "label": "guitar 1", "file": "Breakfast around the Sun-Classical_Guitar_1.pdf" },
+            { "label": "guitar 2", "file": "Breakfast around the Sun-Classical_Guitar_2.pdf" },
+            { "label": "guitar 3", "file": "Breakfast around the Sun-Classical_Guitar_3.pdf" },
+            { "label": "guitar 4", "file": "Breakfast around the Sun-Classical_Guitar_4.pdf" }
+          ]
+        },
+        {
+          "title": "Seeking Never Finding",
+          "pdfs": [
+            { "label": "prelude", "file": "seeking_I.pdf" },
+            { "label": "cancion", "file": "seeking_2.pdf" }
+          ]
+        },
+        {
+          "title": "Fools Rushing In",
+          "pdfs": [
+            { "label": "score", "file": "fools.pdf" },
+            { "label": "guitar 1", "file": "fools_one.pdf" },
+            { "label": "guitar 2", "file": "fools_two.pdf" },
+            { "label": "guitar 3", "file": "fools_three.pdf" },
+            { "label": "guitar 4", "file": "fools_four.pdf" }
+          ]
+        },
+        {
+          "title": "Distance",
+          "pdfs": [{ "label": "score", "file": "distance.pdf" }]
+        },
+        {
+          "title": "Quickly Eroding Icy Shoreline (var)",
+          "pdfs": [{ "label": "score", "file": "quickly_eroding_icy_shoreline.pdf" }]
+        },
+        {
+          "title": "Frog Song (Naked Man Dance)",
+          "pdfs": [{ "label": "score", "file": "frogsong.pdf" }]
+        },
+        {
+          "title": "Ditto",
+          "pdfs": [
+            { "label": "score", "file": "ditto.pdf" },
+            { "label": "tab", "file": "ditto_tab.pdf" }
+          ]
+        },
+        {
+          "title": "Wishing Tree",
+          "pdfs": [{ "label": "score", "file": "wishingtree.pdf" }]
+        },
+        {
+          "title": "Study No. 1 (Regret)",
+          "pdfs": [{ "label": "score", "file": "study_n1_regret.pdf" }]
+        },
+        {
+          "title": "Fantasy No. 1",
+          "pdfs": [{ "label": "score", "file": "fantasy_1.pdf" }]
+        },
+        {
+          "title": "Study No. 2 (Inversion)",
+          "pdfs": [{ "label": "score", "file": "inversion.pdf" }]
+        },
+        {
+          "title": "No Feedback",
+          "pdfs": [{ "label": "score", "file": "no_feedback.pdf" }]
+        }
+      ]
+    },
+    {
+      "id": "arrangements",
+      "title": "Arrangements",
+      "pieces": [
+        {
+          "title": "Cancion y Danza by Antonio Ruiz-Pipo",
+          "pdfs": [
+            { "label": "score", "file": "cancion_y_danza_1.pdf" },
+            { "label": "guitar 1", "file": "cancion_y_danza_1_one.pdf" },
+            { "label": "guitar 2", "file": "cancion_y_danza_1_two.pdf" },
+            { "label": "guitar 3", "file": "cancion_y_danza_1_three.pdf" },
+            { "label": "guitar 4", "file": "cancion_y_danza_1_four.pdf" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transcriptions",
+      "title": "Transcriptions",
+      "pieces": [
+        {
+          "title": "Suna no Hoshi by Tsuneo Imahori",
+          "pdfs": [
+            { "label": "score", "file": "suna_no_hoshi.pdf" },
+            { "label": "tab", "file": "suna_no_hoshi_tab.pdf" }
+          ]
+        },
+        {
+          "title": "Rakuen by Tsuneo Imahori",
+          "pdfs": [
+            { "label": "score", "file": "rakuen.pdf" },
+            { "label": "tab cheat sheet", "file": "rakuen_tab.pdf" }
+          ]
+        },
+        {
+          "title": "Pasillo No. 1 by Prof. Francisco A. Velasquez",
+          "pdfs": [{ "label": "score", "file": "pasillo_n1.pdf" }]
+        },
+        {
+          "title": "Prelude No. 1 by Francisco Burgos",
+          "pdfs": [{ "label": "score", "file": "burgos_prelude_1.pdf" }]
+        },
+        {
+          "title": "Prelude No. 2 \"Nocturno\" by Francisco Burgos",
+          "pdfs": [{ "label": "score", "file": "burgos_prelude_2.pdf" }]
+        }
+      ]
+    }
+  ]
+}

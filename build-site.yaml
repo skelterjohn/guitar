@@ -65,3 +65,6 @@ steps:
 
 images:
   - ${_AR_REPO}/site:v$SHORT_SHA
+
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -30,7 +30,7 @@ cancion_one={
     \allbreak
     
     d'''8._\mf e'''16 d'''8~ d''' c'''_\> a''_\! |
-    bes''8_\mp a'' bes''~ bes''4. |
+    b''8_\mp a'' b''~ b''4. |
     r4. <a'>8 <b' > <cis''> |
     \alternative {
       \volta 1 {
@@ -73,7 +73,7 @@ cancion_one={
     }
   >>
   d'''8._\mf e'''16 d'''8~ d''' c'''_\> a''_\! |
-  bes''8_\mp a'' bes''~ bes''4. |
+  b''8_\mp a'' b''~ b''4. |
   r4. <a'>8^"rit." <b' > <cis'' > |
   d''2.\fermata |
   \solopage
@@ -163,7 +163,7 @@ cancion_three={
   \bar ".|:"
   
   \repeat volta 2 {
-    r4. <g'>4 a'8 |
+    r4. <g'>4 e'8 |
     f'4 f'8\staccato_\> f'4._\! |
     a'4 a'8 g'4. |
     a'2. |
@@ -257,7 +257,7 @@ cancion_four={
         c'4_\mp c'8 d'4. |
       }
       \new Voice {\voiceOne
-        r4. r8 c'''8 bes'' |
+        r4. r8 c'''8 b'' |
       }
     
     >>
@@ -306,7 +306,7 @@ cancion_four={
       c'4_\mp c'8 d'4. |
     }
     \new Voice{\voiceOne
-      r4. r8 c''' bes'' |
+      r4. r8 c''' b'' |
     }
   >>
   a''8. g''16 f''8 <e''>^"rit." <g''> <f''> |

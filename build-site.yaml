@@ -31,8 +31,6 @@ steps:
       - rsync
       - -r
       - -d
-      - -h
-      - Content-Type:application/pdf
       - pdf/
       - gs://${_PDF_BUCKET}/
 

@@ -4,6 +4,7 @@
   composer = "Antonio Ruiz-Pipo"
   arranger = "Arr. John Asmuth"
   tagline = ""
+  piece = \markup { \line { \circle 6 "= D" } }
 }
 
 \paper {

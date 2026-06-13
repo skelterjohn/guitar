@@ -170,8 +170,10 @@ body {
 }
 
 .pdf-link-active,
-.pdf-link-active:hover {
-  color: var(--color-surface);
+.pdf-link-active:hover,
+.viewer-toolbar .pdf-link-active,
+.viewer-toolbar .pdf-link-active:hover {
+  color: #fff;
   background: var(--color-link-text);
   border-color: var(--color-link-text);
 }

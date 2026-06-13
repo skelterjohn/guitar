@@ -26,6 +26,11 @@ export default function PdfViewer({ filename, displayName, pieceTitle, pdfs = []
     goToPrev: () => {},
     goToNext: () => {},
   });
+  const toolbarRef = useRef(null);
+  const toolbarStartRef = useRef(null);
+  const toolbarEndRef = useRef(null);
+  const pageNavRef = useRef(null);
+  const [pageNavLeft, setPageNavLeft] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('loading');
@@ -331,18 +336,84 @@ export default function PdfViewer({ filename, displayName, pieceTitle, pdfs = []
     };
   }, [status, pageCount]);
 
+  useLayoutEffect(() => {
+    if (status !== 'ready' || pageCount === 0) {
+      setPageNavLeft(null);
+      return;
+    }
+
+    const toolbar = toolbarRef.current;
+    const start = toolbarStartRef.current;
+    const end = toolbarEndRef.current;
+    const nav = pageNavRef.current;
+    if (!toolbar || !start || !nav) return;
+
+    const gap = 16;
+    const pushPadding = 16;
+
+    const getClusterRight = (element) => {
+      const toolbarLeft = toolbar.getBoundingClientRect().left;
+      let maxRight = element.getBoundingClientRect().right - toolbarLeft;
+
+      for (const child of element.querySelectorAll('a, .pdf-links')) {
+        const childRight = child.getBoundingClientRect().right - toolbarLeft;
+        maxRight = Math.max(maxRight, childRight);
+      }
+
+      return maxRight;
+    };
+
+    const updatePageNavPosition = () => {
+      const toolbarRect = toolbar.getBoundingClientRect();
+      const toolbarWidth = toolbarRect.width;
+      const navWidth = nav.getBoundingClientRect().width;
+      const clusterRight = getClusterRight(start);
+      const endLeft = end
+        ? end.getBoundingClientRect().left - toolbarRect.left
+        : toolbarWidth;
+
+      const idealLeft = (toolbarWidth - navWidth) / 2;
+      const collisionLeft = clusterRight + gap;
+      const minLeft =
+        idealLeft < collisionLeft ? collisionLeft + pushPadding : collisionLeft;
+      const maxLeft = endLeft - gap - navWidth;
+
+      setPageNavLeft(
+        Math.min(Math.max(idealLeft, minLeft), Math.max(minLeft, maxLeft)),
+      );
+    };
+
+    updatePageNavPosition();
+
+    const observer = new ResizeObserver(updatePageNavPosition);
+    observer.observe(toolbar);
+    observer.observe(start);
+    if (end) observer.observe(end);
+    observer.observe(nav);
+
+    return () => observer.disconnect();
+  }, [status, pageCount, pdfs, pieceTitle, displayName, filename]);
+
   return (
     <div className="viewer-page">
       <header className="viewer-header">
-        <div className="viewer-toolbar">
-          <div className="viewer-toolbar-start">
+        <div className="viewer-toolbar" ref={toolbarRef}>
+          <div className="viewer-toolbar-start" ref={toolbarStartRef}>
             <Link to="/">&larr; Catalog</Link>
             {pdfs.length > 0 && (
               <PdfLinkList pdfs={pdfs} currentFile={filename} />
             )}
           </div>
           {status === 'ready' && pageCount > 0 && (
-            <div className="viewer-page-nav">
+            <div
+              className="viewer-page-nav"
+              ref={pageNavRef}
+              style={
+                pageNavLeft != null
+                  ? { left: `${pageNavLeft}px`, transform: 'translateY(-50%)' }
+                  : undefined
+              }
+            >
               <button
                 type="button"
                 className="viewer-page-arrow"
@@ -366,7 +437,7 @@ export default function PdfViewer({ filename, displayName, pieceTitle, pdfs = []
               </button>
             </div>
           )}
-          <div className="viewer-toolbar-end">
+          <div className="viewer-toolbar-end" ref={toolbarEndRef}>
             <span className="viewer-title">{pieceTitle ?? displayName ?? filename}</span>
             <a href={url} download={filename}>
               Download

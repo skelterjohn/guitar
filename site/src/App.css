@@ -28,8 +28,39 @@ body {
   padding-bottom: 1rem;
 }
 
-.page-header h1 {
-  margin: 0 0 0.35rem;
+.page-header-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.repo-source {
+  display: flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+}
+
+.repo-label {
+  color: #6b5d4a;
+}
+
+.repo-link {
+  color: #6b5d4a;
+  text-decoration: none;
+}
+
+.repo-link:hover {
+  color: #4a3f30;
+  text-decoration: underline;
+}
+
+.page-header-top h1 {
+  margin: 0;
   font-size: 1.75rem;
   font-weight: normal;
   letter-spacing: 0.02em;

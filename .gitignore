@@ -1,4 +1,4 @@
 **/*~
 site/node_modules/
 site/dist/
-site/src/data/catalog.json
+site/src/data/pdf-hashes.json

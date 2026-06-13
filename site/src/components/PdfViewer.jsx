@@ -517,8 +517,15 @@ export default function PdfViewer({ filename, pdfs = [] }) {
                 >
                   <ChevronIcon direction="left" />
                 </button>
-                <span className="viewer-page-indicator">
-                  {currentPage} / {pageCount}
+                <div
+                  className="viewer-page-indicator"
+                  aria-label={`Page ${currentPage} of ${pageCount}`}
+                >
+                  <span className="viewer-page-current">{currentPage}</span>
+                  <span className="viewer-page-total">{pageCount}</span>
+                </div>
+                <span className="viewer-page-separator" aria-hidden="true">
+                  /
                 </span>
                 <button
                   type="button"

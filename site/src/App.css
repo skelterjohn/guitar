@@ -68,6 +68,20 @@ body {
   font-weight: normal;
 }
 
+.composition-description {
+  margin-bottom: 0.85rem;
+}
+
+.composition-description p {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+  color: #6b5d4a;
+}
+
+.composition-description p:last-child {
+  margin-bottom: 0;
+}
+
 .pdf-links {
   display: flex;
   flex-wrap: wrap;

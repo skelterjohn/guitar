@@ -6,10 +6,12 @@
       "pieces": [
         {
           "title": "Haze Dance",
+          "description": "Three parts. Theme stolen from a 90s anime intro, and La La Land.",
           "pdfs": [{ "label": "score", "file": "haze_dance.pdf" }]
         },
         {
           "title": "Breakfast around the Sun",
+          "description": "Four parts. Used musescore for the first time in a serious way, since typing is hard these days. Inspirations include Gulli Bjornsson, Olga Amelkina-Vera, and Ray Lynch.",
           "pdfs": [
             { "label": "score", "file": "Breakfast around the Sun.pdf" },
             { "label": "guitar 1", "file": "Breakfast around the Sun-Classical_Guitar_1.pdf" },
@@ -20,6 +22,7 @@
         },
         {
           "title": "Seeking Never Finding",
+          "description": "Two movements, which I wrote just before my fingers stopped working. In theory it will one day be concluded by a danza.",
           "pdfs": [
             { "label": "prelude", "file": "seeking_I.pdf" },
             { "label": "cancion", "file": "seeking_2.pdf" }
@@ -27,6 +30,7 @@
         },
         {
           "title": "Fools Rushing In",
+          "description": "This is a guitar orchestra piece, some obvious inspiration from Cancion y Danza.",
           "pdfs": [
             { "label": "score", "file": "fools.pdf" },
             { "label": "guitar 1", "file": "fools_one.pdf" },
@@ -37,18 +41,22 @@
         },
         {
           "title": "Distance",
+          "description": "The first measure is a melody that has been stuck in my head for a long time. Perhaps from an anime theme song? Not sure. The piece is playable on one guitar but would probably be fun and sound nice with two.",
           "pdfs": [{ "label": "score", "file": "distance.pdf" }]
         },
         {
           "title": "Quickly Eroding Icy Shoreline (var)",
+          "description": "A variation on Gulli Björnsson's \"Eroding Icy Shoreline\". It follows the original piece phrase by phrase, in a very different style.",
           "pdfs": [{ "label": "score", "file": "quickly_eroding_icy_shoreline.pdf" }]
         },
         {
           "title": "Frog Song (Naked Man Dance)",
+          "description": "This piece was written after a weekend of listening to various works by Erik Satie, but especially the Gymnopadies.\n\nIt is intended to evoke the feeling of quarantine during a pandemic. The repeated bars are not unpleasant, but a bit numbing (much like sitting in your house all day). There is searching (the first melodic section), hope (second), and even beauty (the C major section), but also anger and resignation (the F major section), but no matter what it all comes back to the numbness.",
           "pdfs": [{ "label": "score", "file": "frogsong.pdf" }]
         },
         {
           "title": "Ditto",
+          "description": "I like to play this one on my Seagull S6 Original (steel string acoustic dreadnought), which has a much brighter sound and long sustain compared to my classical (Alhambra 5P).",
           "pdfs": [
             { "label": "score", "file": "ditto.pdf" },
             { "label": "tab", "file": "ditto_tab.pdf" }
@@ -56,22 +64,27 @@
         },
         {
           "title": "Wishing Tree",
+          "description": "This piece is a guitar-ization of the song I like to sing to my children when reading You and Me and the Wishing Tree.",
           "pdfs": [{ "label": "score", "file": "wishingtree.pdf" }]
         },
         {
           "title": "Study No. 1 (Regret)",
+          "description": "This is a study I wrote to help smooth out a section in Media Luna (long page, ctrl-f the title).\n\nThe first string is the melody, and its first use each measure should be loud and with vibrato. The second (and sometimes third) use of that string in each measure should be softer, sweeter, and (most importantly) regretful. It's also full of big stretches for the left hand.",
           "pdfs": [{ "label": "score", "file": "study_n1_regret.pdf" }]
         },
         {
           "title": "Fantasy No. 1",
+          "description": "This piece is intended to invoke the feel of a Final Fantasy wistful flashback seen.",
           "pdfs": [{ "label": "score", "file": "fantasy_1.pdf" }]
         },
         {
           "title": "Study No. 2 (Inversion)",
+          "description": "I watched Andrew York's video on improvisation for guitar and put this together to help me practice chord inversions.",
           "pdfs": [{ "label": "score", "file": "inversion.pdf" }]
         },
         {
           "title": "No Feedback",
+          "description": "A simple piece with a repeating bass line. Has a few left-hand stretches but nothing too complicated. Perhaps best played as a meditation exersize at 2am.",
           "pdfs": [{ "label": "score", "file": "no_feedback.pdf" }]
         }
       ]
@@ -82,6 +95,7 @@
       "pieces": [
         {
           "title": "Cancion y Danza by Antonio Ruiz-Pipo",
+          "description": "A four-part arrangement.",
           "pdfs": [
             { "label": "score", "file": "cancion_y_danza_1.pdf" },
             { "label": "guitar 1", "file": "cancion_y_danza_1_one.pdf" },
@@ -98,6 +112,7 @@
       "pieces": [
         {
           "title": "Suna no Hoshi by Tsuneo Imahori",
+          "description": "From the Trigun soundtrack. Transcribed by ear.\n\nThis piece was played during the procession at my wedding. So, I really like it.\n\nPlays great on either classical or acoustic steel-string.",
           "pdfs": [
             { "label": "score", "file": "suna_no_hoshi.pdf" },
             { "label": "tab", "file": "suna_no_hoshi_tab.pdf" }
@@ -105,6 +120,7 @@
         },
         {
           "title": "Rakuen by Tsuneo Imahori",
+          "description": "From the Trigun soundtrack. Guitar/voice. Transcribed by ear.\n\nI found numerous terrible tabs for this piece before I decided to just sit down and transcribe it myself from the mp3. I discovered that the tuning is quite unusual, with DAGDGD from 1 to 6, which likely accounts for all the poor arrangements I'd discovered. I believe what I transcribed below is faithful to what was actually played, and (as a bonus) it's not that hard once the tuning is handled.\n\nBest played on an acoustic steel-string guitar.",
           "pdfs": [
             { "label": "score", "file": "rakuen.pdf" },
             { "label": "tab cheat sheet", "file": "rakuen_tab.pdf" }
@@ -112,14 +128,17 @@
         },
         {
           "title": "Pasillo No. 1 by Prof. Francisco A. Velasquez",
+          "description": "The original hand-written score for this piece can be found on Bert Alink's site. The score here is a cleaned-up version.",
           "pdfs": [{ "label": "score", "file": "pasillo_n1.pdf" }]
         },
         {
           "title": "Prelude No. 1 by Francisco Burgos",
+          "description": "Arranged by ear. You can visit the composer's website and purchase the original score if you like. I made my score before the original was available.",
           "pdfs": [{ "label": "score", "file": "burgos_prelude_1.pdf" }]
         },
         {
           "title": "Prelude No. 2 \"Nocturno\" by Francisco Burgos",
+          "description": "Arranged by ear. You can visit the composer's website and purchase other scores, but (at this time) not Prelude No 2.",
           "pdfs": [{ "label": "score", "file": "burgos_prelude_2.pdf" }]
         }
       ]

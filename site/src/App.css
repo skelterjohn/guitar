@@ -82,6 +82,11 @@ body {
   .repo-source {
     display: none;
   }
+
+  .viewer-toolbar-start .pdf-links,
+  .viewer-title {
+    display: none;
+  }
 }
 
 .page-header-top h1 {

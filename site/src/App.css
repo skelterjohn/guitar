@@ -199,13 +199,72 @@ body {
 }
 
 .viewer-toolbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border-light);
   flex-shrink: 0;
+}
+
+.viewer-toolbar-side {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.viewer-toolbar-start {
+  justify-self: start;
+}
+
+.viewer-toolbar-end {
+  justify-self: end;
+}
+
+.viewer-page-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-self: center;
+}
+
+.viewer-page-indicator {
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  min-width: 3.5rem;
+  text-align: center;
+}
+
+.viewer-page-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  color: var(--color-link-text);
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-link-border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.chevron-icon {
+  display: block;
+}
+
+.viewer-page-arrow:hover:not(:disabled) {
+  background: var(--color-link-bg-hover);
+}
+
+.viewer-page-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .viewer-toolbar a {
@@ -220,7 +279,6 @@ body {
 }
 
 .viewer-title {
-  flex: 1;
   font-size: 0.95rem;
   color: var(--color-text-muted);
   overflow: hidden;

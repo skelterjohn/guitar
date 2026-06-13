@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import * as pdfjs from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { pdfUrl } from '../config.js';
+import ChevronIcon from './ChevronIcon.jsx';
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
@@ -13,7 +14,12 @@ export default function PdfViewer({ filename, displayName }) {
   const slotRefs = useRef([]);
   const renderIdRef = useRef(0);
   const pdfDocRef = useRef(null);
+  const navigationRef = useRef({
+    goToPrev: () => {},
+    goToNext: () => {},
+  });
   const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -21,6 +27,7 @@ export default function PdfViewer({ filename, displayName }) {
     let cancelled = false;
     setStatus('loading');
     setPageCount(0);
+    setCurrentPage(1);
     canvasRefs.current = [];
     slotRefs.current = [];
 
@@ -126,10 +133,30 @@ export default function PdfViewer({ filename, displayName }) {
       return current;
     };
 
+    const updateCurrentPage = () => {
+      setCurrentPage(getCurrentPageIndex() + 1);
+    };
+
     const scrollToPage = (index) => {
       const slot = slotRefs.current[index];
       if (!slot) return;
       container.scrollTo({ top: getSlotTop(slot), behavior: 'auto' });
+    };
+
+    const goToPrev = () => {
+      scrollToPage(Math.max(getCurrentPageIndex() - 1, 0));
+    };
+
+    const goToNext = () => {
+      scrollToPage(Math.min(getCurrentPageIndex() + 1, pageCount - 1));
+    };
+
+    navigationRef.current = { goToPrev, goToNext };
+
+    updateCurrentPage();
+
+    const onScroll = () => {
+      updateCurrentPage();
     };
 
     const onKeyDown = (event) => {
@@ -137,26 +164,65 @@ export default function PdfViewer({ filename, displayName }) {
 
       event.preventDefault();
 
-      const current = getCurrentPageIndex();
       if (event.key === 'PageDown') {
-        scrollToPage(Math.min(current + 1, pageCount - 1));
+        goToNext();
       } else {
-        scrollToPage(Math.max(current - 1, 0));
+        goToPrev();
       }
     };
 
+    container.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateCurrentPage();
+    });
+    resizeObserver.observe(container);
+
+    return () => {
+      container.removeEventListener('scroll', onScroll);
+      window.removeEventListener('keydown', onKeyDown);
+      resizeObserver.disconnect();
+    };
   }, [status, pageCount]);
 
   return (
     <div className="viewer-page">
       <div className="viewer-toolbar">
-        <Link to="/">&larr; Catalog</Link>
-        <span className="viewer-title">{displayName ?? filename}</span>
-        <a href={url} download={filename}>
-          Download
-        </a>
+        <div className="viewer-toolbar-side viewer-toolbar-start">
+          <Link to="/">&larr; Catalog</Link>
+        </div>
+        {status === 'ready' && pageCount > 0 && (
+          <div className="viewer-page-nav">
+            <button
+              type="button"
+              className="viewer-page-arrow"
+              onClick={() => navigationRef.current.goToPrev()}
+              disabled={currentPage <= 1}
+              aria-label="Previous page"
+            >
+              <ChevronIcon direction="left" />
+            </button>
+            <span className="viewer-page-indicator">
+              {currentPage} / {pageCount}
+            </span>
+            <button
+              type="button"
+              className="viewer-page-arrow"
+              onClick={() => navigationRef.current.goToNext()}
+              disabled={currentPage >= pageCount}
+              aria-label="Next page"
+            >
+              <ChevronIcon direction="right" />
+            </button>
+          </div>
+        )}
+        <div className="viewer-toolbar-side viewer-toolbar-end">
+          <span className="viewer-title">{displayName ?? filename}</span>
+          <a href={url} download={filename}>
+            Download
+          </a>
+        </div>
       </div>
       <div className="viewer-content" ref={containerRef}>
         {status === 'loading' && <p className="viewer-status">Loading…</p>}

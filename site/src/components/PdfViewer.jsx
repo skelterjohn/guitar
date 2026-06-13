@@ -10,6 +10,7 @@ export default function PdfViewer({ filename, displayName }) {
   const url = pdfUrl(filename);
   const containerRef = useRef(null);
   const canvasRefs = useRef([]);
+  const slotRefs = useRef([]);
   const renderIdRef = useRef(0);
   const pdfDocRef = useRef(null);
   const [pageCount, setPageCount] = useState(0);
@@ -21,6 +22,7 @@ export default function PdfViewer({ filename, displayName }) {
     setStatus('loading');
     setPageCount(0);
     canvasRefs.current = [];
+    slotRefs.current = [];
 
     const loadingTask = pdfjs.getDocument(url);
     loadingTask.promise
@@ -98,6 +100,55 @@ export default function PdfViewer({ filename, displayName }) {
     };
   }, [status, pageCount, url]);
 
+  useEffect(() => {
+    if (status !== 'ready' || pageCount === 0) return;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const getSlotTop = (slot) => {
+      const containerRect = container.getBoundingClientRect();
+      const slotRect = slot.getBoundingClientRect();
+      return slotRect.top - containerRect.top + container.scrollTop;
+    };
+
+    const getCurrentPageIndex = () => {
+      const anchor = container.scrollTop + container.clientHeight / 2;
+      let current = 0;
+
+      for (let index = 0; index < pageCount; index += 1) {
+        const slot = slotRefs.current[index];
+        if (slot && getSlotTop(slot) <= anchor) {
+          current = index;
+        }
+      }
+
+      return current;
+    };
+
+    const scrollToPage = (index) => {
+      const slot = slotRefs.current[index];
+      if (!slot) return;
+      container.scrollTo({ top: getSlotTop(slot), behavior: 'auto' });
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key !== 'PageDown' && event.key !== 'PageUp') return;
+
+      event.preventDefault();
+
+      const current = getCurrentPageIndex();
+      if (event.key === 'PageDown') {
+        scrollToPage(Math.min(current + 1, pageCount - 1));
+      } else {
+        scrollToPage(Math.max(current - 1, 0));
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [status, pageCount]);
+
   return (
     <div className="viewer-page">
       <div className="viewer-toolbar">
@@ -114,7 +165,13 @@ export default function PdfViewer({ filename, displayName }) {
         )}
         {status === 'ready' &&
           Array.from({ length: pageCount }, (_, index) => (
-            <div className="viewer-page-slot" key={index}>
+            <div
+              className="viewer-page-slot"
+              key={index}
+              ref={(element) => {
+                slotRefs.current[index] = element;
+              }}
+            >
               <canvas
                 ref={(element) => {
                   canvasRefs.current[index] = element;

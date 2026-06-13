@@ -5,7 +5,13 @@ import PdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
 import { pdfUrl } from '../config.js';
 import ChevronIcon from './ChevronIcon.jsx';
 
-pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
+let workerIdle = Promise.resolve();
+
+function configureWorker() {
+  pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
+}
+
+configureWorker();
 
 export default function PdfViewer({ filename, displayName }) {
   const url = pdfUrl(filename);
@@ -13,6 +19,7 @@ export default function PdfViewer({ filename, displayName }) {
   const canvasRefs = useRef([]);
   const slotRefs = useRef([]);
   const renderIdRef = useRef(0);
+  const renderTasksRef = useRef([]);
   const pdfDocRef = useRef(null);
   const navigationRef = useRef({
     goToPrev: () => {},
@@ -25,34 +32,56 @@ export default function PdfViewer({ filename, displayName }) {
 
   useEffect(() => {
     let cancelled = false;
+    let loadingTask = null;
+
     setStatus('loading');
     setPageCount(0);
     setCurrentPage(1);
     canvasRefs.current = [];
     slotRefs.current = [];
 
-    const loadingTask = pdfjs.getDocument(url);
-    loadingTask.promise
-      .then((doc) => {
+    const loadDocument = async () => {
+      await workerIdle;
+      if (cancelled) return;
+
+      loadingTask = pdfjs.getDocument(url);
+
+      try {
+        const doc = await loadingTask.promise;
         if (cancelled) {
-          doc.destroy();
+          await doc.destroy();
           return;
         }
         pdfDocRef.current = doc;
         setPageCount(doc.numPages);
         setStatus('ready');
-      })
-      .catch((err) => {
+      } catch (err) {
         if (cancelled) return;
         setStatus('error');
         setErrorMessage(err.message ?? 'Failed to load PDF');
-      });
+      }
+    };
+
+    loadDocument();
 
     return () => {
       cancelled = true;
-      loadingTask.destroy();
-      pdfDocRef.current?.destroy();
+      const task = loadingTask;
+      const doc = pdfDocRef.current;
       pdfDocRef.current = null;
+      loadingTask = null;
+
+      workerIdle = workerIdle.then(async () => {
+        try {
+          if (task) {
+            await task.destroy();
+          } else if (doc) {
+            await doc.destroy();
+          }
+        } finally {
+          configureWorker();
+        }
+      });
     };
   }, [url]);
 
@@ -60,9 +89,38 @@ export default function PdfViewer({ filename, displayName }) {
     if (status !== 'ready' || pageCount === 0 || !containerRef.current) return;
 
     const container = containerRef.current;
+    let cancelled = false;
+    let resizeTimer = null;
+    let lastContainerWidth = 0;
+    let lastContainerHeight = 0;
+    let renderAttempts = 0;
+
+    const cancelActiveRenders = async () => {
+      const tasks = renderTasksRef.current.filter(Boolean);
+      renderTasksRef.current = [];
+      if (tasks.length === 0) return;
+
+      for (const task of tasks) {
+        task.cancel();
+      }
+
+      await Promise.all(
+        tasks.map((task) =>
+          task.promise.catch((err) => {
+            if (err?.name !== 'RenderingCancelledException') {
+              throw err;
+            }
+          }),
+        ),
+      );
+    };
 
     const renderPages = async () => {
       const renderId = ++renderIdRef.current;
+
+      await cancelActiveRenders();
+      if (cancelled || renderId !== renderIdRef.current) return;
+
       const doc = pdfDocRef.current;
       if (!doc) return;
 
@@ -70,14 +128,20 @@ export default function PdfViewer({ filename, displayName }) {
       const availableHeight = container.clientHeight;
       if (availableWidth === 0 || availableHeight === 0) return;
 
+      lastContainerWidth = availableWidth;
+      lastContainerHeight = availableHeight;
+
+      const outputScale = window.devicePixelRatio || 1;
+      let renderedCount = 0;
+
       for (let pageNum = 1; pageNum <= pageCount; pageNum += 1) {
-        if (renderId !== renderIdRef.current) return;
+        if (cancelled || renderId !== renderIdRef.current) return;
 
         const canvas = canvasRefs.current[pageNum - 1];
         if (!canvas) continue;
 
         const page = await doc.getPage(pageNum);
-        if (renderId !== renderIdRef.current) return;
+        if (cancelled || renderId !== renderIdRef.current) return;
 
         const baseViewport = page.getViewport({ scale: 1 });
         const scale = Math.min(
@@ -85,25 +149,83 @@ export default function PdfViewer({ filename, displayName }) {
           availableHeight / baseViewport.height,
         );
         const viewport = page.getViewport({ scale });
+
+        canvas.width = Math.floor(viewport.width * outputScale);
+        canvas.height = Math.floor(viewport.height * outputScale);
+        canvas.style.width = `${Math.floor(viewport.width)}px`;
+        canvas.style.height = `${Math.floor(viewport.height)}px`;
+
         const context = canvas.getContext('2d');
+        const transform =
+          outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
+        const renderTask = page.render({
+          canvasContext: context,
+          viewport,
+          transform,
+          canvas,
+        });
+        renderTasksRef.current[pageNum - 1] = renderTask;
 
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+        try {
+          await renderTask.promise;
+        } catch (err) {
+          if (err?.name === 'RenderingCancelledException') return;
+          console.error('PDF render failed:', err);
+          return;
+        }
 
-        await page.render({ canvasContext: context, viewport, canvas }).promise;
+        renderTasksRef.current[pageNum - 1] = null;
+        renderedCount += 1;
+
+        if (cancelled || renderId !== renderIdRef.current) return;
+      }
+
+      if (
+        renderedCount === 0 &&
+        !cancelled &&
+        renderId === renderIdRef.current &&
+        renderAttempts < 5
+      ) {
+        renderAttempts += 1;
+        requestAnimationFrame(queueRender);
       }
     };
 
-    renderPages();
+    let renderChain = Promise.resolve();
+    const queueRender = () => {
+      renderChain = renderChain
+        .then(() => renderPages())
+        .catch((err) => {
+          console.error('PDF render failed:', err);
+        });
+    };
 
-    const observer = new ResizeObserver(() => {
-      renderPages();
-    });
+    const scheduleRender = () => {
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      if (width === 0 || height === 0) return;
+      if (width === lastContainerWidth && height === lastContainerHeight) return;
+
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(queueRender, 100);
+    };
+
+    lastContainerWidth = container.clientWidth;
+    lastContainerHeight = container.clientHeight;
+    requestAnimationFrame(queueRender);
+
+    const observer = new ResizeObserver(scheduleRender);
     observer.observe(container);
 
     return () => {
+      cancelled = true;
+      clearTimeout(resizeTimer);
       renderIdRef.current += 1;
       observer.disconnect();
+      for (const task of renderTasksRef.current) {
+        task?.cancel();
+      }
+      renderTasksRef.current = [];
     };
   }, [status, pageCount, url]);
 

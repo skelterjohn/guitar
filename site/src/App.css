@@ -113,7 +113,7 @@ body {
   margin-bottom: 0;
 }
 
-.pdf-links {
+.composition-links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -133,6 +133,29 @@ body {
 
 .pdf-link:hover {
   background: #e2d9ca;
+}
+
+.external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: system-ui, sans-serif;
+  text-decoration: none;
+  color: #3d3428;
+  background: #f3efe8;
+  border: 1px solid #d4c9b8;
+  border-radius: 3px;
+}
+
+.external-link:hover {
+  background: #e8e1d6;
+}
+
+.external-link-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
 }
 
 .viewer-page {

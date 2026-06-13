@@ -37,6 +37,9 @@
             { "label": "guitar 2", "file": "fools_two.pdf" },
             { "label": "guitar 3", "file": "fools_three.pdf" },
             { "label": "guitar 4", "file": "fools_four.pdf" }
+          ],
+          "links": [
+            { "label": "recording", "url": "https://www.youtube.com/watch?v=unBusSodF70" }
           ]
         },
         {
@@ -47,7 +50,10 @@
         {
           "title": "Quickly Eroding Icy Shoreline (var)",
           "description": "A variation on Gulli Björnsson's \"Eroding Icy Shoreline\". It follows the original piece phrase by phrase, in a very different style.",
-          "pdfs": [{ "label": "score", "file": "quickly_eroding_icy_shoreline.pdf" }]
+          "pdfs": [{ "label": "score", "file": "quickly_eroding_icy_shoreline.pdf" }],
+          "links": [
+            { "label": "recording", "url": "https://www.youtube.com/watch?v=PTqMrPJhIuE" }
+          ]
         },
         {
           "title": "Frog Song (Naked Man Dance)",
@@ -85,7 +91,10 @@
         {
           "title": "No Feedback",
           "description": "A simple piece with a repeating bass line. Has a few left-hand stretches but nothing too complicated. Perhaps best played as a meditation exersize at 2am.",
-          "pdfs": [{ "label": "score", "file": "no_feedback.pdf" }]
+          "pdfs": [{ "label": "score", "file": "no_feedback.pdf" }],
+          "links": [
+            { "label": "recording", "url": "https://youtu.be/Cpl9k0rCWcI" }
+          ]
         }
       ]
     },
@@ -116,6 +125,10 @@
           "pdfs": [
             { "label": "score", "file": "suna_no_hoshi.pdf" },
             { "label": "tab", "file": "suna_no_hoshi_tab.pdf" }
+          ],
+          "links": [
+            { "label": "recording from OST", "url": "https://www.youtube.com/watch?v=E2hLiiRsG2g" },
+            { "label": "my recording", "url": "https://www.youtube.com/watch?v=VG2HcP8iLjM" }
           ]
         },
         {
@@ -124,6 +137,9 @@
           "pdfs": [
             { "label": "score", "file": "rakuen.pdf" },
             { "label": "tab cheat sheet", "file": "rakuen_tab.pdf" }
+          ],
+          "links": [
+            { "label": "composer's recording", "url": "https://www.youtube.com/watch?v=XDn2EUC4reM" }
           ]
         },
         {
@@ -134,12 +150,20 @@
         {
           "title": "Prelude No. 1 by Francisco Burgos",
           "description": "Arranged by ear. You can visit the composer's website and purchase the original score if you like. I made my score before the original was available.",
-          "pdfs": [{ "label": "score", "file": "burgos_prelude_1.pdf" }]
+          "pdfs": [{ "label": "score", "file": "burgos_prelude_1.pdf" }],
+          "links": [
+            { "label": "my recording", "url": "https://www.youtube.com/watch?v=rNKc362oCWo" },
+            { "label": "composer's recording", "url": "https://soundcloud.com/francisco-burgos/prelude-1-by-francisco-burgos" }
+          ]
         },
         {
           "title": "Prelude No. 2 \"Nocturno\" by Francisco Burgos",
           "description": "Arranged by ear. You can visit the composer's website and purchase other scores, but (at this time) not Prelude No 2.",
-          "pdfs": [{ "label": "score", "file": "burgos_prelude_2.pdf" }]
+          "pdfs": [{ "label": "score", "file": "burgos_prelude_2.pdf" }],
+          "links": [
+            { "label": "my recording", "url": "https://www.youtube.com/watch?v=Gbnjhe-nD18" },
+            { "label": "composer's recording", "url": "https://soundcloud.com/francisco-burgos/prelude-2-nocturno-by" }
+          ]
         }
       ]
     }

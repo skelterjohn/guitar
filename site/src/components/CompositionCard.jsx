@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
+import ExternalLinkIcon from './ExternalLinkIcon.jsx';
 
 export default function CompositionCard({ piece }) {
   const paragraphs = piece.description?.split('\n\n').filter(Boolean) ?? [];
+  const links = piece.links ?? [];
 
   return (
     <article className="composition-card">
@@ -13,7 +15,7 @@ export default function CompositionCard({ piece }) {
           ))}
         </div>
       )}
-      <div className="pdf-links">
+      <div className="composition-links">
         {piece.pdfs.map((pdf) => (
           <Link
             key={pdf.file}
@@ -22,6 +24,18 @@ export default function CompositionCard({ piece }) {
           >
             {pdf.label}
           </Link>
+        ))}
+        {links.map((link) => (
+          <a
+            key={link.url}
+            className="external-link"
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {link.label}
+            <ExternalLinkIcon />
+          </a>
         ))}
       </div>
     </article>

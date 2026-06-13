@@ -14,7 +14,7 @@ function configureWorker() {
 
 configureWorker();
 
-export default function PdfViewer({ filename, displayName, pieceTitle, pdfs = [] }) {
+export default function PdfViewer({ filename, pdfs = [] }) {
   const url = pdfUrl(filename);
   const containerRef = useRef(null);
   const canvasRefs = useRef([]);
@@ -392,7 +392,7 @@ export default function PdfViewer({ filename, displayName, pieceTitle, pdfs = []
     observer.observe(nav);
 
     return () => observer.disconnect();
-  }, [status, pageCount, pdfs, pieceTitle, displayName, filename]);
+  }, [status, pageCount, pdfs, filename]);
 
   return (
     <div className="viewer-page">
@@ -438,7 +438,6 @@ export default function PdfViewer({ filename, displayName, pieceTitle, pdfs = []
             </div>
           )}
           <div className="viewer-toolbar-end" ref={toolbarEndRef}>
-            <span className="viewer-title">{pieceTitle ?? displayName ?? filename}</span>
             <a href={url} download={filename}>
               Download
             </a>

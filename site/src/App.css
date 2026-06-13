@@ -83,8 +83,7 @@ body {
     display: none;
   }
 
-  .viewer-toolbar-start .pdf-links,
-  .viewer-title {
+  .viewer-toolbar-start .pdf-links {
     display: none;
   }
 }
@@ -304,14 +303,6 @@ body {
 
 .viewer-toolbar a:hover {
   text-decoration: underline;
-}
-
-.viewer-title {
-  font-size: 0.95rem;
-  color: var(--color-text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .viewer-content {

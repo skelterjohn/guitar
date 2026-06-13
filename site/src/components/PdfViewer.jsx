@@ -151,6 +151,17 @@ export default function PdfViewer({ filename, displayName }) {
       scrollToPage(Math.min(getCurrentPageIndex() + 1, pageCount - 1));
     };
 
+    const goToStart = () => {
+      container.scrollTo({ top: 0, behavior: 'auto' });
+    };
+
+    const goToEnd = () => {
+      container.scrollTo({
+        top: container.scrollHeight - container.clientHeight,
+        behavior: 'auto',
+      });
+    };
+
     navigationRef.current = { goToPrev, goToNext };
 
     updateCurrentPage();
@@ -160,14 +171,25 @@ export default function PdfViewer({ filename, displayName }) {
     };
 
     const onKeyDown = (event) => {
-      if (event.key !== 'PageDown' && event.key !== 'PageUp') return;
+      if (
+        event.key !== 'PageDown' &&
+        event.key !== 'PageUp' &&
+        event.key !== 'Home' &&
+        event.key !== 'End'
+      ) {
+        return;
+      }
 
       event.preventDefault();
 
       if (event.key === 'PageDown') {
         goToNext();
-      } else {
+      } else if (event.key === 'PageUp') {
         goToPrev();
+      } else if (event.key === 'Home') {
+        goToStart();
+      } else {
+        goToEnd();
       }
     };
 

@@ -59,6 +59,7 @@ steps:
       - --region=${_REGION}
       - --allow-unauthenticated
       - --revision-suffix=v$SHORT_SHA
+      - --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com
       - --port=8080
 
 images:

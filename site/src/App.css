@@ -78,6 +78,12 @@ body {
   text-decoration: underline;
 }
 
+@media (max-width: 640px) {
+  .repo-source {
+    display: none;
+  }
+}
+
 .page-header-top h1 {
   margin: 0;
   font-size: 1.75rem;

@@ -10,6 +10,7 @@ const pdfDir = join(repoRoot, 'pdf');
 const catalogPath = join(__dirname, '../src/data/catalog.yaml');
 const outPath = join(__dirname, '../src/data/catalog.json');
 const HASH_LENGTH = 8;
+const addHashes = process.env.ENRICH_HASHES === '1';
 
 const catalog = yaml.load(readFileSync(catalogPath, 'utf8'));
 let hashed = 0;
@@ -17,10 +18,13 @@ let hashed = 0;
 for (const section of catalog.sections) {
   for (const piece of section.pieces) {
     for (const pdf of piece.pdfs) {
+      delete pdf.hash;
+
+      if (!addHashes) continue;
+
       const filePath = join(pdfDir, pdf.file);
       if (!existsSync(filePath)) {
         console.warn(`warning: missing ${pdf.file}, no hash`);
-        delete pdf.hash;
         continue;
       }
 
@@ -32,4 +36,9 @@ for (const section of catalog.sections) {
 }
 
 writeFileSync(outPath, `${JSON.stringify(catalog, null, 2)}\n`);
-console.log(`catalog enriched (${hashed} PDF hashes) → ${outPath}`);
+
+if (addHashes) {
+  console.log(`catalog enriched (${hashed} PDF hashes) → ${outPath}`);
+} else {
+  console.log(`catalog built without hashes → ${outPath}`);
+}

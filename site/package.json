@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "predev": "npm run enrich",
     "enrich": "node scripts/enrich-catalog.mjs",
-    "validate": "npm run enrich && node scripts/validate-catalog.mjs",
-    "build": "npm run validate && vite build",
+    "validate": "node scripts/validate-catalog.mjs",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {

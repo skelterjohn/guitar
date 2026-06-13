@@ -38,7 +38,7 @@ steps:
     entrypoint: sh
     args:
       - -c
-      - cd site && npm ci && npm run enrich
+      - cd site && npm ci && ENRICH_HASHES=1 npm run enrich && npm run validate
 
   - name: gcr.io/cloud-builders/docker
     dir: site

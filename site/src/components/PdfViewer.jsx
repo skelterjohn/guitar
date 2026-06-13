@@ -365,6 +365,45 @@ export default function PdfViewer({ filename, pdfs = [] }) {
     container.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('keydown', onKeyDown);
 
+    const TAP_MOVE_THRESHOLD = 10;
+    let tapStartX = null;
+    let tapStartY = null;
+
+    const onPointerDown = (event) => {
+      if (pageCount <= 1) return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      tapStartX = event.clientX;
+      tapStartY = event.clientY;
+    };
+
+    const onPointerUp = (event) => {
+      if (pageCount <= 1 || tapStartX == null || tapStartY == null) return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+      const dx = Math.abs(event.clientX - tapStartX);
+      const dy = Math.abs(event.clientY - tapStartY);
+      tapStartX = null;
+      tapStartY = null;
+
+      if (dx > TAP_MOVE_THRESHOLD || dy > TAP_MOVE_THRESHOLD) return;
+
+      const { left, width } = container.getBoundingClientRect();
+      if (event.clientX - left < width / 2) {
+        goToPrev();
+      } else {
+        goToNext();
+      }
+    };
+
+    const onPointerCancel = () => {
+      tapStartX = null;
+      tapStartY = null;
+    };
+
+    container.addEventListener('pointerdown', onPointerDown);
+    container.addEventListener('pointerup', onPointerUp);
+    container.addEventListener('pointercancel', onPointerCancel);
+
     const resizeObserver = new ResizeObserver(() => {
       updateCurrentPage();
       if (headerHiddenRef.current) {
@@ -376,6 +415,9 @@ export default function PdfViewer({ filename, pdfs = [] }) {
     return () => {
       container.removeEventListener('scroll', onScroll);
       window.removeEventListener('keydown', onKeyDown);
+      container.removeEventListener('pointerdown', onPointerDown);
+      container.removeEventListener('pointerup', onPointerUp);
+      container.removeEventListener('pointercancel', onPointerCancel);
       resizeObserver.disconnect();
     };
   }, [status, pageCount]);

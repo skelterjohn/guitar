@@ -433,6 +433,11 @@ export default function PdfViewer({ filename, pdfs = [] }) {
       return;
     }
 
+    if (headerHidden) {
+      setPageNavLeft(null);
+      return;
+    }
+
     const toolbar = toolbarRef.current;
     const start = toolbarStartRef.current;
     const end = toolbarEndRef.current;
@@ -483,13 +488,11 @@ export default function PdfViewer({ filename, pdfs = [] }) {
     observer.observe(nav);
 
     return () => observer.disconnect();
-  }, [status, pageCount, pdfs, filename]);
+  }, [headerHidden, status, pageCount, pdfs, filename]);
 
   return (
     <div className="viewer-page">
-      <div
-        className={`viewer-header-shell${headerHidden ? ' is-collapsed' : ''}`}
-      >
+      <div className={`viewer-chrome${headerHidden ? ' is-collapsed' : ''}`}>
         <header className="viewer-header">
           <div className="viewer-toolbar" ref={toolbarRef}>
             <div className="viewer-toolbar-start" ref={toolbarStartRef}>
@@ -498,46 +501,6 @@ export default function PdfViewer({ filename, pdfs = [] }) {
                 <PdfLinkList pdfs={pdfs} currentFile={filename} />
               )}
             </div>
-            {status === 'ready' && pageCount > 0 && (
-              <div
-                className="viewer-page-nav"
-                ref={pageNavRef}
-                style={
-                  pageNavLeft != null
-                    ? { left: `${pageNavLeft}px`, transform: 'translateY(-50%)' }
-                    : undefined
-                }
-              >
-                <button
-                  type="button"
-                  className="viewer-page-arrow"
-                  onClick={() => navigationRef.current.goToPrev()}
-                  disabled={currentPage <= 1}
-                  aria-label="Previous page"
-                >
-                  <ChevronIcon direction="left" />
-                </button>
-                <div
-                  className="viewer-page-indicator"
-                  aria-label={`Page ${currentPage} of ${pageCount}`}
-                >
-                  <span className="viewer-page-current">{currentPage}</span>
-                  <span className="viewer-page-total">{pageCount}</span>
-                </div>
-                <span className="viewer-page-separator" aria-hidden="true">
-                  /
-                </span>
-                <button
-                  type="button"
-                  className="viewer-page-arrow"
-                  onClick={() => navigationRef.current.goToNext()}
-                  disabled={currentPage >= pageCount}
-                  aria-label="Next page"
-                >
-                  <ChevronIcon direction="right" />
-                </button>
-              </div>
-            )}
             <div className="viewer-toolbar-end" ref={toolbarEndRef}>
               <a href={url} download={filename}>
                 Download
@@ -545,6 +508,50 @@ export default function PdfViewer({ filename, pdfs = [] }) {
             </div>
           </div>
         </header>
+        {status === 'ready' && pageCount > 0 && (
+          <div
+            className={`viewer-page-nav${headerHidden ? ' is-floating' : ''}`}
+            ref={pageNavRef}
+            style={
+              !headerHidden && pageNavLeft != null
+                ? { left: `${pageNavLeft}px`, transform: 'translateY(-50%)' }
+                : undefined
+            }
+          >
+            {!headerHidden && (
+              <button
+                type="button"
+                className="viewer-page-arrow"
+                onClick={() => navigationRef.current.goToPrev()}
+                disabled={currentPage <= 1}
+                aria-label="Previous page"
+              >
+                <ChevronIcon direction="left" />
+              </button>
+            )}
+            <div
+              className="viewer-page-indicator"
+              aria-label={`Page ${currentPage} of ${pageCount}`}
+            >
+              <span className="viewer-page-current">{currentPage}</span>
+              <span className="viewer-page-separator" aria-hidden="true">
+                /
+              </span>
+              <span className="viewer-page-total">{pageCount}</span>
+            </div>
+            {!headerHidden && (
+              <button
+                type="button"
+                className="viewer-page-arrow"
+                onClick={() => navigationRef.current.goToNext()}
+                disabled={currentPage >= pageCount}
+                aria-label="Next page"
+              >
+                <ChevronIcon direction="right" />
+              </button>
+            )}
+          </div>
+        )}
         <button
           type="button"
           className="viewer-header-tab"

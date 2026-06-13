@@ -35,6 +35,7 @@ export default function PdfViewer({ filename, pdfs = [] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
+  const [headerHidden, setHeaderHidden] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -396,54 +397,67 @@ export default function PdfViewer({ filename, pdfs = [] }) {
 
   return (
     <div className="viewer-page">
-      <header className="viewer-header">
-        <div className="viewer-toolbar" ref={toolbarRef}>
-          <div className="viewer-toolbar-start" ref={toolbarStartRef}>
-            <Link to="/">&larr; Catalog</Link>
-            {pdfs.length > 0 && (
-              <PdfLinkList pdfs={pdfs} currentFile={filename} />
-            )}
-          </div>
-          {status === 'ready' && pageCount > 0 && (
-            <div
-              className="viewer-page-nav"
-              ref={pageNavRef}
-              style={
-                pageNavLeft != null
-                  ? { left: `${pageNavLeft}px`, transform: 'translateY(-50%)' }
-                  : undefined
-              }
-            >
-              <button
-                type="button"
-                className="viewer-page-arrow"
-                onClick={() => navigationRef.current.goToPrev()}
-                disabled={currentPage <= 1}
-                aria-label="Previous page"
-              >
-                <ChevronIcon direction="left" />
-              </button>
-              <span className="viewer-page-indicator">
-                {currentPage} / {pageCount}
-              </span>
-              <button
-                type="button"
-                className="viewer-page-arrow"
-                onClick={() => navigationRef.current.goToNext()}
-                disabled={currentPage >= pageCount}
-                aria-label="Next page"
-              >
-                <ChevronIcon direction="right" />
-              </button>
+      <div
+        className={`viewer-header-shell${headerHidden ? ' is-collapsed' : ''}`}
+      >
+        <header className="viewer-header">
+          <div className="viewer-toolbar" ref={toolbarRef}>
+            <div className="viewer-toolbar-start" ref={toolbarStartRef}>
+              <Link to="/">&larr; Catalog</Link>
+              {pdfs.length > 0 && (
+                <PdfLinkList pdfs={pdfs} currentFile={filename} />
+              )}
             </div>
-          )}
-          <div className="viewer-toolbar-end" ref={toolbarEndRef}>
-            <a href={url} download={filename}>
-              Download
-            </a>
+            {status === 'ready' && pageCount > 0 && (
+              <div
+                className="viewer-page-nav"
+                ref={pageNavRef}
+                style={
+                  pageNavLeft != null
+                    ? { left: `${pageNavLeft}px`, transform: 'translateY(-50%)' }
+                    : undefined
+                }
+              >
+                <button
+                  type="button"
+                  className="viewer-page-arrow"
+                  onClick={() => navigationRef.current.goToPrev()}
+                  disabled={currentPage <= 1}
+                  aria-label="Previous page"
+                >
+                  <ChevronIcon direction="left" />
+                </button>
+                <span className="viewer-page-indicator">
+                  {currentPage} / {pageCount}
+                </span>
+                <button
+                  type="button"
+                  className="viewer-page-arrow"
+                  onClick={() => navigationRef.current.goToNext()}
+                  disabled={currentPage >= pageCount}
+                  aria-label="Next page"
+                >
+                  <ChevronIcon direction="right" />
+                </button>
+              </div>
+            )}
+            <div className="viewer-toolbar-end" ref={toolbarEndRef}>
+              <a href={url} download={filename}>
+                Download
+              </a>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+        <button
+          type="button"
+          className="viewer-header-tab"
+          onClick={() => setHeaderHidden((hidden) => !hidden)}
+          aria-label={headerHidden ? 'Show toolbar' : 'Hide toolbar'}
+          aria-expanded={!headerHidden}
+        >
+          <ChevronIcon direction={headerHidden ? 'down' : 'up'} />
+        </button>
+      </div>
       <div className="viewer-content" ref={containerRef}>
         {status === 'loading' && <p className="viewer-status">Loading…</p>}
         {status === 'error' && (

@@ -14,8 +14,12 @@ export default function ChevronIcon({ direction = 'left' }) {
     >
       {direction === 'left' ? (
         <path d="M10 3 5 8l5 5" />
-      ) : (
+      ) : direction === 'right' ? (
         <path d="M6 3l5 5-5 5" />
+      ) : direction === 'up' ? (
+        <path d="M3 10 8 5l5 5" />
+      ) : (
+        <path d="M3 6 8 11l5-5" />
       )}
     </svg>
   );

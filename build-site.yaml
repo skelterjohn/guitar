@@ -34,6 +34,12 @@ steps:
       - pdf/
       - gs://${_PDF_BUCKET}/
 
+  - name: node:22-alpine
+    entrypoint: sh
+    args:
+      - -c
+      - cd site && npm ci && npm run enrich
+
   - name: gcr.io/cloud-builders/docker
     dir: site
     args:

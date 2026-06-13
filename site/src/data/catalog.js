@@ -1,4 +1,3 @@
-import yaml from 'js-yaml';
-import source from './catalog.yaml?raw';
+import catalog from './catalog.json';
 
-export default yaml.load(source);
+export default catalog;

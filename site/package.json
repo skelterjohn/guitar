@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "validate": "node scripts/validate-catalog.mjs",
+    "enrich": "node scripts/enrich-catalog.mjs",
+    "validate": "npm run enrich && node scripts/validate-catalog.mjs",
     "build": "npm run validate && vite build",
     "preview": "vite preview"
   },

@@ -1,3 +1,4 @@
 **/*~
 site/node_modules/
 site/dist/
+site/src/data/catalog.json

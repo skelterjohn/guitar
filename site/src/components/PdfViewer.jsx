@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import * as pdfjs from 'pdfjs-dist';
 import PdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
 import { pdfUrl } from '../config.js';
+import { fetchPdfBytes } from '../pdfCache.js';
 import ChevronIcon from './ChevronIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
 
@@ -14,8 +15,8 @@ function configureWorker() {
 
 configureWorker();
 
-export default function PdfViewer({ filename, pdfs = [] }) {
-  const url = pdfUrl(filename);
+export default function PdfViewer({ filename, pdfHash, pdfs = [] }) {
+  const url = pdfUrl(filename, pdfHash);
   const containerRef = useRef(null);
   const canvasRefs = useRef([]);
   const slotRefs = useRef([]);
@@ -87,9 +88,12 @@ export default function PdfViewer({ filename, pdfs = [] }) {
       await workerIdle;
       if (cancelled) return;
 
-      loadingTask = pdfjs.getDocument(url);
-
       try {
+        const data = await fetchPdfBytes(url);
+        if (cancelled) return;
+
+        loadingTask = pdfjs.getDocument({ data });
+
         const doc = await loadingTask.promise;
         if (cancelled) {
           await doc.destroy();

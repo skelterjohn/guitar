@@ -22,6 +22,9 @@ sections:
             file: Breakfast around the Sun-Classical_Guitar_3.pdf
           - label: guitar 4
             file: Breakfast around the Sun-Classical_Guitar_4.pdf
+        links:
+          - label: Gauteng Guitar Quartet
+            url: https://www.youtube.com/watch?v=G1vNG_hWw3Y
       - title: Seeking Never Finding
         description: >-
           Two movements, which I wrote just before my fingers stopped working. In theory it will one day be concluded by

@@ -4,6 +4,7 @@ import * as pdfjs from 'pdfjs-dist';
 import PdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
 import { pdfUrl } from '../config.js';
 import ChevronIcon from './ChevronIcon.jsx';
+import PdfLinkList from './PdfLinkList.jsx';
 
 let workerIdle = Promise.resolve();
 
@@ -13,7 +14,7 @@ function configureWorker() {
 
 configureWorker();
 
-export default function PdfViewer({ filename, displayName }) {
+export default function PdfViewer({ filename, displayName, pieceTitle, pdfs = [] }) {
   const url = pdfUrl(filename);
   const containerRef = useRef(null);
   const canvasRefs = useRef([]);
@@ -332,42 +333,47 @@ export default function PdfViewer({ filename, displayName }) {
 
   return (
     <div className="viewer-page">
-      <div className="viewer-toolbar">
-        <div className="viewer-toolbar-side viewer-toolbar-start">
-          <Link to="/">&larr; Catalog</Link>
-        </div>
-        {status === 'ready' && pageCount > 0 && (
-          <div className="viewer-page-nav">
-            <button
-              type="button"
-              className="viewer-page-arrow"
-              onClick={() => navigationRef.current.goToPrev()}
-              disabled={currentPage <= 1}
-              aria-label="Previous page"
-            >
-              <ChevronIcon direction="left" />
-            </button>
-            <span className="viewer-page-indicator">
-              {currentPage} / {pageCount}
-            </span>
-            <button
-              type="button"
-              className="viewer-page-arrow"
-              onClick={() => navigationRef.current.goToNext()}
-              disabled={currentPage >= pageCount}
-              aria-label="Next page"
-            >
-              <ChevronIcon direction="right" />
-            </button>
+      <header className="viewer-header">
+        <div className="viewer-toolbar">
+          <div className="viewer-toolbar-start">
+            <Link to="/">&larr; Catalog</Link>
+            {pdfs.length > 0 && (
+              <PdfLinkList pdfs={pdfs} currentFile={filename} />
+            )}
           </div>
-        )}
-        <div className="viewer-toolbar-side viewer-toolbar-end">
-          <span className="viewer-title">{displayName ?? filename}</span>
-          <a href={url} download={filename}>
-            Download
-          </a>
+          {status === 'ready' && pageCount > 0 && (
+            <div className="viewer-page-nav">
+              <button
+                type="button"
+                className="viewer-page-arrow"
+                onClick={() => navigationRef.current.goToPrev()}
+                disabled={currentPage <= 1}
+                aria-label="Previous page"
+              >
+                <ChevronIcon direction="left" />
+              </button>
+              <span className="viewer-page-indicator">
+                {currentPage} / {pageCount}
+              </span>
+              <button
+                type="button"
+                className="viewer-page-arrow"
+                onClick={() => navigationRef.current.goToNext()}
+                disabled={currentPage >= pageCount}
+                aria-label="Next page"
+              >
+                <ChevronIcon direction="right" />
+              </button>
+            </div>
+          )}
+          <div className="viewer-toolbar-end">
+            <span className="viewer-title">{pieceTitle ?? displayName ?? filename}</span>
+            <a href={url} download={filename}>
+              Download
+            </a>
+          </div>
         </div>
-      </div>
+      </header>
       <div className="viewer-content" ref={containerRef}>
         {status === 'loading' && <p className="viewer-status">Loading…</p>}
         {status === 'error' && (

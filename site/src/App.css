@@ -169,6 +169,13 @@ body {
   background: var(--color-link-bg-hover);
 }
 
+.pdf-link-active,
+.pdf-link-active:hover {
+  color: var(--color-surface);
+  background: var(--color-link-text);
+  border-color: var(--color-link-text);
+}
+
 .external-link {
   display: inline-flex;
   align-items: center;
@@ -198,37 +205,40 @@ body {
   height: 100vh;
 }
 
-.viewer-toolbar {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
+.viewer-header {
+  flex-shrink: 0;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border-light);
-  flex-shrink: 0;
 }
 
-.viewer-toolbar-side {
+.viewer-toolbar {
   display: flex;
   align-items: center;
   gap: 1rem;
-  min-width: 0;
+  padding: 0.75rem 1rem;
 }
 
 .viewer-toolbar-start {
-  justify-self: start;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
 .viewer-toolbar-end {
-  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+  min-width: 0;
 }
 
 .viewer-page-nav {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  justify-self: center;
+  flex-shrink: 0;
 }
 
 .viewer-page-indicator {

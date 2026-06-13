@@ -39,7 +39,9 @@
             { "label": "guitar 4", "file": "fools_four.pdf" }
           ],
           "links": [
-            { "label": "recording", "url": "https://www.youtube.com/watch?v=unBusSodF70" }
+            { "label": "demo", "url": "https://www.youtube.com/watch?v=unBusSodF70" },
+			{ "label": "NJGO @ Carnegie", "url": "https://youtu.be/gnOVKuNfFKA?si=liqptxOeu-bRjtNr"},
+			{ "label": "Gauteng Guitar Quartet", "url": "https://www.youtube.com/watch?v=Bg8iDzViULk"}
           ]
         },
         {
@@ -111,7 +113,10 @@
             { "label": "guitar 2", "file": "cancion_y_danza_1_two.pdf" },
             { "label": "guitar 3", "file": "cancion_y_danza_1_three.pdf" },
             { "label": "guitar 4", "file": "cancion_y_danza_1_four.pdf" }
-          ]
+          ],
+		  "links": [
+			{ "label": "Gauteng Guitar Quartet", "url": "https://www.youtube.com/watch?v=Nzz6KL0N-lY" }
+		  ]
         }
       ]
     },

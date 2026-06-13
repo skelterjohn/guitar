@@ -15,7 +15,7 @@ export default function CompositionCard({ piece }) {
           ))}
         </div>
       )}
-      <div className="composition-links">
+      <div className="pdf-links">
         {piece.pdfs.map((pdf) => (
           <Link
             key={pdf.file}
@@ -25,19 +25,23 @@ export default function CompositionCard({ piece }) {
             {pdf.label}
           </Link>
         ))}
-        {links.map((link) => (
-          <a
-            key={link.url}
-            className="external-link"
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {link.label}
-            <ExternalLinkIcon />
-          </a>
-        ))}
       </div>
+      {links.length > 0 && (
+        <div className="external-links">
+          {links.map((link) => (
+            <a
+              key={link.url}
+              className="external-link"
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {link.label}
+              <ExternalLinkIcon />
+            </a>
+          ))}
+        </div>
+      )}
     </article>
   );
 }

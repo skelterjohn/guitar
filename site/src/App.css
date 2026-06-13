@@ -113,10 +113,17 @@ body {
   margin-bottom: 0;
 }
 
-.composition-links {
+.pdf-links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.external-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .pdf-link {

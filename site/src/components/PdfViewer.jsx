@@ -30,12 +30,42 @@ export default function PdfViewer({ filename, pdfs = [] }) {
   const toolbarStartRef = useRef(null);
   const toolbarEndRef = useRef(null);
   const pageNavRef = useRef(null);
+  const scrollToPageRef = useRef(() => {});
+  const headerHiddenRef = useRef(false);
+  const currentPageRef = useRef(1);
   const [pageNavLeft, setPageNavLeft] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [headerHidden, setHeaderHidden] = useState(false);
+
+  headerHiddenRef.current = headerHidden;
+  currentPageRef.current = currentPage;
+
+  const scrollToPageTop = (index) => {
+    const container = containerRef.current;
+    const canvas = canvasRefs.current[index];
+    const slot = slotRefs.current[index];
+    const target = canvas ?? slot;
+    if (!container || !target) return;
+
+    const applyScroll = () => {
+      const top =
+        target.getBoundingClientRect().top -
+        container.getBoundingClientRect().top +
+        container.scrollTop;
+      container.scrollTop = top;
+    };
+
+    applyScroll();
+    requestAnimationFrame(() => {
+      applyScroll();
+      requestAnimationFrame(applyScroll);
+    });
+  };
+
+  scrollToPageRef.current = scrollToPageTop;
 
   useEffect(() => {
     let cancelled = false;
@@ -188,6 +218,16 @@ export default function PdfViewer({ filename, pdfs = [] }) {
       }
 
       if (
+        !cancelled &&
+        renderId === renderIdRef.current &&
+        headerHiddenRef.current
+      ) {
+        requestAnimationFrame(() => {
+          scrollToPageRef.current(currentPageRef.current - 1);
+        });
+      }
+
+      if (
         renderedCount === 0 &&
         !cancelled &&
         renderId === renderIdRef.current &&
@@ -242,10 +282,10 @@ export default function PdfViewer({ filename, pdfs = [] }) {
     const container = containerRef.current;
     if (!container) return;
 
-    const getSlotTop = (slot) => {
+    const getElementScrollTop = (element) => {
       const containerRect = container.getBoundingClientRect();
-      const slotRect = slot.getBoundingClientRect();
-      return slotRect.top - containerRect.top + container.scrollTop;
+      const elementRect = element.getBoundingClientRect();
+      return elementRect.top - containerRect.top + container.scrollTop;
     };
 
     const getCurrentPageIndex = () => {
@@ -253,8 +293,10 @@ export default function PdfViewer({ filename, pdfs = [] }) {
       let current = 0;
 
       for (let index = 0; index < pageCount; index += 1) {
+        const canvas = canvasRefs.current[index];
         const slot = slotRefs.current[index];
-        if (slot && getSlotTop(slot) <= anchor) {
+        const target = canvas ?? slot;
+        if (target && getElementScrollTop(target) <= anchor) {
           current = index;
         }
       }
@@ -267,9 +309,7 @@ export default function PdfViewer({ filename, pdfs = [] }) {
     };
 
     const scrollToPage = (index) => {
-      const slot = slotRefs.current[index];
-      if (!slot) return;
-      container.scrollTo({ top: getSlotTop(slot), behavior: 'auto' });
+      scrollToPageRef.current(index);
     };
 
     const goToPrev = () => {
@@ -327,6 +367,9 @@ export default function PdfViewer({ filename, pdfs = [] }) {
 
     const resizeObserver = new ResizeObserver(() => {
       updateCurrentPage();
+      if (headerHiddenRef.current) {
+        scrollToPageRef.current(currentPageRef.current - 1);
+      }
     });
     resizeObserver.observe(container);
 
@@ -336,6 +379,11 @@ export default function PdfViewer({ filename, pdfs = [] }) {
       resizeObserver.disconnect();
     };
   }, [status, pageCount]);
+
+  useLayoutEffect(() => {
+    if (!headerHidden || status !== 'ready' || pageCount === 0) return;
+    scrollToPageRef.current(currentPageRef.current - 1);
+  }, [headerHidden, status, pageCount]);
 
   useLayoutEffect(() => {
     if (status !== 'ready' || pageCount === 0) {
@@ -458,7 +506,10 @@ export default function PdfViewer({ filename, pdfs = [] }) {
           <ChevronIcon direction={headerHidden ? 'down' : 'up'} />
         </button>
       </div>
-      <div className="viewer-content" ref={containerRef}>
+      <div
+        className={`viewer-content${headerHidden ? ' is-header-hidden' : ''}`}
+        ref={containerRef}
+      >
         {status === 'loading' && <p className="viewer-status">Loading…</p>}
         {status === 'error' && (
           <p className="viewer-status viewer-status-error">{errorMessage}</p>

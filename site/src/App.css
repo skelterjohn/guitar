@@ -373,6 +373,10 @@ body {
   background: var(--color-viewer-bg);
 }
 
+.viewer-content.is-header-hidden .viewer-page-slot {
+  align-items: flex-start;
+}
+
 .viewer-page-slot {
   display: flex;
   align-items: center;

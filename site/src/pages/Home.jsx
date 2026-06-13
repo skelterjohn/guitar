@@ -1,4 +1,4 @@
-import catalog from '../data/catalog.json';
+import catalog from '../data/catalog.js';
 import Catalog from '../components/Catalog.jsx';
 
 export default function Home() {

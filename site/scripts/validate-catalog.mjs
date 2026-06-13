@@ -1,13 +1,14 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, '../..');
 const pdfDir = join(repoRoot, 'pdf');
-const catalogPath = join(__dirname, '../src/data/catalog.json');
+const catalogPath = join(__dirname, '../src/data/catalog.yaml');
 
-const catalog = JSON.parse(readFileSync(catalogPath, 'utf8'));
+const catalog = yaml.load(readFileSync(catalogPath, 'utf8'));
 const referenced = new Set();
 
 for (const section of catalog.sections) {

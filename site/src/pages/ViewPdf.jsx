@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import catalog from '../data/catalog.json';
+import catalog from '../data/catalog.js';
 import PdfViewer from '../components/PdfViewer.jsx';
 
 function findPdfContext(filename) {

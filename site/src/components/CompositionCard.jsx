@@ -1,12 +1,12 @@
 import ExternalLinkIcon from './ExternalLinkIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
 
-export default function CompositionCard({ piece }) {
+export default function CompositionCard({ piece, id }) {
   const paragraphs = piece.description?.split('\n\n').filter(Boolean) ?? [];
   const links = piece.links ?? [];
 
   return (
-    <article className="composition-card">
+    <article id={id} className="composition-card">
       <h3>{piece.title}</h3>
       {paragraphs.length > 0 && (
         <div className="composition-description">

@@ -6,9 +6,13 @@ function resolveUrl(url) {
   return new URL(url, window.location.href).href;
 }
 
-function pdfLabel(resolvedUrl) {
-  const { pathname } = new URL(resolvedUrl);
-  return decodeURIComponent(pathname.split('/').pop() || resolvedUrl);
+function pdfLogLabel(resolvedUrl) {
+  const parsed = new URL(resolvedUrl);
+  const name = decodeURIComponent(
+    parsed.pathname.split('/').pop() || resolvedUrl,
+  );
+  const hash = parsed.searchParams.get('v') ?? 'no hash';
+  return `${name} (${hash})`;
 }
 
 async function readFromCacheApi(url) {
@@ -18,13 +22,13 @@ async function readFromCacheApi(url) {
   const response = await cache.match(url);
   if (!response) return null;
 
-  console.log(`[pdf] cache hit (storage): ${pdfLabel(url)}`);
+  console.log(`[pdf] cache hit (storage): ${pdfLogLabel(url)}`);
   const buffer = await response.arrayBuffer();
   return new Uint8Array(buffer);
 }
 
 async function fetchAndStore(url) {
-  console.log(`[pdf] downloading: ${pdfLabel(url)}`);
+  console.log(`[pdf] downloading: ${pdfLogLabel(url)}`);
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to load PDF (${response.status})`);
@@ -57,7 +61,7 @@ export async function fetchPdfBytes(url) {
 
   const cached = memoryCache.get(resolved);
   if (cached) {
-    console.log(`[pdf] cache hit (memory): ${pdfLabel(resolved)}`);
+    console.log(`[pdf] cache hit (memory): ${pdfLogLabel(resolved)}`);
     return cached.slice();
   }
 

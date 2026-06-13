@@ -1,3 +1,22 @@
+:root {
+  --color-bg: #f1f5f9;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-heading: #334155;
+  --color-border: #cbd5e1;
+  --color-border-light: #e2e8f0;
+  --color-surface: #ffffff;
+  --color-link-bg: #dbeafe;
+  --color-link-bg-hover: #bfdbfe;
+  --color-link-border: #93c5fd;
+  --color-link-text: #1e40af;
+  --color-external-bg: #f8fafc;
+  --color-external-bg-hover: #e2e8f0;
+  --color-external-border: #94a3b8;
+  --color-external-text: #334155;
+  --color-viewer-bg: #334155;
+}
+
 *,
 *::before,
 *::after {
@@ -8,8 +27,8 @@ body {
   margin: 0;
   font-family: Georgia, 'Times New Roman', serif;
   line-height: 1.5;
-  color: #2c2416;
-  background: #f7f3eb;
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
 .app {
@@ -24,7 +43,7 @@ body {
 
 .page-header {
   margin-bottom: 2rem;
-  border-bottom: 1px solid #d4c9b8;
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 1rem;
 }
 
@@ -46,16 +65,16 @@ body {
 }
 
 .repo-label {
-  color: #6b5d4a;
+  color: var(--color-text-muted);
 }
 
 .repo-link {
-  color: #6b5d4a;
+  color: var(--color-text-muted);
   text-decoration: none;
 }
 
 .repo-link:hover {
-  color: #4a3f30;
+  color: var(--color-link-text);
   text-decoration: underline;
 }
 
@@ -64,11 +83,12 @@ body {
   font-size: 1.75rem;
   font-weight: normal;
   letter-spacing: 0.02em;
+  color: var(--color-text-heading);
 }
 
 .page-header p {
   margin: 0;
-  color: #6b5d4a;
+  color: var(--color-text-muted);
   font-size: 0.95rem;
 }
 
@@ -82,12 +102,12 @@ body {
   font-weight: normal;
   text-transform: lowercase;
   letter-spacing: 0.04em;
-  color: #4a3f30;
+  color: var(--color-text-heading);
 }
 
 .composition-card {
-  background: #fff;
-  border: 1px solid #e0d6c8;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
   border-radius: 4px;
   padding: 1rem 1.15rem;
   margin-bottom: 0.75rem;
@@ -97,6 +117,7 @@ body {
   margin: 0 0 0.65rem;
   font-size: 1.05rem;
   font-weight: normal;
+  color: var(--color-text-heading);
 }
 
 .composition-description {
@@ -106,7 +127,7 @@ body {
 .composition-description p {
   margin: 0 0 0.65rem;
   font-size: 0.95rem;
-  color: #6b5d4a;
+  color: var(--color-text-muted);
 }
 
 .composition-description p:last-child {
@@ -132,14 +153,14 @@ body {
   font-size: 0.875rem;
   font-family: system-ui, sans-serif;
   text-decoration: none;
-  color: #3d3428;
-  background: #ede6da;
-  border: 1px solid #d4c9b8;
+  color: var(--color-link-text);
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-link-border);
   border-radius: 3px;
 }
 
 .pdf-link:hover {
-  background: #e2d9ca;
+  background: var(--color-link-bg-hover);
 }
 
 .external-link {
@@ -150,14 +171,14 @@ body {
   font-size: 0.875rem;
   font-family: system-ui, sans-serif;
   text-decoration: none;
-  color: #3d3428;
-  background: #f3efe8;
-  border: 1px solid #d4c9b8;
+  color: var(--color-external-text);
+  background: var(--color-external-bg);
+  border: 1px solid var(--color-external-border);
   border-radius: 3px;
 }
 
 .external-link:hover {
-  background: #e8e1d6;
+  background: var(--color-external-bg-hover);
 }
 
 .external-link-icon {
@@ -176,13 +197,13 @@ body {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: #fff;
-  border-bottom: 1px solid #e0d6c8;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-light);
   flex-shrink: 0;
 }
 
 .viewer-toolbar a {
-  color: #4a3f30;
+  color: var(--color-link-text);
   text-decoration: none;
   font-family: system-ui, sans-serif;
   font-size: 0.9rem;
@@ -195,7 +216,7 @@ body {
 .viewer-title {
   flex: 1;
   font-size: 0.95rem;
-  color: #6b5d4a;
+  color: var(--color-text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -205,5 +226,5 @@ body {
   flex: 1;
   border: none;
   width: 100%;
-  background: #525659;
+  background: var(--color-viewer-bg);
 }

@@ -154,8 +154,8 @@ export default function PdfViewer({ filename, displayName }) {
       <div className="viewer-toolbar">
         <Link to="/">&larr; Catalog</Link>
         <span className="viewer-title">{displayName ?? filename}</span>
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          Open in new tab
+        <a href={url} download={filename}>
+          Download
         </a>
       </div>
       <div className="viewer-content" ref={containerRef}>

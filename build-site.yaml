@@ -2,7 +2,7 @@
 #
 # Prerequisites (one-time GCP setup):
 #   - GCS bucket with public read (allUsers: storage.objectViewer)
-#   - Bucket CORS allowing GET/HEAD from your Cloud Run URL and custom domain
+#   - nginx in the site image proxies /pdf/ to the bucket (no browser CORS needed)
 #   - Artifact Registry repo for container images
 #   - Cloud Build service account: storage.objectAdmin on bucket, Cloud Run Admin, AR Writer
 #
@@ -11,18 +11,18 @@
 #   _AR_REPO       — e.g. us-east4-docker.pkg.dev/PROJECT/guitar
 #   _SERVICE       — Cloud Run service name, e.g. guitar-site
 #   _PDF_BUCKET    — GCS bucket name (without gs://)
-#   _PDF_BASE_URL  — public URL prefix for PDFs, e.g. https://storage.googleapis.com/BUCKET
+#   _PDF_BASE_URL  — same-origin PDF path proxied to GCS, e.g. /pdf
 #
 # Example:
 #   gcloud builds submit --config=build-site.yaml \
-#     --substitutions=_REGION=us-east4,_AR_REPO=us-east4-docker.pkg.dev/PROJECT/guitar,_SERVICE=guitar-site,_PDF_BUCKET=YOUR_BUCKET,_PDF_BASE_URL=https://storage.googleapis.com/YOUR_BUCKET
+#     --substitutions=...,_PDF_BASE_URL=/pdf
 
 substitutions:
   _REGION: us-east4
   _AR_REPO: us-east4-docker.pkg.dev/skelterjohnguitar/guitar
   _SERVICE: guitar-site
   _PDF_BUCKET: skelterjohnguitar-pdf
-  _PDF_BASE_URL: https://storage.googleapis.com/skelterjohnguitar-pdf
+  _PDF_BASE_URL: /pdf
 
 steps:
   - name: gcr.io/cloud-builders/gsutil

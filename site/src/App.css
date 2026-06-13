@@ -228,9 +228,35 @@ body {
   white-space: nowrap;
 }
 
-.viewer-frame {
+.viewer-content {
   flex: 1;
-  border: none;
-  width: 100%;
+  overflow-y: auto;
   background: var(--color-viewer-bg);
+}
+
+.viewer-page-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.viewer-page-slot canvas {
+  display: block;
+  box-shadow: 0 2px 12px rgb(15 23 42 / 35%);
+}
+
+.viewer-status {
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  text-align: center;
+}
+
+.viewer-status-error {
+  color: #fca5a5;
 }

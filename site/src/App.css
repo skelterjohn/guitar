@@ -436,6 +436,11 @@ body {
   flex: 1;
   overflow-y: auto;
   background: var(--color-viewer-bg);
+  touch-action: pan-x pan-y;
+}
+
+.viewer-zoom-surface {
+  width: 100%;
 }
 
 .viewer-content.is-header-hidden .viewer-page-slot {

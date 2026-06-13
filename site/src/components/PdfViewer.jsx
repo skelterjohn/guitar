@@ -39,9 +39,14 @@ export default function PdfViewer({ filename, pdfs = [] }) {
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [headerHidden, setHeaderHidden] = useState(false);
+  const [pdfZoom, setPdfZoom] = useState(1);
+
+  const pdfZoomRef = useRef(1);
+  const isPinchingRef = useRef(false);
 
   headerHiddenRef.current = headerHidden;
   currentPageRef.current = currentPage;
+  pdfZoomRef.current = pdfZoom;
 
   const scrollToPageTop = (index) => {
     const container = containerRef.current;
@@ -74,6 +79,7 @@ export default function PdfViewer({ filename, pdfs = [] }) {
     setStatus('loading');
     setPageCount(0);
     setCurrentPage(1);
+    setPdfZoom(1);
     canvasRefs.current = [];
     slotRefs.current = [];
 
@@ -379,6 +385,7 @@ export default function PdfViewer({ filename, pdfs = [] }) {
     const onPointerUp = (event) => {
       if (pageCount <= 1 || tapStartX == null || tapStartY == null) return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if (isPinchingRef.current) return;
 
       const dx = Math.abs(event.clientX - tapStartX);
       const dy = Math.abs(event.clientY - tapStartY);
@@ -421,6 +428,71 @@ export default function PdfViewer({ filename, pdfs = [] }) {
       resizeObserver.disconnect();
     };
   }, [status, pageCount]);
+
+  useEffect(() => {
+    if (status !== 'ready') return;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const MIN_ZOOM = 1;
+    const MAX_ZOOM = 4;
+
+    const clampZoom = (value) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
+
+    const getTouchDistance = (touches) => {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(dx, dy);
+    };
+
+    let pinchStartDistance = 0;
+    let pinchStartZoom = 1;
+
+    const onTouchStart = (event) => {
+      if (event.touches.length !== 2) return;
+      isPinchingRef.current = true;
+      pinchStartDistance = getTouchDistance(event.touches);
+      pinchStartZoom = pdfZoomRef.current;
+    };
+
+    const onTouchMove = (event) => {
+      if (event.touches.length !== 2 || pinchStartDistance === 0) return;
+      event.preventDefault();
+      const distance = getTouchDistance(event.touches);
+      setPdfZoom(
+        clampZoom(pinchStartZoom * (distance / pinchStartDistance)),
+      );
+    };
+
+    const onTouchEnd = (event) => {
+      if (event.touches.length >= 2) return;
+      pinchStartDistance = 0;
+      if (event.touches.length === 0) {
+        isPinchingRef.current = false;
+      }
+    };
+
+    const onWheel = (event) => {
+      if (!event.ctrlKey) return;
+      event.preventDefault();
+      setPdfZoom((zoom) => clampZoom(zoom - event.deltaY * 0.001));
+    };
+
+    container.addEventListener('touchstart', onTouchStart, { passive: true });
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    container.addEventListener('touchend', onTouchEnd, { passive: true });
+    container.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    container.addEventListener('wheel', onWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove', onTouchMove);
+      container.removeEventListener('touchend', onTouchEnd);
+      container.removeEventListener('touchcancel', onTouchEnd);
+      container.removeEventListener('wheel', onWheel);
+    };
+  }, [status]);
 
   useLayoutEffect(() => {
     if (!headerHidden || status !== 'ready' || pageCount === 0) return;
@@ -570,22 +642,25 @@ export default function PdfViewer({ filename, pdfs = [] }) {
         {status === 'error' && (
           <p className="viewer-status viewer-status-error">{errorMessage}</p>
         )}
-        {status === 'ready' &&
-          Array.from({ length: pageCount }, (_, index) => (
-            <div
-              className="viewer-page-slot"
-              key={index}
-              ref={(element) => {
-                slotRefs.current[index] = element;
-              }}
-            >
-              <canvas
+        {status === 'ready' && (
+          <div className="viewer-zoom-surface" style={{ zoom: pdfZoom }}>
+            {Array.from({ length: pageCount }, (_, index) => (
+              <div
+                className="viewer-page-slot"
+                key={index}
                 ref={(element) => {
-                  canvasRefs.current[index] = element;
+                  slotRefs.current[index] = element;
                 }}
-              />
-            </div>
-          ))}
+              >
+                <canvas
+                  ref={(element) => {
+                    canvasRefs.current[index] = element;
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

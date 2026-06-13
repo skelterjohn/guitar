@@ -6,6 +6,11 @@ function resolveUrl(url) {
   return new URL(url, window.location.href).href;
 }
 
+function pdfLabel(resolvedUrl) {
+  const { pathname } = new URL(resolvedUrl);
+  return decodeURIComponent(pathname.split('/').pop() || resolvedUrl);
+}
+
 async function readFromCacheApi(url) {
   if (!('caches' in globalThis)) return null;
 
@@ -13,11 +18,13 @@ async function readFromCacheApi(url) {
   const response = await cache.match(url);
   if (!response) return null;
 
+  console.log(`[pdf] cache hit (storage): ${pdfLabel(url)}`);
   const buffer = await response.arrayBuffer();
   return new Uint8Array(buffer);
 }
 
 async function fetchAndStore(url) {
+  console.log(`[pdf] downloading: ${pdfLabel(url)}`);
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to load PDF (${response.status})`);
@@ -49,7 +56,10 @@ export async function fetchPdfBytes(url) {
   const resolved = resolveUrl(url);
 
   const cached = memoryCache.get(resolved);
-  if (cached) return cached.slice();
+  if (cached) {
+    console.log(`[pdf] cache hit (memory): ${pdfLabel(resolved)}`);
+    return cached.slice();
+  }
 
   let pending = inflight.get(resolved);
   if (!pending) {

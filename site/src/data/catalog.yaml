@@ -133,6 +133,12 @@ sections:
         links:
           - label: recording
             url: https://youtu.be/Cpl9k0rCWcI
+      - title: Lullaby No. 1
+        description: >-
+          I wrote this to play with my son when he was learning guitar.
+        pdfs:
+          - label: score
+            file: lullaby_1.pdf
   - id: arrangements
     title: Arrangements
     pieces:
@@ -223,3 +229,16 @@ sections:
             url: https://www.youtube.com/watch?v=Gbnjhe-nD18
           - label: composer's recording
             url: https://soundcloud.com/francisco-burgos/prelude-2-nocturno-by
+      - title: Allegro in E minor by Yassimba
+        description: >-
+          Transcribed from tabs from the composer.
+        pdfs:
+          - label: score
+            file: allegro_Em.pdf
+      - title: Memory by Toko Kanno
+        description: >-
+          From Cowboy Bebop.
+        pdfs:
+          - label: score
+            file: memory.pdf
+      

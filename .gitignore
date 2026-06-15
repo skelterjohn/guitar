@@ -2,3 +2,4 @@
 site/node_modules/
 site/dist/
 site/src/data/pdf-hashes.json
+site/public/sitemap.xml

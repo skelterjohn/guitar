@@ -8,6 +8,7 @@
     "predev": "npm run enrich",
     "enrich": "node scripts/enrich-catalog.mjs",
     "validate": "node scripts/validate-catalog.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },

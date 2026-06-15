@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildHomeJsonLd } from '../src/homeJsonLd.js';
-import { siteName } from '../src/seo.js';
+import { siteHeading } from '../src/seo.js';
 import { pieceId } from '../src/utils/pieceId.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -96,7 +96,7 @@ ${renderToc(catalog.sections)}
   <script type="application/ld+json">${jsonLd}</script>
   <header class="page-header">
     <div class="page-header-top">
-      <h1>${escapeHtml(siteName)}</h1>
+      <h1>${escapeHtml(siteHeading)}</h1>
       <div class="repo-source">
         <span class="repo-label">pdfs and site built from</span>
         <a class="repo-link" href="https://github.com/skelterjohn/guitar" rel="noopener noreferrer">github.com/skelterjohn/guitar</a>

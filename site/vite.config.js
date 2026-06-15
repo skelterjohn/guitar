@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
-import { defaultDescription, siteName } from './src/seo.js';
+import { defaultDescription, siteTitle } from './src/seo.js';
 
 const gcsPdfOrigin = 'https://storage.googleapis.com/skelterjohnguitar-pdf';
 
@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
-        name: siteName,
+        name: siteTitle,
         short_name: 'Guitar scores',
         description: defaultDescription,
         theme_color: '#f1f5f9',

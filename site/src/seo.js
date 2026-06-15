@@ -1,10 +1,11 @@
-export const siteName = 'guitar scores @ skelterjohn';
+export const siteTitle = 'skj :: guitar';
+export const siteHeading = 'skelterjohn :: guitar';
 export const siteOrigin = 'https://guitar.skelterjohn.me';
 export const defaultDescription =
   'Classical guitar scores — original compositions, arrangements, and transcriptions by skelterjohn. Free PDFs.';
 
 export function pageTitle(name) {
-  return name === siteName ? siteName : `${name} — ${siteName}`;
+  return name === siteTitle ? siteTitle : `${name} — ${siteTitle}`;
 }
 
 export function viewPageUrl(filename) {

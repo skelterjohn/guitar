@@ -4,11 +4,11 @@ import JsonLd from '../components/JsonLd.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { buildHomeJsonLd } from '../homeJsonLd.js';
-import { defaultDescription, siteName, siteOrigin } from '../seo.js';
+import { defaultDescription, siteHeading, siteOrigin, siteTitle } from '../seo.js';
 
 export default function Home() {
   usePageMeta({
-    title: siteName,
+    title: siteTitle,
     description: defaultDescription,
     url: `${siteOrigin}/`,
   });
@@ -20,7 +20,7 @@ export default function Home() {
       <main className="page">
         <header className="page-header">
           <div className="page-header-top">
-            <h1>{siteName}</h1>
+            <h1>{siteHeading}</h1>
             <div className="repo-source">
               <span className="repo-label">pdfs and site built from</span>
               <a

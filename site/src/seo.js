@@ -1,4 +1,4 @@
-export const siteName = "skelterjohn's guitar scores";
+export const siteName = 'guitar scores @ skelterjohn';
 export const siteOrigin = 'https://guitar.skelterjohn.me';
 export const defaultDescription =
   'Classical guitar scores — original compositions, arrangements, and transcriptions by skelterjohn. Free PDFs.';

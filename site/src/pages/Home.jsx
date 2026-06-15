@@ -20,7 +20,7 @@ export default function Home() {
       <main className="page">
         <header className="page-header">
           <div className="page-header-top">
-            <h1>skelterjohn's guitar scores</h1>
+            <h1>{siteName}</h1>
             <div className="repo-source">
               <span className="repo-label">pdfs and site built from</span>
               <a

@@ -1,8 +1,16 @@
 import catalog from '../data/catalog.js';
 import Catalog from '../components/Catalog.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
+import usePageMeta from '../hooks/usePageMeta.js';
+import { defaultDescription, siteName, siteOrigin } from '../seo.js';
 
 export default function Home() {
+  usePageMeta({
+    title: siteName,
+    description: defaultDescription,
+    url: `${siteOrigin}/`,
+  });
+
   return (
     <div className="page-shell">
       <TableOfContents sections={catalog.sections} />

@@ -10,6 +10,7 @@
     "validate": "node scripts/validate-catalog.mjs",
     "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "vite build",
+    "postbuild": "node scripts/prerender-home.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

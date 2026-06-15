@@ -8,7 +8,8 @@
     "predev": "npm run enrich",
     "enrich": "node scripts/enrich-catalog.mjs",
     "validate": "node scripts/validate-catalog.mjs",
-    "prebuild": "node scripts/generate-sitemap.mjs",
+    "pwa-icons": "node scripts/generate-pwa-icons.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-pwa-icons.mjs",
     "build": "vite build",
     "postbuild": "node scripts/prerender-home.mjs",
     "preview": "vite preview"
@@ -22,6 +23,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.5.2",
-    "vite": "^6.3.5"
+    "sharp": "^0.35.1",
+    "vite": "^6.3.5",
+    "vite-plugin-pwa": "^1.3.0"
   }
 }

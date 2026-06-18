@@ -15,6 +15,14 @@ function configureWorker() {
 
 configureWorker();
 
+function pdfFileForLabel(piecePdfs, preferredLabel) {
+  if (preferredLabel) {
+    const match = piecePdfs.find((pdf) => pdf.label === preferredLabel);
+    if (match) return match.file;
+  }
+  return piecePdfs[0]?.file;
+}
+
 export default function PdfViewer({
   filename,
   pdfHash,
@@ -25,6 +33,7 @@ export default function PdfViewer({
   viewState,
 }) {
   const url = pdfUrl(filename, pdfHash);
+  const currentLabel = pdfs.find((pdf) => pdf.file === filename)?.label;
   const containerRef = useRef(null);
   const canvasRefs = useRef([]);
   const slotRefs = useRef([]);
@@ -682,16 +691,21 @@ export default function PdfViewer({
           <footer className="viewer-footer">
             <div className="viewer-toolbar viewer-footer-toolbar">
               <div className="viewer-section-nav">
-                {sectionPieces.map((entry) => (
+                {sectionPieces.map((entry) => {
+                  const file = pdfFileForLabel(entry.pdfs, currentLabel);
+                  if (!file) return null;
+
+                  return (
                   <Link
-                    key={entry.file}
+                    key={entry.title}
                     className="pdf-link"
-                    to={`/view/${encodeURIComponent(entry.file)}`}
+                    to={`/view/${encodeURIComponent(file)}`}
                     state={viewState}
                   >
                     {entry.title}
                   </Link>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </footer>

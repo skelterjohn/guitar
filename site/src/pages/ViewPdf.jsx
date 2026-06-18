@@ -39,9 +39,9 @@ function sectionSiblings(section, currentPiece) {
     .filter((piece) => piece !== currentPiece)
     .map((piece) => ({
       title: piece.title,
-      file: piece.pdfs[0]?.file,
+      pdfs: piece.pdfs,
     }))
-    .filter((entry) => entry.file);
+    .filter((entry) => entry.pdfs[0]?.file);
 }
 
 function viewerPageName(piece, pdf, filename) {

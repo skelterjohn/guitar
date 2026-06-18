@@ -58,6 +58,7 @@ export default function PdfViewer({
   const toolbarEndRef = useRef(null);
   const pageNavRef = useRef(null);
   const scrollToPageRef = useRef(() => {});
+  const scrollToTopPendingRef = useRef(true);
   const headerHiddenRef = useRef(false);
   const currentPageRef = useRef(1);
   const [pageNavLeft, setPageNavLeft] = useState(null);
@@ -100,6 +101,15 @@ export default function PdfViewer({
 
   scrollToPageRef.current = scrollToPageTop;
 
+  useLayoutEffect(() => {
+    scrollToTopPendingRef.current = true;
+    setCurrentPage(1);
+    const container = containerRef.current;
+    if (container) {
+      container.scrollTop = 0;
+    }
+  }, [url]);
+
   useEffect(() => {
     let cancelled = false;
     let loadingTask = null;
@@ -108,8 +118,12 @@ export default function PdfViewer({
     setPageCount(0);
     setCurrentPage(1);
     setPdfZoom(1);
+    scrollToTopPendingRef.current = true;
     canvasRefs.current = [];
     slotRefs.current = [];
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
 
     const loadDocument = async () => {
       await workerIdle;
@@ -254,13 +268,15 @@ export default function PdfViewer({
         if (cancelled || renderId !== renderIdRef.current) return;
       }
 
-      if (
-        !cancelled &&
-        renderId === renderIdRef.current &&
-        headerHiddenRef.current
-      ) {
+      if (!cancelled && renderId === renderIdRef.current) {
         requestAnimationFrame(() => {
-          scrollToPageRef.current(currentPageRef.current - 1);
+          if (scrollToTopPendingRef.current) {
+            scrollToTopPendingRef.current = false;
+            scrollToPageRef.current(0);
+            setCurrentPage(1);
+          } else if (headerHiddenRef.current) {
+            scrollToPageRef.current(currentPageRef.current - 1);
+          }
         });
       }
 

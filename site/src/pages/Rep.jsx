@@ -2,15 +2,13 @@ import repertoire from '../data/repertoire.js';
 import Catalog from '../components/Catalog.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { repDescription, repHeading, repManifest, repTitle, siteOrigin } from '../seo.js';
-
+import { repDescription, repHeading, repPath, repTitle, repUrl } from '../seo.js';
 export default function Rep() {
   usePageMeta({
     title: repTitle,
     description: repDescription,
-    url: `${siteOrigin}/rep`,
+    url: repUrl,
     noindex: true,
-    manifest: repManifest,
   });
 
   return (
@@ -34,7 +32,7 @@ export default function Rep() {
           </div>
           <p>{repDescription}</p>
         </header>
-        <Catalog sections={repertoire.sections} viewState={{ from: '/rep' }} />
+        <Catalog sections={repertoire.sections} viewState={{ from: repPath }} />
       </main>
     </div>
   );

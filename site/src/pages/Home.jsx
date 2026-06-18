@@ -4,14 +4,13 @@ import JsonLd from '../components/JsonLd.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { buildHomeJsonLd } from '../homeJsonLd.js';
-import { defaultDescription, siteHeading, siteManifest, siteOrigin, siteTitle } from '../seo.js';
+import { catalogUrl, defaultDescription, siteHeading, siteTitle } from '../seo.js';
 
 export default function Home() {
   usePageMeta({
     title: siteTitle,
     description: defaultDescription,
-    url: `${siteOrigin}/`,
-    manifest: siteManifest,
+    url: catalogUrl,
   });
 
   return (

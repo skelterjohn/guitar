@@ -11,7 +11,7 @@
     "pwa-icons": "node scripts/generate-pwa-icons.mjs",
     "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-pwa-icons.mjs && node scripts/generate-rep-manifest.mjs",
     "build": "vite build",
-    "postbuild": "node scripts/prerender-home.mjs",
+    "postbuild": "node scripts/prerender-catalog.mjs && node scripts/fix-pwa-html.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

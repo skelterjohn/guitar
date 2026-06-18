@@ -13,6 +13,7 @@ import {
 } from '../utils/pieceLabelPreference.js';
 import ChevronIcon from './ChevronIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
+import { catalogPath } from '../seo.js';
 
 let workerIdle = Promise.resolve();
 
@@ -29,7 +30,7 @@ export default function PdfViewer({
   pieceKey = null,
   sectionPieces = [],
   sectionTitle = null,
-  backTo = '/',
+  backTo = catalogPath,
   backLabel = 'Catalog',
   viewState,
 }) {

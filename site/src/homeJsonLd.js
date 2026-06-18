@@ -1,4 +1,4 @@
-import { defaultDescription, siteHeading, siteOrigin, viewPageUrl } from './seo.js';
+import { catalogUrl, defaultDescription, siteHeading, viewPageUrl } from './seo.js';
 
 function pieceDescription(piece) {
   return piece.description?.split('\n\n').find(Boolean);
@@ -26,14 +26,14 @@ export function buildHomeJsonLd(catalog) {
     '@graph': [
       {
         '@type': 'WebSite',
-        '@id': `${siteOrigin}/#website`,
+        '@id': `${catalogUrl}#website`,
         name: siteHeading,
-        url: `${siteOrigin}/`,
+        url: catalogUrl,
         description: defaultDescription,
       },
       {
         '@type': 'ItemList',
-        '@id': `${siteOrigin}/#catalog`,
+        '@id': `${catalogUrl}#catalog`,
         name: siteHeading,
         numberOfItems: pieces.length,
         itemListElement: pieces.map((piece, index) => ({

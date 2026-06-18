@@ -4,7 +4,7 @@ import catalog from '../data/catalog.js';
 import repertoire from '../data/repertoire.js';
 import PdfViewer from '../components/PdfViewer.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { pageTitle, repManifest, siteManifest, viewPageUrl } from '../seo.js';
+import { catalogPath, pageTitle, repPath, viewPageUrl } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
 import {
   getPieceLabelPreference,
@@ -62,7 +62,7 @@ export default function ViewPdf() {
   const { filename } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const fromRep = location.state?.from === '/rep';
+  const fromRep = location.state?.from === repPath;
   const decoded = decodeURIComponent(filename);
   const { section, piece, pdf } = findPdf(decoded, fromRep);
   const pieceKey =
@@ -91,7 +91,6 @@ export default function ViewPdf() {
     title: pageTitle(name),
     description,
     url: viewPageUrl(decoded),
-    manifest: fromRep ? repManifest : siteManifest,
   });
 
   return (
@@ -102,9 +101,9 @@ export default function ViewPdf() {
       pieceKey={pieceKey}
       sectionPieces={sectionPiecesForNav(section, piece)}
       sectionTitle={section?.title ?? null}
-      backTo={fromRep ? '/rep' : '/'}
+      backTo={fromRep ? repPath : catalogPath}
       backLabel={fromRep ? 'Repertoire' : 'Catalog'}
-      viewState={fromRep ? { from: '/rep' } : undefined}
+      viewState={fromRep ? { from: repPath } : undefined}
     />
   );
 }

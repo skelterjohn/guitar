@@ -1,13 +1,13 @@
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { repDescription, repHeading } from '../src/seo.js';
+import { repDescription, repHeading, siteOrigin } from '../src/seo.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, '../public/rep.webmanifest');
 
 const manifest = {
-  id: '/rep',
+  id: `${siteOrigin}/rep`,
   name: repHeading,
   short_name: 'rep',
   description: repDescription,

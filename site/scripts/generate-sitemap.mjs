@@ -9,7 +9,7 @@ const catalogPath = join(__dirname, '../src/data/catalog.yaml');
 const outPath = join(__dirname, '../public/sitemap.xml');
 
 const catalog = yaml.load(readFileSync(catalogPath, 'utf8'));
-const urls = new Set([`${siteOrigin}/`]);
+const urls = new Set([`${siteOrigin}/catalog`]);
 
 for (const section of catalog.sections) {
   for (const piece of section.pieces) {

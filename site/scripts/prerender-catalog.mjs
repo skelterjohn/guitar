@@ -8,7 +8,7 @@ import { pieceId } from '../src/utils/pieceId.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const catalogPath = join(__dirname, '../src/data/catalog.yaml');
-const distIndex = join(__dirname, '../dist/index.html');
+const distCatalog = join(__dirname, '../dist/catalog.html');
 
 function escapeHtml(text) {
   return text
@@ -110,13 +110,13 @@ ${renderToc(catalog.sections)}
 }
 
 const catalog = yaml.load(readFileSync(catalogPath, 'utf8'));
-const page = readFileSync(distIndex, 'utf8');
+const page = readFileSync(distCatalog, 'utf8');
 const root = '<div id="root"></div>';
 
 if (!page.includes(root)) {
-  console.error('prerender: expected empty #root in dist/index.html');
+  console.error('prerender: expected empty #root in dist/catalog.html');
   process.exit(1);
 }
 
-writeFileSync(distIndex, page.replace(root, `<div id="root">${renderHome(catalog)}</div>`));
-console.log(`prerender → ${distIndex}`);
+writeFileSync(distCatalog, page.replace(root, `<div id="root">${renderHome(catalog)}</div>`));
+console.log(`prerender → ${distCatalog}`);

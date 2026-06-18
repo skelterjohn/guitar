@@ -10,22 +10,11 @@ function setLink(rel, href) {
   if (el) el.setAttribute('href', href);
 }
 
-function ensureManifest(href) {
-  let el = document.querySelector('link[rel="manifest"]');
-  if (!el) {
-    el = document.createElement('link');
-    el.rel = 'manifest';
-    document.head.appendChild(el);
-  }
-  el.href = href;
-}
-
 export default function usePageMeta({
   title,
   description,
   url,
   noindex = false,
-  manifest,
 }) {
   useEffect(() => {
     document.title = title;
@@ -34,10 +23,6 @@ export default function usePageMeta({
     setMeta('property', 'og:title', title);
     setMeta('property', 'og:description', description);
     setMeta('property', 'og:url', url);
-
-    if (manifest) {
-      ensureManifest(manifest);
-    }
 
     let robots = document.querySelector('meta[name="robots"]');
     if (noindex) {
@@ -50,5 +35,5 @@ export default function usePageMeta({
     } else if (robots) {
       robots.remove();
     }
-  }, [title, description, url, noindex, manifest]);
+  }, [title, description, url, noindex]);
 }

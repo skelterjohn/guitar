@@ -502,7 +502,7 @@ export default function PdfViewer({
 
     const onPointerDown = (event) => {
       if (pageCount <= 1) return;
-      if (event.pointerType === 'pen' || event.pointerType === 'touch') return;
+      if (event.pointerType === 'pen') return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       tapStartX = event.clientX;
       tapStartY = event.clientY;
@@ -510,7 +510,7 @@ export default function PdfViewer({
 
     const onPointerUp = (event) => {
       if (pageCount <= 1 || tapStartX == null || tapStartY == null) return;
-      if (event.pointerType === 'pen' || event.pointerType === 'touch') return;
+      if (event.pointerType === 'pen') return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       if (isPinchingRef.current) return;
 

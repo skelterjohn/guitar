@@ -316,8 +316,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 1.15rem;
+  width: 4rem;
+  height: 2.3rem;
   padding: 0;
   color: var(--color-text-muted);
   background: var(--color-surface);
@@ -428,8 +428,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 1.15rem;
+  width: 4rem;
+  height: 2.3rem;
   padding: 0;
   color: var(--color-text-muted);
   background: var(--color-surface);
@@ -455,6 +455,12 @@ body {
 .viewer-footer-tab:hover {
   color: var(--color-link-text);
   background: var(--color-link-bg);
+}
+
+.viewer-header-tab .chevron-icon,
+.viewer-footer-tab .chevron-icon {
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 .viewer-footer-toolbar {

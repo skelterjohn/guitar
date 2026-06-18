@@ -4,6 +4,13 @@ import * as pdfjs from 'pdfjs-dist';
 import PdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
 import { pdfUrl } from '../config.js';
 import { fetchPdfBytes } from '../pdfCache.js';
+import {
+  findPdfByFile,
+  getPieceLabelPreference,
+  pdfFileForPiece,
+  pdfFilesMatch,
+  setPieceLabelPreference,
+} from '../utils/pieceLabelPreference.js';
 import ChevronIcon from './ChevronIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
 
@@ -15,25 +22,24 @@ function configureWorker() {
 
 configureWorker();
 
-function pdfFileForLabel(piecePdfs, preferredLabel) {
-  if (preferredLabel) {
-    const match = piecePdfs.find((pdf) => pdf.label === preferredLabel);
-    if (match) return match.file;
-  }
-  return piecePdfs[0]?.file;
-}
-
 export default function PdfViewer({
   filename,
   pdfHash,
   pdfs = [],
+  pieceKey = null,
   sectionPieces = [],
   backTo = '/',
   backLabel = 'Catalog',
   viewState,
 }) {
   const url = pdfUrl(filename, pdfHash);
-  const currentLabel = pdfs.find((pdf) => pdf.file === filename)?.label;
+  const currentLabel = findPdfByFile(pdfs, filename)?.label;
+
+  useEffect(() => {
+    if (pieceKey && currentLabel) {
+      setPieceLabelPreference(pieceKey, currentLabel);
+    }
+  }, [pieceKey, currentLabel]);
   const containerRef = useRef(null);
   const canvasRefs = useRef([]);
   const slotRefs = useRef([]);
@@ -692,7 +698,11 @@ export default function PdfViewer({
             <div className="viewer-toolbar viewer-footer-toolbar">
               <div className="viewer-section-nav">
                 {sectionPieces.map((entry) => {
-                  const file = pdfFileForLabel(entry.pdfs, currentLabel);
+                  const file = pdfFileForPiece(
+                    entry.pdfs,
+                    getPieceLabelPreference(entry.pieceKey),
+                    currentLabel,
+                  );
                   if (!file) return null;
 
                   return (

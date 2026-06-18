@@ -1,15 +1,22 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import catalog from '../data/catalog.js';
 import repertoire from '../data/repertoire.js';
 import PdfViewer from '../components/PdfViewer.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { pageTitle, viewPageUrl } from '../seo.js';
+import { pieceId } from '../utils/pieceId.js';
+import {
+  getPieceLabelPreference,
+  pdfFileForPiece,
+  pdfFilesMatch,
+} from '../utils/pieceLabelPreference.js';
 
 function findPdfInSections(sections, filename) {
   for (const section of sections) {
     for (const piece of section.pieces) {
       for (const pdf of piece.pdfs) {
-        if (pdf.file === filename) {
+        if (pdfFilesMatch(pdf.file, filename)) {
           return { section, piece, pdf };
         }
       }
@@ -40,6 +47,7 @@ function sectionSiblings(section, currentPiece) {
     .map((piece) => ({
       title: piece.title,
       pdfs: piece.pdfs,
+      pieceKey: pieceId(section.id, piece.title),
     }))
     .filter((entry) => entry.pdfs[0]?.file);
 }
@@ -53,9 +61,28 @@ function viewerPageName(piece, pdf, filename) {
 export default function ViewPdf() {
   const { filename } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const fromRep = location.state?.from === '/rep';
   const decoded = decodeURIComponent(filename);
   const { section, piece, pdf } = findPdf(decoded, fromRep);
+  const pieceKey =
+    section && piece ? pieceId(section.id, piece.title) : null;
+
+  useEffect(() => {
+    if (!piece?.pdfs?.length || !pieceKey || location.state?.explicitPdf) return;
+
+    const preferredFile = pdfFileForPiece(
+      piece.pdfs,
+      getPieceLabelPreference(pieceKey),
+    );
+    if (!preferredFile || pdfFilesMatch(preferredFile, decoded)) return;
+
+    navigate(`/view/${encodeURIComponent(preferredFile)}`, {
+      replace: true,
+      state: location.state,
+    });
+  }, [decoded, location.state, navigate, piece, pieceKey]);
+
   const name = viewerPageName(piece, pdf, decoded);
   const description =
     piece?.description?.split('\n\n').find(Boolean) ?? `${name} — guitar score PDF`;
@@ -71,6 +98,7 @@ export default function ViewPdf() {
       filename={decoded}
       pdfHash={pdf?.hash}
       pdfs={piece?.pdfs ?? []}
+      pieceKey={pieceKey}
       sectionPieces={sectionSiblings(section, piece)}
       backTo={fromRep ? '/rep' : '/'}
       backLabel={fromRep ? 'Repertoire' : 'Catalog'}

@@ -458,7 +458,15 @@ body {
 }
 
 .viewer-footer-toolbar {
-  justify-content: flex-start;
+  justify-content: space-between;
+}
+
+.viewer-section-label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .viewer-section-nav {

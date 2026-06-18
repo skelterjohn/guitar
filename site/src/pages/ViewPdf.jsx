@@ -100,6 +100,7 @@ export default function ViewPdf() {
       pdfs={piece?.pdfs ?? []}
       pieceKey={pieceKey}
       sectionPieces={sectionPiecesForNav(section, piece)}
+      sectionTitle={section?.title ?? null}
       backTo={fromRep ? '/rep' : '/'}
       backLabel={fromRep ? 'Repertoire' : 'Catalog'}
       viewState={fromRep ? { from: '/rep' } : undefined}

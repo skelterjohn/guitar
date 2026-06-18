@@ -28,6 +28,7 @@ export default function PdfViewer({
   pdfs = [],
   pieceKey = null,
   sectionPieces = [],
+  sectionTitle = null,
   backTo = '/',
   backLabel = 'Catalog',
   viewState,
@@ -696,7 +697,8 @@ export default function PdfViewer({
         <div className={`viewer-footer-chrome${footerHidden ? ' is-collapsed' : ''}`}>
           <footer className="viewer-footer">
             <div className="viewer-toolbar viewer-footer-toolbar">
-              <div className="viewer-section-nav">
+              <div className="viewer-toolbar-start">
+                <div className="viewer-section-nav">
                 {sectionPieces.map((entry) => {
                   const className = `pdf-link${entry.isCurrent ? ' pdf-link-active' : ''}`;
 
@@ -730,7 +732,13 @@ export default function PdfViewer({
                     </Link>
                   );
                 })}
+                </div>
               </div>
+              {sectionTitle && (
+                <div className="viewer-toolbar-end viewer-section-label">
+                  {sectionTitle}
+                </div>
+              )}
             </div>
           </footer>
           <button

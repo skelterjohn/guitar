@@ -35,7 +35,7 @@ export default function Rep() {
           </div>
           <p>original compositions, arrangements, and transcriptions.</p>
         </header>
-        <Catalog sections={repertoire.sections} />
+        <Catalog sections={repertoire.sections} viewState={{ from: '/rep' }} />
       </main>
     </div>
   );

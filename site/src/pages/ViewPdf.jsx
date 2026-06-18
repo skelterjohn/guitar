@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import catalog from '../data/catalog.js';
 import repertoire from '../data/repertoire.js';
 import PdfViewer from '../components/PdfViewer.jsx';
@@ -18,10 +18,13 @@ function findPdfInSections(sections, filename) {
   return null;
 }
 
-function findPdf(filename) {
+function findPdf(filename, preferRepertoire = false) {
+  const primary = preferRepertoire ? repertoire.sections : catalog.sections;
+  const secondary = preferRepertoire ? catalog.sections : repertoire.sections;
+
   return (
-    findPdfInSections(catalog.sections, filename) ??
-    findPdfInSections(repertoire.sections, filename) ?? {
+    findPdfInSections(primary, filename) ??
+    findPdfInSections(secondary, filename) ?? {
       section: null,
       piece: null,
       pdf: null,
@@ -49,8 +52,10 @@ function viewerPageName(piece, pdf, filename) {
 
 export default function ViewPdf() {
   const { filename } = useParams();
+  const location = useLocation();
+  const fromRep = location.state?.from === '/rep';
   const decoded = decodeURIComponent(filename);
-  const { section, piece, pdf } = findPdf(decoded);
+  const { section, piece, pdf } = findPdf(decoded, fromRep);
   const name = viewerPageName(piece, pdf, decoded);
   const description =
     piece?.description?.split('\n\n').find(Boolean) ?? `${name} — guitar score PDF`;
@@ -67,6 +72,9 @@ export default function ViewPdf() {
       pdfHash={pdf?.hash}
       pdfs={piece?.pdfs ?? []}
       sectionPieces={sectionSiblings(section, piece)}
+      backTo={fromRep ? '/rep' : '/'}
+      backLabel={fromRep ? 'Repertoire' : 'Catalog'}
+      viewState={fromRep ? { from: '/rep' } : undefined}
     />
   );
 }

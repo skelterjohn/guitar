@@ -15,7 +15,15 @@ function configureWorker() {
 
 configureWorker();
 
-export default function PdfViewer({ filename, pdfHash, pdfs = [], sectionPieces = [] }) {
+export default function PdfViewer({
+  filename,
+  pdfHash,
+  pdfs = [],
+  sectionPieces = [],
+  backTo = '/',
+  backLabel = 'Catalog',
+  viewState,
+}) {
   const url = pdfUrl(filename, pdfHash);
   const containerRef = useRef(null);
   const canvasRefs = useRef([]);
@@ -573,9 +581,9 @@ export default function PdfViewer({ filename, pdfHash, pdfs = [], sectionPieces 
         <header className="viewer-header">
           <div className="viewer-toolbar" ref={toolbarRef}>
             <div className="viewer-toolbar-start" ref={toolbarStartRef}>
-              <Link to="/">&larr; Catalog</Link>
+              <Link to={backTo}>&larr; {backLabel}</Link>
               {pdfs.length > 0 && (
-                <PdfLinkList pdfs={pdfs} currentFile={filename} />
+                <PdfLinkList pdfs={pdfs} currentFile={filename} viewState={viewState} />
               )}
             </div>
             <div className="viewer-toolbar-end" ref={toolbarEndRef}>
@@ -679,6 +687,7 @@ export default function PdfViewer({ filename, pdfHash, pdfs = [], sectionPieces 
                     key={entry.file}
                     className="pdf-link"
                     to={`/view/${encodeURIComponent(entry.file)}`}
+                    state={viewState}
                   >
                     {entry.title}
                   </Link>

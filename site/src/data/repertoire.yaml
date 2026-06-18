@@ -28,6 +28,9 @@ sections:
             file: Part 3_ Strummed Heat, Midnight Feet.pdf
           - label: guitar 4
             file: Part 4_ Strummed Heat, Midnight Feet.pdf
+        links:
+          - label: GCC Guitar Ensembles
+            url: https://www.youtube.com/watch?v=ZxzjLE_K4YQ
       - title: Détours
         description: Bernard Piris
         pdfs:
@@ -43,6 +46,9 @@ sections:
             file: Guitar 4_ Détours.pdf
           - label: bass
             file: Bass_ Détours.pdf
+        links:
+          - label: Drôme de guitares
+            url: https://www.youtube.com/watch?v=h-hs29-rnmY
       - title: Innerland
         description: Nicolas Kahn
         pdfs:
@@ -56,6 +62,9 @@ sections:
             file: Innerland_ Guitar 3.pdf
           - label: guitar 4
             file: Innerland_ Guitar 4.pdf
+        links:
+          - label: Elfasci, Erard, Nicho, Santiago
+            url: https://www.youtube.com/watch?v=8wVzt5jwRqk
       - title: Baião Guri
         description: Douglas Lora
         pdfs:
@@ -71,3 +80,6 @@ sections:
             file: Baião Guri part 4 fingered.pdf
           - label: guitar 5
             file: Baião Guri part 5 fingered.pdf
+        links:
+          - label: ASU Guitar Orchestra
+            url: https://www.youtube.com/watch?v=RQgFKNLj3ho

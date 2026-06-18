@@ -272,7 +272,9 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   position: relative;
+  overflow: hidden;
 }
 
 .viewer-chrome {
@@ -377,6 +379,92 @@ body {
 .viewer-header-tab:hover {
   color: var(--color-link-text);
   background: var(--color-link-bg);
+}
+
+.viewer-footer-chrome {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 3;
+}
+
+.viewer-footer-chrome:not(.is-collapsed) {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: auto;
+}
+
+.viewer-footer-chrome.is-collapsed {
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.viewer-footer {
+  overflow: hidden;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-light);
+  max-height: 6rem;
+  opacity: 1;
+  transition:
+    max-height 0.2s ease,
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.viewer-footer-chrome.is-collapsed .viewer-footer {
+  max-height: 0;
+  opacity: 0;
+  border-top-color: transparent;
+  pointer-events: none;
+}
+
+.viewer-footer-tab {
+  position: absolute;
+  left: 1rem;
+  top: 0;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 1.15rem;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  transform: translateY(-100%);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.viewer-footer-chrome.is-collapsed .viewer-footer-tab {
+  position: fixed;
+  bottom: 0;
+  left: 1rem;
+  top: auto;
+  border-bottom: 1px solid var(--color-border-light);
+  border-top: none;
+  transform: none;
+  pointer-events: auto;
+}
+
+.viewer-footer-tab:hover {
+  color: var(--color-link-text);
+  background: var(--color-link-bg);
+}
+
+.viewer-footer-toolbar {
+  justify-content: flex-start;
+}
+
+.viewer-section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .viewer-toolbar {
@@ -497,9 +585,14 @@ body {
 
 .viewer-content {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   background: var(--color-viewer-bg);
   touch-action: pan-x pan-y;
+}
+
+.viewer-content.is-footer-visible {
+  padding-bottom: 4rem;
 }
 
 .viewer-zoom-surface {

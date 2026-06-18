@@ -15,7 +15,7 @@ function configureWorker() {
 
 configureWorker();
 
-export default function PdfViewer({ filename, pdfHash, pdfs = [] }) {
+export default function PdfViewer({ filename, pdfHash, pdfs = [], sectionPieces = [] }) {
   const url = pdfUrl(filename, pdfHash);
   const containerRef = useRef(null);
   const canvasRefs = useRef([]);
@@ -40,6 +40,7 @@ export default function PdfViewer({ filename, pdfHash, pdfs = [] }) {
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [headerHidden, setHeaderHidden] = useState(false);
+  const [footerHidden, setFooterHidden] = useState(true);
   const [pdfZoom, setPdfZoom] = useState(1);
 
   const pdfZoomRef = useRef(1);
@@ -639,7 +640,9 @@ export default function PdfViewer({ filename, pdfHash, pdfs = [] }) {
         </button>
       </div>
       <div
-        className={`viewer-content${headerHidden ? ' is-header-hidden' : ''}`}
+        className={`viewer-content${headerHidden ? ' is-header-hidden' : ''}${
+          !footerHidden && sectionPieces.length > 0 ? ' is-footer-visible' : ''
+        }`}
         ref={containerRef}
       >
         {status === 'loading' && <p className="viewer-status">Loading…</p>}
@@ -666,6 +669,34 @@ export default function PdfViewer({ filename, pdfHash, pdfs = [] }) {
           </div>
         )}
       </div>
+      {sectionPieces.length > 0 && (
+        <div className={`viewer-footer-chrome${footerHidden ? ' is-collapsed' : ''}`}>
+          <footer className="viewer-footer">
+            <div className="viewer-toolbar viewer-footer-toolbar">
+              <div className="viewer-section-nav">
+                {sectionPieces.map((entry) => (
+                  <Link
+                    key={entry.file}
+                    className="pdf-link"
+                    to={`/view/${encodeURIComponent(entry.file)}`}
+                  >
+                    {entry.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </footer>
+          <button
+            type="button"
+            className="viewer-footer-tab"
+            onClick={() => setFooterHidden((hidden) => !hidden)}
+            aria-label={footerHidden ? 'Show section navigation' : 'Hide section navigation'}
+            aria-expanded={!footerHidden}
+          >
+            <ChevronIcon direction={footerHidden ? 'up' : 'down'} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

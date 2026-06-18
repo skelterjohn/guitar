@@ -10,8 +10,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png', 'rep.webmanifest'],
       manifest: {
+        id: '/',
         name: siteTitle,
         short_name: 'Guitar scores',
         description: defaultDescription,

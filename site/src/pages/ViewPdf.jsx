@@ -4,7 +4,7 @@ import catalog from '../data/catalog.js';
 import repertoire from '../data/repertoire.js';
 import PdfViewer from '../components/PdfViewer.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { pageTitle, viewPageUrl } from '../seo.js';
+import { pageTitle, repManifest, siteManifest, viewPageUrl } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
 import {
   getPieceLabelPreference,
@@ -91,6 +91,7 @@ export default function ViewPdf() {
     title: pageTitle(name),
     description,
     url: viewPageUrl(decoded),
+    manifest: fromRep ? repManifest : siteManifest,
   });
 
   return (

@@ -2,7 +2,7 @@ import repertoire from '../data/repertoire.js';
 import Catalog from '../components/Catalog.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { repDescription, repHeading, repTitle, siteOrigin } from '../seo.js';
+import { repDescription, repHeading, repManifest, repTitle, siteOrigin } from '../seo.js';
 
 export default function Rep() {
   usePageMeta({
@@ -10,6 +10,7 @@ export default function Rep() {
     description: repDescription,
     url: `${siteOrigin}/rep`,
     noindex: true,
+    manifest: repManifest,
   });
 
   return (

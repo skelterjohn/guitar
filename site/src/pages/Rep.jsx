@@ -2,13 +2,11 @@ import repertoire from '../data/repertoire.js';
 import Catalog from '../components/Catalog.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { siteHeading, siteOrigin, siteTitle } from '../seo.js';
-
-const repDescription = 'Personal repertoire for practicing and performing.';
+import { repDescription, repHeading, repTitle, siteOrigin } from '../seo.js';
 
 export default function Rep() {
   usePageMeta({
-    title: siteTitle,
+    title: repTitle,
     description: repDescription,
     url: `${siteOrigin}/rep`,
     noindex: true,
@@ -20,7 +18,7 @@ export default function Rep() {
       <main className="page">
         <header className="page-header">
           <div className="page-header-top">
-            <h1>{siteHeading}</h1>
+            <h1>{repHeading}</h1>
             <div className="repo-source">
               <span className="repo-label">pdfs and site built from</span>
               <a
@@ -33,7 +31,7 @@ export default function Rep() {
               </a>
             </div>
           </div>
-          <p>original compositions, arrangements, and transcriptions.</p>
+          <p>{repDescription}</p>
         </header>
         <Catalog sections={repertoire.sections} viewState={{ from: '/rep' }} />
       </main>

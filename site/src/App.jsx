@@ -3,6 +3,7 @@ import Home from './pages/Home.jsx';
 import Landing from './pages/Landing.jsx';
 import Rep from './pages/Rep.jsx';
 import ViewPdf from './pages/ViewPdf.jsx';
+import StylusDiagnostics from './pages/StylusDiagnostics.jsx';
 import { catalogPath } from './seo.js';
 
 function LegacyViewRedirect() {
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/rep" element={<Rep />} />
         <Route path="/rep/view/:filename" element={<ViewPdf />} />
         <Route path="/view/:filename" element={<LegacyViewRedirect />} />
+        <Route path="/dev/stylus" element={<StylusDiagnostics />} />
       </Routes>
     </div>
   );

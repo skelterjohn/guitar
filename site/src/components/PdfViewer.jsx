@@ -11,8 +11,21 @@ import {
   pdfFilesMatch,
   setPieceLabelPreference,
 } from '../utils/pieceLabelPreference.js';
+import AnnotationOverlay from './AnnotationOverlay.jsx';
 import ChevronIcon from './ChevronIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
+import {
+  createDebouncedSave,
+  createStrokeId,
+  loadAnnotations,
+  requestPersistentStorage,
+} from '../utils/pdfAnnotations.js';
+import {
+  createPenScrollLock,
+} from '../utils/penScrollLock.js';
+import {
+  PEN_COLOR,
+} from '../utils/stylusInput.js';
 import { catalogPath, repPath, viewPath } from '../seo.js';
 
 let workerIdle = Promise.resolve();
@@ -69,9 +82,28 @@ export default function PdfViewer({
   const [headerHidden, setHeaderHidden] = useState(false);
   const [footerHidden, setFooterHidden] = useState(true);
   const [pdfZoom, setPdfZoom] = useState(1);
+  const [pageStrokes, setPageStrokes] = useState({});
+  const [storageWarning, setStorageWarning] = useState('');
 
   const pdfZoomRef = useRef(1);
   const isPinchingRef = useRef(false);
+  const penScrollLockRef = useRef(null);
+  const saveAnnotationsRef = useRef(null);
+  const onSaveResultRef = useRef(() => {});
+
+  onSaveResultRef.current = (saved) => {
+    if (saved === false) {
+      setStorageWarning('Annotations could not be saved locally.');
+    } else {
+      setStorageWarning('');
+    }
+  };
+
+  if (!saveAnnotationsRef.current) {
+    saveAnnotationsRef.current = createDebouncedSave(400, (saved) => {
+      onSaveResultRef.current(saved);
+    });
+  }
 
   headerHiddenRef.current = headerHidden;
   currentPageRef.current = currentPage;
@@ -111,6 +143,23 @@ export default function PdfViewer({
   }, [url]);
 
   useEffect(() => {
+    if (status !== 'ready') return undefined;
+
+    let cancelled = false;
+    requestPersistentStorage();
+
+    loadAnnotations(filename, pdfHash).then((record) => {
+      if (cancelled) return;
+      setPageStrokes(record?.pages && typeof record.pages === 'object' ? record.pages : {});
+      setStorageWarning('');
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [filename, pdfHash, status]);
+
+  useEffect(() => {
     let cancelled = false;
     let loadingTask = null;
 
@@ -118,6 +167,9 @@ export default function PdfViewer({
     setPageCount(0);
     setCurrentPage(1);
     setPdfZoom(1);
+    setPageStrokes({});
+    setStorageWarning('');
+    saveAnnotationsRef.current?.cancel();
     scrollToTopPendingRef.current = true;
     canvasRefs.current = [];
     slotRefs.current = [];
@@ -154,6 +206,7 @@ export default function PdfViewer({
 
     return () => {
       cancelled = true;
+      void saveAnnotationsRef.current?.flushNow();
       const task = loadingTask;
       const doc = pdfDocRef.current;
       pdfDocRef.current = null;
@@ -172,6 +225,30 @@ export default function PdfViewer({
       });
     };
   }, [url]);
+
+  const persistPageStrokes = (pages) => {
+    saveAnnotationsRef.current.schedule(filename, pdfHash, pages);
+  };
+
+  const handleStrokeComplete = (pageNumber, stroke) => {
+    const savedStroke = {
+      id: createStrokeId(),
+      tool: 'pen',
+      color: stroke.color ?? PEN_COLOR,
+      baseWidth: stroke.baseWidth,
+      points: stroke.points,
+    };
+
+    setPageStrokes((current) => {
+      const key = String(pageNumber);
+      const next = {
+        ...current,
+        [key]: [...(current[key] ?? []), savedStroke],
+      };
+      persistPageStrokes(next);
+      return next;
+    });
+  };
 
   useLayoutEffect(() => {
     if (status !== 'ready' || pageCount === 0 || !containerRef.current) return;
@@ -389,6 +466,7 @@ export default function PdfViewer({
     updateCurrentPage();
 
     const onScroll = () => {
+      penScrollLockRef.current?.restoreScroll();
       updateCurrentPage();
     };
 
@@ -424,6 +502,7 @@ export default function PdfViewer({
 
     const onPointerDown = (event) => {
       if (pageCount <= 1) return;
+      if (event.pointerType === 'pen' || event.pointerType === 'touch') return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       tapStartX = event.clientX;
       tapStartY = event.clientY;
@@ -431,6 +510,7 @@ export default function PdfViewer({
 
     const onPointerUp = (event) => {
       if (pageCount <= 1 || tapStartX == null || tapStartY == null) return;
+      if (event.pointerType === 'pen' || event.pointerType === 'touch') return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       if (isPinchingRef.current) return;
 
@@ -475,6 +555,21 @@ export default function PdfViewer({
       resizeObserver.disconnect();
     };
   }, [status, pageCount]);
+
+  useEffect(() => {
+    if (status !== 'ready') return undefined;
+
+    const container = containerRef.current;
+    if (!container) return undefined;
+
+    penScrollLockRef.current?.destroy();
+    penScrollLockRef.current = createPenScrollLock(container);
+
+    return () => {
+      penScrollLockRef.current?.destroy();
+      penScrollLockRef.current = null;
+    };
+  }, [status]);
 
   useEffect(() => {
     if (status !== 'ready') return;
@@ -686,6 +781,11 @@ export default function PdfViewer({
           <ChevronIcon direction={headerHidden ? 'down' : 'up'} />
         </button>
       </div>
+      {storageWarning && (
+        <p className="viewer-storage-warning" role="status">
+          {storageWarning}
+        </p>
+      )}
       <div
         className={`viewer-content${headerHidden ? ' is-header-hidden' : ''}${
           !footerHidden && sectionPieces.length > 0 ? ' is-footer-visible' : ''
@@ -706,11 +806,18 @@ export default function PdfViewer({
                   slotRefs.current[index] = element;
                 }}
               >
-                <canvas
-                  ref={(element) => {
-                    canvasRefs.current[index] = element;
-                  }}
-                />
+                <div className="viewer-page-frame">
+                  <canvas
+                    ref={(element) => {
+                      canvasRefs.current[index] = element;
+                    }}
+                  />
+                  <AnnotationOverlay
+                    pageNumber={index + 1}
+                    strokes={pageStrokes[String(index + 1)] ?? []}
+                    onStrokeComplete={handleStrokeComplete}
+                  />
+                </div>
               </div>
             ))}
           </div>

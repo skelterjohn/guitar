@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /rep
 
 Sitemap: https://guitar.skelterjohn.me/sitemap.xml

@@ -10,7 +10,7 @@ function setLink(rel, href) {
   if (el) el.setAttribute('href', href);
 }
 
-export default function usePageMeta({ title, description, url }) {
+export default function usePageMeta({ title, description, url, noindex = false }) {
   useEffect(() => {
     document.title = title;
     setMeta('name', 'description', description);
@@ -18,5 +18,17 @@ export default function usePageMeta({ title, description, url }) {
     setMeta('property', 'og:title', title);
     setMeta('property', 'og:description', description);
     setMeta('property', 'og:url', url);
-  }, [title, description, url]);
+
+    let robots = document.querySelector('meta[name="robots"]');
+    if (noindex) {
+      if (!robots) {
+        robots = document.createElement('meta');
+        robots.setAttribute('name', 'robots');
+        document.head.appendChild(robots);
+      }
+      robots.setAttribute('content', 'noindex, nofollow');
+    } else if (robots) {
+      robots.remove();
+    }
+  }, [title, description, url, noindex]);
 }

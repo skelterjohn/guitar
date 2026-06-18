@@ -1,0 +1,19 @@
+sections:
+  - id: njgo2027
+    title: NJGO 2027
+    pieces:
+      - title: Breakfast around the Sun
+        description: >-
+          Four parts. Used musescore for the first time in a serious way, since typing is hard these days. Inspirations
+          include Gulli Bjornsson, Olga Amelkina-Vera, and Ray Lynch.
+        pdfs:
+          - label: score
+            file: Breakfast around the Sun.pdf
+          - label: guitar 1
+            file: Breakfast around the Sun-Classical_Guitar_1.pdf
+          - label: guitar 2
+            file: Breakfast around the Sun-Classical_Guitar_2.pdf
+          - label: guitar 3
+            file: Breakfast around the Sun-Classical_Guitar_3.pdf
+          - label: guitar 4
+            file: Breakfast around the Sun-Classical_Guitar_4.pdf

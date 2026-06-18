@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home.jsx';
+import Rep from './pages/Rep.jsx';
 import ViewPdf from './pages/ViewPdf.jsx';
 
 export default function App() {
@@ -7,6 +8,7 @@ export default function App() {
     <div className="app">
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/rep" element={<Rep />} />
         <Route path="/view/:filename" element={<ViewPdf />} />
       </Routes>
     </div>

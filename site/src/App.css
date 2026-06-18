@@ -674,6 +674,11 @@ body {
   overflow: hidden;
 }
 
+.annotation-eraser-cursor {
+  stroke: rgb(236 72 153 / 70%);
+  stroke-width: 1;
+}
+
 .viewer-storage-warning {
   margin: 0;
   padding: 0.5rem 1rem;

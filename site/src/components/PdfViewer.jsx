@@ -24,6 +24,7 @@ import {
   createPenScrollLock,
 } from '../utils/penScrollLock.js';
 import {
+  applyPartialEraser,
   PEN_COLOR,
 } from '../utils/stylusInput.js';
 import { catalogPath, repPath, viewPath } from '../seo.js';
@@ -88,6 +89,7 @@ export default function PdfViewer({
   const pdfZoomRef = useRef(1);
   const isPinchingRef = useRef(false);
   const penScrollLockRef = useRef(null);
+  const lastPenTapRef = useRef(null);
   const saveAnnotationsRef = useRef(null);
   const onSaveResultRef = useRef(() => {});
 
@@ -169,6 +171,7 @@ export default function PdfViewer({
     setPdfZoom(1);
     setPageStrokes({});
     setStorageWarning('');
+    lastPenTapRef.current = null;
     saveAnnotationsRef.current?.cancel();
     scrollToTopPendingRef.current = true;
     canvasRefs.current = [];
@@ -244,6 +247,32 @@ export default function PdfViewer({
       const next = {
         ...current,
         [key]: [...(current[key] ?? []), savedStroke],
+      };
+      persistPageStrokes(next);
+      return next;
+    });
+  };
+
+  const handleEraseAt = (pageNumber, center, radiusPx, layoutWidth, layoutHeight) => {
+    setPageStrokes((current) => {
+      const key = String(pageNumber);
+      const existing = current[key] ?? [];
+      const { strokes: nextStrokes, changed } = applyPartialEraser(
+        existing,
+        layoutWidth,
+        layoutHeight,
+        center,
+        radiusPx,
+        createStrokeId,
+      );
+
+      if (!changed) {
+        return current;
+      }
+
+      const next = {
+        ...current,
+        [key]: nextStrokes,
       };
       persistPageStrokes(next);
       return next;
@@ -815,7 +844,9 @@ export default function PdfViewer({
                   <AnnotationOverlay
                     pageNumber={index + 1}
                     strokes={pageStrokes[String(index + 1)] ?? []}
+                    lastPenTapRef={lastPenTapRef}
                     onStrokeComplete={handleStrokeComplete}
+                    onEraseAt={handleEraseAt}
                   />
                 </div>
               </div>

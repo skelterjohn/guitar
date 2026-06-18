@@ -3,10 +3,16 @@ import getStroke from 'perfect-freehand';
 import {
   clientToNormalized,
   effectivePressure,
+  ERASER_CIRCLE_FILL,
+  eraserRadiusPx,
   getCoalescedPointerEvents,
+  matchesRecentPenTap,
+  measureCssPxPerMm,
   PEN_BASE_WIDTH,
   PEN_COLOR,
 } from '../utils/stylusInput.js';
+
+const TAP_MOVE_THRESHOLD = 10;
 
 function getSvgPathFromStroke(stroke) {
   if (!stroke.length) return '';
@@ -51,18 +57,25 @@ function strokeToPathData(stroke, width, height) {
 export default function AnnotationOverlay({
   pageNumber,
   strokes = [],
+  lastPenTapRef,
   onStrokeComplete,
+  onEraseAt,
 }) {
   const overlayRef = useRef(null);
   const activeStrokeRef = useRef(null);
+  const eraserStrokeRef = useRef(false);
+  const pxPerMmRef = useRef(measureCssPxPerMm());
   const callbacksRef = useRef({
     onStrokeComplete,
+    onEraseAt,
   });
   const [layoutSize, setLayoutSize] = useState({ width: 0, height: 0 });
   const [draftStroke, setDraftStroke] = useState(null);
+  const [eraserCursor, setEraserCursor] = useState(null);
 
   callbacksRef.current = {
     onStrokeComplete,
+    onEraseAt,
   };
 
   const syncLayoutSize = () => {
@@ -123,6 +136,38 @@ export default function AnnotationOverlay({
       callbacksRef.current.onStrokeComplete?.(pageNumber, active);
     };
 
+    const applyEraserSample = (event) => {
+      if (!overlay) return;
+
+      const rect = overlay.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+      if (width === 0 || height === 0) return;
+
+      const samples = getCoalescedPointerEvents(event);
+      for (const sample of samples) {
+        const center = clientToNormalized(overlay, sample.clientX, sample.clientY);
+        const radiusPx = eraserRadiusPx(
+          effectivePressure(sample),
+          pxPerMmRef.current,
+        );
+
+        setEraserCursor({
+          x: center.x * width,
+          y: center.y * height,
+          r: radiusPx,
+        });
+
+        callbacksRef.current.onEraseAt?.(
+          pageNumber,
+          center,
+          radiusPx,
+          width,
+          height,
+        );
+      }
+    };
+
     const onPointerDown = (event) => {
       if (event.pointerType !== 'pen') return;
 
@@ -130,48 +175,102 @@ export default function AnnotationOverlay({
       event.stopPropagation();
       frame.setPointerCapture(event.pointerId);
 
+      if (
+        lastPenTapRef?.current &&
+        matchesRecentPenTap(
+          lastPenTapRef.current,
+          event.clientX,
+          event.clientY,
+        )
+      ) {
+        lastPenTapRef.current = null;
+        eraserStrokeRef.current = true;
+        applyEraserSample(event);
+        return;
+      }
+
+      if (lastPenTapRef) {
+        lastPenTapRef.current = null;
+      }
+
+      eraserStrokeRef.current = false;
       activeStrokeRef.current = {
         tool: 'pen',
         color: PEN_COLOR,
         baseWidth: PEN_BASE_WIDTH,
         points: [],
+        startX: event.clientX,
+        startY: event.clientY,
       };
 
       appendPoints(event);
     };
 
     const onPointerMove = (event) => {
-      if (!activeStrokeRef.current || !frame.hasPointerCapture(event.pointerId)) return;
+      if (!frame.hasPointerCapture(event.pointerId)) return;
       if (event.pointerType !== 'pen') return;
 
       event.preventDefault();
       event.stopPropagation();
+
+      if (eraserStrokeRef.current) {
+        applyEraserSample(event);
+        return;
+      }
+
+      if (!activeStrokeRef.current) return;
       appendPoints(event);
     };
 
     const onPointerUp = (event) => {
-      if (!activeStrokeRef.current) return;
+      if (event.pointerType !== 'pen') return;
+      if (!frame.hasPointerCapture(event.pointerId)) return;
 
       event.preventDefault();
       event.stopPropagation();
+      frame.releasePointerCapture(event.pointerId);
 
-      if (frame.hasPointerCapture(event.pointerId)) {
-        frame.releasePointerCapture(event.pointerId);
+      if (eraserStrokeRef.current) {
+        applyEraserSample(event);
+        setEraserCursor(null);
+        eraserStrokeRef.current = false;
+        return;
       }
 
+      if (!activeStrokeRef.current) return;
+
+      const active = activeStrokeRef.current;
       appendPoints(event);
+
+      const dx = Math.abs(event.clientX - active.startX);
+      const dy = Math.abs(event.clientY - active.startY);
+      const isTap = dx <= TAP_MOVE_THRESHOLD && dy <= TAP_MOVE_THRESHOLD;
+
+      if (isTap) {
+        if (lastPenTapRef) {
+          lastPenTapRef.current = {
+            time: performance.now(),
+            x: event.clientX,
+            y: event.clientY,
+          };
+        }
+        activeStrokeRef.current = null;
+        setDraftStroke(null);
+        return;
+      }
+
       finishStroke();
     };
 
     const onPointerCancel = (event) => {
-      if (!activeStrokeRef.current) return;
-
       if (frame.hasPointerCapture(event.pointerId)) {
         frame.releasePointerCapture(event.pointerId);
       }
 
       activeStrokeRef.current = null;
+      eraserStrokeRef.current = false;
       setDraftStroke(null);
+      setEraserCursor(null);
     };
 
     const options = { capture: true, passive: false };
@@ -186,14 +285,16 @@ export default function AnnotationOverlay({
       frame.removeEventListener('pointerup', onPointerUp, options);
       frame.removeEventListener('pointercancel', onPointerCancel, options);
     };
-  }, [pageNumber]);
+  }, [pageNumber, lastPenTapRef]);
 
   const visibleStrokes = draftStroke ? [...strokes, draftStroke] : strokes;
 
   return (
     <div
       ref={overlayRef}
-      className={`annotation-overlay${draftStroke ? ' is-drawing' : ''}`}
+      className={`annotation-overlay${draftStroke ? ' is-drawing' : ''}${
+        eraserCursor ? ' is-erasing' : ''
+      }`}
       aria-hidden="true"
     >
       {layoutSize.width > 0 && layoutSize.height > 0 && (
@@ -215,6 +316,16 @@ export default function AnnotationOverlay({
               />
             );
           })}
+          {eraserCursor && (
+            <circle
+              className="annotation-eraser-cursor"
+              cx={eraserCursor.x}
+              cy={eraserCursor.y}
+              r={eraserCursor.r}
+              fill={ERASER_CIRCLE_FILL}
+              pointerEvents="none"
+            />
+          )}
         </svg>
       )}
     </div>

@@ -68,50 +68,105 @@ export function eraserRadiusPx(pressure, pxPerMm = CSS_PX_PER_MM) {
   return diameter / 2;
 }
 
-function pointInsideCircle(x, y, layoutWidth, layoutHeight, cx, cy, radiusPx, padding = 0) {
+function pointInsideCircle(x, y, layoutWidth, layoutHeight, cx, cy, radiusPx) {
   const px = x * layoutWidth;
   const py = y * layoutHeight;
-  const radius = radiusPx + padding;
   const dx = px - cx;
   const dy = py - cy;
-  return dx * dx + dy * dy <= radius * radius;
+  return dx * dx + dy * dy <= radiusPx * radiusPx;
 }
 
-function segmentIntersectsCircle(
-  p0,
-  p1,
-  layoutWidth,
-  layoutHeight,
-  cx,
-  cy,
-  radiusPx,
-  padding = 0,
-) {
+function lerpStrokePoint(p0, p1, t) {
+  const pressure0 = p0[2] ?? 0.5;
+  const pressure1 = p1[2] ?? 0.5;
+  return [
+    p0[0] + t * (p1[0] - p0[0]),
+    p0[1] + t * (p1[1] - p0[1]),
+    pressure0 + t * (pressure1 - pressure0),
+  ];
+}
+
+function pointsNear(a, b, epsilon = 1e-6) {
+  return (
+    Math.abs(a[0] - b[0]) <= epsilon &&
+    Math.abs(a[1] - b[1]) <= epsilon
+  );
+}
+
+function segmentCircleCrossingTs(p0, p1, layoutWidth, layoutHeight, cx, cy, radiusPx) {
   const x0 = p0[0] * layoutWidth;
   const y0 = p0[1] * layoutHeight;
   const x1 = p1[0] * layoutWidth;
   const y1 = p1[1] * layoutHeight;
-  const radius = radiusPx + padding;
-
   const dx = x1 - x0;
   const dy = y1 - y0;
-  const lengthSquared = dx * dx + dy * dy;
+  const fx = x0 - cx;
+  const fy = y0 - cy;
+  const a = dx * dx + dy * dy;
 
-  if (lengthSquared === 0) {
-    const distX = x0 - cx;
-    const distY = y0 - cy;
-    return distX * distX + distY * distY <= radius * radius;
+  if (a < 1e-10) return [];
+
+  const b = 2 * (fx * dx + fy * dy);
+  const c = fx * fx + fy * fy - radiusPx * radiusPx;
+  const discriminant = b * b - 4 * a * c;
+
+  if (discriminant < 0) return [];
+
+  if (discriminant < 1e-10) {
+    const t = -b / (2 * a);
+    return t > 0 && t < 1 ? [t] : [];
   }
 
-  const t = Math.max(
-    0,
-    Math.min(1, ((cx - x0) * dx + (cy - y0) * dy) / lengthSquared),
+  const sqrtDisc = Math.sqrt(discriminant);
+  const t1 = (-b - sqrtDisc) / (2 * a);
+  const t2 = (-b + sqrtDisc) / (2 * a);
+
+  return [t1, t2]
+    .filter((t) => t > 0 && t < 1)
+    .sort((left, right) => left - right);
+}
+
+function clipEdgeOutsideCircle(p0, p1, layoutWidth, layoutHeight, cx, cy, radiusPx) {
+  const insideAt = (t) => {
+    const point = lerpStrokePoint(p0, p1, t);
+    return pointInsideCircle(
+      point[0],
+      point[1],
+      layoutWidth,
+      layoutHeight,
+      cx,
+      cy,
+      radiusPx,
+    );
+  };
+
+  const crossingTs = segmentCircleCrossingTs(
+    p0,
+    p1,
+    layoutWidth,
+    layoutHeight,
+    cx,
+    cy,
+    radiusPx,
   );
-  const closestX = x0 + t * dx;
-  const closestY = y0 + t * dy;
-  const distX = closestX - cx;
-  const distY = closestY - cy;
-  return distX * distX + distY * distY <= radius * radius;
+  const breaks = [0, ...crossingTs, 1];
+  const runs = [];
+
+  for (let index = 0; index < breaks.length - 1; index += 1) {
+    const startT = breaks[index];
+    const endT = breaks[index + 1];
+    if (endT - startT < 1e-8) continue;
+
+    const midT = (startT + endT) / 2;
+    if (insideAt(midT)) continue;
+
+    runs.push([
+      lerpStrokePoint(p0, p1, startT),
+      lerpStrokePoint(p0, p1, endT),
+    ]);
+  }
+
+  return runs;
 }
 
 function circleIntersectsRect(cx, cy, radius, minX, minY, maxX, maxY) {
@@ -124,77 +179,78 @@ function circleIntersectsRect(cx, cy, radius, minX, minY, maxX, maxY) {
 
 function splitStrokeByEraser(stroke, layoutWidth, layoutHeight, centerNorm, radiusPx) {
   const points = stroke.points;
-  if (!points.length) return [];
+  if (points.length < 2) return points.length ? [points] : [];
 
   const cx = centerNorm.x * layoutWidth;
   const cy = centerNorm.y * layoutHeight;
-  const padding = (stroke.baseWidth ?? PEN_BASE_WIDTH) / 2;
-  const hitRadius = radiusPx + padding;
 
   const box = strokeBoundingBox(points);
-  const minX = box.minX * layoutWidth - padding;
-  const minY = box.minY * layoutHeight - padding;
-  const maxX = box.maxX * layoutWidth + padding;
-  const maxY = box.maxY * layoutHeight + padding;
-
-  if (!circleIntersectsRect(cx, cy, hitRadius, minX, minY, maxX, maxY)) {
+  if (
+    !circleIntersectsRect(
+      cx,
+      cy,
+      radiusPx,
+      box.minX * layoutWidth,
+      box.minY * layoutHeight,
+      box.maxX * layoutWidth,
+      box.maxY * layoutHeight,
+    )
+  ) {
     return [points];
   }
 
   const segments = [];
   let current = [];
 
-  for (let index = 0; index < points.length; index += 1) {
-    const point = points[index];
+  const flush = () => {
+    if (current.length >= 2) {
+      segments.push(current);
+    }
+    current = [];
+  };
 
-    if (
-      pointInsideCircle(
-        point[0],
-        point[1],
-        layoutWidth,
-        layoutHeight,
-        cx,
-        cy,
-        radiusPx,
-        padding,
-      )
-    ) {
-      if (current.length >= 2) {
-        segments.push(current);
-      }
-      current = [];
+  const appendPoint = (point) => {
+    const last = current[current.length - 1];
+    if (last && pointsNear(last, point)) return;
+    current.push(point);
+  };
+
+  for (let index = 1; index < points.length; index += 1) {
+    const p0 = points[index - 1];
+    const p1 = points[index];
+    const runs = clipEdgeOutsideCircle(
+      p0,
+      p1,
+      layoutWidth,
+      layoutHeight,
+      cx,
+      cy,
+      radiusPx,
+    );
+
+    if (runs.length === 0) {
+      flush();
       continue;
     }
 
-    if (current.length > 0) {
-      const previous = current[current.length - 1];
-      if (
-        segmentIntersectsCircle(
-          previous,
-          point,
-          layoutWidth,
-          layoutHeight,
-          cx,
-          cy,
-          radiusPx,
-          padding,
-        )
-      ) {
-        if (current.length >= 2) {
-          segments.push(current);
-        }
-        current = [point];
-        continue;
+    for (let runIndex = 0; runIndex < runs.length; runIndex += 1) {
+      if (runIndex > 0) {
+        flush();
+      }
+
+      const [runStart, runEnd] = runs[runIndex];
+
+      if (current.length > 0 && pointsNear(current[current.length - 1], runStart)) {
+        appendPoint(runEnd);
+      } else {
+        flush();
+        appendPoint(runStart);
+        appendPoint(runEnd);
       }
     }
-
-    current.push(point);
   }
 
-  if (current.length >= 2) {
-    segments.push(current);
-  }
-
+  flush();
   return segments;
 }
 

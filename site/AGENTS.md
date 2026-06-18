@@ -2,7 +2,10 @@
 
 ## Homepage prerender (SEO)
 
-The build runs `scripts/prerender-catalog.mjs` after `vite build` and injects static HTML into `dist/catalog.html` so crawlers see the catalog without executing JavaScript.
+The build runs `scripts/prerender-catalog.mjs` then `scripts/prerender-home.mjs` after `vite build`:
+
+- `dist/index.html` — landing page with links to catalog and repertoire
+- `dist/catalog.html` — prerendered catalog for `/catalog` (crawlers and first paint)
 
 **Keep `scripts/prerender-catalog.mjs` in sync** when you change homepage catalog layout or markup in:
 
@@ -12,7 +15,7 @@ The build runs `scripts/prerender-catalog.mjs` after `vite build` and injects st
 - `src/components/TableOfContents.jsx`
 - `src/components/PdfLinkList.jsx`
 
-After layout changes, run `npm run build` and confirm `dist/catalog.html` still reflects the homepage structure (piece titles, descriptions, links, TOC).
+After layout changes, run `npm run build` and confirm `dist/index.html` (landing) and `dist/catalog.html` (catalog) still reflect the expected structure.
 
 ## Search Console (manual)
 

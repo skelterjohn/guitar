@@ -8,6 +8,7 @@ import { pieceId } from '../src/utils/pieceId.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const catalogPath = join(__dirname, '../src/data/catalog.yaml');
+const distIndex = join(__dirname, '../dist/index.html');
 const distCatalog = join(__dirname, '../dist/catalog.html');
 
 function escapeHtml(text) {
@@ -110,13 +111,25 @@ ${renderToc(catalog.sections)}
 }
 
 const catalog = yaml.load(readFileSync(catalogPath, 'utf8'));
-const page = readFileSync(distCatalog, 'utf8');
+const template = readFileSync(distIndex, 'utf8');
 const root = '<div id="root"></div>';
+const catalogHtml = renderHome(catalog);
 
-if (!page.includes(root)) {
-  console.error('prerender: expected empty #root in dist/catalog.html');
+if (!template.includes(root)) {
+  console.error('prerender: expected #root in dist/index.html');
   process.exit(1);
 }
 
-writeFileSync(distCatalog, page.replace(root, `<div id="root">${renderHome(catalog)}</div>`));
-console.log(`prerender → ${distCatalog}`);
+const catalogPage = template
+  .replace(
+    '<link rel="canonical" href="https://guitar.skelterjohn.me/" />',
+    '<link rel="canonical" href="https://guitar.skelterjohn.me/catalog" />',
+  )
+  .replace(
+    '<meta property="og:url" content="https://guitar.skelterjohn.me/" />',
+    '<meta property="og:url" content="https://guitar.skelterjohn.me/catalog" />',
+  )
+  .replace(root, `<div id="root">${catalogHtml}</div>`);
+
+writeFileSync(distCatalog, catalogPage);
+console.log(`prerender catalog → ${distCatalog}`);

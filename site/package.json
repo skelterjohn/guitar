@@ -5,13 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "predev": "npm run enrich && node scripts/generate-rep-manifest.mjs",
+    "predev": "npm run enrich",
     "enrich": "node scripts/enrich-catalog.mjs",
     "validate": "node scripts/validate-catalog.mjs",
     "pwa-icons": "node scripts/generate-pwa-icons.mjs",
-    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-pwa-icons.mjs && node scripts/generate-rep-manifest.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-pwa-icons.mjs",
     "build": "vite build",
-    "postbuild": "node scripts/prerender-catalog.mjs && node scripts/fix-pwa-html.mjs",
+    "postbuild": "node scripts/prerender-catalog.mjs && node scripts/prerender-home.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

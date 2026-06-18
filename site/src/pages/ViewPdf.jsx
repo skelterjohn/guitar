@@ -39,15 +39,15 @@ function findPdf(filename, preferRepertoire = false) {
   );
 }
 
-function sectionSiblings(section, currentPiece) {
+function sectionPiecesForNav(section, currentPiece) {
   if (!section || !currentPiece) return [];
 
   return section.pieces
-    .filter((piece) => piece !== currentPiece)
     .map((piece) => ({
       title: piece.title,
       pdfs: piece.pdfs,
       pieceKey: pieceId(section.id, piece.title),
+      isCurrent: piece === currentPiece,
     }))
     .filter((entry) => entry.pdfs[0]?.file);
 }
@@ -99,7 +99,7 @@ export default function ViewPdf() {
       pdfHash={pdf?.hash}
       pdfs={piece?.pdfs ?? []}
       pieceKey={pieceKey}
-      sectionPieces={sectionSiblings(section, piece)}
+      sectionPieces={sectionPiecesForNav(section, piece)}
       backTo={fromRep ? '/rep' : '/'}
       backLabel={fromRep ? 'Repertoire' : 'Catalog'}
       viewState={fromRep ? { from: '/rep' } : undefined}

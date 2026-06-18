@@ -698,6 +698,20 @@ export default function PdfViewer({
             <div className="viewer-toolbar viewer-footer-toolbar">
               <div className="viewer-section-nav">
                 {sectionPieces.map((entry) => {
+                  const className = `pdf-link${entry.isCurrent ? ' pdf-link-active' : ''}`;
+
+                  if (entry.isCurrent) {
+                    return (
+                      <span
+                        key={entry.title}
+                        className={className}
+                        aria-current="page"
+                      >
+                        {entry.title}
+                      </span>
+                    );
+                  }
+
                   const file = pdfFileForPiece(
                     entry.pdfs,
                     getPieceLabelPreference(entry.pieceKey),
@@ -706,14 +720,14 @@ export default function PdfViewer({
                   if (!file) return null;
 
                   return (
-                  <Link
-                    key={entry.title}
-                    className="pdf-link"
-                    to={`/view/${encodeURIComponent(file)}`}
-                    state={viewState}
-                  >
-                    {entry.title}
-                  </Link>
+                    <Link
+                      key={entry.title}
+                      className={className}
+                      to={`/view/${encodeURIComponent(file)}`}
+                      state={viewState}
+                    >
+                      {entry.title}
+                    </Link>
                   );
                 })}
               </div>

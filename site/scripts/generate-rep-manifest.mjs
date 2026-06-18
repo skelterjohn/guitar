@@ -12,7 +12,7 @@ const manifest = {
   short_name: 'rep',
   description: repDescription,
   start_url: '/rep',
-  scope: '/',
+  scope: '/rep/',
   display: 'standalone',
   theme_color: '#f1f5f9',
   background_color: '#f1f5f9',

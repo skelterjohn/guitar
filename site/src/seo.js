@@ -17,6 +17,11 @@ export function pageTitle(name) {
   return name === siteTitle ? siteTitle : `${name} — ${siteTitle}`;
 }
 
+export function viewPath(filename, context = 'catalog') {
+  const base = context === 'rep' ? repPath : catalogPath;
+  return `${base}/view/${encodeURIComponent(filename)}`;
+}
+
 export function viewPageUrl(filename) {
-  return `${siteOrigin}/view/${encodeURIComponent(filename)}`;
+  return `${siteOrigin}${viewPath(filename)}`;
 }

@@ -1,8 +1,15 @@
 import { Link } from 'react-router-dom';
 import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
+import { catalogPath, viewPath } from '../seo.js';
 
-export default function PdfLinkList({ pdfs, currentFile, viewState }) {
+export default function PdfLinkList({
+  pdfs,
+  currentFile,
+  viewState,
+  viewPrefix = catalogPath,
+}) {
   const linkState = { ...viewState, explicitPdf: true };
+  const viewContext = viewPrefix === '/rep' ? 'rep' : 'catalog';
 
   return (
     <div className="pdf-links">
@@ -10,7 +17,7 @@ export default function PdfLinkList({ pdfs, currentFile, viewState }) {
         <Link
           key={pdf.file}
           className={`pdf-link${pdfFilesMatch(pdf.file, currentFile) ? ' pdf-link-active' : ''}`}
-          to={`/view/${encodeURIComponent(pdf.file)}`}
+          to={viewPath(pdf.file, viewContext)}
           state={linkState}
           aria-current={pdf.file === currentFile ? 'page' : undefined}
         >

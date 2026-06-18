@@ -6,24 +6,34 @@ import { defaultDescription, siteOrigin, siteTitle } from './src/seo.js';
 
 const gcsPdfOrigin = 'https://storage.googleapis.com/skelterjohnguitar-pdf';
 
+function servePwaShell(pathname) {
+  if (pathname === '/catalog' || pathname.startsWith('/catalog/')) {
+    return '/catalog.html';
+  }
+  if (pathname === '/rep' || pathname.startsWith('/rep/')) {
+    return '/rep.html';
+  }
+  return null;
+}
+
 export default defineConfig({
   plugins: [
     {
       name: 'pwa-html-entries',
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
-          const path = req.url?.split('?')[0] ?? '';
+          const pathname = req.url?.split('?')[0] ?? '';
 
-          if (path === '/' || path === '') {
+          if (pathname === '/' || pathname === '') {
             res.writeHead(302, { Location: '/catalog' });
             res.end();
             return;
           }
 
-          if (path === '/catalog' || path === '/catalog/') {
-            req.url = req.url.replace(/^\/catalog\/?/, '/catalog.html');
-          } else if (path === '/rep' || path === '/rep/') {
-            req.url = req.url.replace(/^\/rep\/?/, '/rep.html');
+          const shell = servePwaShell(pathname);
+          if (shell) {
+            const query = req.url?.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+            req.url = `${shell}${query}`;
           }
 
           next();
@@ -33,7 +43,14 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png', 'rep.webmanifest'],
+      scope: '/catalog/',
+      includeAssets: [
+        'favicon.svg',
+        'robots.txt',
+        'apple-touch-icon.png',
+        'rep.webmanifest',
+        'sw-rep.js',
+      ],
       manifest: {
         id: `${siteOrigin}/catalog`,
         name: siteTitle,
@@ -43,6 +60,7 @@ export default defineConfig({
         background_color: '#f1f5f9',
         display: 'standalone',
         start_url: '/catalog',
+        scope: '/catalog/',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -65,7 +83,8 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2,webmanifest}'],
         navigateFallback: '/catalog.html',
-        navigateFallbackDenylist: [/^\/pdf/],
+        navigateFallbackAllowlist: [/^\/catalog/],
+        navigateFallbackDenylist: [/^\/pdf/, /^\/rep/],
       },
     }),
   ],

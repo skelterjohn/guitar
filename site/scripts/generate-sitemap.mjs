@@ -14,7 +14,7 @@ const urls = new Set([`${siteOrigin}/catalog`]);
 for (const section of catalog.sections) {
   for (const piece of section.pieces) {
     for (const pdf of piece.pdfs) {
-      urls.add(`${siteOrigin}/view/${encodeURIComponent(pdf.file)}`);
+      urls.add(`${siteOrigin}/catalog/view/${encodeURIComponent(pdf.file)}`);
     }
   }
 }

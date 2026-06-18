@@ -13,7 +13,7 @@ import {
 } from '../utils/pieceLabelPreference.js';
 import ChevronIcon from './ChevronIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
-import { catalogPath } from '../seo.js';
+import { catalogPath, repPath, viewPath } from '../seo.js';
 
 let workerIdle = Promise.resolve();
 
@@ -35,6 +35,7 @@ export default function PdfViewer({
   viewState,
 }) {
   const url = pdfUrl(filename, pdfHash);
+  const viewContext = backTo === repPath ? 'rep' : 'catalog';
   const currentLabel = findPdfByFile(pdfs, filename)?.label;
 
   useEffect(() => {
@@ -600,7 +601,12 @@ export default function PdfViewer({
             <div className="viewer-toolbar-start" ref={toolbarStartRef}>
               <Link to={backTo}>&larr; {backLabel}</Link>
               {pdfs.length > 0 && (
-                <PdfLinkList pdfs={pdfs} currentFile={filename} viewState={viewState} />
+                <PdfLinkList
+                  pdfs={pdfs}
+                  currentFile={filename}
+                  viewState={viewState}
+                  viewPrefix={backTo}
+                />
               )}
             </div>
             <div className="viewer-toolbar-end" ref={toolbarEndRef}>
@@ -726,7 +732,7 @@ export default function PdfViewer({
                     <Link
                       key={entry.title}
                       className={className}
-                      to={`/view/${encodeURIComponent(file)}`}
+                      to={viewPath(file, viewContext)}
                       state={viewState}
                     >
                       {entry.title}

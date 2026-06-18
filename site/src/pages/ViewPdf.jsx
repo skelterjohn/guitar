@@ -4,7 +4,7 @@ import catalog from '../data/catalog.js';
 import repertoire from '../data/repertoire.js';
 import PdfViewer from '../components/PdfViewer.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { catalogPath, pageTitle, repPath, viewPageUrl } from '../seo.js';
+import { catalogPath, pageTitle, repPath, viewPageUrl, viewPath } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
 import {
   getPieceLabelPreference,
@@ -62,7 +62,7 @@ export default function ViewPdf() {
   const { filename } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const fromRep = location.state?.from === repPath;
+  const fromRep = location.pathname.startsWith(`${repPath}/view/`);
   const decoded = decodeURIComponent(filename);
   const { section, piece, pdf } = findPdf(decoded, fromRep);
   const pieceKey =
@@ -77,7 +77,7 @@ export default function ViewPdf() {
     );
     if (!preferredFile || pdfFilesMatch(preferredFile, decoded)) return;
 
-    navigate(`/view/${encodeURIComponent(preferredFile)}`, {
+    navigate(viewPath(preferredFile, fromRep ? 'rep' : 'catalog'), {
       replace: true,
       state: location.state,
     });

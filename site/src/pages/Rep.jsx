@@ -32,7 +32,7 @@ export default function Rep() {
           </div>
           <p>{repDescription}</p>
         </header>
-        <Catalog sections={repertoire.sections} viewState={{ from: repPath }} />
+        <Catalog sections={repertoire.sections} viewState={{ from: repPath }} viewPrefix={repPath} />
       </main>
     </div>
   );

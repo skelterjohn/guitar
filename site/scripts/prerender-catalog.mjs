@@ -22,7 +22,7 @@ function renderPdfLinks(pdfs) {
   return pdfs
     .map(
       (pdf) =>
-        `<a class="pdf-link" href="/view/${encodeURIComponent(pdf.file)}">${escapeHtml(pdf.label)}</a>`,
+        `<a class="pdf-link" href="/catalog/view/${encodeURIComponent(pdf.file)}">${escapeHtml(pdf.label)}</a>`,
     )
     .join('');
 }

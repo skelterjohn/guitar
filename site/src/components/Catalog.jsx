@@ -1,7 +1,7 @@
 import CompositionCard from './CompositionCard.jsx';
 import { pieceId } from '../utils/pieceId.js';
 
-export default function Catalog({ sections, viewState }) {
+export default function Catalog({ sections, viewState, viewPrefix }) {
   return (
     <>
       {sections.map((section) => (
@@ -13,6 +13,7 @@ export default function Catalog({ sections, viewState }) {
               id={pieceId(section.id, piece.title)}
               piece={piece}
               viewState={viewState}
+              viewPrefix={viewPrefix}
             />
           ))}
         </section>

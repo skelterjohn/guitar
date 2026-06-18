@@ -3,9 +3,7 @@ sections:
     title: NJGO 2027
     pieces:
       - title: Breakfast around the Sun
-        description: >-
-          Four parts. Used musescore for the first time in a serious way, since typing is hard these days. Inspirations
-          include Gulli Bjornsson, Olga Amelkina-Vera, and Ray Lynch.
+        description: John Asmuth
         pdfs:
           - label: score
             file: Breakfast around the Sun.pdf
@@ -17,3 +15,59 @@ sections:
             file: Breakfast around the Sun-Classical_Guitar_3.pdf
           - label: guitar 4
             file: Breakfast around the Sun-Classical_Guitar_4.pdf
+      - title: Strummed Heat, Midnight Feet
+        description: Mark Houghton
+        pdfs:
+          - label: score
+            file: Strummed Heat, Midnight Feet_Score.pdf
+          - label: guitar 1
+            file: Part 1_ Strummed Heat, Midnight Feet.pdf
+          - label: guitar 2
+            file: Part 2_ Strummed Heat, Midnight Feet.pdf
+          - label: guitar 3
+            file: Part 3_ Strummed Heat, Midnight Feet.pdf
+          - label: guitar 4
+            file: Part 4_ Strummed Heat, Midnight Feet.pdf
+      - title: Détours
+        description: Bernard Piris
+        pdfs:
+          - label: score
+            file: Score_ Détours.pdf
+          - label: guitar 1
+            file: Guitar 1_ Détours.pdf
+          - label: guitar 2
+            file: Guitar 2_ Détours.pdf
+          - label: guitar 3
+            file: Guitar 3_ Détours.pdf
+          - label: guitar 4
+            file: Guitar 4_ Détours.pdf
+          - label: bass
+            file: Bass_ Détours.pdf
+      - title: Innerland
+        description: Nicolas Kahn
+        pdfs:
+          - label: score
+            file: Innerland_ Score.pdf
+          - label: guitar 1
+            file: Innerland_ Guitar 1.pdf
+          - label: guitar 2
+            file: Innerland_ Guitar 2.pdf
+          - label: guitar 3
+            file: Innerland_ Guitar 3.pdf
+          - label: guitar 4
+            file: Innerland_ Guitar 4.pdf
+      - title: Baião Guri
+        description: Douglas Lora
+        pdfs:
+          - label: score
+            file: Baião Guri -score (published).pdf
+          - label: guitar 1
+            file: Baião Guri part 1 fingered.pdf
+          - label: guitar 2
+            file: Baião Guri part 2 fingered .pdf
+          - label: guitar 3
+            file: Baião Guri part 3 fingered.pdf
+          - label: guitar 4
+            file: Baião Guri part 4 fingered.pdf
+          - label: guitar 5
+            file: Baião Guri part 5 fingered.pdf

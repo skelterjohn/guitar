@@ -542,7 +542,7 @@ export default function AnnotationMenu({
           pointerEvents: isReady ? 'auto' : 'none',
         }}
         role="dialog"
-        aria-label={chordModeActive ? 'Chord' : 'Annotation glyphs'}
+        aria-label={chordModeActive ? 'Chord editor' : 'Annotation glyphs'}
       >
         <div className="annotation-menu-header">
           <div
@@ -550,7 +550,7 @@ export default function AnnotationMenu({
             onPointerDown={startMenuDrag}
           >
             <p className="annotation-menu-title">
-              {chordModeActive ? 'chord' : 'Glyphs'}
+              {chordModeActive ? 'chord editor' : 'Glyphs'}
             </p>
           </div>
           <button

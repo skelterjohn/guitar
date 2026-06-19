@@ -74,6 +74,8 @@ export default function AnnotationMenu({
   pdfZoom = 1,
   annotationColor,
   onAnnotationColorChange,
+  annotationTool,
+  onAnnotationToolChange,
   onClose,
   onGlyphDrop,
   onGlyphDragChange,
@@ -82,7 +84,6 @@ export default function AnnotationMenu({
   const dragRef = useRef(null);
   const menuPositionRef = useRef(null);
   const dismissSuppressUntilRef = useRef(0);
-  const touchDismissRef = useRef(null);
   const [menuPosition, setMenuPosition] = useState(null);
   const [dragPreview, setDragPreview] = useState(null);
 
@@ -123,16 +124,28 @@ export default function AnnotationMenu({
     if (!anchor) return undefined;
 
     const TAP_MOVE_THRESHOLD = 10;
+    let dismissPending = null;
+
+    const isOutsideMenu = (event) => {
+      const menu = menuRef.current;
+      if (!menu) return false;
+      if (event.target && menu.contains(event.target)) return false;
+
+      const rect = menu.getBoundingClientRect();
+      return (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      );
+    };
 
     const onDismissPointerDown = (event) => {
-      if (event.pointerType !== 'touch') return;
       if (performance.now() < dismissSuppressUntilRef.current) return;
       if (dragRef.current) return;
+      if (!isOutsideMenu(event)) return;
 
-      const menu = menuRef.current;
-      if (!menu || menu.contains(event.target)) return;
-
-      touchDismissRef.current = {
+      dismissPending = {
         pointerId: event.pointerId,
         x: event.clientX,
         y: event.clientY,
@@ -140,17 +153,13 @@ export default function AnnotationMenu({
     };
 
     const onDismissPointerUp = (event) => {
-      if (event.pointerType !== 'touch') return;
-
-      const pending = touchDismissRef.current;
-      touchDismissRef.current = null;
+      const pending = dismissPending;
+      dismissPending = null;
 
       if (!pending || event.pointerId !== pending.pointerId) return;
       if (performance.now() < dismissSuppressUntilRef.current) return;
       if (dragRef.current) return;
-
-      const menu = menuRef.current;
-      if (!menu || menu.contains(event.target)) return;
+      if (!isOutsideMenu(event)) return;
 
       const dx = Math.abs(event.clientX - pending.x);
       const dy = Math.abs(event.clientY - pending.y);
@@ -159,18 +168,21 @@ export default function AnnotationMenu({
       onClose();
     };
 
-    const onDismissPointerCancel = () => {
-      touchDismissRef.current = null;
+    const onDismissPointerCancel = (event) => {
+      if (dismissPending?.pointerId === event.pointerId) {
+        dismissPending = null;
+      }
     };
 
-    window.addEventListener('pointerdown', onDismissPointerDown);
-    window.addEventListener('pointerup', onDismissPointerUp);
-    window.addEventListener('pointercancel', onDismissPointerCancel);
+    const capture = { capture: true };
+    window.addEventListener('pointerdown', onDismissPointerDown, capture);
+    window.addEventListener('pointerup', onDismissPointerUp, capture);
+    window.addEventListener('pointercancel', onDismissPointerCancel, capture);
 
     return () => {
-      window.removeEventListener('pointerdown', onDismissPointerDown);
-      window.removeEventListener('pointerup', onDismissPointerUp);
-      window.removeEventListener('pointercancel', onDismissPointerCancel);
+      window.removeEventListener('pointerdown', onDismissPointerDown, capture);
+      window.removeEventListener('pointerup', onDismissPointerUp, capture);
+      window.removeEventListener('pointercancel', onDismissPointerCancel, capture);
     };
   }, [anchor, onClose]);
 
@@ -349,6 +361,24 @@ export default function AnnotationMenu({
     </button>
   );
 
+  const renderToolToggle = (tool, label, content) => (
+    <button
+      type="button"
+      className={
+        annotationTool === tool
+          ? 'annotation-menu-tool-btn annotation-menu-tool-btn--selected'
+          : 'annotation-menu-tool-btn'
+      }
+      onPointerUp={(event) => {
+        event.stopPropagation();
+        onAnnotationToolChange(annotationTool === tool ? null : tool);
+      }}
+      aria-label={label}
+    >
+      {content}
+    </button>
+  );
+
   return createPortal(
     <>
       <div className="annotation-menu-backdrop" aria-hidden="true" />
@@ -419,6 +449,42 @@ export default function AnnotationMenu({
             {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) =>
               renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic'),
             )}
+          </div>
+        </div>
+        <div className="annotation-menu-footer">
+          <div
+            className="annotation-menu-footer-drag"
+            onPointerDown={startMenuDrag}
+          >
+            <div
+              className="annotation-menu-tool-toggle"
+              onPointerDown={(event) => event.stopPropagation()}
+              onPointerUp={(event) => event.stopPropagation()}
+            >
+              {renderToolToggle(
+                'pen',
+                'Pen',
+                <span className="annotation-menu-tool-symbol" aria-hidden="true">
+                  ✏
+                </span>,
+              )}
+              {renderToolToggle(
+                'eraser',
+                'Eraser',
+                <svg viewBox="0 0 16 16" aria-hidden="true" className="annotation-menu-tool-eraser">
+                  <path d="M3.5 6.5 8.5 4.5 13.5 7.5 8.5 9.5Z" fill="#fbcfe8" />
+                  <path d="M3.5 6.5 8.5 9.5 8.5 13.5 3.5 10.5Z" fill="#f472b6" />
+                  <path d="M8.5 9.5 13.5 7.5 13.5 11.5 8.5 13.5Z" fill="#ec4899" />
+                  <path
+                    d="M3.5 6.5 8.5 4.5 13.5 7.5 8.5 9.5 8.5 13.5 3.5 10.5Z"
+                    fill="none"
+                    stroke="rgb(236 72 153)"
+                    strokeWidth="0.75"
+                    strokeLinejoin="round"
+                  />
+                </svg>,
+              )}
+            </div>
           </div>
         </div>
       </div>

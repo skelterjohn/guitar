@@ -96,6 +96,7 @@ export default function PdfViewer({
   const [pageAnnotations, setPageAnnotations] = useState({});
   const [annotationMenu, setAnnotationMenu] = useState(null);
   const [glyphDragActive, setGlyphDragActive] = useState(false);
+  const [annotationTool, setAnnotationTool] = useState(null);
   const [annotationColor, setAnnotationColor] = useState(
     () => getAnnotationColorPreference() ?? PEN_COLOR,
   );
@@ -107,6 +108,8 @@ export default function PdfViewer({
   const lastPenTapRef = useRef(null);
   const saveAnnotationsRef = useRef(null);
   const annotationColorRef = useRef(annotationColor);
+  const annotationMenuRef = useRef(null);
+  const annotationToolRef = useRef(null);
   const onSaveResultRef = useRef(() => {});
 
   onSaveResultRef.current = (saved) => {
@@ -127,6 +130,12 @@ export default function PdfViewer({
   currentPageRef.current = currentPage;
   pdfZoomRef.current = pdfZoom;
   annotationColorRef.current = annotationColor;
+  annotationMenuRef.current = annotationMenu;
+  annotationToolRef.current = annotationTool;
+
+  const isTouchAnnotating =
+    Boolean(annotationMenu) &&
+    (annotationTool === 'pen' || annotationTool === 'eraser');
 
   const scrollToPageTop = (index) => {
     const container = containerRef.current;
@@ -262,6 +271,14 @@ export default function PdfViewer({
     });
   };
 
+  const dismissAnnotationMenu = () => {
+    setGlyphDragActive(false);
+    annotationMenuRef.current = null;
+    annotationToolRef.current = null;
+    setAnnotationMenu(null);
+    setAnnotationTool(null);
+  };
+
   const handleStrokeComplete = (pageNumber, stroke) => {
     const savedStroke = {
       id: createStrokeId(),
@@ -343,25 +360,6 @@ export default function PdfViewer({
         [key]: {
           ...entry,
           glyphs: [...entry.glyphs, glyph],
-        },
-      };
-      persistPageAnnotations(next);
-      return next;
-    });
-  };
-
-  const handleGlyphMove = (pageNumber, glyphId, x, y) => {
-    setPageAnnotations((current) => {
-      const key = String(pageNumber);
-      const entry = normalizePageEntry(current[key]);
-      const glyphs = entry.glyphs.map((glyph) =>
-        glyph.id === glyphId ? { ...glyph, x, y } : glyph,
-      );
-      const next = {
-        ...current,
-        [key]: {
-          ...entry,
-          glyphs,
         },
       };
       persistPageAnnotations(next);
@@ -638,6 +636,8 @@ export default function PdfViewer({
       tapStartY = event.clientY;
 
       if (event.pointerType === 'touch') {
+        if (annotationMenuRef.current) return;
+
         clearLongPress();
         longPressTimer = setTimeout(() => {
           longPressTimer = null;
@@ -667,6 +667,12 @@ export default function PdfViewer({
 
       if (longPressTriggered) {
         longPressTriggered = false;
+        tapStartX = null;
+        tapStartY = null;
+        return;
+      }
+
+      if (annotationMenuRef.current) {
         tapStartX = null;
         tapStartY = null;
         return;
@@ -731,7 +737,11 @@ export default function PdfViewer({
     if (!container) return undefined;
 
     penScrollLockRef.current?.destroy();
-    penScrollLockRef.current = createPenScrollLock(container);
+    penScrollLockRef.current = createPenScrollLock(container, () => {
+      if (!annotationMenuRef.current) return false;
+      const tool = annotationToolRef.current;
+      return tool === 'pen' || tool === 'eraser';
+    });
 
     return () => {
       penScrollLockRef.current?.destroy();
@@ -957,7 +967,7 @@ export default function PdfViewer({
       <div
         className={`viewer-content${headerHidden ? ' is-header-hidden' : ''}${
           !footerHidden && sectionPieces.length > 0 ? ' is-footer-visible' : ''
-        }`}
+        }${isTouchAnnotating ? ' is-touch-annotating' : ''}`}
         ref={containerRef}
       >
         {status === 'loading' && <p className="viewer-status">Loading…</p>}
@@ -993,6 +1003,9 @@ export default function PdfViewer({
                     strokes={pageEntry.strokes}
                     glyphs={pageEntry.glyphs}
                     annotationColor={annotationColor}
+                    annotationTool={annotationTool}
+                    isAnnotationMenuOpen={Boolean(annotationMenu)}
+                    touchDrawActive={isTouchAnnotating}
                     isGlyphDragActive={glyphDragActive}
                     lastPenTapRef={lastPenTapRef}
                     onStrokeComplete={handleStrokeComplete}
@@ -1000,7 +1013,7 @@ export default function PdfViewer({
                     onOpenMenu={(clientX, clientY) =>
                       setAnnotationMenu({ clientX, clientY })
                     }
-                    onGlyphMove={handleGlyphMove}
+                    onDismissMenu={dismissAnnotationMenu}
                   />
                 </div>
               </div>
@@ -1073,10 +1086,9 @@ export default function PdfViewer({
         pdfZoom={pdfZoom}
         annotationColor={annotationColor}
         onAnnotationColorChange={handleAnnotationColorChange}
-        onClose={() => {
-          setGlyphDragActive(false);
-          setAnnotationMenu(null);
-        }}
+        onClose={dismissAnnotationMenu}
+        annotationTool={annotationTool}
+        onAnnotationToolChange={setAnnotationTool}
         onGlyphDrop={handleGlyphDrop}
         onGlyphDragChange={setGlyphDragActive}
       />

@@ -656,6 +656,11 @@ body {
   z-index: 1;
 }
 
+.annotation-overlay.is-touch-active {
+  pointer-events: auto;
+  touch-action: none;
+}
+
 .annotation-overlay-canvas {
   position: absolute;
   inset: 0;
@@ -674,6 +679,15 @@ body {
   overflow: hidden;
 }
 
+.viewer-content.is-touch-annotating {
+  touch-action: none;
+}
+
+.viewer-content.is-touch-annotating .viewer-page-frame,
+.viewer-content.is-touch-annotating .viewer-page-slot canvas {
+  touch-action: none;
+}
+
 .annotation-eraser-cursor {
   stroke: rgb(236 72 153 / 70%);
   stroke-width: 1;
@@ -685,17 +699,7 @@ body {
 }
 
 .annotation-glyph-group {
-  pointer-events: all;
-  cursor: grab;
-  touch-action: none;
-}
-
-.annotation-glyph-group.is-dragging {
-  cursor: grabbing;
-}
-
-.annotation-glyph-hit {
-  pointer-events: all;
+  pointer-events: none;
 }
 
 .annotation-menu-backdrop {
@@ -774,6 +778,67 @@ body {
 }
 
 .annotation-menu-color-swatch--selected {
+  box-shadow:
+    0 0 0 1px rgb(15 23 42 / 85%),
+    0 0 0 2px #fff;
+}
+
+.annotation-menu-footer {
+  margin: 0.375rem -0.5rem -0.375rem;
+  padding: 0.375rem 0.5rem;
+  border-top: 1px solid rgb(148 163 184 / 22%);
+  border-radius: 0 0 0.5rem 0.5rem;
+  background: rgb(100 116 139 / 45%);
+  touch-action: none;
+  user-select: none;
+}
+
+.annotation-menu-footer-drag {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  cursor: grab;
+}
+
+.annotation-menu-footer-drag:active {
+  cursor: grabbing;
+}
+
+.annotation-menu-footer:active {
+  background: rgb(100 116 139 / 55%);
+}
+
+.annotation-menu-tool-toggle {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.annotation-menu-tool-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid rgb(148 163 184 / 35%);
+  border-radius: 0.375rem;
+  background: rgb(15 23 42 / 50%);
+  color: #e2e8f0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.annotation-menu-tool-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.annotation-menu-tool-symbol {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.annotation-menu-tool-btn--selected {
   box-shadow:
     0 0 0 1px rgb(15 23 42 / 85%),
     0 0 0 2px #fff;

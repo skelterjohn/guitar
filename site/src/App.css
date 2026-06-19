@@ -656,9 +656,11 @@ body {
   z-index: 1;
 }
 
+.annotation-overlay.is-menu-active,
 .annotation-overlay.is-touch-active {
   pointer-events: auto;
   touch-action: none;
+  user-select: none;
 }
 
 .annotation-overlay-canvas {
@@ -789,7 +791,7 @@ body {
   padding: 0;
   border: 1px solid rgb(148 163 184 / 45%);
   border-radius: 0.125rem;
-  cursor: pointer;
+  cursor: default;
   touch-action: manipulation;
 }
 
@@ -845,7 +847,7 @@ body {
   border-radius: 0.375rem;
   background: rgb(15 23 42 / 50%);
   color: #e2e8f0;
-  cursor: pointer;
+  cursor: default;
   touch-action: manipulation;
 }
 
@@ -879,11 +881,7 @@ body {
 .annotation-menu-text-row {
   width: 100%;
   touch-action: none;
-  cursor: grab;
-}
-
-.annotation-menu-text-row:active {
-  cursor: grabbing;
+  cursor: default;
 }
 
 .annotation-menu-text-input {
@@ -899,6 +897,7 @@ body {
   font-weight: 600;
   line-height: 1.2;
   touch-action: manipulation;
+  cursor: text;
 }
 
 .annotation-menu-text-input:focus {
@@ -918,12 +917,8 @@ body {
   border-radius: 0.375rem;
   background: rgb(15 23 42 / 50%);
   color: #f8fafc;
-  cursor: grab;
+  cursor: default;
   touch-action: none;
-}
-
-.annotation-menu-glyph:active {
-  cursor: grabbing;
 }
 
 .annotation-menu-glyph-symbol {

@@ -69,7 +69,7 @@ export function fingerGlyphDragOffsetPx() {
 }
 
 export function glyphDragClientPosition(pointerType, clientX, clientY) {
-  if (pointerType === 'pen') {
+  if (pointerType === 'pen' || pointerType === 'mouse') {
     return { clientX, clientY };
   }
 

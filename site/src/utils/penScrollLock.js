@@ -4,7 +4,13 @@ export function createPenScrollLock(container, shouldLockTouch = () => false) {
 
   const shouldLockPointer = (event) => {
     if (event.pointerType === 'pen') return true;
-    if (event.pointerType === 'touch' && shouldLockTouch()) return true;
+    if (event.pointerType === 'mouse' && event.button !== 0) return false;
+    if (
+      (event.pointerType === 'touch' || event.pointerType === 'mouse') &&
+      shouldLockTouch()
+    ) {
+      return true;
+    }
     return false;
   };
 

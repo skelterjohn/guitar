@@ -70,6 +70,7 @@ export default function AnnotationOverlay({
   annotationColor = PEN_COLOR,
   annotationTool = null,
   isAnnotationMenuOpen = false,
+  menuPointerActive = false,
   touchDrawActive = false,
 }) {
   const overlayRef = useRef(null);
@@ -132,13 +133,24 @@ export default function AnnotationOverlay({
 
   useEffect(() => {
     const overlay = overlayRef.current;
-    const frame = overlay?.parentElement;
-    if (!frame) return undefined;
+    if (!overlay) return undefined;
+
+    const target = menuPointerActive ? overlay : overlay.parentElement;
+    if (!target) return undefined;
 
     const samplePressure = (event) => {
-      if (event.pointerType === 'touch') return 1;
+      if (event.pointerType === 'touch' || event.pointerType === 'mouse') return 1;
       return effectivePressure(event);
     };
+
+    const isMenuToolActive = () =>
+      isMenuOpenRef.current &&
+      (annotationToolRef.current === 'pen' ||
+        annotationToolRef.current === 'eraser');
+
+    const isMenuToolPointer = (event) =>
+      (event.pointerType === 'touch' || event.pointerType === 'mouse') &&
+      isMenuToolActive();
 
     const appendPoints = (event) => {
       const active = activeStrokeRef.current;
@@ -226,11 +238,9 @@ export default function AnnotationOverlay({
 
     const canAnnotatePointer = (event) => {
       if (event.pointerType === 'pen') return true;
-      if (event.pointerType === 'touch' && isMenuOpenRef.current) {
-        return (
-          annotationToolRef.current === 'pen' ||
-          annotationToolRef.current === 'eraser'
-        );
+      if (isMenuToolActive()) {
+        if (event.pointerType === 'touch') return true;
+        if (event.pointerType === 'mouse') return true;
       }
       return false;
     };
@@ -238,15 +248,15 @@ export default function AnnotationOverlay({
     const onPointerDown = (event) => {
       if (!canAnnotatePointer(event)) return;
       if (isGlyphDragActiveRef.current) return;
-      if (event.pointerType === 'touch' && !isMenuOpenRef.current) return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
 
       event.preventDefault();
       event.stopPropagation();
-      frame.setPointerCapture(event.pointerId);
+      target.setPointerCapture(event.pointerId);
 
       const isPen = event.pointerType === 'pen';
-      const isTouchEraser =
-        event.pointerType === 'touch' && annotationToolRef.current === 'eraser';
+      const isToolEraser =
+        isMenuToolPointer(event) && annotationToolRef.current === 'eraser';
 
       if (
         isPen &&
@@ -272,12 +282,17 @@ export default function AnnotationOverlay({
       activeStrokeRef.current = null;
       setDraftStroke(null);
 
+      if (isMenuToolPointer(event) && annotationToolRef.current === 'pen') {
+        beginPenStroke(event, event.clientX, event.clientY);
+        return;
+      }
+
       const pending = {
         pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
         longPressTriggered: false,
-        touchEraser: isTouchEraser,
+        touchEraser: isToolEraser,
       };
 
       if (isPen) {
@@ -294,8 +309,7 @@ export default function AnnotationOverlay({
     };
 
     const onPointerMove = (event) => {
-      if (!frame.hasPointerCapture(event.pointerId)) return;
-      if (!canAnnotatePointer(event)) return;
+      if (!target.hasPointerCapture(event.pointerId)) return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -318,9 +332,9 @@ export default function AnnotationOverlay({
           event.clientY - pending.startY,
         );
         if (moved > TAP_MOVE_THRESHOLD) {
-          const touchEraser = pending.touchEraser;
+          const toolEraser = pending.touchEraser;
           clearPenPending(pending);
-          if (touchEraser) {
+          if (toolEraser) {
             eraserStrokeRef.current = true;
             applyEraserSample(event);
           } else {
@@ -341,12 +355,11 @@ export default function AnnotationOverlay({
     };
 
     const onPointerUp = (event) => {
-      if (!canAnnotatePointer(event)) return;
-      if (!frame.hasPointerCapture(event.pointerId)) return;
+      if (!target.hasPointerCapture(event.pointerId)) return;
 
       event.preventDefault();
       event.stopPropagation();
-      frame.releasePointerCapture(event.pointerId);
+      target.releasePointerCapture(event.pointerId);
 
       if (eraserStrokeRef.current) {
         clearPenPending();
@@ -422,8 +435,8 @@ export default function AnnotationOverlay({
     };
 
     const onPointerCancel = (event) => {
-      if (frame.hasPointerCapture(event.pointerId)) {
-        frame.releasePointerCapture(event.pointerId);
+      if (target.hasPointerCapture(event.pointerId)) {
+        target.releasePointerCapture(event.pointerId);
       }
 
       clearPenPending();
@@ -434,18 +447,18 @@ export default function AnnotationOverlay({
     };
 
     const options = { capture: true, passive: false };
-    frame.addEventListener('pointerdown', onPointerDown, options);
-    frame.addEventListener('pointermove', onPointerMove, options);
-    frame.addEventListener('pointerup', onPointerUp, options);
-    frame.addEventListener('pointercancel', onPointerCancel, options);
+    target.addEventListener('pointerdown', onPointerDown, options);
+    target.addEventListener('pointermove', onPointerMove, options);
+    target.addEventListener('pointerup', onPointerUp, options);
+    target.addEventListener('pointercancel', onPointerCancel, options);
 
     return () => {
-      frame.removeEventListener('pointerdown', onPointerDown, options);
-      frame.removeEventListener('pointermove', onPointerMove, options);
-      frame.removeEventListener('pointerup', onPointerUp, options);
-      frame.removeEventListener('pointercancel', onPointerCancel, options);
+      target.removeEventListener('pointerdown', onPointerDown, options);
+      target.removeEventListener('pointermove', onPointerMove, options);
+      target.removeEventListener('pointerup', onPointerUp, options);
+      target.removeEventListener('pointercancel', onPointerCancel, options);
     };
-  }, [pageNumber, lastPenTapRef]);
+  }, [pageNumber, lastPenTapRef, menuPointerActive]);
 
   const visibleStrokes = draftStroke ? [...strokes, draftStroke] : strokes;
   const glyphSizePx = annotationGlyphSizePx();
@@ -455,7 +468,9 @@ export default function AnnotationOverlay({
       ref={overlayRef}
       className={`annotation-overlay${draftStroke ? ' is-drawing' : ''}${
         eraserCursor ? ' is-erasing' : ''
-      }${touchDrawActive ? ' is-touch-active' : ''}`}
+      }${menuPointerActive ? ' is-menu-active' : ''}${
+        touchDrawActive ? ' is-touch-active' : ''
+      }`}
       aria-hidden="true"
     >
       {layoutSize.width > 0 && layoutSize.height > 0 && (

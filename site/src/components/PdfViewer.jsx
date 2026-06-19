@@ -735,10 +735,18 @@ export default function PdfViewer({
       tapStartY = null;
     };
 
+    const onContextMenu = (event) => {
+      if (!event.target.closest('.viewer-page-frame')) return;
+
+      event.preventDefault();
+      setAnnotationMenu({ clientX: event.clientX, clientY: event.clientY });
+    };
+
     container.addEventListener('pointerdown', onPointerDown);
     container.addEventListener('pointermove', onPointerMove);
     container.addEventListener('pointerup', onPointerUp);
     container.addEventListener('pointercancel', onPointerCancel);
+    container.addEventListener('contextmenu', onContextMenu);
 
     const resizeObserver = new ResizeObserver(() => {
       updateCurrentPage();
@@ -756,6 +764,7 @@ export default function PdfViewer({
       container.removeEventListener('pointermove', onPointerMove);
       container.removeEventListener('pointerup', onPointerUp);
       container.removeEventListener('pointercancel', onPointerCancel);
+      container.removeEventListener('contextmenu', onContextMenu);
       resizeObserver.disconnect();
     };
   }, [status, pageCount]);
@@ -1035,6 +1044,7 @@ export default function PdfViewer({
                     annotationColor={annotationColor}
                     annotationTool={annotationTool}
                     isAnnotationMenuOpen={Boolean(annotationMenu)}
+                    menuPointerActive={Boolean(annotationMenu)}
                     touchDrawActive={isTouchAnnotating}
                     isGlyphDragActive={glyphDragActive}
                     lastPenTapRef={lastPenTapRef}

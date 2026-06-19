@@ -9,10 +9,18 @@ import {
   annotationGlyphSizePx,
   getGlyphById,
   isTextGlyph,
+  isChordGlyph,
   TEXT_GLYPH_DEFAULT,
   TEXT_GLYPH_ID,
 } from '../data/annotationGlyphs.js';
+import ChordDiagram from './ChordDiagram.jsx';
 import ChordGridEditor, { ChordGridIcon } from './ChordGridEditor.jsx';
+import {
+  CHORD_GLYPH_ID,
+  CHORD_ROMAN_NUMERAL_OFF,
+  chordGlyphRenderWidthPx,
+  serializeChordDiagram,
+} from '../data/chordGrid.js';
 import { pageDropFromClientPoint } from '../utils/annotationPages.js';
 import { ANNOTATION_COLORS } from '../utils/annotationColorPreference.js';
 import { glyphDragClientPosition } from '../utils/stylusInput.js';
@@ -95,8 +103,14 @@ export default function AnnotationMenu({
   const [menuPosition, setMenuPosition] = useState(null);
   const [dragPreview, setDragPreview] = useState(null);
   const [menuText, setMenuText] = useState(TEXT_GLYPH_DEFAULT);
+  const [chordMarks, setChordMarks] = useState(() => new Map());
+  const [chordRomanNumeral, setChordRomanNumeral] = useState(CHORD_ROMAN_NUMERAL_OFF);
+  const chordMarksRef = useRef(chordMarks);
+  const chordRomanNumeralRef = useRef(chordRomanNumeral);
 
   menuTextRef.current = menuText;
+  chordMarksRef.current = chordMarks;
+  chordRomanNumeralRef.current = chordRomanNumeral;
 
   const setClampedMenuPosition = (left, top) => {
     const menu = menuRef.current;
@@ -130,6 +144,8 @@ export default function AnnotationMenu({
     setMenuPosition(next);
     dismissSuppressUntilRef.current = performance.now() + 400;
     setMenuText(TEXT_GLYPH_DEFAULT);
+    setChordMarks(new Map());
+    setChordRomanNumeral(CHORD_ROMAN_NUMERAL_OFF);
   }, [anchor]);
 
   useEffect(() => {
@@ -298,6 +314,7 @@ export default function AnnotationMenu({
         glyphId: drag.glyphId,
         symbol: drag.symbol,
         text: drag.text,
+        chord: drag.chord,
         ...glyphDragClientPosition(drag.pointerType, event.clientX, event.clientY),
       });
     };
@@ -344,6 +361,7 @@ export default function AnnotationMenu({
         x: drop.x,
         y: drop.y,
         text: drag.text,
+        chord: drag.chord,
       });
     };
 
@@ -404,6 +422,32 @@ export default function AnnotationMenu({
     setDragPreview({
       glyphId: glyph.id,
       symbol: glyph.symbol,
+      ...glyphDragClientPosition(
+        event.pointerType,
+        event.clientX,
+        event.clientY,
+      ),
+    });
+  };
+
+  const startChordGlyphDrag = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const chord = serializeChordDiagram(
+      chordMarksRef.current,
+      chordRomanNumeralRef.current,
+    );
+    dragRef.current = {
+      type: 'glyph',
+      glyphId: CHORD_GLYPH_ID,
+      chord,
+      pointerId: event.pointerId,
+      pointerType: event.pointerType,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragPreview({
+      glyphId: CHORD_GLYPH_ID,
+      chord,
       ...glyphDragClientPosition(
         event.pointerType,
         event.clientX,
@@ -579,7 +623,15 @@ export default function AnnotationMenu({
             }
             aria-hidden={!chordModeActive}
           >
-            <ChordGridEditor />
+            <ChordGridEditor
+              marks={chordMarks}
+              onMarksChange={setChordMarks}
+              romanNumeral={chordRomanNumeral}
+              onRomanNumeralChange={setChordRomanNumeral}
+              glyphSizePx={glyphSizePx}
+              annotationColor={annotationColor}
+              onChordGlyphPointerDown={startChordGlyphDrag}
+            />
           </div>
         </div>
         <div className="annotation-menu-footer">
@@ -628,22 +680,45 @@ export default function AnnotationMenu({
       {dragPreview && (
         <div
           className={`annotation-glyph-drag-preview${
-            isTextGlyph(dragPreview.glyphId) ? ' annotation-glyph-drag-preview--text' : ''
-          }`}
+            isTextGlyph(dragPreview.glyphId)
+              ? ' annotation-glyph-drag-preview--text'
+              : ''
+          }${isChordGlyph(dragPreview.glyphId) ? ' annotation-glyph-drag-preview--chord' : ''}`}
           style={{
             left: `${dragPreview.clientX}px`,
             top: `${dragPreview.clientY}px`,
-            fontSize: `${glyphSizePx}px`,
-            color: annotationColor,
-            ...(previewGlyph?.fontFamily
-              ? { fontFamily: previewGlyph.fontFamily }
-              : {}),
-            ...(previewGlyph?.fontStyle ? { fontStyle: previewGlyph.fontStyle } : {}),
-            ...(previewGlyph?.fontWeight ? { fontWeight: previewGlyph.fontWeight } : {}),
+            ...(isChordGlyph(dragPreview.glyphId)
+              ? {}
+              : {
+                  fontSize: `${glyphSizePx}px`,
+                  color: annotationColor,
+                  ...(previewGlyph?.fontFamily
+                    ? { fontFamily: previewGlyph.fontFamily }
+                    : {}),
+                  ...(previewGlyph?.fontStyle
+                    ? { fontStyle: previewGlyph.fontStyle }
+                    : {}),
+                  ...(previewGlyph?.fontWeight
+                    ? { fontWeight: previewGlyph.fontWeight }
+                    : {}),
+                }),
           }}
           aria-hidden="true"
         >
-          {dragPreview.text ?? dragPreview.symbol}
+          {isChordGlyph(dragPreview.glyphId) ? (
+            <ChordDiagram
+              marks={dragPreview.chord?.marks ?? []}
+              romanNumeral={dragPreview.chord?.romanNumeral ?? CHORD_ROMAN_NUMERAL_OFF}
+              widthPx={chordGlyphRenderWidthPx(glyphSizePx)}
+              color={annotationColor}
+              forGlyph
+              numeralSizePx={glyphSizePx}
+              lineClassName="annotation-menu-chord-grid-lines"
+              numeralClassName="annotation-menu-chord-diagram-numeral annotation-menu-chord-diagram-numeral--glyph"
+            />
+          ) : (
+            dragPreview.text ?? dragPreview.symbol
+          )}
         </div>
       )}
     </>,

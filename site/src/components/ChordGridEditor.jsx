@@ -1,50 +1,22 @@
-import { useState } from 'react';
+import ChordDiagram from './ChordDiagram.jsx';
 import ChordRomanNumeralWheel from './ChordRomanNumeralWheel.jsx';
 import {
-  CHORD_GRID_DOT_RADIUS,
-  CHORD_GRID_HIT_RADIUS,
-  CHORD_GRID_HORIZONTAL_LINES,
+  CHORD_GRID_HIT_DISPLAY_RADIUS,
   CHORD_GRID_HORIZONTAL_X1,
   CHORD_GRID_HORIZONTAL_X2,
   CHORD_GRID_LEFT_COLUMN_X,
-  CHORD_GRID_LINE_Y1,
-  CHORD_GRID_LINE_Y2,
   CHORD_GRID_MARK_FILLED,
   CHORD_GRID_MARK_OUTLINE,
-  CHORD_GRID_VERTICAL_LINES,
   CHORD_GRID_VIEW_HEIGHT,
   CHORD_GRID_VIEW_WIDTH,
-  CHORD_ROMAN_NUMERAL_OFF,
+  chordDiagramWidthPx,
   chordGridIntersectionKey,
   chordGridIntersections,
 } from '../data/chordGrid.js';
-
-function ChordGridLines({ className }) {
-  return (
-    <g className={className}>
-      {CHORD_GRID_VERTICAL_LINES.map((x) => (
-        <line
-          key={`v-${x}`}
-          x1={x}
-          y1={CHORD_GRID_LINE_Y1}
-          x2={x}
-          y2={CHORD_GRID_LINE_Y2}
-          stroke="currentColor"
-        />
-      ))}
-      {CHORD_GRID_HORIZONTAL_LINES.map((y) => (
-        <line
-          key={`h-${y}`}
-          x1={CHORD_GRID_HORIZONTAL_X1}
-          y1={y}
-          x2={CHORD_GRID_HORIZONTAL_X2}
-          y2={y}
-          stroke="currentColor"
-        />
-      ))}
-    </g>
-  );
-}
+import {
+  ChordGridLinesLayer,
+  ChordGridMarkCircles,
+} from './chordGridRender.jsx';
 
 function clearRowMarks(markMap, rowY, keepKey = null) {
   for (const existingKey of [...markMap.keys()]) {
@@ -57,15 +29,20 @@ function clearRowMarks(markMap, rowY, keepKey = null) {
   }
 }
 
-export default function ChordGridEditor() {
-  const [marks, setMarks] = useState(() => new Map());
-  const [romanNumeral, setRomanNumeral] = useState(CHORD_ROMAN_NUMERAL_OFF);
-
+export default function ChordGridEditor({
+  marks,
+  onMarksChange,
+  romanNumeral,
+  onRomanNumeralChange,
+  glyphSizePx,
+  annotationColor,
+  onChordGlyphPointerDown,
+}) {
   const handleIntersectionClick = (x, y) => {
     const key = chordGridIntersectionKey(x, y);
 
     if (x === CHORD_GRID_LEFT_COLUMN_X) {
-      setMarks((current) => {
+      onMarksChange((current) => {
         const next = new Map(current);
         const mark = next.get(key);
 
@@ -83,7 +60,7 @@ export default function ChordGridEditor() {
       return;
     }
 
-    setMarks((current) => {
+    onMarksChange((current) => {
       const next = new Map(current);
 
       if (current.get(key) === CHORD_GRID_MARK_FILLED) {
@@ -97,76 +74,70 @@ export default function ChordGridEditor() {
     });
   };
 
-  return (
-    <div className="annotation-menu-chord-editor">
-      <div className="annotation-menu-chord-editor-column">
-        <div className="annotation-menu-chord-numeral-wheel-wrap">
-          <ChordRomanNumeralWheel
-            value={romanNumeral}
-            onChange={setRomanNumeral}
-          />
-        </div>
-        <svg
-        viewBox={`0 0 ${CHORD_GRID_VIEW_WIDTH} ${CHORD_GRID_VIEW_HEIGHT}`}
-        className="annotation-menu-chord-grid"
-        preserveAspectRatio="xMinYMin meet"
-        aria-label="Chord diagram"
-      >
-      <ChordGridLines className="annotation-menu-chord-grid-lines" />
-      {chordGridIntersections().map(({ x, y }) => {
-        const key = chordGridIntersectionKey(x, y);
-        const mark = marks.get(key);
+  const diagramWidthPx = chordDiagramWidthPx(glyphSizePx);
 
-        return (
-          <g key={key}>
-            <circle
-              cx={x}
-              cy={y}
-              r={CHORD_GRID_HIT_RADIUS}
-              className="annotation-menu-chord-grid-intersection"
-              onPointerDown={(event) => event.stopPropagation()}
-              onPointerUp={(event) => {
-                event.stopPropagation();
-                handleIntersectionClick(x, y);
-              }}
+  return (
+    <>
+      <div className="annotation-menu-chord-editor">
+        <div className="annotation-menu-chord-editor-column">
+          <div className="annotation-menu-chord-numeral-wheel-wrap">
+            <ChordRomanNumeralWheel
+              value={romanNumeral}
+              onChange={onRomanNumeralChange}
             />
-            {mark === CHORD_GRID_MARK_FILLED && (
-              <circle
-                cx={x}
-                cy={y}
-                r={CHORD_GRID_DOT_RADIUS}
-                className="annotation-menu-chord-grid-dot"
-                fill="#fff"
-              />
-            )}
-            {mark === CHORD_GRID_MARK_OUTLINE && (
-              <circle
-                cx={x}
-                cy={y}
-                r={CHORD_GRID_DOT_RADIUS}
-                className="annotation-menu-chord-grid-dot annotation-menu-chord-grid-dot--outline"
-                stroke="#fff"
-              />
-            )}
-          </g>
-        );
-      })}
-      </svg>
+          </div>
+          <svg
+            viewBox={`0 0 ${CHORD_GRID_VIEW_WIDTH} ${CHORD_GRID_VIEW_HEIGHT}`}
+            className="annotation-menu-chord-grid"
+            preserveAspectRatio="xMinYMin meet"
+            aria-label="Chord diagram"
+          >
+            <ChordGridLinesLayer className="annotation-menu-chord-grid-lines" marks={marks} />
+            {chordGridIntersections().map(({ x, y }) => {
+              const key = chordGridIntersectionKey(x, y);
+
+              return (
+                <circle
+                  key={key}
+                  cx={x}
+                  cy={y}
+                  r={CHORD_GRID_HIT_DISPLAY_RADIUS}
+                  className="annotation-menu-chord-grid-intersection"
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onPointerUp={(event) => {
+                    event.stopPropagation();
+                    handleIntersectionClick(x, y);
+                  }}
+                />
+              );
+            })}
+            <ChordGridMarkCircles marks={marks} />
+          </svg>
+        </div>
       </div>
-    </div>
+      <button
+        type="button"
+        className="annotation-menu-glyph annotation-menu-chord-glyph-drag"
+        style={{
+          minWidth: `${diagramWidthPx + 12}px`,
+          minHeight: `${(diagramWidthPx * CHORD_GRID_VIEW_HEIGHT) / CHORD_GRID_VIEW_WIDTH + 12}px`,
+        }}
+        aria-label="Drag chord onto score"
+        onPointerDown={onChordGlyphPointerDown}
+      >
+        <ChordDiagram
+          marks={marks}
+          romanNumeral={romanNumeral}
+          widthPx={diagramWidthPx}
+          color={annotationColor}
+          forGlyph
+          numeralSizePx={glyphSizePx}
+          lineClassName="annotation-menu-chord-grid-lines"
+          numeralClassName="annotation-menu-chord-diagram-numeral annotation-menu-chord-diagram-numeral--glyph"
+        />
+      </button>
+    </>
   );
 }
 
-export function ChordGridIcon({ sizePx }) {
-  return (
-    <svg
-      viewBox={`0 0 ${CHORD_GRID_VIEW_WIDTH} ${CHORD_GRID_VIEW_HEIGHT}`}
-      width={sizePx}
-      height={(sizePx * CHORD_GRID_VIEW_HEIGHT) / CHORD_GRID_VIEW_WIDTH}
-      className="annotation-menu-chord-grid-icon"
-      aria-hidden="true"
-    >
-      <ChordGridLines className="annotation-menu-chord-grid-icon-lines" />
-    </svg>
-  );
-}
+export { ChordGridIcon } from './ChordDiagram.jsx';

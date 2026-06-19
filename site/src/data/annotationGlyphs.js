@@ -1,3 +1,9 @@
+import {
+  CHORD_GLYPH_ID,
+  CHORD_ROMAN_NUMERAL_OFF,
+  chordGlyphRenderHeightPx,
+  chordGlyphRenderWidthPx,
+} from './chordGrid.js';
 import { measureCssPxPerMm } from '../utils/stylusInput.js';
 
 export const GLYPH_SIZE_MM = 5;
@@ -84,6 +90,11 @@ export function getGlyphById(id) {
 export const TEXT_GLYPH_ID = 'text';
 export const TEXT_GLYPH_DEFAULT = 'text';
 
+export function isChordGlyph(typeOrGlyph) {
+  const type = typeof typeOrGlyph === 'string' ? typeOrGlyph : typeOrGlyph?.type;
+  return type === CHORD_GLYPH_ID;
+}
+
 export function isTextGlyph(typeOrGlyph) {
   const type = typeof typeOrGlyph === 'string' ? typeOrGlyph : typeOrGlyph?.type;
   return type === TEXT_GLYPH_ID;
@@ -101,6 +112,12 @@ export function glyphEraseRadiusPx(glyph, glyphSizePx) {
   if (isTextGlyph(glyph)) {
     const text = glyphDisplayText(glyph);
     return glyphSizePx * Math.max(GLYPH_ERASE_RADIUS_RATIO, text.length * 0.28);
+  }
+  if (isChordGlyph(glyph)) {
+    const diagramWidthPx = chordGlyphRenderWidthPx(glyphSizePx);
+    const showNumeral = glyph.chord?.romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
+    const diagramHeightPx = chordGlyphRenderHeightPx(glyphSizePx, showNumeral);
+    return Math.hypot(diagramWidthPx, diagramHeightPx) * 0.38;
   }
   return glyphSizePx * GLYPH_ERASE_RADIUS_RATIO;
 }

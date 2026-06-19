@@ -1073,6 +1073,39 @@ body {
   cursor: grabbing;
 }
 
+.annotation-menu-chord-glyph-drag {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.annotation-chord-diagram {
+  display: block;
+  pointer-events: none;
+}
+
+.annotation-chord-diagram-lines line {
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.annotation-chord-diagram-dot,
+.annotation-menu-chord-grid-dot {
+  pointer-events: none;
+}
+
+.annotation-chord-diagram-dot--outline,
+.annotation-menu-chord-grid-dot--outline {
+  fill: none;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.annotation-glyph-drag-preview--chord {
+  line-height: 0;
+}
+
 .annotation-menu-chord-grid {
   display: block;
   flex: 1 1 auto;
@@ -1096,16 +1129,6 @@ body {
 .annotation-menu-chord-grid-intersection {
   fill: transparent;
   cursor: pointer;
-}
-
-.annotation-menu-chord-grid-dot {
-  pointer-events: none;
-}
-
-.annotation-menu-chord-grid-dot--outline {
-  fill: none;
-  stroke-width: 1px;
-  vector-effect: non-scaling-stroke;
 }
 
 .annotation-menu-glyphs {

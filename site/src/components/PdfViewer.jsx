@@ -30,6 +30,7 @@ import {
 import {
   createPenScrollLock,
 } from '../utils/penScrollLock.js';
+import { CHORD_GLYPH_ID } from '../data/chordGrid.js';
 import { GLYPH_SIZE_MM, glyphEraseRadiusPx, isTextGlyph, TEXT_GLYPH_DEFAULT, TEXT_GLYPH_ID } from '../data/annotationGlyphs.js';
 import {
   applyPartialEraser,
@@ -363,7 +364,7 @@ export default function PdfViewer({
     });
   };
 
-  const handleGlyphDrop = ({ pageNumber, glyphId, x, y, text }) => {
+  const handleGlyphDrop = ({ pageNumber, glyphId, x, y, text, chord }) => {
     const glyph = {
       id: createStrokeId(),
       type: glyphId,
@@ -374,6 +375,8 @@ export default function PdfViewer({
 
     if (glyphId === TEXT_GLYPH_ID) {
       glyph.text = text?.trim() || TEXT_GLYPH_DEFAULT;
+    } else if (glyphId === CHORD_GLYPH_ID) {
+      glyph.chord = chord;
     } else if (text != null && String(text).trim()) {
       glyph.text = String(text).trim();
     }

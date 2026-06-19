@@ -8,9 +8,9 @@ export const GLYPH_ERASE_RADIUS_RATIO = 0.38;
 
 export const ANNOTATION_GLYPHS = [
   {
-    id: 'sharp',
-    label: 'Sharp',
-    symbol: '♯',
+    id: 'double-flat',
+    label: 'Double flat',
+    symbol: '𝄫',
   },
   {
     id: 'flat',
@@ -21,6 +21,16 @@ export const ANNOTATION_GLYPHS = [
     id: 'natural',
     label: 'Natural',
     symbol: '♮',
+  },
+  {
+    id: 'sharp',
+    label: 'Sharp',
+    symbol: '♯',
+  },
+  {
+    id: 'double-sharp',
+    label: 'Double sharp',
+    symbol: '𝄪',
   },
 ];
 

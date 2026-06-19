@@ -248,7 +248,7 @@ export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDr
   if (!anchor) return null;
 
   const glyphSizePx = annotationGlyphSizePx(pdfZoom);
-  const glyphButtonPaddingPx = 12;
+  const glyphButtonPaddingPx = 6;
   const glyphButtonStyle = {
     minWidth: `${glyphSizePx + glyphButtonPaddingPx * 2}px`,
     minHeight: `${glyphSizePx + glyphButtonPaddingPx * 2}px`,
@@ -293,13 +293,13 @@ export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDr
           pointerEvents: isReady ? 'auto' : 'none',
         }}
         role="dialog"
-        aria-label="Annotation symbols"
+        aria-label="Annotation glyphs"
       >
         <div
           className="annotation-menu-header"
           onPointerDown={startMenuDrag}
         >
-          <p className="annotation-menu-title">Symbols</p>
+          <p className="annotation-menu-title">Glyphs</p>
         </div>
         <div className="annotation-menu-glyph-rows">
           <div className="annotation-menu-glyphs">

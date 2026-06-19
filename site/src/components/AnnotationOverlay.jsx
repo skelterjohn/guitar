@@ -67,6 +67,7 @@ export default function AnnotationOverlay({
   onOpenMenu,
   onGlyphMove,
   isGlyphDragActive = false,
+  annotationColor = PEN_COLOR,
 }) {
   const overlayRef = useRef(null);
   const svgRef = useRef(null);
@@ -75,6 +76,7 @@ export default function AnnotationOverlay({
   const penPendingRef = useRef(null);
   const glyphDragRef = useRef(null);
   const isGlyphDragActiveRef = useRef(isGlyphDragActive);
+  const annotationColorRef = useRef(annotationColor);
   const pxPerMmRef = useRef(measureCssPxPerMm());
   const callbacksRef = useRef({
     onStrokeComplete,
@@ -94,6 +96,7 @@ export default function AnnotationOverlay({
     onGlyphMove,
   };
   isGlyphDragActiveRef.current = isGlyphDragActive;
+  annotationColorRef.current = annotationColor;
 
   const syncLayoutSize = () => {
     const overlay = overlayRef.current;
@@ -198,7 +201,7 @@ export default function AnnotationOverlay({
     const beginPenStroke = (event, startX, startY) => {
       activeStrokeRef.current = {
         tool: 'pen',
-        color: PEN_COLOR,
+        color: annotationColorRef.current,
         baseWidth: PEN_BASE_WIDTH,
         points: [],
         startX,
@@ -510,7 +513,7 @@ export default function AnnotationOverlay({
               <path
                 key={stroke.id ?? `draft-${index}`}
                 d={path}
-                fill={stroke.color ?? PEN_COLOR}
+                fill={stroke.color ?? annotationColorRef.current}
                 pointerEvents="none"
               />
             );
@@ -548,6 +551,7 @@ export default function AnnotationOverlay({
                   fontFamily={glyphDef.fontFamily}
                   fontStyle={glyphDef.fontStyle}
                   fontWeight={glyphDef.fontWeight}
+                  fill={glyph.color ?? annotationColorRef.current}
                   textAnchor="middle"
                   dominantBaseline="middle"
                   pointerEvents="none"

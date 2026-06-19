@@ -10,6 +10,7 @@ import {
   getGlyphById,
 } from '../data/annotationGlyphs.js';
 import { pageDropFromClientPoint } from '../utils/annotationPages.js';
+import { ANNOTATION_COLORS } from '../utils/annotationColorPreference.js';
 import { glyphDragClientPosition } from '../utils/stylusInput.js';
 
 const VIEWPORT_MARGIN = 12;
@@ -68,7 +69,15 @@ function menuPositionCenteredOnPoint(clientX, clientY, menuWidth, menuHeight) {
   );
 }
 
-export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDrop, onGlyphDragChange }) {
+export default function AnnotationMenu({
+  anchor,
+  pdfZoom = 1,
+  annotationColor,
+  onAnnotationColorChange,
+  onClose,
+  onGlyphDrop,
+  onGlyphDragChange,
+}) {
   const menuRef = useRef(null);
   const dragRef = useRef(null);
   const menuPositionRef = useRef(null);
@@ -355,11 +364,37 @@ export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDr
         role="dialog"
         aria-label="Annotation glyphs"
       >
-        <div
-          className="annotation-menu-header"
-          onPointerDown={startMenuDrag}
-        >
-          <p className="annotation-menu-title">Glyphs</p>
+        <div className="annotation-menu-header">
+          <div
+            className="annotation-menu-header-drag"
+            onPointerDown={startMenuDrag}
+          >
+            <p className="annotation-menu-title">Glyphs</p>
+          </div>
+          <div
+            className="annotation-menu-colors"
+            onPointerDown={(event) => event.stopPropagation()}
+            onPointerUp={(event) => event.stopPropagation()}
+          >
+            {ANNOTATION_COLORS.map((color) => (
+              <button
+                key={color}
+                type="button"
+                className={
+                  color === annotationColor
+                    ? 'annotation-menu-color-swatch annotation-menu-color-swatch--selected'
+                    : 'annotation-menu-color-swatch'
+                }
+                style={{ backgroundColor: color }}
+                onPointerUp={(event) => {
+                  event.stopPropagation();
+                  onAnnotationColorChange(color);
+                }}
+                aria-hidden="true"
+                tabIndex={-1}
+              />
+            ))}
+          </div>
         </div>
         <div className="annotation-menu-glyph-rows">
           <div className="annotation-menu-glyphs">
@@ -394,6 +429,7 @@ export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDr
             left: `${dragPreview.clientX}px`,
             top: `${dragPreview.clientY}px`,
             fontSize: `${glyphSizePx}px`,
+            color: annotationColor,
             ...(previewGlyph?.fontFamily
               ? { fontFamily: previewGlyph.fontFamily }
               : {}),

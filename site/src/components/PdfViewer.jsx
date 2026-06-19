@@ -16,6 +16,11 @@ import AnnotationMenu from './AnnotationMenu.jsx';
 import ChevronIcon from './ChevronIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
 import {
+  getAnnotationColorPreference,
+  resolveAnnotationColor,
+  setAnnotationColorPreference,
+} from '../utils/annotationColorPreference.js';
+import {
   createDebouncedSave,
   createStrokeId,
   loadAnnotations,
@@ -91,6 +96,9 @@ export default function PdfViewer({
   const [pageAnnotations, setPageAnnotations] = useState({});
   const [annotationMenu, setAnnotationMenu] = useState(null);
   const [glyphDragActive, setGlyphDragActive] = useState(false);
+  const [annotationColor, setAnnotationColor] = useState(
+    () => getAnnotationColorPreference() ?? PEN_COLOR,
+  );
   const [storageWarning, setStorageWarning] = useState('');
 
   const pdfZoomRef = useRef(1);
@@ -98,6 +106,7 @@ export default function PdfViewer({
   const penScrollLockRef = useRef(null);
   const lastPenTapRef = useRef(null);
   const saveAnnotationsRef = useRef(null);
+  const annotationColorRef = useRef(annotationColor);
   const onSaveResultRef = useRef(() => {});
 
   onSaveResultRef.current = (saved) => {
@@ -117,6 +126,7 @@ export default function PdfViewer({
   headerHiddenRef.current = headerHidden;
   currentPageRef.current = currentPage;
   pdfZoomRef.current = pdfZoom;
+  annotationColorRef.current = annotationColor;
 
   const scrollToPageTop = (index) => {
     const container = containerRef.current;
@@ -160,6 +170,7 @@ export default function PdfViewer({
     loadAnnotations(filename, pdfHash).then((record) => {
       if (cancelled) return;
       setPageAnnotations(normalizePages(record?.pages));
+      setAnnotationColor(resolveAnnotationColor(record?.color));
       setStorageWarning('');
     });
 
@@ -238,8 +249,17 @@ export default function PdfViewer({
     };
   }, [url]);
 
-  const persistPageAnnotations = (pages) => {
-    saveAnnotationsRef.current.schedule(filename, pdfHash, pages);
+  const persistPageAnnotations = (pages, color = annotationColorRef.current) => {
+    saveAnnotationsRef.current.schedule(filename, pdfHash, pages, color);
+  };
+
+  const handleAnnotationColorChange = (color) => {
+    setAnnotationColor(color);
+    setAnnotationColorPreference(color);
+    setPageAnnotations((pages) => {
+      persistPageAnnotations(pages, color);
+      return pages;
+    });
   };
 
   const handleStrokeComplete = (pageNumber, stroke) => {
@@ -312,6 +332,7 @@ export default function PdfViewer({
       type: glyphId,
       x,
       y,
+      color: annotationColor,
     };
 
     setPageAnnotations((current) => {
@@ -971,6 +992,7 @@ export default function PdfViewer({
                     pageNumber={index + 1}
                     strokes={pageEntry.strokes}
                     glyphs={pageEntry.glyphs}
+                    annotationColor={annotationColor}
                     isGlyphDragActive={glyphDragActive}
                     lastPenTapRef={lastPenTapRef}
                     onStrokeComplete={handleStrokeComplete}
@@ -1049,6 +1071,8 @@ export default function PdfViewer({
       <AnnotationMenu
         anchor={annotationMenu}
         pdfZoom={pdfZoom}
+        annotationColor={annotationColor}
+        onAnnotationColorChange={handleAnnotationColorChange}
         onClose={() => {
           setGlyphDragActive(false);
           setAnnotationMenu(null);

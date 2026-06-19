@@ -71,7 +71,7 @@ export async function loadAnnotations(pdfFile, pdfHash) {
   }
 }
 
-export async function saveAnnotations(pdfFile, pdfHash, pages) {
+export async function saveAnnotations(pdfFile, pdfHash, pages, color) {
   const key = annotationKey(pdfFile, pdfHash);
   const record = {
     pdfFile,
@@ -79,6 +79,10 @@ export async function saveAnnotations(pdfFile, pdfHash, pages) {
     pages,
     updatedAt: new Date().toISOString(),
   };
+
+  if (typeof color === 'string' && color) {
+    record.color = color;
+  }
 
   try {
     const db = await openDb();
@@ -103,16 +107,16 @@ export function createDebouncedSave(delayMs = 400, onResult) {
 
   const flush = async () => {
     if (!pending) return true;
-    const { pdfFile, pdfHash, pages } = pending;
+    const { pdfFile, pdfHash, pages, color } = pending;
     pending = null;
-    const saved = await saveAnnotations(pdfFile, pdfHash, pages);
+    const saved = await saveAnnotations(pdfFile, pdfHash, pages, color);
     onResult?.(saved);
     return saved;
   };
 
   return {
-    schedule(pdfFile, pdfHash, pages) {
-      pending = { pdfFile, pdfHash, pages };
+    schedule(pdfFile, pdfHash, pages, color) {
+      pending = { pdfFile, pdfHash, pages, color };
       clearTimeout(timer);
       timer = setTimeout(() => {
         flush();

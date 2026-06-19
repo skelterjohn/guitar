@@ -130,6 +130,8 @@ function toRomanNumeral(value) {
 
 export const CHORD_ROMAN_NUMERAL_OFF = '';
 
+export const CHORD_ROMAN_NUMERAL_FONT = "'Times New Roman', Times, serif";
+
 export const CHORD_ROMAN_NUMERAL_OPTIONS = [
   { value: CHORD_ROMAN_NUMERAL_OFF, label: 'off' },
   ...Array.from({ length: 17 }, (_, index) => {

@@ -1059,9 +1059,7 @@ body {
   border-radius: 0.25rem;
   background: rgb(100 116 139 / 55%);
   color: #f8fafc;
-  font-family: system-ui, sans-serif;
   font-size: clamp(0.625rem, 11cqmin, 1rem);
-  font-weight: 600;
   line-height: 1.2;
   text-align: center;
   touch-action: none;

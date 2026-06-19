@@ -133,7 +133,7 @@ export default function ChordGridEditor({
           forGlyph
           numeralSizePx={glyphSizePx}
           lineClassName="annotation-menu-chord-grid-lines"
-          numeralClassName="annotation-menu-chord-diagram-numeral annotation-menu-chord-diagram-numeral--glyph"
+          numeralClassName="annotation-chord-diagram-numeral"
         />
       </button>
     </>

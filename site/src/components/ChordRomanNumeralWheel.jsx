@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import {
+  CHORD_ROMAN_NUMERAL_FONT,
   CHORD_ROMAN_NUMERAL_OPTIONS,
   clampRomanNumeralIndex,
   romanNumeralIndexForValue,
@@ -67,6 +68,7 @@ export default function ChordRomanNumeralWheel({ value, onChange }) {
   return (
     <div
       className="annotation-menu-chord-numeral-wheel"
+      style={{ fontFamily: CHORD_ROMAN_NUMERAL_FONT }}
       role="slider"
       aria-label="Roman numeral"
       aria-valuemin={0}

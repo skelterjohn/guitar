@@ -2,6 +2,7 @@ import {
   CHORD_GRID_VIEW_HEIGHT,
   CHORD_GRID_VIEW_WIDTH,
   CHORD_ROMAN_NUMERAL_OFF,
+  CHORD_ROMAN_NUMERAL_FONT,
   chordDiagramLayout,
   chordRomanNumeralLabel,
 } from '../data/chordGrid.js';
@@ -45,6 +46,7 @@ export default function ChordDiagram({
           y={layout.numeralY}
           className={numeralClassName}
           fontSize={layout.numeralFontSize}
+          fontFamily={CHORD_ROMAN_NUMERAL_FONT}
           textAnchor="start"
           dominantBaseline={layout.numeralBaseline}
           fill="currentColor"

@@ -256,7 +256,10 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
         type="button"
         className={`annotation-menu-backdrop${dragPreview ? ' is-glyph-dragging' : ''}`}
         aria-label="Close annotation menu"
-        onClick={onClose}
+        onPointerUp={(event) => {
+          if (event.pointerType !== 'touch') return;
+          onClose();
+        }}
       />
       <div
         ref={menuRef}

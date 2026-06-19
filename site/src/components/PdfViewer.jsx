@@ -325,7 +325,6 @@ export default function PdfViewer({
       persistPageAnnotations(next);
       return next;
     });
-    setAnnotationMenu(null);
   };
 
   const handleGlyphMove = (pageNumber, glyphId, x, y) => {

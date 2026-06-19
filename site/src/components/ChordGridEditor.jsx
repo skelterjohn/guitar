@@ -8,8 +8,7 @@ import {
   CHORD_GRID_VIEW_HEIGHT,
   CHORD_GRID_VIEW_WIDTH,
   CHORD_ROMAN_NUMERAL_OFF,
-  chordGlyphRenderHeightPx,
-  chordGlyphRenderWidthPx,
+  chordGlyphBoundsPx,
   chordGridIntersectionKey,
   chordGridIntersections,
 } from '../data/chordGrid.js';
@@ -34,6 +33,8 @@ export default function ChordGridEditor({
   onMarksChange,
   romanNumeral,
   onRomanNumeralChange,
+  rotate,
+  onRotateChange,
   glyphSizePx,
   annotationColor,
   onChordGlyphPointerDown,
@@ -74,16 +75,46 @@ export default function ChordGridEditor({
     });
   };
 
-  const diagramWidthPx = chordGlyphRenderWidthPx(glyphSizePx);
-  const diagramHeightPx = chordGlyphRenderHeightPx(
-    glyphSizePx,
-    romanNumeral !== CHORD_ROMAN_NUMERAL_OFF,
-    marks,
-  );
+  const showNumeral = romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
+  const { widthPx: previewWidthPx, heightPx: previewHeightPx, diagramWidthPx, diagramHeightPx } =
+    chordGlyphBoundsPx(glyphSizePx, { showNumeral, marks, rotate });
 
   return (
     <>
       <div className="annotation-menu-chord-editor">
+        <button
+          type="button"
+          className={
+            rotate
+              ? 'annotation-menu-tool-btn annotation-menu-tool-btn--selected annotation-menu-chord-rotate-btn'
+              : 'annotation-menu-tool-btn annotation-menu-chord-rotate-btn'
+          }
+          onPointerDown={(event) => event.stopPropagation()}
+          onPointerUp={(event) => {
+            event.stopPropagation();
+            onRotateChange(!rotate);
+          }}
+          aria-label="Rotate"
+          aria-pressed={rotate}
+        >
+          <svg viewBox="0 0 16 16" aria-hidden="true" className="annotation-menu-tool-rotate">
+            <path
+              d="M11.5 3A5.5 5.5 0 1 0 13 8.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+            />
+            <path
+              d="M13.5 1.5v3h-3"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
         <div className="annotation-menu-chord-editor-column">
           <div className="annotation-menu-chord-numeral-wheel-wrap">
             <ChordRomanNumeralWheel
@@ -124,8 +155,8 @@ export default function ChordGridEditor({
         type="button"
         className="annotation-menu-glyph annotation-menu-chord-glyph-drag"
         style={{
-          minWidth: `${diagramWidthPx + 12}px`,
-          minHeight: `${diagramHeightPx + 12}px`,
+          minWidth: `${previewWidthPx + 12}px`,
+          minHeight: `${previewHeightPx + 12}px`,
         }}
         aria-label="Drag chord onto score"
         onPointerDown={onChordGlyphPointerDown}
@@ -136,6 +167,7 @@ export default function ChordGridEditor({
           widthPx={diagramWidthPx}
           color={annotationColor}
           forGlyph
+          rotate={rotate}
           numeralSizePx={glyphSizePx}
           lineClassName="annotation-menu-chord-grid-lines"
           numeralClassName="annotation-chord-diagram-numeral"

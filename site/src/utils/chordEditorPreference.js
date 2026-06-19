@@ -68,17 +68,21 @@ export function getChordEditorPreference() {
     return {
       marks: new Map(),
       romanNumeral: CHORD_ROMAN_NUMERAL_OFF,
+      rotate: false,
     };
   }
 
   return {
     marks: parseMarks(stored.marks),
     romanNumeral: parseRomanNumeral(stored.romanNumeral),
+    rotate: stored.rotate === true,
   };
 }
 
-export function setChordEditorPreference(marks, romanNumeral) {
-  const next = serializeChordDiagram(marks, parseRomanNumeral(romanNumeral));
+export function setChordEditorPreference(marks, romanNumeral, rotate = false) {
+  const next = {
+    ...serializeChordDiagram(marks, parseRomanNumeral(romanNumeral), rotate),
+  };
   const current = readCookie();
   if (current && JSON.stringify(current) === JSON.stringify(next)) {
     return;

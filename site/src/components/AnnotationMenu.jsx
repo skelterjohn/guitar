@@ -112,16 +112,19 @@ export default function AnnotationMenu({
   const [chordRomanNumeral, setChordRomanNumeral] = useState(
     () => getChordEditorPreference().romanNumeral,
   );
+  const [chordRotate, setChordRotate] = useState(() => getChordEditorPreference().rotate);
   const chordMarksRef = useRef(chordMarks);
   const chordRomanNumeralRef = useRef(chordRomanNumeral);
+  const chordRotateRef = useRef(chordRotate);
 
   menuTextRef.current = menuText;
   chordMarksRef.current = chordMarks;
   chordRomanNumeralRef.current = chordRomanNumeral;
+  chordRotateRef.current = chordRotate;
 
   useEffect(() => {
-    setChordEditorPreference(chordMarks, chordRomanNumeral);
-  }, [chordMarks, chordRomanNumeral]);
+    setChordEditorPreference(chordMarks, chordRomanNumeral, chordRotate);
+  }, [chordMarks, chordRomanNumeral, chordRotate]);
 
   const setClampedMenuPosition = (left, top) => {
     const menu = menuRef.current;
@@ -445,6 +448,7 @@ export default function AnnotationMenu({
     const chord = serializeChordDiagram(
       chordMarksRef.current,
       chordRomanNumeralRef.current,
+      chordRotateRef.current,
     );
     dragRef.current = {
       type: 'glyph',
@@ -638,6 +642,8 @@ export default function AnnotationMenu({
               onMarksChange={setChordMarks}
               romanNumeral={chordRomanNumeral}
               onRomanNumeralChange={setChordRomanNumeral}
+              rotate={chordRotate}
+              onRotateChange={setChordRotate}
               glyphSizePx={glyphSizePx}
               annotationColor={annotationColor}
               onChordGlyphPointerDown={startChordGlyphDrag}
@@ -724,6 +730,7 @@ export default function AnnotationMenu({
               widthPx={chordGlyphRenderWidthPx(glyphSizePx)}
               color={annotationColor}
               forGlyph
+              rotate={dragPreview.chord?.rotate === true}
               numeralSizePx={glyphSizePx}
               lineClassName="annotation-menu-chord-grid-lines"
               numeralClassName="annotation-chord-diagram-numeral"

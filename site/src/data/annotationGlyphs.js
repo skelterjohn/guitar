@@ -2,8 +2,7 @@ import {
   CHORD_GLYPH_ID,
   CHORD_ROMAN_NUMERAL_FONT,
   CHORD_ROMAN_NUMERAL_OFF,
-  chordGlyphRenderHeightPx,
-  chordGlyphRenderWidthPx,
+  chordGlyphBoundsPx,
 } from './chordGrid.js';
 import { measureCssPxPerMm } from '../utils/stylusInput.js';
 
@@ -116,14 +115,13 @@ export function glyphEraseRadiusPx(glyph, glyphSizePx) {
     return glyphSizePx * Math.max(GLYPH_ERASE_RADIUS_RATIO, text.length * 0.28);
   }
   if (isChordGlyph(glyph)) {
-    const diagramWidthPx = chordGlyphRenderWidthPx(glyphSizePx);
     const showNumeral = glyph.chord?.romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
-    const diagramHeightPx = chordGlyphRenderHeightPx(
-      glyphSizePx,
+    const { widthPx, heightPx } = chordGlyphBoundsPx(glyphSizePx, {
       showNumeral,
-      glyph.chord?.marks,
-    );
-    return Math.hypot(diagramWidthPx, diagramHeightPx) * 0.38;
+      marks: glyph.chord?.marks,
+      rotate: glyph.chord?.rotate === true,
+    });
+    return Math.hypot(widthPx, heightPx) * 0.38;
   }
   return glyphSizePx * GLYPH_ERASE_RADIUS_RATIO;
 }

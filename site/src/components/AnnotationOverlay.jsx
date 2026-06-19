@@ -14,7 +14,7 @@ import {
 } from '../utils/stylusInput.js';
 import { getGlyphById, annotationGlyphSizePx, glyphDisplayText, isChordGlyph, isDynamicGlyph, isTextGlyph, TEXT_GLYPH_FONT } from '../data/annotationGlyphs.js';
 import ChordDiagram from './ChordDiagram.jsx';
-import { CHORD_ROMAN_NUMERAL_OFF, chordGlyphRenderHeightPx, chordGlyphRenderWidthPx } from '../data/chordGrid.js';
+import { CHORD_ROMAN_NUMERAL_OFF, chordGlyphBoundsPx } from '../data/chordGrid.js';
 
 const TAP_MOVE_THRESHOLD = 10;
 const LONG_PRESS_MS = 500;
@@ -523,19 +523,21 @@ export default function AnnotationOverlay({
             }
 
             if (isChordGlyph(glyph)) {
-              const diagramWidthPx = chordGlyphRenderWidthPx(glyphSizePx);
               const showNumeral =
                 glyph.chord?.romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
-              const diagramHeightPx = chordGlyphRenderHeightPx(
-                glyphSizePx,
-                showNumeral,
-                glyph.chord?.marks,
-              );
+              const rotate = glyph.chord?.rotate === true;
+              const { widthPx: boundsWidthPx, heightPx: boundsHeightPx, diagramWidthPx } =
+                chordGlyphBoundsPx(glyphSizePx, {
+                  showNumeral,
+                  marks: glyph.chord?.marks,
+                  rotate,
+                });
+
               return (
                 <g
                   key={glyph.id}
                   className="annotation-glyph-group"
-                  transform={`translate(${x - diagramWidthPx / 2}, ${y - diagramHeightPx / 2})`}
+                  transform={`translate(${x - boundsWidthPx / 2}, ${y - boundsHeightPx / 2})`}
                 >
                   <ChordDiagram
                     marks={glyph.chord?.marks ?? []}
@@ -543,6 +545,7 @@ export default function AnnotationOverlay({
                     widthPx={diagramWidthPx}
                     color={glyph.color ?? annotationColorRef.current}
                     forGlyph
+                    rotate={rotate}
                     numeralSizePx={glyphSizePx}
                     lineClassName="annotation-chord-diagram-lines"
                     numeralClassName="annotation-chord-diagram-numeral"

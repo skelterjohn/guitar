@@ -154,6 +154,7 @@ export function chordDiagramLayout(
     numeralBaseline: 'alphabetic',
     viewHeight,
     viewWidth,
+    viewBoxMinY,
   };
 }
 
@@ -274,9 +275,104 @@ export function chordGridLineGeometry(marks, { compact = false } = {}) {
   };
 }
 
-export function serializeChordDiagram(marks, romanNumeral) {
+export function chordGridOnlyRenderLayout(widthPx, marks, { useLeftBar = false } = {}) {
+  const lineGeometry = chordGridLineGeometry(marks, { compact: true });
+  let viewWidth = lineGeometry.viewWidth;
+  let viewBoxMinX = 0;
+  let leftBarX = null;
+
+  if (useLeftBar) {
+    const leftBarLayout = chordGridLeftBarLayout(widthPx, viewWidth);
+    viewBoxMinX = leftBarLayout.viewBoxMinX;
+    viewWidth = leftBarLayout.viewWidth;
+    leftBarX = leftBarLayout.leftBarX;
+  }
+
+  return {
+    viewBox: `${viewBoxMinX} 0 ${viewWidth} ${CHORD_GRID_VIEW_HEIGHT}`,
+    viewWidth,
+    viewHeight: CHORD_GRID_VIEW_HEIGHT,
+    heightPx: (widthPx * CHORD_GRID_VIEW_HEIGHT) / viewWidth,
+    widthPx,
+    leftBarX,
+    viewBoxMinX,
+  };
+}
+
+export function chordGlyphNumeralLayoutPx(glyphSizePx, marks) {
+  const widthPx = chordGlyphRenderWidthPx(glyphSizePx);
+  const lineGeometry = chordGridLineGeometry(marks ?? [], { compact: true });
+  const layout = chordDiagramLayout(widthPx, {
+    numeralSizePx: glyphSizePx,
+    showNumeral: true,
+    viewWidth: lineGeometry.viewWidth,
+  });
+  const scale = widthPx / layout.viewWidth;
+
+  return {
+    x: 0,
+    y: (layout.numeralY - layout.viewBoxMinY) * scale,
+    fontSize: glyphSizePx,
+    baseline: layout.numeralBaseline,
+  };
+}
+
+export function chordGlyphNumeralBandHeightPx(glyphSizePx, marks) {
+  const widthPx = chordGlyphRenderWidthPx(glyphSizePx);
+  const lineGeometry = chordGridLineGeometry(marks ?? [], { compact: true });
+  const layout = chordDiagramLayout(widthPx, {
+    numeralSizePx: glyphSizePx,
+    showNumeral: true,
+    viewWidth: lineGeometry.viewWidth,
+  });
+  const fullHeightPx = (widthPx * layout.viewHeight) / layout.viewWidth;
+  const gridLayout = chordGridOnlyRenderLayout(widthPx, marks);
+  return fullHeightPx - gridLayout.heightPx;
+}
+
+export function serializeChordDiagram(marks, romanNumeral, rotate = false) {
   return {
     romanNumeral: romanNumeral ?? CHORD_ROMAN_NUMERAL_OFF,
     marks: serializeChordMarks(marks),
+    rotate: !!rotate,
+  };
+}
+
+export function chordGlyphBoundsPx(
+  glyphSizePx,
+  { showNumeral = true, marks = null, rotate = false } = {},
+) {
+  const diagramWidthPx = chordGlyphRenderWidthPx(glyphSizePx);
+  const diagramHeightPx = chordGlyphRenderHeightPx(glyphSizePx, showNumeral, marks);
+
+  if (!rotate) {
+    return {
+      widthPx: diagramWidthPx,
+      heightPx: diagramHeightPx,
+      diagramWidthPx,
+      diagramHeightPx,
+    };
+  }
+
+  if (showNumeral) {
+    const gridLayout = chordGridOnlyRenderLayout(diagramWidthPx, marks);
+    const numeralBandHeightPx = chordGlyphNumeralBandHeightPx(glyphSizePx, marks);
+    return {
+      widthPx: gridLayout.heightPx,
+      heightPx: numeralBandHeightPx + diagramWidthPx,
+      diagramWidthPx,
+      diagramHeightPx: gridLayout.heightPx,
+      numeralBandHeightPx,
+      gridLayout,
+    };
+  }
+
+  const gridLayout = chordGridOnlyRenderLayout(diagramWidthPx, marks, { useLeftBar: true });
+  return {
+    widthPx: gridLayout.heightPx,
+    heightPx: gridLayout.widthPx,
+    diagramWidthPx: gridLayout.widthPx,
+    diagramHeightPx: gridLayout.heightPx,
+    gridLayout,
   };
 }

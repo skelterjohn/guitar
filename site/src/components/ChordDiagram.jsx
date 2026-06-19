@@ -4,8 +4,11 @@ import {
   CHORD_ROMAN_NUMERAL_OFF,
   CHORD_ROMAN_NUMERAL_FONT,
   chordDiagramLayout,
+  chordGlyphBoundsPx,
+  chordGlyphNumeralLayoutPx,
   chordGridLeftBarLayout,
   chordGridLineGeometry,
+  chordGridOnlyRenderLayout,
   chordRomanNumeralLabel,
 } from '../data/chordGrid.js';
 import {
@@ -14,6 +17,56 @@ import {
   ChordGridMarkCircles,
 } from './chordGridRender.jsx';
 
+function ChordNumeralText({
+  label,
+  layout,
+  numeralClassName,
+}) {
+  return (
+    <text
+      x={layout.x}
+      y={layout.y}
+      className={numeralClassName}
+      fontSize={layout.fontSize}
+      fontFamily={CHORD_ROMAN_NUMERAL_FONT}
+      textAnchor="start"
+      dominantBaseline={layout.baseline}
+      fill="currentColor"
+    >
+      {label}
+    </text>
+  );
+}
+
+function ChordGridSvg({
+  marks,
+  forGlyph,
+  lineClassName,
+  leftBarX,
+  className,
+  color,
+  gridLayout,
+}) {
+  return (
+    <svg
+      viewBox={gridLayout.viewBox}
+      width={gridLayout.widthPx}
+      height={gridLayout.heightPx}
+      className={className}
+      style={{ color }}
+      aria-hidden="true"
+    >
+      <ChordGridLinesLayer
+        className={lineClassName}
+        marks={marks}
+        compact={forGlyph}
+        leftBarX={leftBarX}
+      />
+      <ChordGridMarkCircles marks={marks} forGlyph={forGlyph} />
+    </svg>
+  );
+}
+
 export default function ChordDiagram({
   marks,
   romanNumeral,
@@ -21,6 +74,7 @@ export default function ChordDiagram({
   color = '#f8fafc',
   forGlyph = false,
   numeralSizePx,
+  rotate = false,
   className = 'annotation-chord-diagram',
   lineClassName = 'annotation-chord-diagram-lines',
   numeralClassName = 'annotation-chord-diagram-numeral',
@@ -41,6 +95,74 @@ export default function ChordDiagram({
     viewBoxMinX: leftBarLayout?.viewBoxMinX ?? 0,
   });
   const heightPx = (widthPx * layout.viewHeight) / layout.viewWidth;
+
+  if (rotate && forGlyph && showNumeral) {
+    const bounds = chordGlyphBoundsPx(numeralSizePx, {
+      showNumeral: true,
+      marks,
+      rotate: true,
+    });
+    const gridLayout = bounds.gridLayout;
+    const numeralLayout = chordGlyphNumeralLayoutPx(numeralSizePx, marks);
+    const numeralBandHeightPx = bounds.numeralBandHeightPx;
+
+    return (
+      <svg
+        width={bounds.widthPx}
+        height={bounds.heightPx}
+        className={className}
+        style={{ color }}
+        aria-hidden="true"
+      >
+        <ChordNumeralText
+          label={numeralLabel}
+          layout={numeralLayout}
+          numeralClassName={numeralClassName}
+        />
+        <g
+          transform={`translate(0 ${numeralBandHeightPx}) translate(${gridLayout.heightPx / 2} ${widthPx / 2}) rotate(90) translate(${-widthPx / 2} ${-gridLayout.heightPx / 2})`}
+        >
+          <ChordGridSvg
+            marks={marks}
+            forGlyph={forGlyph}
+            lineClassName={lineClassName}
+            leftBarX={null}
+            className={className}
+            color={color}
+            gridLayout={gridLayout}
+          />
+        </g>
+      </svg>
+    );
+  }
+
+  if (rotate && forGlyph && !showNumeral) {
+    const gridLayout = chordGridOnlyRenderLayout(widthPx, marks, { useLeftBar: true });
+
+    return (
+      <svg
+        width={gridLayout.heightPx}
+        height={gridLayout.widthPx}
+        className={className}
+        style={{ color }}
+        aria-hidden="true"
+      >
+        <g
+          transform={`translate(${gridLayout.heightPx / 2} ${gridLayout.widthPx / 2}) rotate(90) translate(${-gridLayout.widthPx / 2} ${-gridLayout.heightPx / 2})`}
+        >
+          <ChordGridSvg
+            marks={marks}
+            forGlyph={forGlyph}
+            lineClassName={lineClassName}
+            leftBarX={gridLayout.leftBarX}
+            className={className}
+            color={color}
+            gridLayout={gridLayout}
+          />
+        </g>
+      </svg>
+    );
+  }
 
   return (
     <svg

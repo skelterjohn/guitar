@@ -679,6 +679,125 @@ body {
   stroke-width: 1;
 }
 
+.annotation-glyph {
+  fill: #dc2626;
+  font-family: 'Segoe UI Symbol', 'Noto Music', 'Bravura Text', serif;
+  user-select: none;
+}
+
+.annotation-glyph-group {
+  pointer-events: all;
+  cursor: grab;
+  touch-action: none;
+}
+
+.annotation-glyph-group.is-dragging {
+  cursor: grabbing;
+}
+
+.annotation-glyph-hit {
+  pointer-events: all;
+}
+
+.annotation-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  border: none;
+  padding: 0;
+  background: rgb(15 23 42 / 25%);
+  cursor: default;
+}
+
+.annotation-menu {
+  position: fixed;
+  z-index: 41;
+  min-width: 10rem;
+  padding: 0.75rem 1rem 1rem;
+  border: 1px solid rgb(148 163 184 / 35%);
+  border-radius: 0.75rem;
+  background: rgb(30 41 59 / 96%);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 45%);
+  color: #e2e8f0;
+  font-family: system-ui, sans-serif;
+  touch-action: none;
+}
+
+.annotation-menu-title {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.annotation-menu-header {
+  margin: -0.25rem -0.5rem 0.5rem;
+  padding: 0.25rem 0.5rem 0.5rem;
+  border-radius: 0.5rem;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.annotation-menu-header:active {
+  cursor: grabbing;
+}
+
+.annotation-menu-drag-hint {
+  margin: 0.125rem 0 0;
+  font-size: 0.6875rem;
+  color: #64748b;
+}
+
+.annotation-menu-glyphs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.annotation-menu-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid rgb(148 163 184 / 30%);
+  border-radius: 0.5rem;
+  background: rgb(15 23 42 / 50%);
+  color: #f8fafc;
+  cursor: grab;
+  touch-action: none;
+}
+
+.annotation-menu-glyph:active {
+  cursor: grabbing;
+}
+
+.annotation-menu-glyph-symbol {
+  font-size: 1.75rem;
+  font-family: 'Segoe UI Symbol', 'Noto Music', 'Bravura Text', serif;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.annotation-menu-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.annotation-glyph-drag-preview {
+  position: fixed;
+  z-index: 42;
+  transform: translate(-50%, -50%);
+  color: #dc2626;
+  font-family: 'Segoe UI Symbol', 'Noto Music', 'Bravura Text', serif;
+  line-height: 1;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
 .viewer-storage-warning {
   margin: 0;
   padding: 0.5rem 1rem;

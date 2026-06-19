@@ -12,6 +12,7 @@ import {
   setPieceLabelPreference,
 } from '../utils/pieceLabelPreference.js';
 import AnnotationOverlay from './AnnotationOverlay.jsx';
+import AnnotationMenu from './AnnotationMenu.jsx';
 import ChevronIcon from './ChevronIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
 import {
@@ -27,6 +28,7 @@ import {
   applyPartialEraser,
   PEN_COLOR,
 } from '../utils/stylusInput.js';
+import { normalizePageEntry, normalizePages } from '../utils/annotationPages.js';
 import { catalogPath, repPath, viewPath } from '../seo.js';
 
 let workerIdle = Promise.resolve();
@@ -83,7 +85,8 @@ export default function PdfViewer({
   const [headerHidden, setHeaderHidden] = useState(false);
   const [footerHidden, setFooterHidden] = useState(true);
   const [pdfZoom, setPdfZoom] = useState(1);
-  const [pageStrokes, setPageStrokes] = useState({});
+  const [pageAnnotations, setPageAnnotations] = useState({});
+  const [annotationMenu, setAnnotationMenu] = useState(null);
   const [storageWarning, setStorageWarning] = useState('');
 
   const pdfZoomRef = useRef(1);
@@ -152,7 +155,7 @@ export default function PdfViewer({
 
     loadAnnotations(filename, pdfHash).then((record) => {
       if (cancelled) return;
-      setPageStrokes(record?.pages && typeof record.pages === 'object' ? record.pages : {});
+      setPageAnnotations(normalizePages(record?.pages));
       setStorageWarning('');
     });
 
@@ -169,7 +172,8 @@ export default function PdfViewer({
     setPageCount(0);
     setCurrentPage(1);
     setPdfZoom(1);
-    setPageStrokes({});
+    setPageAnnotations({});
+    setAnnotationMenu(null);
     setStorageWarning('');
     lastPenTapRef.current = null;
     saveAnnotationsRef.current?.cancel();
@@ -229,7 +233,7 @@ export default function PdfViewer({
     };
   }, [url]);
 
-  const persistPageStrokes = (pages) => {
+  const persistPageAnnotations = (pages) => {
     saveAnnotationsRef.current.schedule(filename, pdfHash, pages);
   };
 
@@ -242,23 +246,27 @@ export default function PdfViewer({
       points: stroke.points,
     };
 
-    setPageStrokes((current) => {
+    setPageAnnotations((current) => {
       const key = String(pageNumber);
+      const entry = normalizePageEntry(current[key]);
       const next = {
         ...current,
-        [key]: [...(current[key] ?? []), savedStroke],
+        [key]: {
+          ...entry,
+          strokes: [...entry.strokes, savedStroke],
+        },
       };
-      persistPageStrokes(next);
+      persistPageAnnotations(next);
       return next;
     });
   };
 
   const handleEraseAt = (pageNumber, center, radiusPx, layoutWidth, layoutHeight) => {
-    setPageStrokes((current) => {
+    setPageAnnotations((current) => {
       const key = String(pageNumber);
-      const existing = current[key] ?? [];
+      const entry = normalizePageEntry(current[key]);
       const { strokes: nextStrokes, changed } = applyPartialEraser(
-        existing,
+        entry.strokes,
         layoutWidth,
         layoutHeight,
         center,
@@ -272,9 +280,55 @@ export default function PdfViewer({
 
       const next = {
         ...current,
-        [key]: nextStrokes,
+        [key]: {
+          ...entry,
+          strokes: nextStrokes,
+        },
       };
-      persistPageStrokes(next);
+      persistPageAnnotations(next);
+      return next;
+    });
+  };
+
+  const handleGlyphDrop = ({ pageNumber, glyphId, x, y }) => {
+    const glyph = {
+      id: createStrokeId(),
+      type: glyphId,
+      x,
+      y,
+    };
+
+    setPageAnnotations((current) => {
+      const key = String(pageNumber);
+      const entry = normalizePageEntry(current[key]);
+      const next = {
+        ...current,
+        [key]: {
+          ...entry,
+          glyphs: [...entry.glyphs, glyph],
+        },
+      };
+      persistPageAnnotations(next);
+      return next;
+    });
+    setAnnotationMenu(null);
+  };
+
+  const handleGlyphMove = (pageNumber, glyphId, x, y) => {
+    setPageAnnotations((current) => {
+      const key = String(pageNumber);
+      const entry = normalizePageEntry(current[key]);
+      const glyphs = entry.glyphs.map((glyph) =>
+        glyph.id === glyphId ? { ...glyph, x, y } : glyph,
+      );
+      const next = {
+        ...current,
+        [key]: {
+          ...entry,
+          glyphs,
+        },
+      };
+      persistPageAnnotations(next);
       return next;
     });
   };
@@ -526,18 +580,62 @@ export default function PdfViewer({
     window.addEventListener('keydown', onKeyDown);
 
     const TAP_MOVE_THRESHOLD = 10;
+    const LONG_PRESS_MS = 500;
     let tapStartX = null;
     let tapStartY = null;
+    let longPressTimer = null;
+    let longPressTriggered = false;
+
+    const clearLongPress = () => {
+      if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+    };
 
     const onPointerDown = (event) => {
-      if (pageCount <= 1) return;
       if (event.pointerType === 'pen') return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+      longPressTriggered = false;
       tapStartX = event.clientX;
       tapStartY = event.clientY;
+
+      if (event.pointerType === 'touch') {
+        clearLongPress();
+        longPressTimer = setTimeout(() => {
+          longPressTimer = null;
+          longPressTriggered = true;
+          const clientX = tapStartX;
+          const clientY = tapStartY;
+          tapStartX = null;
+          tapStartY = null;
+          setAnnotationMenu({ clientX, clientY });
+        }, LONG_PRESS_MS);
+      }
+    };
+
+    const onPointerMove = (event) => {
+      if (!longPressTimer || tapStartX == null || tapStartY == null) return;
+      if (event.pointerType !== 'touch') return;
+
+      const dx = Math.abs(event.clientX - tapStartX);
+      const dy = Math.abs(event.clientY - tapStartY);
+      if (dx > TAP_MOVE_THRESHOLD || dy > TAP_MOVE_THRESHOLD) {
+        clearLongPress();
+      }
     };
 
     const onPointerUp = (event) => {
+      clearLongPress();
+
+      if (longPressTriggered) {
+        longPressTriggered = false;
+        tapStartX = null;
+        tapStartY = null;
+        return;
+      }
+
       if (pageCount <= 1 || tapStartX == null || tapStartY == null) return;
       if (event.pointerType === 'pen') return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
@@ -559,11 +657,14 @@ export default function PdfViewer({
     };
 
     const onPointerCancel = () => {
+      clearLongPress();
+      longPressTriggered = false;
       tapStartX = null;
       tapStartY = null;
     };
 
     container.addEventListener('pointerdown', onPointerDown);
+    container.addEventListener('pointermove', onPointerMove);
     container.addEventListener('pointerup', onPointerUp);
     container.addEventListener('pointercancel', onPointerCancel);
 
@@ -576,9 +677,11 @@ export default function PdfViewer({
     resizeObserver.observe(container);
 
     return () => {
+      clearLongPress();
       container.removeEventListener('scroll', onScroll);
       window.removeEventListener('keydown', onKeyDown);
       container.removeEventListener('pointerdown', onPointerDown);
+      container.removeEventListener('pointermove', onPointerMove);
       container.removeEventListener('pointerup', onPointerUp);
       container.removeEventListener('pointercancel', onPointerCancel);
       resizeObserver.disconnect();
@@ -827,7 +930,12 @@ export default function PdfViewer({
         )}
         {status === 'ready' && (
           <div className="viewer-zoom-surface" style={{ zoom: pdfZoom }}>
-            {Array.from({ length: pageCount }, (_, index) => (
+            {Array.from({ length: pageCount }, (_, index) => {
+              const pageEntry = normalizePageEntry(
+                pageAnnotations[String(index + 1)],
+              );
+
+              return (
               <div
                 className="viewer-page-slot"
                 key={index}
@@ -835,7 +943,10 @@ export default function PdfViewer({
                   slotRefs.current[index] = element;
                 }}
               >
-                <div className="viewer-page-frame">
+                <div
+                  className="viewer-page-frame"
+                  data-page-number={index + 1}
+                >
                   <canvas
                     ref={(element) => {
                       canvasRefs.current[index] = element;
@@ -843,14 +954,20 @@ export default function PdfViewer({
                   />
                   <AnnotationOverlay
                     pageNumber={index + 1}
-                    strokes={pageStrokes[String(index + 1)] ?? []}
+                    strokes={pageEntry.strokes}
+                    glyphs={pageEntry.glyphs}
                     lastPenTapRef={lastPenTapRef}
                     onStrokeComplete={handleStrokeComplete}
                     onEraseAt={handleEraseAt}
+                    onOpenMenu={(clientX, clientY) =>
+                      setAnnotationMenu({ clientX, clientY })
+                    }
+                    onGlyphMove={handleGlyphMove}
                   />
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -913,6 +1030,11 @@ export default function PdfViewer({
           </button>
         </div>
       )}
+      <AnnotationMenu
+        anchor={annotationMenu}
+        onClose={() => setAnnotationMenu(null)}
+        onGlyphDrop={handleGlyphDrop}
+      />
     </div>
   );
 }

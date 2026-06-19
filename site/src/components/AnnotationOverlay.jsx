@@ -11,8 +11,10 @@ import {
   PEN_BASE_WIDTH,
   PEN_COLOR,
 } from '../utils/stylusInput.js';
+import { getGlyphById, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
 
 const TAP_MOVE_THRESHOLD = 10;
+const LONG_PRESS_MS = 500;
 
 function getSvgPathFromStroke(stroke) {
   if (!stroke.length) return '';
@@ -57,25 +59,36 @@ function strokeToPathData(stroke, width, height) {
 export default function AnnotationOverlay({
   pageNumber,
   strokes = [],
+  glyphs = [],
   lastPenTapRef,
   onStrokeComplete,
   onEraseAt,
+  onOpenMenu,
+  onGlyphMove,
 }) {
   const overlayRef = useRef(null);
+  const svgRef = useRef(null);
   const activeStrokeRef = useRef(null);
   const eraserStrokeRef = useRef(false);
+  const penPendingRef = useRef(null);
+  const glyphDragRef = useRef(null);
   const pxPerMmRef = useRef(measureCssPxPerMm());
   const callbacksRef = useRef({
     onStrokeComplete,
     onEraseAt,
+    onOpenMenu,
+    onGlyphMove,
   });
   const [layoutSize, setLayoutSize] = useState({ width: 0, height: 0 });
   const [draftStroke, setDraftStroke] = useState(null);
   const [eraserCursor, setEraserCursor] = useState(null);
+  const [glyphDragPos, setGlyphDragPos] = useState(null);
 
   callbacksRef.current = {
     onStrokeComplete,
     onEraseAt,
+    onOpenMenu,
+    onGlyphMove,
   };
 
   const syncLayoutSize = () => {
@@ -93,7 +106,7 @@ export default function AnnotationOverlay({
 
   useLayoutEffect(() => {
     syncLayoutSize();
-  }, [strokes.length]);
+  }, [strokes.length, glyphs.length]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -168,6 +181,32 @@ export default function AnnotationOverlay({
       }
     };
 
+    const clearPenPending = (pending = penPendingRef.current) => {
+      if (pending?.longPressTimer) {
+        clearTimeout(pending.longPressTimer);
+        pending.longPressTimer = null;
+      }
+      if (penPendingRef.current === pending) {
+        penPendingRef.current = null;
+      }
+    };
+
+    const beginPenStroke = (event, startX, startY) => {
+      activeStrokeRef.current = {
+        tool: 'pen',
+        color: PEN_COLOR,
+        baseWidth: PEN_BASE_WIDTH,
+        points: [],
+        startX,
+        startY,
+        maxDeviation: Math.hypot(event.clientX - startX, event.clientY - startY),
+      };
+
+      const { x, y } = clientToNormalized(overlay, startX, startY);
+      activeStrokeRef.current.points.push([x, y, effectivePressure(event)]);
+      appendPoints(event);
+    };
+
     const onPointerDown = (event) => {
       if (event.pointerType !== 'pen') return;
 
@@ -183,6 +222,7 @@ export default function AnnotationOverlay({
           event.clientY,
         )
       ) {
+        clearPenPending();
         lastPenTapRef.current = null;
         eraserStrokeRef.current = true;
         applyEraserSample(event);
@@ -194,17 +234,23 @@ export default function AnnotationOverlay({
       }
 
       eraserStrokeRef.current = false;
-      activeStrokeRef.current = {
-        tool: 'pen',
-        color: PEN_COLOR,
-        baseWidth: PEN_BASE_WIDTH,
-        points: [],
+      activeStrokeRef.current = null;
+      setDraftStroke(null);
+
+      const pending = {
+        pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
-        maxDeviation: 0,
+        longPressTriggered: false,
       };
-
-      appendPoints(event);
+      pending.longPressTimer = setTimeout(() => {
+        pending.longPressTriggered = true;
+        pending.longPressTimer = null;
+        callbacksRef.current.onOpenMenu?.(pending.startX, pending.startY);
+        activeStrokeRef.current = null;
+        setDraftStroke(null);
+      }, LONG_PRESS_MS);
+      penPendingRef.current = pending;
     };
 
     const onPointerMove = (event) => {
@@ -217,6 +263,25 @@ export default function AnnotationOverlay({
       if (eraserStrokeRef.current) {
         applyEraserSample(event);
         return;
+      }
+
+      const pending = penPendingRef.current;
+      if (
+        pending &&
+        pending.pointerId === event.pointerId &&
+        !pending.longPressTriggered &&
+        !activeStrokeRef.current
+      ) {
+        const moved = Math.hypot(
+          event.clientX - pending.startX,
+          event.clientY - pending.startY,
+        );
+        if (moved > TAP_MOVE_THRESHOLD) {
+          clearPenPending(pending);
+          beginPenStroke(event, pending.startX, pending.startY);
+        } else {
+          return;
+        }
       }
 
       if (!activeStrokeRef.current) return;
@@ -237,10 +302,32 @@ export default function AnnotationOverlay({
       frame.releasePointerCapture(event.pointerId);
 
       if (eraserStrokeRef.current) {
+        clearPenPending();
         applyEraserSample(event);
         setEraserCursor(null);
         eraserStrokeRef.current = false;
         return;
+      }
+
+      const pending = penPendingRef.current;
+      if (pending && pending.pointerId === event.pointerId) {
+        const wasLongPress = pending.longPressTriggered;
+        clearPenPending(pending);
+
+        if (wasLongPress) {
+          return;
+        }
+
+        if (!activeStrokeRef.current) {
+          if (lastPenTapRef) {
+            lastPenTapRef.current = {
+              time: performance.now(),
+              x: event.clientX,
+              y: event.clientY,
+            };
+          }
+          return;
+        }
       }
 
       if (!activeStrokeRef.current) return;
@@ -262,6 +349,7 @@ export default function AnnotationOverlay({
             y: event.clientY,
           };
         }
+
         activeStrokeRef.current = null;
         setDraftStroke(null);
         return;
@@ -275,6 +363,7 @@ export default function AnnotationOverlay({
         frame.releasePointerCapture(event.pointerId);
       }
 
+      clearPenPending();
       activeStrokeRef.current = null;
       eraserStrokeRef.current = false;
       setDraftStroke(null);
@@ -295,7 +384,89 @@ export default function AnnotationOverlay({
     };
   }, [pageNumber, lastPenTapRef]);
 
+  useEffect(() => {
+    const svg = svgRef.current;
+    const overlay = overlayRef.current;
+    if (!svg || !overlay) return undefined;
+
+    const updateDragPosition = (event) => {
+      const drag = glyphDragRef.current;
+      if (!drag) return;
+
+      const { x, y } = clientToNormalized(overlay, event.clientX, event.clientY);
+      setGlyphDragPos({ id: drag.id, x, y });
+    };
+
+    const finishGlyphDrag = (event) => {
+      const drag = glyphDragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+
+      svg.releasePointerCapture(event.pointerId);
+      glyphDragRef.current = null;
+
+      const { x, y } = clientToNormalized(overlay, event.clientX, event.clientY);
+      callbacksRef.current.onGlyphMove?.(pageNumber, drag.id, x, y);
+      setGlyphDragPos(null);
+    };
+
+    const onGlyphPointerDown = (event) => {
+      if (event.pointerType === 'pen') return;
+
+      const group = event.target.closest('.annotation-glyph-group');
+      if (!group) return;
+
+      const glyphId = group.dataset.glyphId;
+      const glyph = glyphs.find((entry) => entry.id === glyphId);
+      if (!glyph) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      svg.setPointerCapture(event.pointerId);
+      glyphDragRef.current = { id: glyphId, pointerId: event.pointerId };
+      setGlyphDragPos({ id: glyphId, x: glyph.x, y: glyph.y });
+    };
+
+    const onGlyphPointerMove = (event) => {
+      const drag = glyphDragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      updateDragPosition(event);
+    };
+
+    const onGlyphPointerUp = (event) => {
+      if (!glyphDragRef.current) return;
+      event.preventDefault();
+      event.stopPropagation();
+      finishGlyphDrag(event);
+    };
+
+    const onGlyphPointerCancel = (event) => {
+      if (!glyphDragRef.current) return;
+      if (svg.hasPointerCapture(event.pointerId)) {
+        svg.releasePointerCapture(event.pointerId);
+      }
+      glyphDragRef.current = null;
+      setGlyphDragPos(null);
+    };
+
+    const options = { capture: false, passive: false };
+    svg.addEventListener('pointerdown', onGlyphPointerDown, options);
+    svg.addEventListener('pointermove', onGlyphPointerMove, options);
+    svg.addEventListener('pointerup', onGlyphPointerUp, options);
+    svg.addEventListener('pointercancel', onGlyphPointerCancel, options);
+
+    return () => {
+      svg.removeEventListener('pointerdown', onGlyphPointerDown, options);
+      svg.removeEventListener('pointermove', onGlyphPointerMove, options);
+      svg.removeEventListener('pointerup', onGlyphPointerUp, options);
+      svg.removeEventListener('pointercancel', onGlyphPointerCancel, options);
+    };
+  }, [pageNumber, glyphs]);
+
   const visibleStrokes = draftStroke ? [...strokes, draftStroke] : strokes;
+  const glyphSizePx = measureCssPxPerMm() * GLYPH_SIZE_MM;
 
   return (
     <div
@@ -307,6 +478,7 @@ export default function AnnotationOverlay({
     >
       {layoutSize.width > 0 && layoutSize.height > 0 && (
         <svg
+          ref={svgRef}
           className="annotation-overlay-canvas"
           viewBox={`0 0 ${layoutSize.width} ${layoutSize.height}`}
           aria-hidden="true"
@@ -322,6 +494,40 @@ export default function AnnotationOverlay({
                 fill={stroke.color ?? PEN_COLOR}
                 pointerEvents="none"
               />
+            );
+          })}
+          {glyphs.map((glyph) => {
+            const symbol = getGlyphById(glyph.type)?.symbol;
+            if (!symbol) return null;
+
+            const position =
+              glyphDragPos?.id === glyph.id ? glyphDragPos : glyph;
+            const x = position.x * layoutSize.width;
+            const y = position.y * layoutSize.height;
+            const isDragging = glyphDragPos?.id === glyph.id;
+
+            return (
+              <g
+                key={glyph.id}
+                className={`annotation-glyph-group${isDragging ? ' is-dragging' : ''}`}
+                data-glyph-id={glyph.id}
+                transform={`translate(${x}, ${y})`}
+              >
+                <circle
+                  className="annotation-glyph-hit"
+                  r={glyphSizePx * 0.65}
+                  fill="transparent"
+                />
+                <text
+                  className="annotation-glyph"
+                  fontSize={glyphSizePx}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  pointerEvents="none"
+                >
+                  {symbol}
+                </text>
+              </g>
             );
           })}
           {eraserCursor && (

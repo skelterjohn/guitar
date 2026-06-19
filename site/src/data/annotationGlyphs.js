@@ -6,6 +6,8 @@ export const GLYPH_HIT_RADIUS_RATIO = 0.65;
 /** Visible ink extent for eraser intersection (fraction of font size). */
 export const GLYPH_ERASE_RADIUS_RATIO = 0.38;
 
+export const DYNAMIC_GLYPH_FONT = "Georgia, 'Times New Roman', 'Palatino Linotype', serif";
+
 export const ANNOTATION_ACCIDENTAL_GLYPHS = [
   {
     id: 'double-flat',
@@ -55,13 +57,27 @@ export const ANNOTATION_FINGERING_GLYPHS = ['p', 'a', 'm', 'i', 'n'].map((letter
   fontFamily: 'system-ui, sans-serif',
 }));
 
+export const ANNOTATION_DYNAMIC_GLYPHS = ['p', 'mp', 'mf', 'f'].map((symbol) => ({
+  id: `dyn-${symbol}`,
+  label: symbol,
+  symbol,
+  fontFamily: DYNAMIC_GLYPH_FONT,
+  fontStyle: 'italic',
+  fontWeight: 600,
+}));
+
 export const ANNOTATION_GLYPHS = [
   ...ANNOTATION_ACCIDENTAL_GLYPHS,
   ...ANNOTATION_NUMBER_GLYPHS,
   ...ANNOTATION_CIRCLED_NUMBER_GLYPHS,
   ...ANNOTATION_FINGERING_GLYPHS,
+  ...ANNOTATION_DYNAMIC_GLYPHS,
 ];
 
 export function getGlyphById(id) {
   return ANNOTATION_GLYPHS.find((glyph) => glyph.id === id);
+}
+
+export function isDynamicGlyph(glyph) {
+  return glyph?.id?.startsWith('dyn-') ?? false;
 }

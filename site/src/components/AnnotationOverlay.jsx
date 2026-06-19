@@ -12,7 +12,7 @@ import {
   PEN_BASE_WIDTH,
   PEN_COLOR,
 } from '../utils/stylusInput.js';
-import { getGlyphById, GLYPH_HIT_RADIUS_RATIO, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
+import { getGlyphById, GLYPH_HIT_RADIUS_RATIO, GLYPH_SIZE_MM, isDynamicGlyph } from '../data/annotationGlyphs.js';
 
 const TAP_MOVE_THRESHOLD = 10;
 const LONG_PRESS_MS = 500;
@@ -536,10 +536,14 @@ export default function AnnotationOverlay({
                 />
                 <text
                   className={`annotation-glyph${
-                    glyphDef.fontFamily ? ' annotation-glyph--number' : ''
-                  }`}
+                    glyphDef.fontFamily && !isDynamicGlyph(glyphDef)
+                      ? ' annotation-glyph--number'
+                      : ''
+                  }${isDynamicGlyph(glyphDef) ? ' annotation-glyph--dynamic' : ''}`}
                   fontSize={glyphSizePx}
                   fontFamily={glyphDef.fontFamily}
+                  fontStyle={glyphDef.fontStyle}
+                  fontWeight={glyphDef.fontWeight}
                   textAnchor="middle"
                   dominantBaseline="middle"
                   pointerEvents="none"

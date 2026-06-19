@@ -795,6 +795,18 @@ body {
   font-weight: 600;
 }
 
+.annotation-menu-glyph-symbol--dynamic {
+  font-family: Georgia, 'Times New Roman', 'Palatino Linotype', serif;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.annotation-glyph--dynamic {
+  font-family: Georgia, 'Times New Roman', 'Palatino Linotype', serif;
+  font-style: italic;
+  font-weight: 600;
+}
+
 .annotation-glyph-drag-preview {
   position: fixed;
   z-index: 42;

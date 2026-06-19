@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import {
   ANNOTATION_ACCIDENTAL_GLYPHS,
   ANNOTATION_CIRCLED_NUMBER_GLYPHS,
+  ANNOTATION_DYNAMIC_GLYPHS,
   ANNOTATION_FINGERING_GLYPHS,
   ANNOTATION_NUMBER_GLYPHS,
   GLYPH_SIZE_MM,
@@ -349,6 +350,24 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
               </button>
             ))}
           </div>
+          <div className="annotation-menu-glyphs">
+            {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) => (
+              <button
+                key={glyph.id}
+                type="button"
+                className="annotation-menu-glyph"
+                aria-label={`Drag ${glyph.label} onto score`}
+                onPointerDown={(event) => startGlyphDrag(event, glyph)}
+              >
+                <span
+                  className="annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic"
+                  aria-hidden="true"
+                >
+                  {glyph.symbol}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       {dragPreview && (
@@ -361,6 +380,8 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
             ...(previewGlyph?.fontFamily
               ? { fontFamily: previewGlyph.fontFamily }
               : {}),
+            ...(previewGlyph?.fontStyle ? { fontStyle: previewGlyph.fontStyle } : {}),
+            ...(previewGlyph?.fontWeight ? { fontWeight: previewGlyph.fontWeight } : {}),
           }}
           aria-hidden="true"
         >

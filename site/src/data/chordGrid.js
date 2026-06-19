@@ -93,7 +93,10 @@ export function chordGridOnePxInViewBox(widthPx, viewWidth) {
 export function chordGridLeftBarLayout(widthPx, viewWidth) {
   const onePx = chordGridOnePxInViewBox(widthPx, viewWidth);
   const leftBarX = CHORD_GRID_HORIZONTAL_X1 - 2 * onePx;
-  const viewBoxMinX = leftBarX - onePx;
+  const barViewBoxMinX = leftBarX - onePx;
+  const circleViewBoxMinX =
+    CHORD_GRID_LEFT_COLUMN_X - CHORD_GRID_DOT_DISPLAY_RADIUS - onePx;
+  const viewBoxMinX = Math.min(barViewBoxMinX, circleViewBoxMinX);
 
   return {
     leftBarX,

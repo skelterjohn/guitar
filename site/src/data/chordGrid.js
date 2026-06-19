@@ -49,14 +49,33 @@ export function chordDiagramHeightPx(widthPx, options) {
   return (widthPx * layout.viewHeight) / layout.viewWidth;
 }
 
-export function chordGlyphRenderHeightPx(glyphSizePx, showNumeral = true, marks = null) {
+export function chordGlyphRenderLayoutOptions(glyphSizePx, showNumeral, marks = null) {
   const widthPx = chordGlyphRenderWidthPx(glyphSizePx);
   const lineGeometry = chordGridLineGeometry(marks ?? [], { compact: true });
-  return chordDiagramHeightPx(widthPx, {
+  let viewWidth = lineGeometry.viewWidth;
+  let viewBoxMinX = 0;
+  let leftBarX = null;
+
+  if (!showNumeral) {
+    const leftBarLayout = chordGridLeftBarLayout(widthPx, viewWidth);
+    viewBoxMinX = leftBarLayout.viewBoxMinX;
+    viewWidth = leftBarLayout.viewWidth;
+    leftBarX = leftBarLayout.leftBarX;
+  }
+
+  return {
+    widthPx,
     numeralSizePx: glyphSizePx,
     showNumeral,
-    viewWidth: lineGeometry.viewWidth,
-  });
+    viewWidth,
+    viewBoxMinX,
+    leftBarX,
+  };
+}
+
+export function chordGlyphRenderHeightPx(glyphSizePx, showNumeral = true, marks = null) {
+  const options = chordGlyphRenderLayoutOptions(glyphSizePx, showNumeral, marks);
+  return chordDiagramHeightPx(options.widthPx, options);
 }
 
 export function chordDiagramViewBox() {
@@ -67,9 +86,30 @@ export function chordDiagramNumeralFontSize(widthPx, targetPx) {
   return (targetPx * CHORD_GRID_VIEW_WIDTH) / widthPx;
 }
 
+export function chordGridOnePxInViewBox(widthPx, viewWidth) {
+  return viewWidth / widthPx;
+}
+
+export function chordGridLeftBarLayout(widthPx, viewWidth) {
+  const onePx = chordGridOnePxInViewBox(widthPx, viewWidth);
+  const leftBarX = CHORD_GRID_HORIZONTAL_X1 - 2 * onePx;
+  const viewBoxMinX = leftBarX - onePx;
+
+  return {
+    leftBarX,
+    viewBoxMinX,
+    viewWidth: viewWidth - viewBoxMinX,
+  };
+}
+
 export function chordDiagramLayout(
   widthPx,
-  { numeralSizePx, showNumeral = true, viewWidth = CHORD_GRID_VIEW_WIDTH } = {},
+  {
+    numeralSizePx,
+    showNumeral = true,
+    viewWidth = CHORD_GRID_VIEW_WIDTH,
+    viewBoxMinX = 0,
+  } = {},
 ) {
   if (numeralSizePx == null) {
     return {
@@ -85,13 +125,15 @@ export function chordDiagramLayout(
   const gridBottom = CHORD_GRID_VIEW_HEIGHT;
 
   if (!showNumeral) {
+    const effectiveWidth = viewWidth - viewBoxMinX;
     return {
-      viewBox: `0 0 ${viewWidth} ${CHORD_GRID_VIEW_HEIGHT}`,
+      viewBox: `${viewBoxMinX} 0 ${effectiveWidth} ${CHORD_GRID_VIEW_HEIGHT}`,
       numeralFontSize: 0,
       numeralY: 0,
       numeralBaseline: 'middle',
       viewHeight: CHORD_GRID_VIEW_HEIGHT,
-      viewWidth,
+      viewWidth: effectiveWidth,
+      viewBoxMinX,
     };
   }
 

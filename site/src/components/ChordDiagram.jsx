@@ -4,6 +4,7 @@ import {
   CHORD_ROMAN_NUMERAL_OFF,
   CHORD_ROMAN_NUMERAL_FONT,
   chordDiagramLayout,
+  chordGridLeftBarLayout,
   chordGridLineGeometry,
   chordRomanNumeralLabel,
 } from '../data/chordGrid.js';
@@ -27,10 +28,17 @@ export default function ChordDiagram({
   const numeralLabel = chordRomanNumeralLabel(romanNumeral);
   const showNumeral = !forGlyph || romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
   const lineGeometry = chordGridLineGeometry(marks, { compact: forGlyph });
+  const leftBarLayout =
+    forGlyph && !showNumeral
+      ? chordGridLeftBarLayout(widthPx, lineGeometry.viewWidth)
+      : null;
   const layout = chordDiagramLayout(widthPx, {
     numeralSizePx: forGlyph ? numeralSizePx : undefined,
     showNumeral: forGlyph ? showNumeral : true,
-    viewWidth: forGlyph ? lineGeometry.viewWidth : undefined,
+    viewWidth: forGlyph
+      ? (leftBarLayout?.viewWidth ?? lineGeometry.viewWidth)
+      : undefined,
+    viewBoxMinX: leftBarLayout?.viewBoxMinX ?? 0,
   });
   const heightPx = (widthPx * layout.viewHeight) / layout.viewWidth;
 
@@ -61,6 +69,7 @@ export default function ChordDiagram({
         className={lineClassName}
         marks={marks}
         compact={forGlyph}
+        leftBarX={leftBarLayout?.leftBarX ?? null}
       />
       <ChordGridMarkCircles marks={marks} forGlyph={forGlyph} />
     </svg>

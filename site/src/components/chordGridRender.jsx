@@ -19,10 +19,21 @@ export function ChordGridLines({
   className,
   verticalLines = CHORD_GRID_VERTICAL_LINES,
   horizontalX2 = CHORD_GRID_HORIZONTAL_X2,
+  leftBarX = null,
 }) {
   return (
     <g className={className}>
-      {CHORD_GRID_VERTICAL_LINES.map((x) => (
+      {leftBarX != null && (
+        <line
+          key="v-left-bar"
+          x1={leftBarX}
+          y1={CHORD_GRID_LINE_Y1}
+          x2={leftBarX}
+          y2={CHORD_GRID_LINE_Y2}
+          stroke="currentColor"
+        />
+      )}
+      {verticalLines.map((x) => (
         <line
           key={`v-${x}`}
           x1={x}
@@ -37,7 +48,7 @@ export function ChordGridLines({
           key={`h-${y}`}
           x1={CHORD_GRID_HORIZONTAL_X1}
           y1={y}
-          x2={CHORD_GRID_HORIZONTAL_X2}
+          x2={horizontalX2}
           y2={y}
           stroke="currentColor"
         />
@@ -55,7 +66,12 @@ function outlineMarkPositions(marksMap) {
     });
 }
 
-export function ChordGridLinesLayer({ className, marks, compact = false }) {
+export function ChordGridLinesLayer({
+  className,
+  marks,
+  compact = false,
+  leftBarX = null,
+}) {
   const maskId = useId();
   const marksMap = chordMarksToMap(marks);
   const outlineMarks = outlineMarkPositions(marksMap);
@@ -65,6 +81,7 @@ export function ChordGridLinesLayer({ className, marks, compact = false }) {
       className={className}
       verticalLines={verticalLines}
       horizontalX2={horizontalX2}
+      leftBarX={leftBarX}
     />
   );
 

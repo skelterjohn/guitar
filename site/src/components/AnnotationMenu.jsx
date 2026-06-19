@@ -24,6 +24,10 @@ import {
 } from '../data/chordGrid.js';
 import { pageDropFromClientPoint } from '../utils/annotationPages.js';
 import { ANNOTATION_COLORS } from '../utils/annotationColorPreference.js';
+import {
+  getChordEditorPreference,
+  setChordEditorPreference,
+} from '../utils/chordEditorPreference.js';
 import { glyphDragClientPosition } from '../utils/stylusInput.js';
 
 const VIEWPORT_MARGIN = 12;
@@ -104,14 +108,20 @@ export default function AnnotationMenu({
   const [menuPosition, setMenuPosition] = useState(null);
   const [dragPreview, setDragPreview] = useState(null);
   const [menuText, setMenuText] = useState(TEXT_GLYPH_DEFAULT);
-  const [chordMarks, setChordMarks] = useState(() => new Map());
-  const [chordRomanNumeral, setChordRomanNumeral] = useState(CHORD_ROMAN_NUMERAL_OFF);
+  const [chordMarks, setChordMarks] = useState(() => getChordEditorPreference().marks);
+  const [chordRomanNumeral, setChordRomanNumeral] = useState(
+    () => getChordEditorPreference().romanNumeral,
+  );
   const chordMarksRef = useRef(chordMarks);
   const chordRomanNumeralRef = useRef(chordRomanNumeral);
 
   menuTextRef.current = menuText;
   chordMarksRef.current = chordMarks;
   chordRomanNumeralRef.current = chordRomanNumeral;
+
+  useEffect(() => {
+    setChordEditorPreference(chordMarks, chordRomanNumeral);
+  }, [chordMarks, chordRomanNumeral]);
 
   const setClampedMenuPosition = (left, top) => {
     const menu = menuRef.current;
@@ -145,8 +155,6 @@ export default function AnnotationMenu({
     setMenuPosition(next);
     dismissSuppressUntilRef.current = performance.now() + 400;
     setMenuText(TEXT_GLYPH_DEFAULT);
-    setChordMarks(new Map());
-    setChordRomanNumeral(CHORD_ROMAN_NUMERAL_OFF);
   }, [anchor]);
 
   useEffect(() => {

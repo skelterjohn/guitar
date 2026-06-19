@@ -97,7 +97,10 @@ ${renderToc(catalog.sections)}
   <script type="application/ld+json">${jsonLd}</script>
   <header class="page-header">
     <div class="page-header-top">
-      <h1>${escapeHtml(siteHeading)}</h1>
+      <div class="page-header-title">
+        <a class="page-back" href="/" aria-label="Home">&larr;</a>
+        <h1>${escapeHtml(siteHeading)}</h1>
+      </div>
       <div class="repo-source">
         <span class="repo-label">pdfs and site built from</span>
         <a class="repo-link" href="https://github.com/skelterjohn/guitar" rel="noopener noreferrer">github.com/skelterjohn/guitar</a>

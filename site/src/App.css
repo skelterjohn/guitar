@@ -114,12 +114,40 @@ body {
   padding-bottom: 1rem;
 }
 
+.page-back {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  font-family: system-ui, sans-serif;
+  text-decoration: none;
+  color: var(--color-link-text);
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-link-border);
+  border-radius: 0.25rem;
+}
+
+.page-back:hover {
+  background: var(--color-link-bg-hover);
+}
+
 .page-header-top {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.35rem;
+}
+
+.page-header-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
 }
 
 .repo-source {
@@ -1147,7 +1175,7 @@ body {
 }
 
 .landing-header {
-  text-align: center;
+  text-align: left;
   margin-bottom: 2.5rem;
 }
 

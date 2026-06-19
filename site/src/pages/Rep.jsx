@@ -1,4 +1,5 @@
 import repertoire from '../data/repertoire.js';
+import BackToHome from '../components/BackToHome.jsx';
 import Catalog from '../components/Catalog.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
@@ -17,7 +18,10 @@ export default function Rep() {
       <main className="page">
         <header className="page-header">
           <div className="page-header-top">
-            <h1>{repHeading}</h1>
+            <div className="page-header-title">
+              <BackToHome />
+              <h1>{repHeading}</h1>
+            </div>
             <div className="repo-source">
               <span className="repo-label">pdfs and site built from</span>
               <a

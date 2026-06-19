@@ -1,4 +1,5 @@
 import catalog from '../data/catalog.js';
+import BackToHome from '../components/BackToHome.jsx';
 import Catalog from '../components/Catalog.jsx';
 import JsonLd from '../components/JsonLd.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
@@ -20,7 +21,10 @@ export default function Home() {
       <main className="page">
         <header className="page-header">
           <div className="page-header-top">
-            <h1>{siteHeading}</h1>
+            <div className="page-header-title">
+              <BackToHome />
+              <h1>{siteHeading}</h1>
+            </div>
             <div className="repo-source">
               <span className="repo-label">pdfs and site built from</span>
               <a

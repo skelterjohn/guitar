@@ -89,6 +89,31 @@ export default function AnnotationHelpModal({ open, onClose }) {
               </li>
             </ul>
           </section>
+          <section>
+            <h3>Chord editor</h3>
+            <ul>
+              <li>
+                Select the grid button at the bottom left of the menu to open
+                the chord editor.
+              </li>
+              <li>
+                Tap grid intersections to place marks. Only one mark is kept per
+                row.
+              </li>
+              <li>
+                On the left column, each tap cycles through filled, outline, and
+                none. Other columns toggle a filled mark on or off.
+              </li>
+              <li>
+                Drag the roman numeral selector left or right to choose a
+                numeral, or set it to <strong>off</strong>.
+              </li>
+              <li>
+                Drag the chord preview in the bottom right corner onto the
+                score, using the selected annotation color.
+              </li>
+            </ul>
+          </section>
         </div>
       </div>
     </div>,

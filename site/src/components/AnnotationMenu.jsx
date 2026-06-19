@@ -12,52 +12,10 @@ import {
   TEXT_GLYPH_DEFAULT,
   TEXT_GLYPH_ID,
 } from '../data/annotationGlyphs.js';
+import ChordGridEditor, { ChordGridIcon } from './ChordGridEditor.jsx';
 import { pageDropFromClientPoint } from '../utils/annotationPages.js';
 import { ANNOTATION_COLORS } from '../utils/annotationColorPreference.js';
 import { glyphDragClientPosition } from '../utils/stylusInput.js';
-
-const CHORD_GRID_VERTICAL_LINES = [2, 5, 8, 11];
-const CHORD_GRID_HORIZONTAL_LINES = [2, 6, 10, 14, 18, 22];
-const CHORD_GRID_HORIZONTAL_X1 = 2;
-const CHORD_GRID_HORIZONTAL_X2 = 14;
-
-function ChordGridIcon({ sizePx }) {
-  const width = 16;
-  const height = 24;
-
-  return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      width={sizePx}
-      height={(sizePx * height) / width}
-      className="annotation-menu-chord-grid-icon"
-      aria-hidden="true"
-    >
-      {CHORD_GRID_VERTICAL_LINES.map((x) => (
-        <line
-          key={`v-${x}`}
-          x1={x}
-          y1={2}
-          x2={x}
-          y2={22}
-          stroke="currentColor"
-          strokeWidth="1"
-        />
-      ))}
-      {CHORD_GRID_HORIZONTAL_LINES.map((y) => (
-        <line
-          key={`h-${y}`}
-          x1={CHORD_GRID_HORIZONTAL_X1}
-          y1={y}
-          x2={CHORD_GRID_HORIZONTAL_X2}
-          y2={y}
-          stroke="currentColor"
-          strokeWidth="1"
-        />
-      ))}
-    </svg>
-  );
-}
 
 const VIEWPORT_MARGIN = 12;
 
@@ -620,7 +578,9 @@ export default function AnnotationMenu({
                 : 'annotation-menu-chord-body annotation-menu-body-panel--hidden'
             }
             aria-hidden={!chordModeActive}
-          />
+          >
+            <ChordGridEditor color={annotationColor} />
+          </div>
         </div>
         <div className="annotation-menu-footer">
           <div

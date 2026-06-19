@@ -1004,19 +1004,57 @@ body {
 }
 
 .annotation-menu-body {
-  display: grid;
-  grid-template: 1fr / 1fr;
+  position: relative;
 }
 
-.annotation-menu-glyph-rows,
 .annotation-menu-chord-body {
-  grid-area: 1 / 1;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .annotation-menu-body-panel--hidden {
   visibility: hidden;
   pointer-events: none;
+}
+
+.annotation-menu-chord-grid {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  color: #f8fafc;
+  touch-action: manipulation;
+}
+
+.annotation-menu-chord-grid-lines line {
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.annotation-menu-chord-grid-icon-lines line {
+  stroke-width: 1;
+}
+
+.annotation-menu-chord-grid-intersection {
+  fill: transparent;
+  cursor: pointer;
+}
+
+.annotation-menu-chord-grid-dot {
+  pointer-events: none;
+}
+
+.annotation-menu-chord-grid-dot--outline {
+  fill: none;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
 }
 
 .annotation-menu-glyphs {

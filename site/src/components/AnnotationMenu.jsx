@@ -1,6 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ANNOTATION_GLYPHS, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
+import {
+  ANNOTATION_ACCIDENTAL_GLYPHS,
+  ANNOTATION_CIRCLED_NUMBER_GLYPHS,
+  ANNOTATION_FINGERING_GLYPHS,
+  ANNOTATION_NUMBER_GLYPHS,
+  GLYPH_SIZE_MM,
+  getGlyphById,
+} from '../data/annotationGlyphs.js';
 import { pageDropFromClientPoint } from '../utils/annotationPages.js';
 import { measureCssPxPerMm, glyphDragClientPosition } from '../utils/stylusInput.js';
 
@@ -215,9 +222,32 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
     menu.setPointerCapture(event.pointerId);
   };
 
+  const startGlyphDrag = (event, glyph) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dragRef.current = {
+      type: 'glyph',
+      glyphId: glyph.id,
+      symbol: glyph.symbol,
+      pointerId: event.pointerId,
+      pointerType: event.pointerType,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragPreview({
+      glyphId: glyph.id,
+      symbol: glyph.symbol,
+      ...glyphDragClientPosition(
+        event.pointerType,
+        event.clientX,
+        event.clientY,
+      ),
+    });
+  };
+
   if (!anchor) return null;
 
   const previewSizePx = measureCssPxPerMm() * GLYPH_SIZE_MM;
+  const previewGlyph = dragPreview ? getGlyphById(dragPreview.glyphId) : null;
   const isReady = menuPosition != null;
 
   return createPortal(
@@ -245,44 +275,78 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
           onPointerDown={startMenuDrag}
         >
           <p className="annotation-menu-title">Symbols</p>
-          <p className="annotation-menu-drag-hint">Drag to move</p>
         </div>
-        <div className="annotation-menu-glyphs">
-          {ANNOTATION_GLYPHS.map((glyph) => (
-            <button
-              key={glyph.id}
-              type="button"
-              className="annotation-menu-glyph"
-              aria-label={`Drag ${glyph.label} onto score`}
-              onPointerDown={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                dragRef.current = {
-                  type: 'glyph',
-                  glyphId: glyph.id,
-                  symbol: glyph.symbol,
-                  pointerId: event.pointerId,
-                  pointerType: event.pointerType,
-                };
-                event.currentTarget.setPointerCapture(event.pointerId);
-                setDragPreview({
-                  glyphId: glyph.id,
-                  symbol: glyph.symbol,
-                  ...glyphDragClientPosition(
-                    event.pointerType,
-                    event.clientX,
-                    event.clientY,
-                  ),
-                });
-              }}
-            >
-              <span className="annotation-menu-glyph-symbol" aria-hidden="true">
-                {glyph.symbol}
-              </span>
-            </button>
-          ))}
+        <div className="annotation-menu-glyph-rows">
+          <div className="annotation-menu-glyphs">
+            {ANNOTATION_ACCIDENTAL_GLYPHS.map((glyph) => (
+              <button
+                key={glyph.id}
+                type="button"
+                className="annotation-menu-glyph"
+                aria-label={`Drag ${glyph.label} onto score`}
+                onPointerDown={(event) => startGlyphDrag(event, glyph)}
+              >
+                <span className="annotation-menu-glyph-symbol" aria-hidden="true">
+                  {glyph.symbol}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className="annotation-menu-glyphs">
+            {ANNOTATION_NUMBER_GLYPHS.map((glyph) => (
+              <button
+                key={glyph.id}
+                type="button"
+                className="annotation-menu-glyph"
+                aria-label={`Drag ${glyph.label} onto score`}
+                onPointerDown={(event) => startGlyphDrag(event, glyph)}
+              >
+                <span
+                  className="annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number"
+                  aria-hidden="true"
+                >
+                  {glyph.symbol}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className="annotation-menu-glyphs">
+            {ANNOTATION_CIRCLED_NUMBER_GLYPHS.map((glyph) => (
+              <button
+                key={glyph.id}
+                type="button"
+                className="annotation-menu-glyph"
+                aria-label={`Drag ${glyph.label} onto score`}
+                onPointerDown={(event) => startGlyphDrag(event, glyph)}
+              >
+                <span
+                  className="annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number"
+                  aria-hidden="true"
+                >
+                  {glyph.symbol}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className="annotation-menu-glyphs">
+            {ANNOTATION_FINGERING_GLYPHS.map((glyph) => (
+              <button
+                key={glyph.id}
+                type="button"
+                className="annotation-menu-glyph"
+                aria-label={`Drag ${glyph.label} onto score`}
+                onPointerDown={(event) => startGlyphDrag(event, glyph)}
+              >
+                <span
+                  className="annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number"
+                  aria-hidden="true"
+                >
+                  {glyph.symbol}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
-        <p className="annotation-menu-hint">Drag a symbol onto the score</p>
       </div>
       {dragPreview && (
         <div
@@ -291,6 +355,9 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
             left: `${dragPreview.clientX}px`,
             top: `${dragPreview.clientY}px`,
             fontSize: `${previewSizePx}px`,
+            ...(previewGlyph?.fontFamily
+              ? { fontFamily: previewGlyph.fontFamily }
+              : {}),
           }}
           aria-hidden="true"
         >

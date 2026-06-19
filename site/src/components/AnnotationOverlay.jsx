@@ -512,7 +512,8 @@ export default function AnnotationOverlay({
             );
           })}
           {glyphs.map((glyph) => {
-            const symbol = getGlyphById(glyph.type)?.symbol;
+            const glyphDef = getGlyphById(glyph.type);
+            const symbol = glyphDef?.symbol;
             if (!symbol) return null;
 
             const position =
@@ -534,8 +535,11 @@ export default function AnnotationOverlay({
                   fill="transparent"
                 />
                 <text
-                  className="annotation-glyph"
+                  className={`annotation-glyph${
+                    glyphDef.fontFamily ? ' annotation-glyph--number' : ''
+                  }`}
                   fontSize={glyphSizePx}
+                  fontFamily={glyphDef.fontFamily}
                   textAnchor="middle"
                   dominantBaseline="middle"
                   pointerEvents="none"

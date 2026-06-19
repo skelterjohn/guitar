@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ChordRomanNumeralWheel from './ChordRomanNumeralWheel.jsx';
 import {
   CHORD_GRID_DOT_RADIUS,
   CHORD_GRID_HIT_RADIUS,
@@ -13,6 +14,7 @@ import {
   CHORD_GRID_VERTICAL_LINES,
   CHORD_GRID_VIEW_HEIGHT,
   CHORD_GRID_VIEW_WIDTH,
+  CHORD_ROMAN_NUMERAL_OFF,
   chordGridIntersectionKey,
   chordGridIntersections,
 } from '../data/chordGrid.js';
@@ -55,8 +57,9 @@ function clearRowMarks(markMap, rowY, keepKey = null) {
   }
 }
 
-export default function ChordGridEditor({ color }) {
+export default function ChordGridEditor() {
   const [marks, setMarks] = useState(() => new Map());
+  const [romanNumeral, setRomanNumeral] = useState(CHORD_ROMAN_NUMERAL_OFF);
 
   const handleIntersectionClick = (x, y) => {
     const key = chordGridIntersectionKey(x, y);
@@ -95,11 +98,20 @@ export default function ChordGridEditor({ color }) {
   };
 
   return (
-    <svg
-      viewBox={`0 0 ${CHORD_GRID_VIEW_WIDTH} ${CHORD_GRID_VIEW_HEIGHT}`}
-      className="annotation-menu-chord-grid"
-      aria-label="Chord diagram"
-    >
+    <div className="annotation-menu-chord-editor">
+      <div className="annotation-menu-chord-editor-column">
+        <div className="annotation-menu-chord-numeral-wheel-wrap">
+          <ChordRomanNumeralWheel
+            value={romanNumeral}
+            onChange={setRomanNumeral}
+          />
+        </div>
+        <svg
+        viewBox={`0 0 ${CHORD_GRID_VIEW_WIDTH} ${CHORD_GRID_VIEW_HEIGHT}`}
+        className="annotation-menu-chord-grid"
+        preserveAspectRatio="xMinYMin meet"
+        aria-label="Chord diagram"
+      >
       <ChordGridLines className="annotation-menu-chord-grid-lines" />
       {chordGridIntersections().map(({ x, y }) => {
         const key = chordGridIntersectionKey(x, y);
@@ -124,7 +136,7 @@ export default function ChordGridEditor({ color }) {
                 cy={y}
                 r={CHORD_GRID_DOT_RADIUS}
                 className="annotation-menu-chord-grid-dot"
-                fill={color}
+                fill="#fff"
               />
             )}
             {mark === CHORD_GRID_MARK_OUTLINE && (
@@ -133,13 +145,15 @@ export default function ChordGridEditor({ color }) {
                 cy={y}
                 r={CHORD_GRID_DOT_RADIUS}
                 className="annotation-menu-chord-grid-dot annotation-menu-chord-grid-dot--outline"
-                stroke={color}
+                stroke="#fff"
               />
             )}
           </g>
         );
       })}
-    </svg>
+      </svg>
+      </div>
+    </div>
   );
 }
 

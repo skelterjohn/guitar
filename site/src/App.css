@@ -1011,8 +1011,8 @@ body {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -1023,12 +1023,63 @@ body {
   pointer-events: none;
 }
 
+.annotation-menu-chord-editor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
+.annotation-menu-chord-editor-column {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  container-type: size;
+}
+
+.annotation-menu-chord-numeral-wheel-wrap {
+  flex: 0 0 auto;
+}
+
+.annotation-menu-chord-numeral-wheel {
+  box-sizing: border-box;
+  display: inline-block;
+  width: 4ch;
+  padding: 0.2em 0;
+  border: 1px solid rgb(148 163 184 / 45%);
+  border-radius: 0.25rem;
+  background: rgb(100 116 139 / 55%);
+  color: #f8fafc;
+  font-family: system-ui, sans-serif;
+  font-size: clamp(0.625rem, 11cqmin, 1rem);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.annotation-menu-chord-numeral-wheel:active {
+  cursor: grabbing;
+}
+
 .annotation-menu-chord-grid {
   display: block;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
   color: #f8fafc;
   touch-action: manipulation;
 }

@@ -26,3 +26,50 @@ export function chordGridIntersections() {
     CHORD_GRID_HORIZONTAL_LINES.map((y) => ({ x, y })),
   );
 }
+
+const ROMAN_NUMERAL_PARTS = [
+  [10, 'X'],
+  [9, 'IX'],
+  [5, 'V'],
+  [4, 'IV'],
+  [1, 'I'],
+];
+
+function toRomanNumeral(value) {
+  let remaining = value;
+  let result = '';
+
+  for (const [partValue, numeral] of ROMAN_NUMERAL_PARTS) {
+    while (remaining >= partValue) {
+      result += numeral;
+      remaining -= partValue;
+    }
+  }
+
+  return result;
+}
+
+export const CHORD_ROMAN_NUMERAL_OFF = '';
+
+export const CHORD_ROMAN_NUMERAL_OPTIONS = [
+  { value: CHORD_ROMAN_NUMERAL_OFF, label: 'off' },
+  ...Array.from({ length: 17 }, (_, index) => {
+    const value = index + 1;
+    return {
+      value: String(value),
+      label: toRomanNumeral(value),
+    };
+  }),
+];
+
+export function romanNumeralIndexForValue(value) {
+  const index = CHORD_ROMAN_NUMERAL_OPTIONS.findIndex((option) => option.value === value);
+  return index >= 0 ? index : 0;
+}
+
+export function clampRomanNumeralIndex(index) {
+  return Math.min(
+    Math.max(index, 0),
+    CHORD_ROMAN_NUMERAL_OPTIONS.length - 1,
+  );
+}

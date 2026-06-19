@@ -579,7 +579,7 @@ export default function AnnotationMenu({
             }
             aria-hidden={!chordModeActive}
           >
-            <ChordGridEditor color={annotationColor} />
+            <ChordGridEditor />
           </div>
         </div>
         <div className="annotation-menu-footer">

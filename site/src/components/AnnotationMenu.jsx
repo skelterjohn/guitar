@@ -11,6 +11,7 @@ import {
   isTextGlyph,
   isChordGlyph,
   TEXT_GLYPH_DEFAULT,
+  TEXT_GLYPH_FONT,
   TEXT_GLYPH_ID,
 } from '../data/annotationGlyphs.js';
 import ChordDiagram from './ChordDiagram.jsx';
@@ -604,6 +605,7 @@ export default function AnnotationMenu({
                 ref={textInputRef}
                 type="text"
                 className="annotation-menu-text-input"
+                style={{ fontFamily: TEXT_GLYPH_FONT }}
                 value={menuText}
                 onChange={(event) => setMenuText(event.target.value)}
                 aria-label="Annotation text"
@@ -692,9 +694,11 @@ export default function AnnotationMenu({
               : {
                   fontSize: `${glyphSizePx}px`,
                   color: annotationColor,
-                  ...(previewGlyph?.fontFamily
-                    ? { fontFamily: previewGlyph.fontFamily }
-                    : {}),
+                  ...(isTextGlyph(dragPreview.glyphId)
+                    ? { fontFamily: TEXT_GLYPH_FONT }
+                    : previewGlyph?.fontFamily
+                      ? { fontFamily: previewGlyph.fontFamily }
+                      : {}),
                   ...(previewGlyph?.fontStyle
                     ? { fontStyle: previewGlyph.fontStyle }
                     : {}),

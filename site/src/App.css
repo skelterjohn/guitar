@@ -834,8 +834,11 @@ body {
 }
 
 .annotation-glyph {
-  font-family: 'Segoe UI Symbol', 'Noto Music', 'Bravura Text', serif;
   user-select: none;
+}
+
+.annotation-glyph:not(.annotation-glyph--text) {
+  font-family: 'Segoe UI Symbol', 'Noto Music', 'Bravura Text', serif;
 }
 
 .annotation-glyph-group {
@@ -1148,7 +1151,6 @@ body {
   border-radius: 0.375rem;
   background: rgb(15 23 42 / 50%);
   color: #f8fafc;
-  font-family: system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   line-height: 1.2;
@@ -1217,11 +1219,6 @@ body {
   font-weight: 600;
 }
 
-.annotation-glyph--text {
-  font-family: system-ui, sans-serif;
-  font-weight: 600;
-}
-
 .annotation-glyph-drag-preview {
   position: fixed;
   z-index: 42;
@@ -1233,7 +1230,6 @@ body {
 }
 
 .annotation-glyph-drag-preview--text {
-  font-family: system-ui, sans-serif;
   font-weight: 600;
 }
 

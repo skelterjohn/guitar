@@ -1,5 +1,6 @@
 import {
   CHORD_GLYPH_ID,
+  CHORD_ROMAN_NUMERAL_FONT,
   CHORD_ROMAN_NUMERAL_OFF,
   chordGlyphRenderHeightPx,
   chordGlyphRenderWidthPx,
@@ -89,6 +90,7 @@ export function getGlyphById(id) {
 
 export const TEXT_GLYPH_ID = 'text';
 export const TEXT_GLYPH_DEFAULT = 'text';
+export const TEXT_GLYPH_FONT = CHORD_ROMAN_NUMERAL_FONT;
 
 export function isChordGlyph(typeOrGlyph) {
   const type = typeof typeOrGlyph === 'string' ? typeOrGlyph : typeOrGlyph?.type;

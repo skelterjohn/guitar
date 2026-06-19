@@ -12,7 +12,7 @@ import {
   PEN_COLOR,
   PEN_THINNING,
 } from '../utils/stylusInput.js';
-import { getGlyphById, annotationGlyphSizePx, glyphDisplayText, isChordGlyph, isDynamicGlyph, isTextGlyph } from '../data/annotationGlyphs.js';
+import { getGlyphById, annotationGlyphSizePx, glyphDisplayText, isChordGlyph, isDynamicGlyph, isTextGlyph, TEXT_GLYPH_FONT } from '../data/annotationGlyphs.js';
 import ChordDiagram from './ChordDiagram.jsx';
 import { CHORD_ROMAN_NUMERAL_OFF, chordGlyphRenderHeightPx, chordGlyphRenderWidthPx } from '../data/chordGrid.js';
 
@@ -510,8 +510,7 @@ export default function AnnotationOverlay({
                   <text
                     className="annotation-glyph annotation-glyph--text"
                     fontSize={glyphSizePx}
-                    fontFamily="system-ui, sans-serif"
-                    fontWeight={600}
+                    style={{ fontFamily: TEXT_GLYPH_FONT, fontWeight: 600 }}
                     fill={glyph.color ?? annotationColorRef.current}
                     textAnchor="middle"
                     dominantBaseline="middle"

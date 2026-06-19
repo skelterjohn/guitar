@@ -324,7 +324,7 @@ export function applyGlyphEraser(
   layoutHeight,
   centerNorm,
   radiusPx,
-  glyphRadiusPx,
+  radiusForGlyph,
 ) {
   if (!glyphs.length) {
     return { glyphs, changed: false };
@@ -337,7 +337,7 @@ export function applyGlyphEraser(
     const gx = glyph.x * layoutWidth;
     const gy = glyph.y * layoutHeight;
     const dist = Math.hypot(gx - cx, gy - cy);
-    return dist > radiusPx + glyphRadiusPx;
+    return dist > radiusPx + radiusForGlyph(glyph);
   });
 
   return {

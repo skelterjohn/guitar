@@ -81,6 +81,30 @@ export function getGlyphById(id) {
   return ANNOTATION_GLYPHS.find((glyph) => glyph.id === id);
 }
 
+export const TEXT_GLYPH_ID = 'text';
+export const TEXT_GLYPH_DEFAULT = 'text';
+
+export function isTextGlyph(typeOrGlyph) {
+  const type = typeof typeOrGlyph === 'string' ? typeOrGlyph : typeOrGlyph?.type;
+  return type === TEXT_GLYPH_ID;
+}
+
+export function glyphDisplayText(glyph) {
+  if (isTextGlyph(glyph)) {
+    const text = glyph.text?.trim();
+    return text || TEXT_GLYPH_DEFAULT;
+  }
+  return getGlyphById(glyph.type)?.symbol ?? '';
+}
+
+export function glyphEraseRadiusPx(glyph, glyphSizePx) {
+  if (isTextGlyph(glyph)) {
+    const text = glyphDisplayText(glyph);
+    return glyphSizePx * Math.max(GLYPH_ERASE_RADIUS_RATIO, text.length * 0.28);
+  }
+  return glyphSizePx * GLYPH_ERASE_RADIUS_RATIO;
+}
+
 export function isDynamicGlyph(glyph) {
   return glyph?.id?.startsWith('dyn-') ?? false;
 }

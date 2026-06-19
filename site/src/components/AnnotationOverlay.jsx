@@ -12,7 +12,7 @@ import {
   PEN_COLOR,
   PEN_THINNING,
 } from '../utils/stylusInput.js';
-import { getGlyphById, annotationGlyphSizePx, isDynamicGlyph } from '../data/annotationGlyphs.js';
+import { getGlyphById, annotationGlyphSizePx, glyphDisplayText, isDynamicGlyph, isTextGlyph } from '../data/annotationGlyphs.js';
 
 const TAP_MOVE_THRESHOLD = 10;
 const LONG_PRESS_MS = 500;
@@ -479,12 +479,36 @@ export default function AnnotationOverlay({
             );
           })}
           {glyphs.map((glyph) => {
+            const x = glyph.x * layoutSize.width;
+            const y = glyph.y * layoutSize.height;
+
+            if (isTextGlyph(glyph)) {
+              const label = glyphDisplayText(glyph);
+              return (
+                <g
+                  key={glyph.id}
+                  className="annotation-glyph-group"
+                  transform={`translate(${x}, ${y})`}
+                >
+                  <text
+                    className="annotation-glyph annotation-glyph--text"
+                    fontSize={glyphSizePx}
+                    fontFamily="system-ui, sans-serif"
+                    fontWeight={600}
+                    fill={glyph.color ?? annotationColorRef.current}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    pointerEvents="none"
+                  >
+                    {label}
+                  </text>
+                </g>
+              );
+            }
+
             const glyphDef = getGlyphById(glyph.type);
             const symbol = glyphDef?.symbol;
             if (!symbol) return null;
-
-            const x = glyph.x * layoutSize.width;
-            const y = glyph.y * layoutSize.height;
 
             return (
               <g

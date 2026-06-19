@@ -876,6 +876,37 @@ body {
   gap: 0.25rem;
 }
 
+.annotation-menu-text-row {
+  width: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.annotation-menu-text-row:active {
+  cursor: grabbing;
+}
+
+.annotation-menu-text-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.25rem 0.375rem;
+  border: 1px solid rgb(148 163 184 / 35%);
+  border-radius: 0.375rem;
+  background: rgb(15 23 42 / 50%);
+  color: #f8fafc;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  touch-action: manipulation;
+}
+
+.annotation-menu-text-input:focus {
+  outline: none;
+  border-color: rgb(148 163 184 / 65%);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 35%);
+}
+
 .annotation-menu-glyph {
   display: flex;
   align-items: center;
@@ -923,6 +954,11 @@ body {
   font-weight: 600;
 }
 
+.annotation-glyph--text {
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+}
+
 .annotation-glyph-drag-preview {
   position: fixed;
   z-index: 42;
@@ -931,6 +967,11 @@ body {
   line-height: 1;
   pointer-events: none;
   opacity: 0.85;
+}
+
+.annotation-glyph-drag-preview--text {
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
 }
 
 .viewer-storage-warning {

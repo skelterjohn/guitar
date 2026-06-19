@@ -29,7 +29,7 @@ import {
 import {
   createPenScrollLock,
 } from '../utils/penScrollLock.js';
-import { GLYPH_ERASE_RADIUS_RATIO, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
+import { GLYPH_SIZE_MM, glyphEraseRadiusPx, isTextGlyph, TEXT_GLYPH_DEFAULT, TEXT_GLYPH_ID } from '../data/annotationGlyphs.js';
 import {
   applyPartialEraser,
   applyGlyphEraser,
@@ -308,7 +308,7 @@ export default function PdfViewer({
   };
 
   const handleEraseAt = (pageNumber, center, radiusPx, layoutWidth, layoutHeight) => {
-    const glyphRadiusPx = measureCssPxPerMm() * GLYPH_SIZE_MM * GLYPH_ERASE_RADIUS_RATIO;
+    const glyphSizePx = measureCssPxPerMm() * GLYPH_SIZE_MM;
 
     setPageAnnotations((current) => {
       const key = String(pageNumber);
@@ -327,7 +327,7 @@ export default function PdfViewer({
         layoutHeight,
         center,
         radiusPx,
-        glyphRadiusPx,
+        (glyph) => glyphEraseRadiusPx(glyph, glyphSizePx),
       );
 
       if (!strokesChanged && !glyphsChanged) {
@@ -361,7 +361,7 @@ export default function PdfViewer({
     });
   };
 
-  const handleGlyphDrop = ({ pageNumber, glyphId, x, y }) => {
+  const handleGlyphDrop = ({ pageNumber, glyphId, x, y, text }) => {
     const glyph = {
       id: createStrokeId(),
       type: glyphId,
@@ -369,6 +369,12 @@ export default function PdfViewer({
       y,
       color: annotationColor,
     };
+
+    if (glyphId === TEXT_GLYPH_ID) {
+      glyph.text = text?.trim() || TEXT_GLYPH_DEFAULT;
+    } else if (text != null && String(text).trim()) {
+      glyph.text = String(text).trim();
+    }
 
     setPageAnnotations((current) => {
       const key = String(pageNumber);

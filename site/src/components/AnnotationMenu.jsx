@@ -8,6 +8,9 @@ import {
   ANNOTATION_NUMBER_GLYPHS,
   annotationGlyphSizePx,
   getGlyphById,
+  isTextGlyph,
+  TEXT_GLYPH_DEFAULT,
+  TEXT_GLYPH_ID,
 } from '../data/annotationGlyphs.js';
 import { pageDropFromClientPoint } from '../utils/annotationPages.js';
 import { ANNOTATION_COLORS } from '../utils/annotationColorPreference.js';
@@ -85,8 +88,14 @@ export default function AnnotationMenu({
   const dragRef = useRef(null);
   const menuPositionRef = useRef(null);
   const dismissSuppressUntilRef = useRef(0);
+  const textInputRef = useRef(null);
+  const menuTextRef = useRef(TEXT_GLYPH_DEFAULT);
+  const textDragPendingRef = useRef(null);
   const [menuPosition, setMenuPosition] = useState(null);
   const [dragPreview, setDragPreview] = useState(null);
+  const [menuText, setMenuText] = useState(TEXT_GLYPH_DEFAULT);
+
+  menuTextRef.current = menuText;
 
   const setClampedMenuPosition = (left, top) => {
     const menu = menuRef.current;
@@ -119,6 +128,7 @@ export default function AnnotationMenu({
     menuPositionRef.current = next;
     setMenuPosition(next);
     dismissSuppressUntilRef.current = performance.now() + 400;
+    setMenuText(TEXT_GLYPH_DEFAULT);
   }, [anchor]);
 
   useEffect(() => {
@@ -230,7 +240,46 @@ export default function AnnotationMenu({
   }, [onClose]);
 
   useEffect(() => {
+    const TAP_MOVE_THRESHOLD = 10;
+
     const onPointerMove = (event) => {
+      const textPending = textDragPendingRef.current;
+      if (
+        textPending &&
+        event.pointerId === textPending.pointerId &&
+        !dragRef.current
+      ) {
+        const moved = Math.hypot(
+          event.clientX - textPending.startX,
+          event.clientY - textPending.startY,
+        );
+        if (moved > TAP_MOVE_THRESHOLD) {
+          textInputRef.current?.blur();
+          const text = menuTextRef.current.trim() || TEXT_GLYPH_DEFAULT;
+          textDragPendingRef.current = null;
+          dragRef.current = {
+            type: 'glyph',
+            glyphId: TEXT_GLYPH_ID,
+            symbol: text,
+            text,
+            pointerId: event.pointerId,
+            pointerType: textPending.pointerType,
+          };
+          setDragPreview({
+            glyphId: TEXT_GLYPH_ID,
+            symbol: text,
+            text,
+            ...glyphDragClientPosition(
+              textPending.pointerType,
+              event.clientX,
+              event.clientY,
+            ),
+          });
+          event.preventDefault();
+        }
+        return;
+      }
+
       const drag = dragRef.current;
       if (!drag || event.pointerId !== drag.pointerId) return;
 
@@ -247,11 +296,24 @@ export default function AnnotationMenu({
       setDragPreview({
         glyphId: drag.glyphId,
         symbol: drag.symbol,
+        text: drag.text,
         ...glyphDragClientPosition(drag.pointerType, event.clientX, event.clientY),
       });
     };
 
     const finishDrag = (event) => {
+      const textPending = textDragPendingRef.current;
+      if (textPending && event.pointerId === textPending.pointerId) {
+        textDragPendingRef.current = null;
+        textPending.captureTarget?.releasePointerCapture(event.pointerId);
+
+        if (!dragRef.current) {
+          textInputRef.current?.focus();
+          textInputRef.current?.select();
+          return;
+        }
+      }
+
       const drag = dragRef.current;
       if (!drag || event.pointerId !== drag.pointerId) return;
 
@@ -280,6 +342,7 @@ export default function AnnotationMenu({
         glyphId: drag.glyphId,
         x: drop.x,
         y: drop.y,
+        text: drag.text,
       });
     };
 
@@ -311,6 +374,19 @@ export default function AnnotationMenu({
       offsetY: event.clientY - rect.top,
     };
     menu.setPointerCapture(event.pointerId);
+  };
+
+  const startTextInteraction = (event) => {
+    if (event.pointerType === 'pen') return;
+
+    textDragPendingRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      pointerType: event.pointerType,
+      captureTarget: event.currentTarget,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const startGlyphDrag = (event, glyph) => {
@@ -465,6 +541,23 @@ export default function AnnotationMenu({
               renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic'),
             )}
           </div>
+          <div
+            className="annotation-menu-text-row"
+            onPointerDown={startTextInteraction}
+          >
+            <input
+              ref={textInputRef}
+              type="text"
+              className="annotation-menu-text-input"
+              value={menuText}
+              onChange={(event) => setMenuText(event.target.value)}
+              aria-label="Annotation text"
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </div>
         </div>
         <div className="annotation-menu-footer">
           <div
@@ -506,7 +599,9 @@ export default function AnnotationMenu({
       </div>
       {dragPreview && (
         <div
-          className="annotation-glyph-drag-preview"
+          className={`annotation-glyph-drag-preview${
+            isTextGlyph(dragPreview.glyphId) ? ' annotation-glyph-drag-preview--text' : ''
+          }`}
           style={{
             left: `${dragPreview.clientX}px`,
             top: `${dragPreview.clientY}px`,
@@ -520,7 +615,7 @@ export default function AnnotationMenu({
           }}
           aria-hidden="true"
         >
-          {dragPreview.symbol}
+          {dragPreview.text ?? dragPreview.symbol}
         </div>
       )}
     </>,

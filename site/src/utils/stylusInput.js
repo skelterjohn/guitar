@@ -1,5 +1,6 @@
 export const PEN_COLOR = '#dc2626';
-export const PEN_BASE_WIDTH = 2;
+export const PEN_BASE_WIDTH = 4;
+export const PEN_THINNING = 0.8;
 
 export const ERASER_MIN_DIAMETER_MM = 1;
 export const ERASER_MAX_DIAMETER_MM = 20;

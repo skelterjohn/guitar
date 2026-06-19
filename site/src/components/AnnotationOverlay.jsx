@@ -10,6 +10,7 @@ import {
   measureCssPxPerMm,
   PEN_BASE_WIDTH,
   PEN_COLOR,
+  PEN_THINNING,
 } from '../utils/stylusInput.js';
 import { getGlyphById, annotationGlyphSizePx, isDynamicGlyph } from '../data/annotationGlyphs.js';
 
@@ -47,7 +48,7 @@ function strokeToPathData(stroke, width, height) {
   const baseWidth = stroke.baseWidth ?? PEN_BASE_WIDTH;
   const outline = getStroke(inputPoints, {
     size: baseWidth,
-    thinning: 0.6,
+    thinning: PEN_THINNING,
     smoothing: 0.5,
     streamline: 0.5,
     simulatePressure: true,

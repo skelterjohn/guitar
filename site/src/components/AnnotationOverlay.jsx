@@ -201,6 +201,7 @@ export default function AnnotationOverlay({
         points: [],
         startX: event.clientX,
         startY: event.clientY,
+        maxDeviation: 0,
       };
 
       appendPoints(event);
@@ -219,6 +220,11 @@ export default function AnnotationOverlay({
       }
 
       if (!activeStrokeRef.current) return;
+      const active = activeStrokeRef.current;
+      active.maxDeviation = Math.max(
+        active.maxDeviation,
+        Math.hypot(event.clientX - active.startX, event.clientY - active.startY),
+      );
       appendPoints(event);
     };
 
@@ -242,9 +248,11 @@ export default function AnnotationOverlay({
       const active = activeStrokeRef.current;
       appendPoints(event);
 
-      const dx = Math.abs(event.clientX - active.startX);
-      const dy = Math.abs(event.clientY - active.startY);
-      const isTap = dx <= TAP_MOVE_THRESHOLD && dy <= TAP_MOVE_THRESHOLD;
+      active.maxDeviation = Math.max(
+        active.maxDeviation,
+        Math.hypot(event.clientX - active.startX, event.clientY - active.startY),
+      );
+      const isTap = active.maxDeviation <= TAP_MOVE_THRESHOLD;
 
       if (isTap) {
         if (lastPenTapRef) {

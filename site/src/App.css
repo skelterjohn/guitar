@@ -704,14 +704,6 @@ body {
   pointer-events: none;
 }
 
-.annotation-menu-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: rgb(15 23 42 / 25%);
-  pointer-events: none;
-}
-
 .annotation-menu {
   position: fixed;
   z-index: 41;

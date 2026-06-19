@@ -485,7 +485,6 @@ export default function AnnotationMenu({
 
   return createPortal(
     <>
-      <div className="annotation-menu-backdrop" aria-hidden="true" />
       <div
         ref={menuRef}
         className="annotation-menu"

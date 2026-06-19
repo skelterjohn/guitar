@@ -98,7 +98,7 @@ ${renderToc(catalog.sections)}
   <header class="page-header">
     <div class="page-header-top">
       <div class="page-header-title">
-        <a class="page-back" href="/" aria-label="Home">&larr;</a>
+        <a class="page-back" href="/" aria-label="Home"><svg class="chevron-icon" aria-hidden="true" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></a>
         <h1>${escapeHtml(siteHeading)}</h1>
       </div>
       <div class="repo-source">

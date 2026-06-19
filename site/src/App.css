@@ -121,9 +121,7 @@ body {
   justify-content: center;
   width: 1.75rem;
   height: 1.75rem;
-  font-size: 1.25rem;
   line-height: 1;
-  font-family: system-ui, sans-serif;
   text-decoration: none;
   color: var(--color-link-text);
   background: var(--color-link-bg);

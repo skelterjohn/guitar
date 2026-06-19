@@ -2,14 +2,14 @@ import ChordDiagram from './ChordDiagram.jsx';
 import ChordRomanNumeralWheel from './ChordRomanNumeralWheel.jsx';
 import {
   CHORD_GRID_HIT_DISPLAY_RADIUS,
-  CHORD_GRID_HORIZONTAL_X1,
-  CHORD_GRID_HORIZONTAL_X2,
   CHORD_GRID_LEFT_COLUMN_X,
   CHORD_GRID_MARK_FILLED,
   CHORD_GRID_MARK_OUTLINE,
   CHORD_GRID_VIEW_HEIGHT,
   CHORD_GRID_VIEW_WIDTH,
-  chordDiagramWidthPx,
+  CHORD_ROMAN_NUMERAL_OFF,
+  chordGlyphRenderHeightPx,
+  chordGlyphRenderWidthPx,
   chordGridIntersectionKey,
   chordGridIntersections,
 } from '../data/chordGrid.js';
@@ -74,7 +74,12 @@ export default function ChordGridEditor({
     });
   };
 
-  const diagramWidthPx = chordDiagramWidthPx(glyphSizePx);
+  const diagramWidthPx = chordGlyphRenderWidthPx(glyphSizePx);
+  const diagramHeightPx = chordGlyphRenderHeightPx(
+    glyphSizePx,
+    romanNumeral !== CHORD_ROMAN_NUMERAL_OFF,
+    marks,
+  );
 
   return (
     <>
@@ -120,7 +125,7 @@ export default function ChordGridEditor({
         className="annotation-menu-glyph annotation-menu-chord-glyph-drag"
         style={{
           minWidth: `${diagramWidthPx + 12}px`,
-          minHeight: `${(diagramWidthPx * CHORD_GRID_VIEW_HEIGHT) / CHORD_GRID_VIEW_WIDTH + 12}px`,
+          minHeight: `${diagramHeightPx + 12}px`,
         }}
         aria-label="Drag chord onto score"
         onPointerDown={onChordGlyphPointerDown}

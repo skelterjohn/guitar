@@ -347,6 +347,20 @@ export default function PdfViewer({
     });
   };
 
+  const handleClearCurrentPage = () => {
+    setPageAnnotations((current) => {
+      const key = String(currentPage);
+      const entry = normalizePageEntry(current[key]);
+      if (entry.strokes.length === 0 && entry.glyphs.length === 0) {
+        return current;
+      }
+      const next = { ...current };
+      delete next[key];
+      persistPageAnnotations(next);
+      return next;
+    });
+  };
+
   const handleGlyphDrop = ({ pageNumber, glyphId, x, y }) => {
     const glyph = {
       id: createStrokeId(),
@@ -1100,6 +1114,7 @@ export default function PdfViewer({
         annotationTool={annotationTool}
         onAnnotationToolChange={setAnnotationTool}
         onGlyphDrop={handleGlyphDrop}
+        onClearPage={handleClearCurrentPage}
         onGlyphDragChange={setGlyphDragActive}
       />
     </div>

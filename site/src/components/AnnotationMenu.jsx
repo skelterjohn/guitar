@@ -77,6 +77,7 @@ export default function AnnotationMenu({
   annotationTool,
   onAnnotationToolChange,
   onClose,
+  onClearPage,
   onGlyphDrop,
   onGlyphDragChange,
 }) {
@@ -428,6 +429,17 @@ export default function AnnotationMenu({
           >
             <p className="annotation-menu-title">Glyphs</p>
           </div>
+          <button
+            type="button"
+            className="annotation-menu-clear"
+            onPointerDown={(event) => event.stopPropagation()}
+            onPointerUp={(event) => {
+              event.stopPropagation();
+              onClearPage?.();
+            }}
+          >
+            Clear
+          </button>
         </div>
         <div className="annotation-menu-glyph-rows">
           <div className="annotation-menu-glyphs">

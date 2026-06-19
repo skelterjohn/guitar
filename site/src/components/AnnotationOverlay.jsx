@@ -376,7 +376,7 @@ export default function AnnotationOverlay({
         }
 
         if (isTouchDismissTap) {
-          callbacksRef.current.onDismissMenu?.();
+          callbacksRef.current.onDismissMenu?.(event.pointerId);
           return;
         }
 

@@ -165,7 +165,7 @@ export default function AnnotationMenu({
       const dy = Math.abs(event.clientY - pending.y);
       if (dx > TAP_MOVE_THRESHOLD || dy > TAP_MOVE_THRESHOLD) return;
 
-      onClose();
+      onClose(event.pointerId);
     };
 
     const onDismissPointerCancel = (event) => {
@@ -361,6 +361,33 @@ export default function AnnotationMenu({
     </button>
   );
 
+  const renderColorSwatches = () => (
+    <div
+      className="annotation-menu-colors"
+      onPointerDown={(event) => event.stopPropagation()}
+      onPointerUp={(event) => event.stopPropagation()}
+    >
+      {ANNOTATION_COLORS.map((color) => (
+        <button
+          key={color}
+          type="button"
+          className={
+            color === annotationColor
+              ? 'annotation-menu-color-swatch annotation-menu-color-swatch--selected'
+              : 'annotation-menu-color-swatch'
+          }
+          style={{ backgroundColor: color }}
+          onPointerUp={(event) => {
+            event.stopPropagation();
+            onAnnotationColorChange(color);
+          }}
+          aria-hidden="true"
+          tabIndex={-1}
+        />
+      ))}
+    </div>
+  );
+
   const renderToolToggle = (tool, label, content) => (
     <button
       type="button"
@@ -401,30 +428,6 @@ export default function AnnotationMenu({
           >
             <p className="annotation-menu-title">Glyphs</p>
           </div>
-          <div
-            className="annotation-menu-colors"
-            onPointerDown={(event) => event.stopPropagation()}
-            onPointerUp={(event) => event.stopPropagation()}
-          >
-            {ANNOTATION_COLORS.map((color) => (
-              <button
-                key={color}
-                type="button"
-                className={
-                  color === annotationColor
-                    ? 'annotation-menu-color-swatch annotation-menu-color-swatch--selected'
-                    : 'annotation-menu-color-swatch'
-                }
-                style={{ backgroundColor: color }}
-                onPointerUp={(event) => {
-                  event.stopPropagation();
-                  onAnnotationColorChange(color);
-                }}
-                aria-hidden="true"
-                tabIndex={-1}
-              />
-            ))}
-          </div>
         </div>
         <div className="annotation-menu-glyph-rows">
           <div className="annotation-menu-glyphs">
@@ -453,39 +456,40 @@ export default function AnnotationMenu({
         </div>
         <div className="annotation-menu-footer">
           <div
+            className="annotation-menu-tool-toggle"
+            onPointerDown={(event) => event.stopPropagation()}
+            onPointerUp={(event) => event.stopPropagation()}
+          >
+            {renderToolToggle(
+              'pen',
+              'Pen',
+              <span className="annotation-menu-tool-symbol" aria-hidden="true">
+                ✏
+              </span>,
+            )}
+            {renderToolToggle(
+              'eraser',
+              'Eraser',
+              <svg viewBox="0 0 16 16" aria-hidden="true" className="annotation-menu-tool-eraser">
+                <path d="M3.5 6.5 8.5 4.5 13.5 7.5 8.5 9.5Z" fill="#fbcfe8" />
+                <path d="M3.5 6.5 8.5 9.5 8.5 13.5 3.5 10.5Z" fill="#f472b6" />
+                <path d="M8.5 9.5 13.5 7.5 13.5 11.5 8.5 13.5Z" fill="#ec4899" />
+                <path
+                  d="M3.5 6.5 8.5 4.5 13.5 7.5 8.5 9.5 8.5 13.5 3.5 10.5Z"
+                  fill="none"
+                  stroke="rgb(236 72 153)"
+                  strokeWidth="0.75"
+                  strokeLinejoin="round"
+                />
+              </svg>,
+            )}
+          </div>
+          <div
             className="annotation-menu-footer-drag"
             onPointerDown={startMenuDrag}
-          >
-            <div
-              className="annotation-menu-tool-toggle"
-              onPointerDown={(event) => event.stopPropagation()}
-              onPointerUp={(event) => event.stopPropagation()}
-            >
-              {renderToolToggle(
-                'pen',
-                'Pen',
-                <span className="annotation-menu-tool-symbol" aria-hidden="true">
-                  ✏
-                </span>,
-              )}
-              {renderToolToggle(
-                'eraser',
-                'Eraser',
-                <svg viewBox="0 0 16 16" aria-hidden="true" className="annotation-menu-tool-eraser">
-                  <path d="M3.5 6.5 8.5 4.5 13.5 7.5 8.5 9.5Z" fill="#fbcfe8" />
-                  <path d="M3.5 6.5 8.5 9.5 8.5 13.5 3.5 10.5Z" fill="#f472b6" />
-                  <path d="M8.5 9.5 13.5 7.5 13.5 11.5 8.5 13.5Z" fill="#ec4899" />
-                  <path
-                    d="M3.5 6.5 8.5 4.5 13.5 7.5 8.5 9.5 8.5 13.5 3.5 10.5Z"
-                    fill="none"
-                    stroke="rgb(236 72 153)"
-                    strokeWidth="0.75"
-                    strokeLinejoin="round"
-                  />
-                </svg>,
-              )}
-            </div>
-          </div>
+            aria-hidden="true"
+          />
+          {renderColorSwatches()}
         </div>
       </div>
       {dragPreview && (

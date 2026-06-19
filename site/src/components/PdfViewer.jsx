@@ -110,6 +110,7 @@ export default function PdfViewer({
   const annotationColorRef = useRef(annotationColor);
   const annotationMenuRef = useRef(null);
   const annotationToolRef = useRef(null);
+  const dismissTapPointerIdRef = useRef(null);
   const onSaveResultRef = useRef(() => {});
 
   onSaveResultRef.current = (saved) => {
@@ -271,7 +272,10 @@ export default function PdfViewer({
     });
   };
 
-  const dismissAnnotationMenu = () => {
+  const dismissAnnotationMenu = (pointerId = null) => {
+    if (pointerId != null) {
+      dismissTapPointerIdRef.current = pointerId;
+    }
     setGlyphDragActive(false);
     annotationMenuRef.current = null;
     annotationToolRef.current = null;
@@ -630,14 +634,13 @@ export default function PdfViewer({
     const onPointerDown = (event) => {
       if (event.pointerType === 'pen') return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if (annotationMenuRef.current) return;
 
       longPressTriggered = false;
       tapStartX = event.clientX;
       tapStartY = event.clientY;
 
       if (event.pointerType === 'touch') {
-        if (annotationMenuRef.current) return;
-
         clearLongPress();
         longPressTimer = setTimeout(() => {
           longPressTimer = null;
@@ -667,6 +670,13 @@ export default function PdfViewer({
 
       if (longPressTriggered) {
         longPressTriggered = false;
+        tapStartX = null;
+        tapStartY = null;
+        return;
+      }
+
+      if (event.pointerId === dismissTapPointerIdRef.current) {
+        dismissTapPointerIdRef.current = null;
         tapStartX = null;
         tapStartY = null;
         return;

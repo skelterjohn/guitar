@@ -747,7 +747,7 @@ body {
 }
 
 .annotation-menu-header-drag {
-  flex: 1;
+  width: 100%;
   min-width: 0;
   cursor: grab;
 }
@@ -784,6 +784,10 @@ body {
 }
 
 .annotation-menu-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.375rem;
   margin: 0.375rem -0.5rem -0.375rem;
   padding: 0.375rem 0.5rem;
   border-top: 1px solid rgb(148 163 184 / 22%);
@@ -794,9 +798,9 @@ body {
 }
 
 .annotation-menu-footer-drag {
-  display: flex;
-  justify-content: center;
-  min-width: 0;
+  flex: 1;
+  align-self: stretch;
+  min-width: 0.75rem;
   cursor: grab;
 }
 
@@ -810,6 +814,7 @@ body {
 
 .annotation-menu-tool-toggle {
   display: flex;
+  flex-shrink: 0;
   gap: 0.25rem;
 }
 

@@ -603,6 +603,118 @@ body {
   text-decoration: underline;
 }
 
+.viewer-annotation-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-link-text);
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-link-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.viewer-annotation-help:hover {
+  background: var(--color-link-bg-hover);
+}
+
+.annotation-help-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 45%);
+}
+
+.annotation-help-modal {
+  width: min(100%, 28rem);
+  max-height: min(85vh, 32rem);
+  overflow: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 20%);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+}
+
+.annotation-help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.annotation-help-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-heading);
+}
+
+.annotation-help-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.annotation-help-close:hover {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.annotation-help-body {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.annotation-help-body section + section {
+  margin-top: 0.875rem;
+}
+
+.annotation-help-body h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-heading);
+}
+
+.annotation-help-body ul {
+  margin: 0;
+  padding-left: 1.15rem;
+}
+
+.annotation-help-body li {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.annotation-help-body li + li {
+  margin-top: 0.35rem;
+}
+
 .viewer-content {
   flex: 1;
   min-height: 0;

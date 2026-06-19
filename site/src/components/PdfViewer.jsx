@@ -11,6 +11,7 @@ import {
   pdfFilesMatch,
   setPieceLabelPreference,
 } from '../utils/pieceLabelPreference.js';
+import AnnotationHelpModal from './AnnotationHelpModal.jsx';
 import AnnotationOverlay from './AnnotationOverlay.jsx';
 import AnnotationMenu from './AnnotationMenu.jsx';
 import ChevronIcon from './ChevronIcon.jsx';
@@ -101,6 +102,7 @@ export default function PdfViewer({
     () => getAnnotationColorPreference() ?? PEN_COLOR,
   );
   const [storageWarning, setStorageWarning] = useState('');
+  const [annotationHelpOpen, setAnnotationHelpOpen] = useState(false);
 
   const pdfZoomRef = useRef(1);
   const isPinchingRef = useRef(false);
@@ -938,6 +940,14 @@ export default function PdfViewer({
               )}
             </div>
             <div className="viewer-toolbar-end" ref={toolbarEndRef}>
+              <button
+                type="button"
+                className="viewer-annotation-help"
+                onClick={() => setAnnotationHelpOpen(true)}
+                aria-label="Annotation help"
+              >
+                ?
+              </button>
               <a href={url} download={filename}>
                 Download
               </a>
@@ -1132,6 +1142,10 @@ export default function PdfViewer({
         onGlyphDrop={handleGlyphDrop}
         onClearPage={handleClearCurrentPage}
         onGlyphDragChange={setGlyphDragActive}
+      />
+      <AnnotationHelpModal
+        open={annotationHelpOpen}
+        onClose={() => setAnnotationHelpOpen(false)}
       />
     </div>
   );

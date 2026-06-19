@@ -68,10 +68,12 @@ function menuPositionCenteredOnPoint(clientX, clientY, menuWidth, menuHeight) {
   );
 }
 
-export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDrop }) {
+export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDrop, onGlyphDragChange }) {
   const menuRef = useRef(null);
   const dragRef = useRef(null);
   const menuPositionRef = useRef(null);
+  const dismissSuppressUntilRef = useRef(0);
+  const touchDismissRef = useRef(null);
   const [menuPosition, setMenuPosition] = useState(null);
   const [dragPreview, setDragPreview] = useState(null);
 
@@ -105,7 +107,63 @@ export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDr
     );
     menuPositionRef.current = next;
     setMenuPosition(next);
+    dismissSuppressUntilRef.current = performance.now() + 400;
   }, [anchor]);
+
+  useEffect(() => {
+    if (!anchor) return undefined;
+
+    const TAP_MOVE_THRESHOLD = 10;
+
+    const onDismissPointerDown = (event) => {
+      if (event.pointerType !== 'touch') return;
+      if (performance.now() < dismissSuppressUntilRef.current) return;
+      if (dragRef.current) return;
+
+      const menu = menuRef.current;
+      if (!menu || menu.contains(event.target)) return;
+
+      touchDismissRef.current = {
+        pointerId: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+      };
+    };
+
+    const onDismissPointerUp = (event) => {
+      if (event.pointerType !== 'touch') return;
+
+      const pending = touchDismissRef.current;
+      touchDismissRef.current = null;
+
+      if (!pending || event.pointerId !== pending.pointerId) return;
+      if (performance.now() < dismissSuppressUntilRef.current) return;
+      if (dragRef.current) return;
+
+      const menu = menuRef.current;
+      if (!menu || menu.contains(event.target)) return;
+
+      const dx = Math.abs(event.clientX - pending.x);
+      const dy = Math.abs(event.clientY - pending.y);
+      if (dx > TAP_MOVE_THRESHOLD || dy > TAP_MOVE_THRESHOLD) return;
+
+      onClose();
+    };
+
+    const onDismissPointerCancel = () => {
+      touchDismissRef.current = null;
+    };
+
+    window.addEventListener('pointerdown', onDismissPointerDown);
+    window.addEventListener('pointerup', onDismissPointerUp);
+    window.addEventListener('pointercancel', onDismissPointerCancel);
+
+    return () => {
+      window.removeEventListener('pointerdown', onDismissPointerDown);
+      window.removeEventListener('pointerup', onDismissPointerUp);
+      window.removeEventListener('pointercancel', onDismissPointerCancel);
+    };
+  }, [anchor, onClose]);
 
   useEffect(() => {
     if (!anchor) return undefined;
@@ -127,6 +185,16 @@ export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDr
       window.removeEventListener('resize', reclampMenu);
     };
   }, [anchor]);
+
+  useEffect(() => {
+    onGlyphDragChange?.(Boolean(dragPreview));
+  }, [dragPreview, onGlyphDragChange]);
+
+  useEffect(() => {
+    if (!anchor) {
+      onGlyphDragChange?.(false);
+    }
+  }, [anchor, onGlyphDragChange]);
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -274,15 +342,7 @@ export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDr
 
   return createPortal(
     <>
-      <button
-        type="button"
-        className={`annotation-menu-backdrop${dragPreview ? ' is-glyph-dragging' : ''}`}
-        aria-label="Close annotation menu"
-        onPointerUp={(event) => {
-          if (event.pointerType !== 'touch') return;
-          onClose();
-        }}
-      />
+      <div className="annotation-menu-backdrop" aria-hidden="true" />
       <div
         ref={menuRef}
         className="annotation-menu"

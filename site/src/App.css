@@ -703,13 +703,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 40;
-  border: none;
-  padding: 0;
   background: rgb(15 23 42 / 25%);
-  cursor: default;
-}
-
-.annotation-menu-backdrop.is-glyph-dragging {
   pointer-events: none;
 }
 

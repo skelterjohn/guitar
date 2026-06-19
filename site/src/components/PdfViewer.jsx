@@ -90,6 +90,7 @@ export default function PdfViewer({
   const [pdfZoom, setPdfZoom] = useState(1);
   const [pageAnnotations, setPageAnnotations] = useState({});
   const [annotationMenu, setAnnotationMenu] = useState(null);
+  const [glyphDragActive, setGlyphDragActive] = useState(false);
   const [storageWarning, setStorageWarning] = useState('');
 
   const pdfZoomRef = useRef(1);
@@ -177,6 +178,7 @@ export default function PdfViewer({
     setPdfZoom(1);
     setPageAnnotations({});
     setAnnotationMenu(null);
+    setGlyphDragActive(false);
     setStorageWarning('');
     lastPenTapRef.current = null;
     saveAnnotationsRef.current?.cancel();
@@ -969,6 +971,7 @@ export default function PdfViewer({
                     pageNumber={index + 1}
                     strokes={pageEntry.strokes}
                     glyphs={pageEntry.glyphs}
+                    isGlyphDragActive={glyphDragActive}
                     lastPenTapRef={lastPenTapRef}
                     onStrokeComplete={handleStrokeComplete}
                     onEraseAt={handleEraseAt}
@@ -1046,8 +1049,12 @@ export default function PdfViewer({
       <AnnotationMenu
         anchor={annotationMenu}
         pdfZoom={pdfZoom}
-        onClose={() => setAnnotationMenu(null)}
+        onClose={() => {
+          setGlyphDragActive(false);
+          setAnnotationMenu(null);
+        }}
         onGlyphDrop={handleGlyphDrop}
+        onGlyphDragChange={setGlyphDragActive}
       />
     </div>
   );

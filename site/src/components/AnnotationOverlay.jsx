@@ -66,6 +66,7 @@ export default function AnnotationOverlay({
   onEraseAt,
   onOpenMenu,
   onGlyphMove,
+  isGlyphDragActive = false,
 }) {
   const overlayRef = useRef(null);
   const svgRef = useRef(null);
@@ -73,6 +74,7 @@ export default function AnnotationOverlay({
   const eraserStrokeRef = useRef(false);
   const penPendingRef = useRef(null);
   const glyphDragRef = useRef(null);
+  const isGlyphDragActiveRef = useRef(isGlyphDragActive);
   const pxPerMmRef = useRef(measureCssPxPerMm());
   const callbacksRef = useRef({
     onStrokeComplete,
@@ -91,6 +93,7 @@ export default function AnnotationOverlay({
     onOpenMenu,
     onGlyphMove,
   };
+  isGlyphDragActiveRef.current = isGlyphDragActive;
 
   const syncLayoutSize = () => {
     const overlay = overlayRef.current;
@@ -210,6 +213,7 @@ export default function AnnotationOverlay({
 
     const onPointerDown = (event) => {
       if (event.pointerType !== 'pen') return;
+      if (isGlyphDragActiveRef.current) return;
 
       event.preventDefault();
       event.stopPropagation();

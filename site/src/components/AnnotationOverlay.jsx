@@ -6,6 +6,7 @@ import {
   ERASER_CIRCLE_FILL,
   eraserRadiusPx,
   getCoalescedPointerEvents,
+  glyphDragClientPosition,
   matchesRecentPenTap,
   measureCssPxPerMm,
   PEN_BASE_WIDTH,
@@ -393,7 +394,12 @@ export default function AnnotationOverlay({
       const drag = glyphDragRef.current;
       if (!drag) return;
 
-      const { x, y } = clientToNormalized(overlay, event.clientX, event.clientY);
+      const dropPoint = glyphDragClientPosition(
+        drag.pointerType,
+        event.clientX,
+        event.clientY,
+      );
+      const { x, y } = clientToNormalized(overlay, dropPoint.clientX, dropPoint.clientY);
       setGlyphDragPos({ id: drag.id, x, y });
     };
 
@@ -404,7 +410,12 @@ export default function AnnotationOverlay({
       svg.releasePointerCapture(event.pointerId);
       glyphDragRef.current = null;
 
-      const { x, y } = clientToNormalized(overlay, event.clientX, event.clientY);
+      const dropPoint = glyphDragClientPosition(
+        drag.pointerType,
+        event.clientX,
+        event.clientY,
+      );
+      const { x, y } = clientToNormalized(overlay, dropPoint.clientX, dropPoint.clientY);
       callbacksRef.current.onGlyphMove?.(pageNumber, drag.id, x, y);
       setGlyphDragPos(null);
     };
@@ -422,7 +433,11 @@ export default function AnnotationOverlay({
       event.preventDefault();
       event.stopPropagation();
       svg.setPointerCapture(event.pointerId);
-      glyphDragRef.current = { id: glyphId, pointerId: event.pointerId };
+      glyphDragRef.current = {
+        id: glyphId,
+        pointerId: event.pointerId,
+        pointerType: event.pointerType,
+      };
       setGlyphDragPos({ id: glyphId, x: glyph.x, y: glyph.y });
     };
 

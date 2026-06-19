@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ANNOTATION_GLYPHS, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
-import { measureCssPxPerMm } from '../utils/stylusInput.js';
+import { measureCssPxPerMm, glyphDragClientPosition } from '../utils/stylusInput.js';
 
 const VIEWPORT_MARGIN = 12;
 
@@ -148,8 +148,7 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
       setDragPreview({
         glyphId: drag.glyphId,
         symbol: drag.symbol,
-        clientX: event.clientX,
-        clientY: event.clientY,
+        ...glyphDragClientPosition(drag.pointerType, event.clientX, event.clientY),
       });
     };
 
@@ -169,7 +168,12 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
 
       setDragPreview(null);
 
-      const target = document.elementFromPoint(event.clientX, event.clientY);
+      const dropPoint = glyphDragClientPosition(
+        drag.pointerType,
+        event.clientX,
+        event.clientY,
+      );
+      const target = document.elementFromPoint(dropPoint.clientX, dropPoint.clientY);
       const frame = target?.closest('.viewer-page-frame');
       if (!frame) return;
 
@@ -182,8 +186,8 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
       onGlyphDrop({
         pageNumber,
         glyphId: drag.glyphId,
-        x: (event.clientX - rect.left) / rect.width,
-        y: (event.clientY - rect.top) / rect.height,
+        x: (dropPoint.clientX - rect.left) / rect.width,
+        y: (dropPoint.clientY - rect.top) / rect.height,
       });
     };
 
@@ -264,13 +268,17 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
                   glyphId: glyph.id,
                   symbol: glyph.symbol,
                   pointerId: event.pointerId,
+                  pointerType: event.pointerType,
                 };
                 event.currentTarget.setPointerCapture(event.pointerId);
                 setDragPreview({
                   glyphId: glyph.id,
                   symbol: glyph.symbol,
-                  clientX: event.clientX,
-                  clientY: event.clientY,
+                  ...glyphDragClientPosition(
+                    event.pointerType,
+                    event.clientX,
+                    event.clientY,
+                  ),
                 });
               }}
             >

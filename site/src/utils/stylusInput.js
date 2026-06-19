@@ -60,6 +60,24 @@ export function measureCssPxPerMm() {
   return pxPerMm;
 }
 
+/** Finger drags show the glyph this far above the contact point (inches). */
+export const FINGER_GLYPH_DRAG_OFFSET_IN = 0.75;
+
+export function fingerGlyphDragOffsetPx() {
+  return measureCssPxPerMm() * FINGER_GLYPH_DRAG_OFFSET_IN * 25.4;
+}
+
+export function glyphDragClientPosition(pointerType, clientX, clientY) {
+  if (pointerType === 'pen') {
+    return { clientX, clientY };
+  }
+
+  return {
+    clientX,
+    clientY: clientY - fingerGlyphDragOffsetPx(),
+  };
+}
+
 export function eraserRadiusPx(pressure, pxPerMm = CSS_PX_PER_MM) {
   const normalizedPressure = typeof pressure === 'number' ? pressure : 0.5;
   const minDiameter = ERASER_MIN_DIAMETER_MM * pxPerMm;

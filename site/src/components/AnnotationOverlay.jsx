@@ -529,6 +529,7 @@ export default function AnnotationOverlay({
               const diagramHeightPx = chordGlyphRenderHeightPx(
                 glyphSizePx,
                 showNumeral,
+                glyph.chord?.marks,
               );
               return (
                 <g

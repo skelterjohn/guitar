@@ -118,7 +118,11 @@ export function glyphEraseRadiusPx(glyph, glyphSizePx) {
   if (isChordGlyph(glyph)) {
     const diagramWidthPx = chordGlyphRenderWidthPx(glyphSizePx);
     const showNumeral = glyph.chord?.romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
-    const diagramHeightPx = chordGlyphRenderHeightPx(glyphSizePx, showNumeral);
+    const diagramHeightPx = chordGlyphRenderHeightPx(
+      glyphSizePx,
+      showNumeral,
+      glyph.chord?.marks,
+    );
     return Math.hypot(diagramWidthPx, diagramHeightPx) * 0.38;
   }
   return glyphSizePx * GLYPH_ERASE_RADIUS_RATIO;

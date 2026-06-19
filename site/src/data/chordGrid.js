@@ -6,6 +6,13 @@ export const CHORD_GRID_HORIZONTAL_LINES = [2, 6, 10, 14, 18, 22];
 export const CHORD_GRID_HORIZONTAL_X1 = 2;
 export const CHORD_GRID_HORIZONTAL_X2 = 17;
 
+export const CHORD_GRID_COLUMN_SPACING =
+  CHORD_GRID_VERTICAL_LINES[1] - CHORD_GRID_VERTICAL_LINES[0];
+export const CHORD_GRID_RIGHTMOST_VERTICAL_X =
+  CHORD_GRID_VERTICAL_LINES[CHORD_GRID_VERTICAL_LINES.length - 1];
+export const CHORD_GRID_VIEW_RIGHT_PADDING =
+  CHORD_GRID_VIEW_WIDTH - CHORD_GRID_HORIZONTAL_X2;
+
 export const CHORD_GRID_LINE_Y1 = 2;
 export const CHORD_GRID_LINE_Y2 = 22;
 
@@ -39,13 +46,16 @@ export function chordGlyphRenderWidthPx(glyphSizePx) {
 
 export function chordDiagramHeightPx(widthPx, options) {
   const layout = chordDiagramLayout(widthPx, options);
-  return (widthPx * layout.viewHeight) / CHORD_GRID_VIEW_WIDTH;
+  return (widthPx * layout.viewHeight) / layout.viewWidth;
 }
 
-export function chordGlyphRenderHeightPx(glyphSizePx, showNumeral = true) {
-  return chordDiagramHeightPx(chordGlyphRenderWidthPx(glyphSizePx), {
+export function chordGlyphRenderHeightPx(glyphSizePx, showNumeral = true, marks = null) {
+  const widthPx = chordGlyphRenderWidthPx(glyphSizePx);
+  const lineGeometry = chordGridLineGeometry(marks ?? [], { compact: true });
+  return chordDiagramHeightPx(widthPx, {
     numeralSizePx: glyphSizePx,
     showNumeral,
+    viewWidth: lineGeometry.viewWidth,
   });
 }
 
@@ -57,7 +67,10 @@ export function chordDiagramNumeralFontSize(widthPx, targetPx) {
   return (targetPx * CHORD_GRID_VIEW_WIDTH) / widthPx;
 }
 
-export function chordDiagramLayout(widthPx, { numeralSizePx, showNumeral = true } = {}) {
+export function chordDiagramLayout(
+  widthPx,
+  { numeralSizePx, showNumeral = true, viewWidth = CHORD_GRID_VIEW_WIDTH } = {},
+) {
   if (numeralSizePx == null) {
     return {
       viewBox: chordDiagramViewBox(),
@@ -65,6 +78,7 @@ export function chordDiagramLayout(widthPx, { numeralSizePx, showNumeral = true 
       numeralY: -CHORD_DIAGRAM_NUMERAL_BAND_HEIGHT / 2,
       numeralBaseline: 'middle',
       viewHeight: CHORD_DIAGRAM_VIEW_HEIGHT,
+      viewWidth: CHORD_GRID_VIEW_WIDTH,
     };
   }
 
@@ -72,11 +86,12 @@ export function chordDiagramLayout(widthPx, { numeralSizePx, showNumeral = true 
 
   if (!showNumeral) {
     return {
-      viewBox: `0 0 ${CHORD_GRID_VIEW_WIDTH} ${CHORD_GRID_VIEW_HEIGHT}`,
+      viewBox: `0 0 ${viewWidth} ${CHORD_GRID_VIEW_HEIGHT}`,
       numeralFontSize: 0,
       numeralY: 0,
       numeralBaseline: 'middle',
       viewHeight: CHORD_GRID_VIEW_HEIGHT,
+      viewWidth,
     };
   }
 
@@ -88,11 +103,12 @@ export function chordDiagramLayout(widthPx, { numeralSizePx, showNumeral = true 
   const viewHeight = gridBottom - viewBoxMinY;
 
   return {
-    viewBox: `0 ${viewBoxMinY} ${CHORD_GRID_VIEW_WIDTH} ${viewHeight}`,
+    viewBox: `0 ${viewBoxMinY} ${viewWidth} ${viewHeight}`,
     numeralFontSize,
     numeralY,
     numeralBaseline: 'alphabetic',
     viewHeight,
+    viewWidth,
   };
 }
 
@@ -181,6 +197,36 @@ export function chordMarksToMap(marks) {
   return new Map(
     (marks ?? []).map(({ x, y, mark }) => [chordGridIntersectionKey(x, y), mark]),
   );
+}
+
+export function chordGridRightColumnHasMarks(marks) {
+  for (const key of chordMarksToMap(marks).keys()) {
+    const [x] = key.split(',').map(Number);
+    if (x === CHORD_GRID_RIGHTMOST_VERTICAL_X) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function chordGridLineGeometry(marks, { compact = false } = {}) {
+  if (!compact || chordGridRightColumnHasMarks(marks)) {
+    return {
+      verticalLines: CHORD_GRID_VERTICAL_LINES,
+      horizontalX2: CHORD_GRID_HORIZONTAL_X2,
+      viewWidth: CHORD_GRID_VIEW_WIDTH,
+    };
+  }
+
+  const verticalLines = CHORD_GRID_VERTICAL_LINES.slice(0, -1);
+  const rightmostVertical = verticalLines[verticalLines.length - 1];
+  const horizontalX2 = rightmostVertical + CHORD_GRID_COLUMN_SPACING;
+
+  return {
+    verticalLines,
+    horizontalX2,
+    viewWidth: horizontalX2 + CHORD_GRID_VIEW_RIGHT_PADDING,
+  };
 }
 
 export function serializeChordDiagram(marks, romanNumeral) {

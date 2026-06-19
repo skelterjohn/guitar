@@ -11,10 +11,15 @@ import {
   CHORD_GRID_VERTICAL_LINES,
   CHORD_GRID_VIEW_HEIGHT,
   CHORD_GRID_VIEW_WIDTH,
+  chordGridLineGeometry,
   chordMarksToMap,
 } from '../data/chordGrid.js';
 
-export function ChordGridLines({ className }) {
+export function ChordGridLines({
+  className,
+  verticalLines = CHORD_GRID_VERTICAL_LINES,
+  horizontalX2 = CHORD_GRID_HORIZONTAL_X2,
+}) {
   return (
     <g className={className}>
       {CHORD_GRID_VERTICAL_LINES.map((x) => (
@@ -50,11 +55,18 @@ function outlineMarkPositions(marksMap) {
     });
 }
 
-export function ChordGridLinesLayer({ className, marks }) {
+export function ChordGridLinesLayer({ className, marks, compact = false }) {
   const maskId = useId();
   const marksMap = chordMarksToMap(marks);
   const outlineMarks = outlineMarkPositions(marksMap);
-  const lines = <ChordGridLines className={className} />;
+  const { verticalLines, horizontalX2 } = chordGridLineGeometry(marks, { compact });
+  const lines = (
+    <ChordGridLines
+      className={className}
+      verticalLines={verticalLines}
+      horizontalX2={horizontalX2}
+    />
+  );
 
   if (outlineMarks.length === 0) {
     return lines;

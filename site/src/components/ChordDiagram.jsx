@@ -4,6 +4,7 @@ import {
   CHORD_ROMAN_NUMERAL_OFF,
   CHORD_ROMAN_NUMERAL_FONT,
   chordDiagramLayout,
+  chordGridLineGeometry,
   chordRomanNumeralLabel,
 } from '../data/chordGrid.js';
 import {
@@ -25,11 +26,13 @@ export default function ChordDiagram({
 }) {
   const numeralLabel = chordRomanNumeralLabel(romanNumeral);
   const showNumeral = !forGlyph || romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
+  const lineGeometry = chordGridLineGeometry(marks, { compact: forGlyph });
   const layout = chordDiagramLayout(widthPx, {
     numeralSizePx: forGlyph ? numeralSizePx : undefined,
     showNumeral: forGlyph ? showNumeral : true,
+    viewWidth: forGlyph ? lineGeometry.viewWidth : undefined,
   });
-  const heightPx = (widthPx * layout.viewHeight) / CHORD_GRID_VIEW_WIDTH;
+  const heightPx = (widthPx * layout.viewHeight) / layout.viewWidth;
 
   return (
     <svg
@@ -54,7 +57,11 @@ export default function ChordDiagram({
           {numeralLabel}
         </text>
       )}
-      <ChordGridLinesLayer className={lineClassName} marks={marks} />
+      <ChordGridLinesLayer
+        className={lineClassName}
+        marks={marks}
+        compact={forGlyph}
+      />
       <ChordGridMarkCircles marks={marks} forGlyph={forGlyph} />
     </svg>
   );

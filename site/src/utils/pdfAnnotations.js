@@ -30,8 +30,8 @@ function openDb() {
   return dbPromise;
 }
 
-export function annotationKey(pdfFile, pdfHash) {
-  return `${pdfFile}:${pdfHash ?? 'nohash'}`;
+export function annotationKey(pdfFile) {
+  return pdfFile;
 }
 
 export async function requestPersistentStorage() {
@@ -45,8 +45,8 @@ export async function requestPersistentStorage() {
   }
 }
 
-export async function loadAnnotations(pdfFile, pdfHash) {
-  const key = annotationKey(pdfFile, pdfHash);
+export async function loadAnnotations(pdfFile) {
+  const key = annotationKey(pdfFile);
 
   try {
     const db = await openDb();
@@ -71,11 +71,10 @@ export async function loadAnnotations(pdfFile, pdfHash) {
   }
 }
 
-export async function saveAnnotations(pdfFile, pdfHash, pages, color) {
-  const key = annotationKey(pdfFile, pdfHash);
+export async function saveAnnotations(pdfFile, pages, color) {
+  const key = annotationKey(pdfFile);
   const record = {
     pdfFile,
-    pdfHash: pdfHash ?? null,
     pages,
     updatedAt: new Date().toISOString(),
   };
@@ -107,16 +106,16 @@ export function createDebouncedSave(delayMs = 400, onResult) {
 
   const flush = async () => {
     if (!pending) return true;
-    const { pdfFile, pdfHash, pages, color } = pending;
+    const { pdfFile, pages, color } = pending;
     pending = null;
-    const saved = await saveAnnotations(pdfFile, pdfHash, pages, color);
+    const saved = await saveAnnotations(pdfFile, pages, color);
     onResult?.(saved);
     return saved;
   };
 
   return {
-    schedule(pdfFile, pdfHash, pages, color) {
-      pending = { pdfFile, pdfHash, pages, color };
+    schedule(pdfFile, pages, color) {
+      pending = { pdfFile, pages, color };
       clearTimeout(timer);
       timer = setTimeout(() => {
         flush();

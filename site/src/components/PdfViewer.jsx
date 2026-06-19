@@ -177,7 +177,7 @@ export default function PdfViewer({
     let cancelled = false;
     requestPersistentStorage();
 
-    loadAnnotations(filename, pdfHash).then((record) => {
+    loadAnnotations(filename).then((record) => {
       if (cancelled) return;
       setPageAnnotations(normalizePages(record?.pages));
       setAnnotationColor(resolveAnnotationColor(record?.color));
@@ -187,7 +187,7 @@ export default function PdfViewer({
     return () => {
       cancelled = true;
     };
-  }, [filename, pdfHash, status]);
+  }, [filename, status]);
 
   useEffect(() => {
     let cancelled = false;
@@ -260,7 +260,7 @@ export default function PdfViewer({
   }, [url]);
 
   const persistPageAnnotations = (pages, color = annotationColorRef.current) => {
-    saveAnnotationsRef.current.schedule(filename, pdfHash, pages, color);
+    saveAnnotationsRef.current.schedule(filename, pages, color);
   };
 
   const handleAnnotationColorChange = (color) => {

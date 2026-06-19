@@ -6,11 +6,11 @@ import {
   ANNOTATION_DYNAMIC_GLYPHS,
   ANNOTATION_FINGERING_GLYPHS,
   ANNOTATION_NUMBER_GLYPHS,
-  GLYPH_SIZE_MM,
+  annotationGlyphSizePx,
   getGlyphById,
 } from '../data/annotationGlyphs.js';
 import { pageDropFromClientPoint } from '../utils/annotationPages.js';
-import { measureCssPxPerMm, glyphDragClientPosition } from '../utils/stylusInput.js';
+import { glyphDragClientPosition } from '../utils/stylusInput.js';
 
 const VIEWPORT_MARGIN = 12;
 
@@ -68,7 +68,7 @@ function menuPositionCenteredOnPoint(clientX, clientY, menuWidth, menuHeight) {
   );
 }
 
-export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
+export default function AnnotationMenu({ anchor, pdfZoom = 1, onClose, onGlyphDrop }) {
   const menuRef = useRef(null);
   const dragRef = useRef(null);
   const menuPositionRef = useRef(null);
@@ -247,9 +247,30 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
 
   if (!anchor) return null;
 
-  const previewSizePx = measureCssPxPerMm() * GLYPH_SIZE_MM;
+  const glyphSizePx = annotationGlyphSizePx(pdfZoom);
+  const glyphButtonPaddingPx = 12;
+  const glyphButtonStyle = {
+    minWidth: `${glyphSizePx + glyphButtonPaddingPx * 2}px`,
+    minHeight: `${glyphSizePx + glyphButtonPaddingPx * 2}px`,
+  };
+  const symbolStyle = { fontSize: `${glyphSizePx}px` };
   const previewGlyph = dragPreview ? getGlyphById(dragPreview.glyphId) : null;
   const isReady = menuPosition != null;
+
+  const renderMenuGlyph = (glyph, symbolClassName = 'annotation-menu-glyph-symbol') => (
+    <button
+      key={glyph.id}
+      type="button"
+      className="annotation-menu-glyph"
+      style={glyphButtonStyle}
+      aria-label={`Drag ${glyph.label} onto score`}
+      onPointerDown={(event) => startGlyphDrag(event, glyph)}
+    >
+      <span className={symbolClassName} style={symbolStyle} aria-hidden="true">
+        {glyph.symbol}
+      </span>
+    </button>
+  );
 
   return createPortal(
     <>
@@ -282,91 +303,27 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
         </div>
         <div className="annotation-menu-glyph-rows">
           <div className="annotation-menu-glyphs">
-            {ANNOTATION_ACCIDENTAL_GLYPHS.map((glyph) => (
-              <button
-                key={glyph.id}
-                type="button"
-                className="annotation-menu-glyph"
-                aria-label={`Drag ${glyph.label} onto score`}
-                onPointerDown={(event) => startGlyphDrag(event, glyph)}
-              >
-                <span className="annotation-menu-glyph-symbol" aria-hidden="true">
-                  {glyph.symbol}
-                </span>
-              </button>
-            ))}
+            {ANNOTATION_ACCIDENTAL_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
           </div>
           <div className="annotation-menu-glyphs">
-            {ANNOTATION_NUMBER_GLYPHS.map((glyph) => (
-              <button
-                key={glyph.id}
-                type="button"
-                className="annotation-menu-glyph"
-                aria-label={`Drag ${glyph.label} onto score`}
-                onPointerDown={(event) => startGlyphDrag(event, glyph)}
-              >
-                <span
-                  className="annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number"
-                  aria-hidden="true"
-                >
-                  {glyph.symbol}
-                </span>
-              </button>
-            ))}
+            {ANNOTATION_NUMBER_GLYPHS.map((glyph) =>
+              renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
+            )}
           </div>
           <div className="annotation-menu-glyphs">
-            {ANNOTATION_CIRCLED_NUMBER_GLYPHS.map((glyph) => (
-              <button
-                key={glyph.id}
-                type="button"
-                className="annotation-menu-glyph"
-                aria-label={`Drag ${glyph.label} onto score`}
-                onPointerDown={(event) => startGlyphDrag(event, glyph)}
-              >
-                <span
-                  className="annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number"
-                  aria-hidden="true"
-                >
-                  {glyph.symbol}
-                </span>
-              </button>
-            ))}
+            {ANNOTATION_CIRCLED_NUMBER_GLYPHS.map((glyph) =>
+              renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
+            )}
           </div>
           <div className="annotation-menu-glyphs">
-            {ANNOTATION_FINGERING_GLYPHS.map((glyph) => (
-              <button
-                key={glyph.id}
-                type="button"
-                className="annotation-menu-glyph"
-                aria-label={`Drag ${glyph.label} onto score`}
-                onPointerDown={(event) => startGlyphDrag(event, glyph)}
-              >
-                <span
-                  className="annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number"
-                  aria-hidden="true"
-                >
-                  {glyph.symbol}
-                </span>
-              </button>
-            ))}
+            {ANNOTATION_FINGERING_GLYPHS.map((glyph) =>
+              renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
+            )}
           </div>
           <div className="annotation-menu-glyphs">
-            {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) => (
-              <button
-                key={glyph.id}
-                type="button"
-                className="annotation-menu-glyph"
-                aria-label={`Drag ${glyph.label} onto score`}
-                onPointerDown={(event) => startGlyphDrag(event, glyph)}
-              >
-                <span
-                  className="annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic"
-                  aria-hidden="true"
-                >
-                  {glyph.symbol}
-                </span>
-              </button>
-            ))}
+            {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) =>
+              renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic'),
+            )}
           </div>
         </div>
       </div>
@@ -376,7 +333,7 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
           style={{
             left: `${dragPreview.clientX}px`,
             top: `${dragPreview.clientY}px`,
-            fontSize: `${previewSizePx}px`,
+            fontSize: `${glyphSizePx}px`,
             ...(previewGlyph?.fontFamily
               ? { fontFamily: previewGlyph.fontFamily }
               : {}),

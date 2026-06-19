@@ -12,7 +12,7 @@ import {
   PEN_BASE_WIDTH,
   PEN_COLOR,
 } from '../utils/stylusInput.js';
-import { getGlyphById, GLYPH_HIT_RADIUS_RATIO, GLYPH_SIZE_MM, isDynamicGlyph } from '../data/annotationGlyphs.js';
+import { getGlyphById, GLYPH_HIT_RADIUS_RATIO, annotationGlyphSizePx, isDynamicGlyph } from '../data/annotationGlyphs.js';
 
 const TAP_MOVE_THRESHOLD = 10;
 const LONG_PRESS_MS = 500;
@@ -481,7 +481,7 @@ export default function AnnotationOverlay({
   }, [pageNumber, glyphs]);
 
   const visibleStrokes = draftStroke ? [...strokes, draftStroke] : strokes;
-  const glyphSizePx = measureCssPxPerMm() * GLYPH_SIZE_MM;
+  const glyphSizePx = annotationGlyphSizePx();
 
   return (
     <div

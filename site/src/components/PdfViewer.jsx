@@ -1045,6 +1045,7 @@ export default function PdfViewer({
       )}
       <AnnotationMenu
         anchor={annotationMenu}
+        pdfZoom={pdfZoom}
         onClose={() => setAnnotationMenu(null)}
         onGlyphDrop={handleGlyphDrop}
       />

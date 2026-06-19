@@ -1,3 +1,5 @@
+import { measureCssPxPerMm } from '../utils/stylusInput.js';
+
 export const GLYPH_SIZE_MM = 5;
 
 /** Invisible hit target when dragging (fraction of font size). */
@@ -7,6 +9,10 @@ export const GLYPH_HIT_RADIUS_RATIO = 0.65;
 export const GLYPH_ERASE_RADIUS_RATIO = 0.38;
 
 export const DYNAMIC_GLYPH_FONT = "Georgia, 'Times New Roman', 'Palatino Linotype', serif";
+
+export function annotationGlyphSizePx(zoom = 1) {
+  return measureCssPxPerMm() * GLYPH_SIZE_MM * zoom;
+}
 
 export const ANNOTATION_ACCIDENTAL_GLYPHS = [
   {

@@ -16,6 +16,49 @@ import { pageDropFromClientPoint } from '../utils/annotationPages.js';
 import { ANNOTATION_COLORS } from '../utils/annotationColorPreference.js';
 import { glyphDragClientPosition } from '../utils/stylusInput.js';
 
+const CHORD_GRID_VERTICAL_LINES = [2, 5, 8, 11];
+const CHORD_GRID_HORIZONTAL_LINES = [2, 6, 10, 14, 18, 22];
+const CHORD_GRID_HORIZONTAL_X1 = 2;
+const CHORD_GRID_HORIZONTAL_X2 = 14;
+
+function ChordGridIcon({ sizePx }) {
+  const width = 16;
+  const height = 24;
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      width={sizePx}
+      height={(sizePx * height) / width}
+      className="annotation-menu-chord-grid-icon"
+      aria-hidden="true"
+    >
+      {CHORD_GRID_VERTICAL_LINES.map((x) => (
+        <line
+          key={`v-${x}`}
+          x1={x}
+          y1={2}
+          x2={x}
+          y2={22}
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+      ))}
+      {CHORD_GRID_HORIZONTAL_LINES.map((y) => (
+        <line
+          key={`h-${y}`}
+          x1={CHORD_GRID_HORIZONTAL_X1}
+          y1={y}
+          x2={CHORD_GRID_HORIZONTAL_X2}
+          y2={y}
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+      ))}
+    </svg>
+  );
+}
+
 const VIEWPORT_MARGIN = 12;
 
 function getViewportBounds() {
@@ -422,6 +465,7 @@ export default function AnnotationMenu({
   const symbolStyle = { fontSize: `${glyphSizePx}px` };
   const previewGlyph = dragPreview ? getGlyphById(dragPreview.glyphId) : null;
   const isReady = menuPosition != null;
+  const chordModeActive = annotationTool === 'chord';
 
   const renderMenuGlyph = (glyph, symbolClassName = 'annotation-menu-glyph-symbol') => (
     <button
@@ -495,14 +539,16 @@ export default function AnnotationMenu({
           pointerEvents: isReady ? 'auto' : 'none',
         }}
         role="dialog"
-        aria-label="Annotation glyphs"
+        aria-label={chordModeActive ? 'Chord' : 'Annotation glyphs'}
       >
         <div className="annotation-menu-header">
           <div
             className="annotation-menu-header-drag"
             onPointerDown={startMenuDrag}
           >
-            <p className="annotation-menu-title">Glyphs</p>
+            <p className="annotation-menu-title">
+              {chordModeActive ? 'chord' : 'Glyphs'}
+            </p>
           </div>
           <button
             type="button"
@@ -516,47 +562,65 @@ export default function AnnotationMenu({
             Clear
           </button>
         </div>
-        <div className="annotation-menu-glyph-rows">
-          <div className="annotation-menu-glyphs">
-            {ANNOTATION_ACCIDENTAL_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
-          </div>
-          <div className="annotation-menu-glyphs">
-            {ANNOTATION_NUMBER_GLYPHS.map((glyph) =>
-              renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
-            )}
-          </div>
-          <div className="annotation-menu-glyphs">
-            {ANNOTATION_CIRCLED_NUMBER_GLYPHS.map((glyph) =>
-              renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
-            )}
-          </div>
-          <div className="annotation-menu-glyphs">
-            {ANNOTATION_FINGERING_GLYPHS.map((glyph) =>
-              renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
-            )}
-          </div>
-          <div className="annotation-menu-glyphs">
-            {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) =>
-              renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic'),
-            )}
+        <div className="annotation-menu-body">
+          <div
+            className={
+              chordModeActive
+                ? 'annotation-menu-glyph-rows annotation-menu-body-panel--hidden'
+                : 'annotation-menu-glyph-rows'
+            }
+            aria-hidden={chordModeActive}
+          >
+            <div className="annotation-menu-glyphs">
+              {ANNOTATION_ACCIDENTAL_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
+            </div>
+            <div className="annotation-menu-glyphs">
+              {ANNOTATION_NUMBER_GLYPHS.map((glyph) =>
+                renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
+              )}
+            </div>
+            <div className="annotation-menu-glyphs">
+              {ANNOTATION_CIRCLED_NUMBER_GLYPHS.map((glyph) =>
+                renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
+              )}
+            </div>
+            <div className="annotation-menu-glyphs">
+              {ANNOTATION_FINGERING_GLYPHS.map((glyph) =>
+                renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
+              )}
+            </div>
+            <div className="annotation-menu-glyphs">
+              {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) =>
+                renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic'),
+              )}
+            </div>
+            <div
+              className="annotation-menu-text-row"
+              onPointerDown={startTextInteraction}
+            >
+              <input
+                ref={textInputRef}
+                type="text"
+                className="annotation-menu-text-input"
+                value={menuText}
+                onChange={(event) => setMenuText(event.target.value)}
+                aria-label="Annotation text"
+                autoCapitalize="none"
+                autoCorrect="off"
+                autoComplete="off"
+                spellCheck={false}
+                tabIndex={chordModeActive ? -1 : 0}
+              />
+            </div>
           </div>
           <div
-            className="annotation-menu-text-row"
-            onPointerDown={startTextInteraction}
-          >
-            <input
-              ref={textInputRef}
-              type="text"
-              className="annotation-menu-text-input"
-              value={menuText}
-              onChange={(event) => setMenuText(event.target.value)}
-              aria-label="Annotation text"
-              autoCapitalize="none"
-              autoCorrect="off"
-              autoComplete="off"
-              spellCheck={false}
-            />
-          </div>
+            className={
+              chordModeActive
+                ? 'annotation-menu-chord-body'
+                : 'annotation-menu-chord-body annotation-menu-body-panel--hidden'
+            }
+            aria-hidden={!chordModeActive}
+          />
         </div>
         <div className="annotation-menu-footer">
           <div
@@ -586,6 +650,11 @@ export default function AnnotationMenu({
                   strokeLinejoin="round"
                 />
               </svg>,
+            )}
+            {renderToolToggle(
+              'chord',
+              'Chord',
+              <ChordGridIcon sizePx={14} />,
             )}
           </div>
           <div

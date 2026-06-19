@@ -46,10 +46,16 @@ export function chordGlyphRenderWidthPx(glyphSizePx) {
 
 export function chordDiagramHeightPx(widthPx, options) {
   const layout = chordDiagramLayout(widthPx, options);
-  return (widthPx * layout.viewHeight) / layout.viewWidth;
+  const renderWidthPx = layout.renderWidthPx ?? widthPx;
+  return (renderWidthPx * layout.viewHeight) / layout.viewWidth;
 }
 
-export function chordGlyphRenderLayoutOptions(glyphSizePx, showNumeral, marks = null) {
+export function chordGlyphRenderLayoutOptions(
+  glyphSizePx,
+  showNumeral,
+  marks = null,
+  romanNumeral = CHORD_ROMAN_NUMERAL_OFF,
+) {
   const widthPx = chordGlyphRenderWidthPx(glyphSizePx);
   const lineGeometry = chordGridLineGeometry(marks ?? [], { compact: true });
   let viewWidth = lineGeometry.viewWidth;
@@ -63,18 +69,39 @@ export function chordGlyphRenderLayoutOptions(glyphSizePx, showNumeral, marks = 
     leftBarX = leftBarLayout.leftBarX;
   }
 
-  return {
-    widthPx,
-    numeralSizePx: glyphSizePx,
+  const numeralLabel = showNumeral ? chordRomanNumeralLabel(romanNumeral) : '';
+  const layout = chordDiagramLayout(widthPx, {
+    numeralSizePx: showNumeral ? glyphSizePx : undefined,
     showNumeral,
     viewWidth,
     viewBoxMinX,
+    numeralLabel,
+  });
+
+  return {
+    widthPx,
+    renderWidthPx: layout.renderWidthPx ?? widthPx,
+    numeralSizePx: glyphSizePx,
+    showNumeral,
+    viewWidth: layout.viewWidth,
+    viewBoxMinX,
     leftBarX,
+    numeralLabel,
   };
 }
 
-export function chordGlyphRenderHeightPx(glyphSizePx, showNumeral = true, marks = null) {
-  const options = chordGlyphRenderLayoutOptions(glyphSizePx, showNumeral, marks);
+export function chordGlyphRenderHeightPx(
+  glyphSizePx,
+  showNumeral = true,
+  marks = null,
+  romanNumeral = CHORD_ROMAN_NUMERAL_OFF,
+) {
+  const options = chordGlyphRenderLayoutOptions(
+    glyphSizePx,
+    showNumeral,
+    marks,
+    romanNumeral,
+  );
   return chordDiagramHeightPx(options.widthPx, options);
 }
 
@@ -84,6 +111,22 @@ export function chordDiagramViewBox() {
 
 export function chordDiagramNumeralFontSize(widthPx, targetPx) {
   return (targetPx * CHORD_GRID_VIEW_WIDTH) / widthPx;
+}
+
+export function chordRomanNumeralWidthViewBox(label, numeralFontSize) {
+  if (!label || label === 'off') {
+    return 0;
+  }
+
+  return label.length * numeralFontSize * 0.58 + numeralFontSize * 0.08;
+}
+
+export function chordRomanNumeralWidthPx(label, fontSizePx) {
+  if (!label || label === 'off') {
+    return 0;
+  }
+
+  return label.length * fontSizePx * 0.58 + fontSizePx * 0.08;
 }
 
 export function chordGridOnePxInViewBox(widthPx, viewWidth) {
@@ -112,6 +155,7 @@ export function chordDiagramLayout(
     showNumeral = true,
     viewWidth = CHORD_GRID_VIEW_WIDTH,
     viewBoxMinX = 0,
+    numeralLabel = '',
   } = {},
 ) {
   if (numeralSizePx == null) {
@@ -146,15 +190,21 @@ export function chordDiagramLayout(
   const topPadding = 0.06;
   const viewBoxMinY = numeralY - numeralFontSize * 0.76 - topPadding;
   const viewHeight = gridBottom - viewBoxMinY;
+  const gridViewWidth = viewWidth;
+  const numeralWidthViewBox = chordRomanNumeralWidthViewBox(numeralLabel, numeralFontSize);
+  const effectiveViewWidth = Math.max(gridViewWidth, numeralWidthViewBox);
+  const renderWidthPx = (widthPx * effectiveViewWidth) / gridViewWidth;
 
   return {
-    viewBox: `0 ${viewBoxMinY} ${viewWidth} ${viewHeight}`,
+    viewBox: `0 ${viewBoxMinY} ${effectiveViewWidth} ${viewHeight}`,
     numeralFontSize,
     numeralY,
     numeralBaseline: 'alphabetic',
     viewHeight,
-    viewWidth,
+    viewWidth: effectiveViewWidth,
     viewBoxMinY,
+    renderWidthPx,
+    gridViewWidth,
   };
 }
 
@@ -299,15 +349,17 @@ export function chordGridOnlyRenderLayout(widthPx, marks, { useLeftBar = false }
   };
 }
 
-export function chordGlyphNumeralLayoutPx(glyphSizePx, marks) {
+export function chordGlyphNumeralLayoutPx(glyphSizePx, marks, romanNumeral = CHORD_ROMAN_NUMERAL_OFF) {
   const widthPx = chordGlyphRenderWidthPx(glyphSizePx);
   const lineGeometry = chordGridLineGeometry(marks ?? [], { compact: true });
+  const numeralLabel = chordRomanNumeralLabel(romanNumeral);
   const layout = chordDiagramLayout(widthPx, {
     numeralSizePx: glyphSizePx,
     showNumeral: true,
     viewWidth: lineGeometry.viewWidth,
+    numeralLabel,
   });
-  const scale = widthPx / layout.viewWidth;
+  const scale = (layout.renderWidthPx ?? widthPx) / layout.viewWidth;
 
   return {
     x: 0,
@@ -317,15 +369,22 @@ export function chordGlyphNumeralLayoutPx(glyphSizePx, marks) {
   };
 }
 
-export function chordGlyphNumeralBandHeightPx(glyphSizePx, marks) {
+export function chordGlyphNumeralBandHeightPx(
+  glyphSizePx,
+  marks,
+  romanNumeral = CHORD_ROMAN_NUMERAL_OFF,
+) {
   const widthPx = chordGlyphRenderWidthPx(glyphSizePx);
   const lineGeometry = chordGridLineGeometry(marks ?? [], { compact: true });
+  const numeralLabel = chordRomanNumeralLabel(romanNumeral);
   const layout = chordDiagramLayout(widthPx, {
     numeralSizePx: glyphSizePx,
     showNumeral: true,
     viewWidth: lineGeometry.viewWidth,
+    numeralLabel,
   });
-  const fullHeightPx = (widthPx * layout.viewHeight) / layout.viewWidth;
+  const renderWidthPx = layout.renderWidthPx ?? widthPx;
+  const fullHeightPx = (renderWidthPx * layout.viewHeight) / layout.viewWidth;
   const gridLayout = chordGridOnlyRenderLayout(widthPx, marks);
   return fullHeightPx - gridLayout.heightPx;
 }
@@ -340,30 +399,55 @@ export function serializeChordDiagram(marks, romanNumeral, rotate = false) {
 
 export function chordGlyphBoundsPx(
   glyphSizePx,
-  { showNumeral = true, marks = null, rotate = false } = {},
+  {
+    showNumeral = true,
+    marks = null,
+    rotate = false,
+    romanNumeral = CHORD_ROMAN_NUMERAL_OFF,
+  } = {},
 ) {
   const diagramWidthPx = chordGlyphRenderWidthPx(glyphSizePx);
-  const diagramHeightPx = chordGlyphRenderHeightPx(glyphSizePx, showNumeral, marks);
+  const numeralLabel = showNumeral ? chordRomanNumeralLabel(romanNumeral) : '';
+  const numeralWidthPx = chordRomanNumeralWidthPx(numeralLabel, glyphSizePx);
+  const diagramHeightPx = chordGlyphRenderHeightPx(
+    glyphSizePx,
+    showNumeral,
+    marks,
+    romanNumeral,
+  );
+  const renderOptions = chordGlyphRenderLayoutOptions(
+    glyphSizePx,
+    showNumeral,
+    marks,
+    romanNumeral,
+  );
+  const renderWidthPx = renderOptions.renderWidthPx;
 
   if (!rotate) {
     return {
-      widthPx: diagramWidthPx,
+      widthPx: showNumeral ? renderWidthPx : diagramWidthPx,
       heightPx: diagramHeightPx,
       diagramWidthPx,
       diagramHeightPx,
+      renderWidthPx: showNumeral ? renderWidthPx : diagramWidthPx,
     };
   }
 
   if (showNumeral) {
     const gridLayout = chordGridOnlyRenderLayout(diagramWidthPx, marks);
-    const numeralBandHeightPx = chordGlyphNumeralBandHeightPx(glyphSizePx, marks);
+    const numeralBandHeightPx = chordGlyphNumeralBandHeightPx(
+      glyphSizePx,
+      marks,
+      romanNumeral,
+    );
     return {
-      widthPx: gridLayout.heightPx,
+      widthPx: Math.max(gridLayout.heightPx, numeralWidthPx),
       heightPx: numeralBandHeightPx + diagramWidthPx,
       diagramWidthPx,
       diagramHeightPx: gridLayout.heightPx,
       numeralBandHeightPx,
       gridLayout,
+      renderWidthPx: Math.max(gridLayout.heightPx, numeralWidthPx),
     };
   }
 
@@ -374,5 +458,6 @@ export function chordGlyphBoundsPx(
     diagramWidthPx: gridLayout.widthPx,
     diagramHeightPx: gridLayout.heightPx,
     gridLayout,
+    renderWidthPx: gridLayout.heightPx,
   };
 }

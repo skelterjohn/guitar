@@ -93,17 +93,20 @@ export default function ChordDiagram({
       ? (leftBarLayout?.viewWidth ?? lineGeometry.viewWidth)
       : undefined,
     viewBoxMinX: leftBarLayout?.viewBoxMinX ?? 0,
+    numeralLabel: showNumeral ? numeralLabel : '',
   });
-  const heightPx = (widthPx * layout.viewHeight) / layout.viewWidth;
+  const renderWidthPx = layout.renderWidthPx ?? widthPx;
+  const heightPx = (renderWidthPx * layout.viewHeight) / layout.viewWidth;
 
   if (rotate && forGlyph && showNumeral) {
     const bounds = chordGlyphBoundsPx(numeralSizePx, {
       showNumeral: true,
       marks,
       rotate: true,
+      romanNumeral,
     });
     const gridLayout = bounds.gridLayout;
-    const numeralLayout = chordGlyphNumeralLayoutPx(numeralSizePx, marks);
+    const numeralLayout = chordGlyphNumeralLayoutPx(numeralSizePx, marks, romanNumeral);
     const numeralBandHeightPx = bounds.numeralBandHeightPx;
 
     return (
@@ -167,7 +170,7 @@ export default function ChordDiagram({
   return (
     <svg
       viewBox={layout.viewBox}
-      width={widthPx}
+      width={renderWidthPx}
       height={heightPx}
       className={className}
       style={{ color }}

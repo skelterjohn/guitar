@@ -120,6 +120,7 @@ export function glyphEraseRadiusPx(glyph, glyphSizePx) {
       showNumeral,
       marks: glyph.chord?.marks,
       rotate: glyph.chord?.rotate === true,
+      romanNumeral: glyph.chord?.romanNumeral,
     });
     return Math.hypot(widthPx, heightPx) * 0.38;
   }

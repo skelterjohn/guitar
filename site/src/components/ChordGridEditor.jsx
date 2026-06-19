@@ -76,8 +76,8 @@ export default function ChordGridEditor({
   };
 
   const showNumeral = romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
-  const { widthPx: previewWidthPx, heightPx: previewHeightPx, diagramWidthPx, diagramHeightPx } =
-    chordGlyphBoundsPx(glyphSizePx, { showNumeral, marks, rotate });
+  const { widthPx: previewWidthPx, heightPx: previewHeightPx, diagramWidthPx } =
+    chordGlyphBoundsPx(glyphSizePx, { showNumeral, marks, rotate, romanNumeral });
 
   return (
     <>

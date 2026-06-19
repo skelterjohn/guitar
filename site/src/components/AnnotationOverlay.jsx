@@ -531,6 +531,7 @@ export default function AnnotationOverlay({
                   showNumeral,
                   marks: glyph.chord?.marks,
                   rotate,
+                  romanNumeral: glyph.chord?.romanNumeral,
                 });
 
               return (

@@ -317,6 +317,34 @@ export function applyPartialEraser(
   return { strokes: next, changed };
 }
 
+export function applyGlyphEraser(
+  glyphs,
+  layoutWidth,
+  layoutHeight,
+  centerNorm,
+  radiusPx,
+  glyphRadiusPx,
+) {
+  if (!glyphs.length) {
+    return { glyphs, changed: false };
+  }
+
+  const cx = centerNorm.x * layoutWidth;
+  const cy = centerNorm.y * layoutHeight;
+
+  const next = glyphs.filter((glyph) => {
+    const gx = glyph.x * layoutWidth;
+    const gy = glyph.y * layoutHeight;
+    const dist = Math.hypot(gx - cx, gy - cy);
+    return dist > radiusPx + glyphRadiusPx;
+  });
+
+  return {
+    glyphs: next,
+    changed: next.length !== glyphs.length,
+  };
+}
+
 export const DOUBLE_TAP_MS = 400;
 export const DOUBLE_TAP_DISTANCE_PX = 24;
 

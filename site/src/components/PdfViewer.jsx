@@ -24,8 +24,11 @@ import {
 import {
   createPenScrollLock,
 } from '../utils/penScrollLock.js';
+import { GLYPH_ERASE_RADIUS_RATIO, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
 import {
   applyPartialEraser,
+  applyGlyphEraser,
+  measureCssPxPerMm,
   PEN_COLOR,
 } from '../utils/stylusInput.js';
 import { normalizePageEntry, normalizePages } from '../utils/annotationPages.js';
@@ -262,10 +265,12 @@ export default function PdfViewer({
   };
 
   const handleEraseAt = (pageNumber, center, radiusPx, layoutWidth, layoutHeight) => {
+    const glyphRadiusPx = measureCssPxPerMm() * GLYPH_SIZE_MM * GLYPH_ERASE_RADIUS_RATIO;
+
     setPageAnnotations((current) => {
       const key = String(pageNumber);
       const entry = normalizePageEntry(current[key]);
-      const { strokes: nextStrokes, changed } = applyPartialEraser(
+      const { strokes: nextStrokes, changed: strokesChanged } = applyPartialEraser(
         entry.strokes,
         layoutWidth,
         layoutHeight,
@@ -273,8 +278,16 @@ export default function PdfViewer({
         radiusPx,
         createStrokeId,
       );
+      const { glyphs: nextGlyphs, changed: glyphsChanged } = applyGlyphEraser(
+        entry.glyphs,
+        layoutWidth,
+        layoutHeight,
+        center,
+        radiusPx,
+        glyphRadiusPx,
+      );
 
-      if (!changed) {
+      if (!strokesChanged && !glyphsChanged) {
         return current;
       }
 
@@ -283,6 +296,7 @@ export default function PdfViewer({
         [key]: {
           ...entry,
           strokes: nextStrokes,
+          glyphs: nextGlyphs,
         },
       };
       persistPageAnnotations(next);

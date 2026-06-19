@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ANNOTATION_GLYPHS, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
+import { pageDropFromClientPoint } from '../utils/annotationPages.js';
 import { measureCssPxPerMm, glyphDragClientPosition } from '../utils/stylusInput.js';
 
 const VIEWPORT_MARGIN = 12;
@@ -173,21 +174,14 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
         event.clientX,
         event.clientY,
       );
-      const target = document.elementFromPoint(dropPoint.clientX, dropPoint.clientY);
-      const frame = target?.closest('.viewer-page-frame');
-      if (!frame) return;
-
-      const pageNumber = Number(frame.dataset.pageNumber);
-      if (!Number.isFinite(pageNumber)) return;
-
-      const rect = frame.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
+      const drop = pageDropFromClientPoint(dropPoint.clientX, dropPoint.clientY);
+      if (!drop) return;
 
       onGlyphDrop({
-        pageNumber,
+        pageNumber: drop.pageNumber,
         glyphId: drag.glyphId,
-        x: (dropPoint.clientX - rect.left) / rect.width,
-        y: (dropPoint.clientY - rect.top) / rect.height,
+        x: drop.x,
+        y: drop.y,
       });
     };
 
@@ -230,7 +224,7 @@ export default function AnnotationMenu({ anchor, onClose, onGlyphDrop }) {
     <>
       <button
         type="button"
-        className="annotation-menu-backdrop"
+        className={`annotation-menu-backdrop${dragPreview ? ' is-glyph-dragging' : ''}`}
         aria-label="Close annotation menu"
         onClick={onClose}
       />

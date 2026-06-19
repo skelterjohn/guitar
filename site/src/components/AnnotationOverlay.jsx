@@ -12,7 +12,7 @@ import {
   PEN_BASE_WIDTH,
   PEN_COLOR,
 } from '../utils/stylusInput.js';
-import { getGlyphById, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
+import { getGlyphById, GLYPH_HIT_RADIUS_RATIO, GLYPH_SIZE_MM } from '../data/annotationGlyphs.js';
 
 const TAP_MOVE_THRESHOLD = 10;
 const LONG_PRESS_MS = 500;
@@ -530,7 +530,7 @@ export default function AnnotationOverlay({
               >
                 <circle
                   className="annotation-glyph-hit"
-                  r={glyphSizePx * 0.65}
+                  r={glyphSizePx * GLYPH_HIT_RADIUS_RATIO}
                   fill="transparent"
                 />
                 <text

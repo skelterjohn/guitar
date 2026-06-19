@@ -709,6 +709,10 @@ body {
   cursor: default;
 }
 
+.annotation-menu-backdrop.is-glyph-dragging {
+  pointer-events: none;
+}
+
 .annotation-menu {
   position: fixed;
   z-index: 41;

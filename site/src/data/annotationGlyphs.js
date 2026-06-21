@@ -75,12 +75,70 @@ export const ANNOTATION_DYNAMIC_GLYPHS = ['p', 'mp', 'mf', 'f'].map((symbol) => 
   fontWeight: 600,
 }));
 
+export const ANNOTATION_REST_GLYPHS = [
+  {
+    id: 'rest-sixteenth',
+    label: 'Sixteenth rest',
+    symbol: '\u{1D13F}',
+  },
+  {
+    id: 'rest-eighth',
+    label: 'Eighth rest',
+    symbol: '\u{1D13E}',
+  },
+  {
+    id: 'rest-quarter',
+    label: 'Quarter rest',
+    symbol: '\u{1D13D}',
+  },
+  {
+    id: 'rest-half',
+    label: 'Half rest',
+    symbol: '\u{1D13C}',
+  },
+  {
+    id: 'rest-whole',
+    label: 'Whole rest',
+    symbol: '\u{1D13B}',
+  },
+];
+
+export const ANNOTATION_NOTE_GLYPHS = [
+  {
+    id: 'note-sixteenth',
+    label: 'Sixteenth note',
+    symbol: '\u{1D161}',
+  },
+  {
+    id: 'note-eighth',
+    label: 'Eighth note',
+    symbol: '\u{1D160}',
+  },
+  {
+    id: 'note-quarter',
+    label: 'Quarter note',
+    symbol: '\u{1D15F}',
+  },
+  {
+    id: 'note-half',
+    label: 'Half note',
+    symbol: '\u{1D15E}',
+  },
+  {
+    id: 'note-whole',
+    label: 'Whole note',
+    symbol: '\u{1D15D}',
+  },
+];
+
 export const ANNOTATION_GLYPHS = [
   ...ANNOTATION_ACCIDENTAL_GLYPHS,
   ...ANNOTATION_NUMBER_GLYPHS,
   ...ANNOTATION_CIRCLED_NUMBER_GLYPHS,
   ...ANNOTATION_FINGERING_GLYPHS,
   ...ANNOTATION_DYNAMIC_GLYPHS,
+  ...ANNOTATION_NOTE_GLYPHS,
+  ...ANNOTATION_REST_GLYPHS,
 ];
 
 export function getGlyphById(id) {

@@ -5,7 +5,9 @@ import {
   ANNOTATION_CIRCLED_NUMBER_GLYPHS,
   ANNOTATION_DYNAMIC_GLYPHS,
   ANNOTATION_FINGERING_GLYPHS,
+  ANNOTATION_NOTE_GLYPHS,
   ANNOTATION_NUMBER_GLYPHS,
+  ANNOTATION_REST_GLYPHS,
   annotationGlyphSizePx,
   getGlyphById,
   isTextGlyph,
@@ -608,6 +610,12 @@ export default function AnnotationMenu({
               {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) =>
                 renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic'),
               )}
+            </div>
+            <div className="annotation-menu-glyphs">
+              {ANNOTATION_NOTE_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
+            </div>
+            <div className="annotation-menu-glyphs">
+              {ANNOTATION_REST_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
             </div>
             <div
               className="annotation-menu-text-row"

@@ -5,6 +5,7 @@ import yaml from 'js-yaml';
 import { buildHomeJsonLd } from '../src/homeJsonLd.js';
 import { siteHeading } from '../src/seo.js';
 import { pieceId } from '../src/utils/pieceId.js';
+import { viewRouteFilename } from '../src/utils/pdfPaths.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const catalogPath = join(__dirname, '../src/data/catalog.yaml');
@@ -23,7 +24,7 @@ function renderPdfLinks(pdfs) {
   return pdfs
     .map(
       (pdf) =>
-        `<a class="pdf-link" href="/catalog/view/${encodeURIComponent(pdf.file)}">${escapeHtml(pdf.label)}</a>`,
+        `<a class="pdf-link" href="/catalog/view/${encodeURIComponent(viewRouteFilename(pdf.file))}">${escapeHtml(pdf.label)}</a>`,
     )
     .join('');
 }

@@ -1,9 +1,10 @@
+import { pdfPathsMatch } from './pdfPaths.js';
+
 const COOKIE_NAME = 'guitar-piece-labels';
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
 
 export function pdfFilesMatch(a, b) {
-  if (!a || !b) return false;
-  return a === b || a.normalize('NFC') === b.normalize('NFC');
+  return pdfPathsMatch(a, b);
 }
 
 function readAll() {

@@ -12,6 +12,7 @@ import {
   pdfFileForPiece,
   pdfFilesMatch,
 } from '../utils/pieceLabelPreference.js';
+import { viewRouteFilename } from '../utils/pdfPaths.js';
 
 function findPdfInSections(sections, filename) {
   for (const section of sections) {
@@ -65,38 +66,48 @@ export default function ViewPdf() {
   const navigate = useNavigate();
   const fromRep = location.pathname.startsWith(`${repPath}/view/`);
   const decoded = decodeURIComponent(filename);
-  const { section, piece, pdf } = findPdf(decoded, fromRep);
+  const routeName = viewRouteFilename(decoded);
+  const { section, piece, pdf } = findPdf(routeName, fromRep);
   const pieceKey =
     section && piece ? pieceId(section.id, piece.title) : null;
+  const storageFile = pdf?.file ?? decoded;
 
   useEffect(() => {
+    if (routeName !== decoded) {
+      navigate(viewPath(routeName, fromRep ? 'rep' : 'catalog'), {
+        replace: true,
+        state: location.state,
+      });
+      return;
+    }
+
     if (!piece?.pdfs?.length || !pieceKey || location.state?.explicitPdf) return;
 
     const preferredFile = pdfFileForPiece(
       piece.pdfs,
       getPieceLabelPreference(pieceKey),
     );
-    if (!preferredFile || pdfFilesMatch(preferredFile, decoded)) return;
+    if (!preferredFile || pdfFilesMatch(preferredFile, routeName)) return;
 
     navigate(viewPath(preferredFile, fromRep ? 'rep' : 'catalog'), {
       replace: true,
       state: location.state,
     });
-  }, [decoded, location.state, navigate, piece, pieceKey]);
+  }, [decoded, routeName, fromRep, location.state, navigate, piece, pieceKey]);
 
-  const name = viewerPageName(piece, pdf, decoded);
+  const name = viewerPageName(piece, pdf, routeName);
   const description =
     piece?.description?.split('\n\n').find(Boolean) ?? `${name} — guitar score PDF`;
 
   usePageMeta({
     title: pageTitle(name),
     description,
-    url: viewPageUrl(decoded),
+    url: viewPageUrl(routeName),
   });
 
   const viewer = (
     <PdfViewer
-      filename={decoded}
+      filename={storageFile}
       pdfHash={pdf?.hash}
       pdfs={piece?.pdfs ?? []}
       pieceKey={pieceKey}

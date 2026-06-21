@@ -39,6 +39,7 @@ import {
   PEN_COLOR,
 } from '../utils/stylusInput.js';
 import { normalizePageEntry, normalizePages } from '../utils/annotationPages.js';
+import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { catalogPath, repPath, viewPath } from '../seo.js';
 
 let workerIdle = Promise.resolve();
@@ -61,6 +62,7 @@ export default function PdfViewer({
   viewState,
 }) {
   const url = pdfUrl(filename, pdfHash);
+  const downloadName = viewRouteFilename(filename);
   const viewContext = backTo === repPath ? 'rep' : 'catalog';
   const currentLabel = findPdfByFile(pdfs, filename)?.label;
 
@@ -951,7 +953,7 @@ export default function PdfViewer({
               >
                 ?
               </button>
-              <a href={url} download={filename}>
+              <a href={url} download={downloadName}>
                 Download
               </a>
             </div>

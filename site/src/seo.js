@@ -12,15 +12,17 @@ export const repUrl = `${siteOrigin}${repPath}`;
 export const defaultDescription =
   'Classical guitar scores — original compositions, arrangements, and transcriptions by skelterjohn. Free PDFs.';
 
+import { viewRouteFilename } from './utils/pdfPaths.js';
+
 export function pageTitle(name) {
   return name === siteTitle ? siteTitle : `${name} — ${siteTitle}`;
 }
 
-export function viewPath(filename, context = 'catalog') {
+export function viewPath(file, context = 'catalog') {
   const base = context === 'rep' ? repPath : catalogPath;
-  return `${base}/view/${encodeURIComponent(filename)}`;
+  return `${base}/view/${encodeURIComponent(viewRouteFilename(file))}`;
 }
 
-export function viewPageUrl(filename) {
-  return `${siteOrigin}${viewPath(filename)}`;
+export function viewPageUrl(file) {
+  return `${siteOrigin}${viewPath(file)}`;
 }

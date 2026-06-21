@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
+import { viewRouteFilename } from '../src/utils/pdfPaths.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const siteOrigin = 'https://guitar.skelterjohn.me';
@@ -14,7 +15,7 @@ const urls = new Set([`${siteOrigin}/`, `${siteOrigin}/catalog`]);
 for (const section of catalog.sections) {
   for (const piece of section.pieces) {
     for (const pdf of piece.pdfs) {
-      urls.add(`${siteOrigin}/catalog/view/${encodeURIComponent(pdf.file)}`);
+      urls.add(`${siteOrigin}/catalog/view/${encodeURIComponent(viewRouteFilename(pdf.file))}`);
     }
   }
 }

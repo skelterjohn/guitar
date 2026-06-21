@@ -297,7 +297,7 @@ body {
 
 .njgo-overview-links {
   display: inline-grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--njgo-gap);
   margin-top: 1rem;
   width: max-content;

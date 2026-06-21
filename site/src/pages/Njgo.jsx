@@ -17,7 +17,7 @@ export default function Njgo() {
   });
 
   return (
-    <main className="page">
+    <main className="page page--njgo">
       <header className="page-header">
         <h1 className="njgo-page-title">
           <span className="njgo-page-title-line">New Jersey</span>

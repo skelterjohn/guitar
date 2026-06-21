@@ -45,6 +45,15 @@ body {
   padding: 2rem 1.25rem 3rem;
 }
 
+.page--njgo {
+  padding-top: 0.75rem;
+}
+
+.page--njgo .page-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 .toc {
   display: none;
 }

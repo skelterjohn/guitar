@@ -1,19 +1,65 @@
+import { ANNOTATION_LAYER_COLORS } from './annotationColorPreference.js';
+import { PEN_COLOR } from './stylusInput.js';
+
 export const PAGE_RASTER_FORMAT = 'webp';
+
+function normalizeLayerBlob(entry) {
+  if (!entry || typeof entry !== 'object') return null;
+  const blob = entry.data instanceof Blob ? entry.data : entry.blob;
+  return blob ?? null;
+}
+
+function normalizeLegacyPageRaster(entry) {
+  const blob = normalizeLayerBlob(entry);
+  const width = Number(entry.width);
+  const height = Number(entry.height);
+
+  if (!blob || !Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0) {
+    return null;
+  }
+
+  return { blob, width, height };
+}
 
 export function normalizePageEntry(entry) {
   if (!entry || typeof entry !== 'object') {
     return null;
   }
 
-  const blob = entry.data instanceof Blob ? entry.data : entry.blob;
-  const width = Number(entry.width);
-  const height = Number(entry.height);
+  if (entry.layers && typeof entry.layers === 'object') {
+    const width = Number(entry.width);
+    const height = Number(entry.height);
+    if (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0) {
+      return null;
+    }
 
-  if (blob && Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0) {
-    return { blob, width, height };
+    const layers = {};
+    for (const [color, layerEntry] of Object.entries(entry.layers)) {
+      const blob = normalizeLayerBlob(layerEntry);
+      if (blob) {
+        layers[color] = { blob };
+      }
+    }
+
+    if (Object.keys(layers).length === 0) {
+      return null;
+    }
+
+    return { width, height, layers };
   }
 
-  return null;
+  const legacy = normalizeLegacyPageRaster(entry);
+  if (!legacy) {
+    return null;
+  }
+
+  return {
+    width: legacy.width,
+    height: legacy.height,
+    layers: {
+      [PEN_COLOR]: { blob: legacy.blob },
+    },
+  };
 }
 
 export function normalizePages(pages) {
@@ -31,14 +77,31 @@ export function normalizePages(pages) {
   return result;
 }
 
-export function createPageRasterRecord(blob, width, height) {
+export function createLayerRasterRecord(blob) {
   return {
     format: PAGE_RASTER_FORMAT,
     data: blob,
-    width,
-    height,
   };
 }
+
+export function createPageLayersRecord(width, height, layers) {
+  return {
+    width,
+    height,
+    layers,
+  };
+}
+
+export function pageHasLayers(entry) {
+  return normalizePageEntry(entry) != null;
+}
+
+export function pageHasLayer(entry, color) {
+  const normalized = normalizePageEntry(entry);
+  return Boolean(normalized?.layers?.[color]?.blob);
+}
+
+export { ANNOTATION_LAYER_COLORS };
 
 export function emptyPages() {
   return {};
@@ -82,6 +145,14 @@ export function pageDropFromClientPoint(clientX, clientY) {
   };
 }
 
+/** @deprecated Use pageHasLayers */
 export function pageHasRaster(entry) {
-  return normalizePageEntry(entry) != null;
+  return pageHasLayers(entry);
+}
+
+/** @deprecated Use createPageLayersRecord */
+export function createPageRasterRecord(blob, width, height) {
+  return createPageLayersRecord(width, height, {
+    [PEN_COLOR]: createLayerRasterRecord(blob),
+  });
 }

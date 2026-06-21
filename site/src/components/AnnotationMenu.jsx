@@ -92,6 +92,7 @@ export default function AnnotationMenu({
   onAnnotationToolChange,
   onClose,
   onClearPage,
+  onClearLayer,
   onGlyphDrop,
   onGlyphDragPreview,
   onGlyphDragChange,
@@ -490,29 +491,32 @@ export default function AnnotationMenu({
   );
 
   const renderColorSwatches = () => (
-    <div
-      className="annotation-menu-colors"
-      onPointerDown={(event) => event.stopPropagation()}
-      onPointerUp={(event) => event.stopPropagation()}
-    >
-      {ANNOTATION_COLORS.map((color) => (
-        <button
-          key={color}
-          type="button"
-          className={
-            color === annotationColor
-              ? 'annotation-menu-color-swatch annotation-menu-color-swatch--selected'
-              : 'annotation-menu-color-swatch'
-          }
-          style={{ backgroundColor: color }}
-          onPointerUp={(event) => {
-            event.stopPropagation();
-            onAnnotationColorChange(color);
-          }}
-          aria-hidden="true"
-          tabIndex={-1}
-        />
-      ))}
+    <div className="annotation-menu-layers">
+      <span className="annotation-menu-layers-label">layers</span>
+      <div
+        className="annotation-menu-colors"
+        onPointerDown={(event) => event.stopPropagation()}
+        onPointerUp={(event) => event.stopPropagation()}
+      >
+        {ANNOTATION_COLORS.map((color) => (
+          <button
+            key={color}
+            type="button"
+            className={
+              color === annotationColor
+                ? 'annotation-menu-color-swatch annotation-menu-color-swatch--selected'
+                : 'annotation-menu-color-swatch'
+            }
+            style={{ backgroundColor: color }}
+            onPointerUp={(event) => {
+              event.stopPropagation();
+              onAnnotationColorChange(color);
+            }}
+            aria-label={`${color} layer`}
+            tabIndex={-1}
+          />
+        ))}
+      </div>
     </div>
   );
 
@@ -557,17 +561,30 @@ export default function AnnotationMenu({
               {chordModeActive ? 'chord editor' : 'Glyphs'}
             </p>
           </div>
-          <button
-            type="button"
-            className="annotation-menu-clear"
-            onPointerDown={(event) => event.stopPropagation()}
-            onPointerUp={(event) => {
-              event.stopPropagation();
-              onClearPage?.();
-            }}
-          >
-            Clear
-          </button>
+          <div className="annotation-menu-header-actions">
+            <button
+              type="button"
+              className="annotation-menu-clear"
+              onPointerDown={(event) => event.stopPropagation()}
+              onPointerUp={(event) => {
+                event.stopPropagation();
+                onClearLayer?.();
+              }}
+            >
+              Clear layer
+            </button>
+            <button
+              type="button"
+              className="annotation-menu-clear"
+              onPointerDown={(event) => event.stopPropagation()}
+              onPointerUp={(event) => {
+                event.stopPropagation();
+                onClearPage?.();
+              }}
+            >
+              Clear page
+            </button>
+          </div>
         </div>
         <div className="annotation-menu-body">
           <div

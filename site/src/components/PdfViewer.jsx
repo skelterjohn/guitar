@@ -25,10 +25,11 @@ import { createDebouncedSave, createStrokeId, loadAnnotations, requestPersistent
 import { createPenScrollLock } from '../utils/penScrollLock.js';
 import { glyphDrawSpecFromDrop } from '../utils/annotationRaster.js';
 import {
-  createPageRasterRecord,
+  createLayerRasterRecord,
+  createPageLayersRecord,
   normalizePageEntry,
   normalizePages,
-  pageHasRaster,
+  pageHasLayers,
 } from '../utils/annotationPages.js';
 import { PEN_COLOR } from '../utils/stylusInput.js';
 import { viewRouteFilename } from '../utils/pdfPaths.js';
@@ -94,6 +95,7 @@ export default function PdfViewer({
   const [glyphDragActive, setGlyphDragActive] = useState(false);
   const [glyphDragPreview, setGlyphDragPreview] = useState(null);
   const [glyphDropRequest, setGlyphDropRequest] = useState(null);
+  const [layerClearRequest, setLayerClearRequest] = useState(null);
   const [annotationTool, setAnnotationTool] = useState(null);
   const [annotationColor, setAnnotationColor] = useState(
     () => getAnnotationColorPreference() ?? PEN_COLOR,
@@ -195,13 +197,8 @@ export default function PdfViewer({
     loadAnnotations(filename).then((record) => {
       if (cancelled) return;
       const pages = normalizePages(record?.pages);
-      pageRastersRef.current = Object.fromEntries(
-        Object.entries(pages).map(([key, entry]) => [
-          key,
-          createPageRasterRecord(entry.blob, entry.width, entry.height),
-        ]),
-      );
-      setPageAnnotations(pageRastersRef.current);
+      pageRastersRef.current = pages;
+      setPageAnnotations(pages);
       setAnnotationColor(resolveAnnotationColor(record?.color));
       setStorageWarning('');
     });
@@ -295,7 +292,18 @@ export default function PdfViewer({
   }, [url]);
 
   const persistPageAnnotations = (pages, color = annotationColorRef.current) => {
-    saveAnnotationsRef.current.schedule(filename, pages, color);
+    const storagePages = Object.fromEntries(
+      Object.entries(pages).map(([key, page]) => {
+        const layers = Object.fromEntries(
+          Object.entries(page.layers ?? {}).map(([layerColor, layer]) => [
+            layerColor,
+            createLayerRasterRecord(layer.blob),
+          ]),
+        );
+        return [key, createPageLayersRecord(page.width, page.height, layers)];
+      }),
+    );
+    saveAnnotationsRef.current.schedule(filename, storagePages, color);
   };
 
   const handleAnnotationColorChange = (color) => {
@@ -317,20 +325,44 @@ export default function PdfViewer({
     setAnnotationTool(null);
   };
 
-  const handleRasterChange = (pageNumber, blob, width, height) => {
+  const handleRasterChange = (pageNumber, color, blob, width, height) => {
     const key = String(pageNumber);
-    const record = createPageRasterRecord(blob, width, height);
-    pageRastersRef.current = {
-      ...pageRastersRef.current,
-      [key]: record,
-    };
-    setPageAnnotations({ ...pageRastersRef.current });
-    persistPageAnnotations(pageRastersRef.current);
+    const existing = pageRastersRef.current[key];
+    const nextLayers = { ...(existing?.layers ?? {}) };
+
+    if (blob) {
+      nextLayers[color] = { blob };
+    } else {
+      delete nextLayers[color];
+    }
+
+    const next = { ...pageRastersRef.current };
+    if (Object.keys(nextLayers).length === 0) {
+      delete next[key];
+    } else {
+      next[key] = {
+        width,
+        height,
+        layers: nextLayers,
+      };
+    }
+
+    pageRastersRef.current = next;
+    setPageAnnotations(next);
+    persistPageAnnotations(next);
+  };
+
+  const handleClearCurrentLayer = () => {
+    setLayerClearRequest({
+      id: createStrokeId(),
+      pageNumber: currentPage,
+      color: annotationColorRef.current,
+    });
   };
 
   const handleClearCurrentPage = () => {
     const key = String(currentPage);
-    if (!pageHasRaster(pageRastersRef.current[key])) {
+    if (!pageHasLayers(pageRastersRef.current[key])) {
       return;
     }
 
@@ -1023,7 +1055,7 @@ export default function PdfViewer({
           <div className="viewer-zoom-surface" style={{ zoom: pdfZoom }}>
             {Array.from({ length: pageCount }, (_, index) => {
               const pageNumber = index + 1;
-              const pageRaster = normalizePageEntry(
+              const pageLayers = normalizePageEntry(
                 pageAnnotations[String(pageNumber)],
               );
 
@@ -1046,10 +1078,11 @@ export default function PdfViewer({
                   />
                   <AnnotationOverlay
                     pageNumber={pageNumber}
-                    pageRaster={pageRaster}
+                    pageLayers={pageLayers}
                     pdfZoom={pdfZoom}
                     glyphPreview={glyphDragPreview}
                     glyphDropRequest={glyphDropRequest}
+                    layerClearRequest={layerClearRequest}
                     annotationColor={annotationColor}
                     annotationTool={annotationTool}
                     isAnnotationMenuOpen={Boolean(annotationMenu)}
@@ -1140,6 +1173,7 @@ export default function PdfViewer({
         onGlyphDrop={handleGlyphDrop}
         onGlyphDragPreview={handleGlyphDragPreview}
         onClearPage={handleClearCurrentPage}
+        onClearLayer={handleClearCurrentLayer}
         onGlyphDragChange={setGlyphDragActive}
       />
       <AnnotationHelpModal

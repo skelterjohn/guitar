@@ -1,6 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import getStroke from 'perfect-freehand';
 import {
+  ANNOTATION_LAYER_COLORS,
+} from '../utils/annotationPages.js';
+import {
   buildGlyphStamp,
   canvasToPageBlob,
   drawGlyphOnCanvas,
@@ -65,9 +68,10 @@ function strokeToPathData(stroke, width, height) {
 
 export default function AnnotationOverlay({
   pageNumber,
-  pageRaster = null,
+  pageLayers = null,
   glyphPreview = null,
   glyphDropRequest = null,
+  layerClearRequest = null,
   pdfZoom = 1,
   lastPenTapRef,
   onRasterChange,
@@ -81,13 +85,14 @@ export default function AnnotationOverlay({
   touchDrawActive = false,
 }) {
   const overlayRef = useRef(null);
-  const rasterCanvasRef = useRef(null);
+  const layerCanvasRefs = useRef({});
   const previewCanvasRef = useRef(null);
   const referenceSizeRef = useRef({ width: 0, height: 0 });
+  const skipNextBlobLoadRef = useRef({});
+  const loadedLayerBlobRef = useRef({});
   const activeStrokeRef = useRef(null);
   const eraserStrokeRef = useRef(false);
   const penPendingRef = useRef(null);
-  const skipNextBlobLoadRef = useRef(false);
   const isGlyphDragActiveRef = useRef(isGlyphDragActive);
   const annotationColorRef = useRef(annotationColor);
   const annotationToolRef = useRef(annotationTool);
@@ -111,6 +116,9 @@ export default function AnnotationOverlay({
   annotationColorRef.current = annotationColor;
   annotationToolRef.current = annotationTool;
   isMenuOpenRef.current = isAnnotationMenuOpen;
+
+  const getActiveLayerCanvas = () =>
+    layerCanvasRefs.current[annotationColorRef.current];
 
   const getReferenceLayoutSize = () => {
     const overlay = overlayRef.current;
@@ -139,10 +147,8 @@ export default function AnnotationOverlay({
     setDisplaySize(next);
   };
 
-  const getReferenceSize = () => referenceSizeRef.current;
-
   const getReferenceScale = () => {
-    const reference = getReferenceSize();
+    const reference = referenceSizeRef.current;
     const display = getDisplaySize();
     if (reference.width === 0 || display.width === 0) return 1;
     return reference.width / display.width;
@@ -152,10 +158,10 @@ export default function AnnotationOverlay({
     const layout = getReferenceLayoutSize();
     if (layout.width === 0 || layout.height === 0) return { width: 0, height: 0 };
 
-    if (pageRaster?.width > 0 && pageRaster?.height > 0) {
+    if (pageLayers?.width > 0 && pageLayers?.height > 0) {
       referenceSizeRef.current = {
-        width: pageRaster.width,
-        height: pageRaster.height,
+        width: pageLayers.width,
+        height: pageLayers.height,
       };
     } else if (referenceSizeRef.current.width === 0) {
       referenceSizeRef.current = layout;
@@ -164,58 +170,89 @@ export default function AnnotationOverlay({
     return referenceSizeRef.current;
   };
 
-  const ensureRasterCanvasSize = () => {
-    const canvas = rasterCanvasRef.current;
+  const ensureLayerCanvasSizes = () => {
     const reference = initializeReferenceSize();
-    if (!canvas || reference.width === 0 || reference.height === 0) {
-      return { width: 0, height: 0 };
+    if (reference.width === 0 || reference.height === 0) return reference;
+
+    for (const color of ANNOTATION_LAYER_COLORS) {
+      const canvas = layerCanvasRefs.current[color];
+      if (canvas) {
+        setCanvasPixelSize(canvas, reference.width, reference.height);
+      }
     }
 
-    setCanvasPixelSize(canvas, reference.width, reference.height);
+    return reference;
+  };
+
+  const ensureActiveLayerCanvasSize = () => {
+    const reference = ensureLayerCanvasSizes();
+    const canvas = getActiveLayerCanvas();
+    if (canvas && reference.width > 0) {
+      setCanvasPixelSize(canvas, reference.width, reference.height);
+    }
     return reference;
   };
 
   const ensurePreviewCanvasSize = () => {
     const canvas = previewCanvasRef.current;
-    const reference = ensureRasterCanvasSize();
-    if (!canvas || reference.width === 0) return reference;
-    setCanvasPixelSize(canvas, reference.width, reference.height);
+    const reference = ensureLayerCanvasSizes();
+    if (canvas && reference.width > 0) {
+      setCanvasPixelSize(canvas, reference.width, reference.height);
+    }
     return reference;
   };
 
-  const notifyRasterChange = async () => {
-    const canvas = rasterCanvasRef.current;
-    if (!canvas || canvas.width === 0 || canvas.height === 0) return;
+  const notifyLayerChange = async (color, blobOverride) => {
+    const canvas = layerCanvasRefs.current[color];
+    const reference = referenceSizeRef.current;
+    if (!canvas || reference.width === 0) return;
 
-    const blob = await canvasToPageBlob(canvas);
-    if (!blob) return;
+    const blob =
+      blobOverride === undefined ? await canvasToPageBlob(canvas) : blobOverride;
 
-    skipNextBlobLoadRef.current = true;
+    skipNextBlobLoadRef.current[color] = true;
     callbacksRef.current.onRasterChange?.(
       pageNumber,
+      color,
       blob,
-      canvas.width,
-      canvas.height,
+      reference.width,
+      reference.height,
     );
   };
 
-  const resampleCanvasesToReference = (nextReference) => {
-    const rasterCanvas = rasterCanvasRef.current;
-    const previewCanvas = previewCanvasRef.current;
-    if (!rasterCanvas || nextReference.width === 0) return;
+  const notifyResampledLayers = async () => {
+    const colors = ANNOTATION_LAYER_COLORS.filter(
+      (color) => pageLayers?.layers?.[color]?.blob,
+    );
+    for (const color of colors) {
+      await notifyLayerChange(color);
+    }
+  };
 
-    syncCanvasDimensions(rasterCanvas, nextReference.width, nextReference.height);
+  const resampleCanvasesToReference = (nextReference) => {
+    const previewCanvas = previewCanvasRef.current;
+
+    for (const color of ANNOTATION_LAYER_COLORS) {
+      const canvas = layerCanvasRefs.current[color];
+      if (canvas) {
+        syncCanvasDimensions(canvas, nextReference.width, nextReference.height);
+      }
+    }
+
     if (previewCanvas) {
-      previewCanvas.getContext('2d').clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      previewCanvas
+        .getContext('2d')
+        .clearRect(0, 0, previewCanvas.width, previewCanvas.height);
       setCanvasPixelSize(previewCanvas, nextReference.width, nextReference.height);
     }
+
     referenceSizeRef.current = nextReference;
   };
 
   useLayoutEffect(() => {
     syncDisplaySize();
     ensurePreviewCanvasSize();
-  }, [pdfZoom, pageRaster?.width, pageRaster?.height, glyphDropRequest?.id]);
+  }, [pdfZoom, pageLayers?.width, pageLayers?.height, glyphDropRequest?.id]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -242,46 +279,68 @@ export default function AnnotationOverlay({
       }
 
       resampleCanvasesToReference(nextReference);
-      void notifyRasterChange();
+      void notifyResampledLayers();
     });
     observer.observe(overlay);
 
     return () => observer.disconnect();
-  }, [pageNumber, pageRaster?.width, pageRaster?.height]);
+  }, [pageNumber, pageLayers?.width, pageLayers?.height]);
 
   useEffect(() => {
     let cancelled = false;
 
-    const loadRaster = async () => {
-      const reference = ensureRasterCanvasSize();
-      const canvas = rasterCanvasRef.current;
-      if (!canvas || reference.width === 0) return;
+    const loadLayers = async () => {
+      const reference = ensureLayerCanvasSizes();
+      if (reference.width === 0) return;
 
-      if (skipNextBlobLoadRef.current) {
-        skipNextBlobLoadRef.current = false;
+      if (!pageLayers) {
+        for (const color of ANNOTATION_LAYER_COLORS) {
+          const canvas = layerCanvasRefs.current[color];
+          if (canvas && canvas.width > 0) {
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+          }
+          loadedLayerBlobRef.current[color] = null;
+        }
         return;
       }
 
-      if (pageRaster?.width > 0 && pageRaster?.height > 0) {
+      if (pageLayers.width > 0 && pageLayers.height > 0) {
         referenceSizeRef.current = {
-          width: pageRaster.width,
-          height: pageRaster.height,
+          width: pageLayers.width,
+          height: pageLayers.height,
         };
-        setCanvasPixelSize(canvas, pageRaster.width, pageRaster.height);
       }
 
-      await loadBlobOntoCanvas(canvas, pageRaster?.blob ?? null);
+      for (const color of ANNOTATION_LAYER_COLORS) {
+        if (skipNextBlobLoadRef.current[color]) {
+          skipNextBlobLoadRef.current[color] = false;
+          continue;
+        }
+
+        const canvas = layerCanvasRefs.current[color];
+        if (!canvas) continue;
+
+        setCanvasPixelSize(canvas, reference.width, reference.height);
+        const layerBlob = pageLayers.layers?.[color]?.blob ?? null;
+        if (loadedLayerBlobRef.current[color] === layerBlob) {
+          continue;
+        }
+
+        loadedLayerBlobRef.current[color] = layerBlob;
+        await loadBlobOntoCanvas(canvas, layerBlob);
+      }
+
       if (!cancelled) {
         void syncPreviewCanvas();
       }
     };
 
-    void loadRaster();
+    void loadLayers();
 
     return () => {
       cancelled = true;
     };
-  }, [pageRaster?.blob, pageRaster?.width, pageRaster?.height]);
+  }, [pageLayers]);
 
   const syncPreviewCanvas = async () => {
     const canvas = previewCanvasRef.current;
@@ -313,7 +372,7 @@ export default function AnnotationOverlay({
 
   useEffect(() => {
     void syncPreviewCanvas();
-  }, [glyphPreview, pageNumber, pageRaster?.width, pageRaster?.height]);
+  }, [glyphPreview, pageNumber, pageLayers?.width, pageLayers?.height]);
 
   useEffect(() => {
     if (!glyphDropRequest || glyphDropRequest.pageNumber !== pageNumber) return;
@@ -321,8 +380,8 @@ export default function AnnotationOverlay({
     let cancelled = false;
 
     const applyDrop = async () => {
-      const reference = ensureRasterCanvasSize();
-      const canvas = rasterCanvasRef.current;
+      const reference = ensureActiveLayerCanvasSize();
+      const canvas = getActiveLayerCanvas();
       if (!canvas || reference.width === 0) return;
 
       const ctx = canvas.getContext('2d');
@@ -336,7 +395,7 @@ export default function AnnotationOverlay({
       );
 
       if (!cancelled) {
-        await notifyRasterChange();
+        await notifyLayerChange(glyphDropRequest.spec.color);
       }
     };
 
@@ -346,6 +405,19 @@ export default function AnnotationOverlay({
       cancelled = true;
     };
   }, [glyphDropRequest?.id, pageNumber]);
+
+  useEffect(() => {
+    if (!layerClearRequest || layerClearRequest.pageNumber !== pageNumber) return;
+
+    const { color } = layerClearRequest;
+    const canvas = layerCanvasRefs.current[color];
+    const reference = ensureLayerCanvasSizes();
+    if (!canvas || reference.width === 0) return;
+
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    loadedLayerBlobRef.current[color] = null;
+    void notifyLayerChange(color, null);
+  }, [layerClearRequest?.id, pageNumber]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -391,13 +463,13 @@ export default function AnnotationOverlay({
 
       if (!active || active.points.length < 2) return;
 
-      const reference = ensureRasterCanvasSize();
-      const canvas = rasterCanvasRef.current;
+      const reference = ensureActiveLayerCanvasSize();
+      const canvas = getActiveLayerCanvas();
       if (!canvas || reference.width === 0) return;
 
       const ctx = canvas.getContext('2d');
       drawStrokeOnCanvas(ctx, active, reference.width, reference.height);
-      await notifyRasterChange();
+      await notifyLayerChange(annotationColorRef.current);
     };
 
     const applyEraserSample = (event) => {
@@ -406,8 +478,8 @@ export default function AnnotationOverlay({
       const display = getDisplaySize();
       if (display.width === 0 || display.height === 0) return;
 
-      const reference = ensureRasterCanvasSize();
-      const canvas = rasterCanvasRef.current;
+      const reference = ensureActiveLayerCanvasSize();
+      const canvas = getActiveLayerCanvas();
       if (!canvas || reference.width === 0) return;
 
       const referenceScale = getReferenceScale();
@@ -433,7 +505,7 @@ export default function AnnotationOverlay({
         );
       }
 
-      void notifyRasterChange();
+      void notifyLayerChange(annotationColorRef.current);
     };
 
     const clearPenPending = (pending = penPendingRef.current) => {
@@ -686,13 +758,6 @@ export default function AnnotationOverlay({
     };
   }, [pageNumber, lastPenTapRef, menuPointerActive]);
 
-  useEffect(() => {
-    if (pageRaster?.blob) return;
-    const canvas = rasterCanvasRef.current;
-    if (!canvas || canvas.width === 0) return;
-    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-  }, [pageRaster?.blob]);
-
   const draftPath =
     draftStroke && displaySize.width > 0 && displaySize.height > 0
       ? strokeToPathData(draftStroke, displaySize.width, displaySize.height)
@@ -710,10 +775,20 @@ export default function AnnotationOverlay({
     >
       {displaySize.width > 0 && displaySize.height > 0 && (
         <>
-          <canvas
-            ref={rasterCanvasRef}
-            className="annotation-raster-canvas"
-          />
+          {ANNOTATION_LAYER_COLORS.map((color) => (
+            <canvas
+              key={color}
+              ref={(element) => {
+                if (element) {
+                  layerCanvasRefs.current[color] = element;
+                } else {
+                  delete layerCanvasRefs.current[color];
+                }
+              }}
+              className="annotation-raster-canvas"
+              data-annotation-layer={color}
+            />
+          ))}
           <canvas
             ref={previewCanvasRef}
             className="annotation-preview-canvas"

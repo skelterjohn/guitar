@@ -2,12 +2,15 @@ import { PEN_COLOR } from './stylusInput.js';
 
 const STORAGE_KEY = 'guitar-annotation-color';
 
-export const ANNOTATION_COLORS = [
-  PEN_COLOR,
-  '#2563eb',
-  '#16a34a',
+export const ANNOTATION_LAYER_COLORS = [
   '#000000',
+  '#16a34a',
+  '#2563eb',
+  PEN_COLOR,
 ];
+
+/** Swatch order in the menu (top / selected first). */
+export const ANNOTATION_COLORS = [...ANNOTATION_LAYER_COLORS].reverse();
 
 export function isValidAnnotationColor(color) {
   return ANNOTATION_COLORS.includes(color);

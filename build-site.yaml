@@ -3,6 +3,7 @@
 # Prerequisites (one-time GCP setup):
 #   - GCS bucket with public read (allUsers: storage.objectViewer)
 #   - nginx in the site image proxies /pdf/ to the bucket (no browser CORS needed)
+#   - catalog PDFs live under pub/ in the bucket; hidden dirs sync separately
 #   - Artifact Registry repo for container images
 #   - Cloud Build service account: storage.objectAdmin on bucket, Cloud Run Admin, AR Writer
 #
@@ -26,13 +27,14 @@ substitutions:
 
 steps:
   - name: gcr.io/cloud-builders/gsutil
+    entrypoint: bash
     args:
-      - -m
-      - rsync
-      - -r
-      - -d
-      - pdf/
-      - gs://${_PDF_BUCKET}/
+      - -c
+      - |
+        set -euo pipefail
+        staging=$$(mktemp -d)
+        cp pdf/*.pdf "$$staging/"
+        gsutil -m rsync -r -d "$$staging/" "gs://${_PDF_BUCKET}/pub/"
 
   - name: node:22-alpine
     entrypoint: sh

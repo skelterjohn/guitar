@@ -21,7 +21,8 @@ for (const section of catalog.sections) {
     for (const pdf of piece.pdfs) {
       if (!addHashes) continue;
 
-      const filePath = join(pdfDir, pdf.file);
+      const localFile = pdf.file.startsWith('pub/') ? pdf.file.slice('pub/'.length) : pdf.file;
+      const filePath = join(pdfDir, localFile);
       if (!existsSync(filePath)) {
         console.warn(`warning: missing ${pdf.file}, no hash`);
         continue;

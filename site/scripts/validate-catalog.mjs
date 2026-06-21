@@ -53,9 +53,14 @@ function listPdfFiles(dir, prefix = '') {
 
 const onDisk = new Set(listPdfFiles(pdfDir).map((file) => file.normalize('NFC')));
 
+function catalogLocalPath(file) {
+  if (file.startsWith('pub/')) return file.slice('pub/'.length);
+  return file;
+}
+
 const missing = [...referenced].filter((file) => {
   if (file.startsWith('PASSWORD/')) return false;
-  return !onDisk.has(file.normalize('NFC'));
+  return !onDisk.has(catalogLocalPath(file).normalize('NFC'));
 });
 const errors = [];
 

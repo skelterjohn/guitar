@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 function bioParagraphs(bio) {
   if (typeof bio !== 'string' || !bio.trim()) return [];
@@ -11,6 +11,15 @@ function cropObjectPosition(crop) {
     return undefined;
   }
   return `${point.x * 100}% ${point.y * 100}%`;
+}
+
+function shuffleMembers(members) {
+  const items = [...members];
+  for (let i = items.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  return items;
 }
 
 function NjgoRosterCard({ member }) {
@@ -107,10 +116,12 @@ function NjgoRosterCard({ member }) {
 }
 
 export default function NjgoRoster({ members }) {
+  const shuffledMembers = useMemo(() => shuffleMembers(members), [members]);
+
   return (
     <section className="njgo-roster" aria-label="Members">
       <ul className="njgo-roster-grid">
-        {members.map((member) => (
+        {shuffledMembers.map((member) => (
           <li key={member.name}>
             <NjgoRosterCard member={member} />
           </li>

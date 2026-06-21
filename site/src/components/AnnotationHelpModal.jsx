@@ -46,6 +46,18 @@ export default function AnnotationHelpModal({ open, onClose }) {
         </div>
         <div className="annotation-help-body">
           <section>
+            <h3>Saving and sharing</h3>
+            <ul>
+              <li>
+                Annotations are not private and are not shared.
+              </li>
+              <li>
+                They are saved locally as site data in this browser window or
+                app.
+              </li>
+            </ul>
+          </section>
+          <section>
             <h3>Draw and erase</h3>
             <ul>
               <li>

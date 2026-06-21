@@ -296,30 +296,21 @@ body {
 }
 
 .njgo-overview-links {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.85rem;
-  margin-top: 1rem;
-  max-width: 100%;
-}
-
-.njgo-overview-links-row {
   display: inline-grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--njgo-gap);
+  margin-top: 1rem;
   width: max-content;
   max-width: 100%;
 }
 
+.njgo-overview-links-public,
 .njgo-overview-links-members {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.35rem;
+  display: contents;
 }
 
 .njgo-overview-links-heading {
+  grid-column: 1 / -1;
   margin: 0;
   font-size: 0.75rem;
   font-weight: normal;
@@ -328,7 +319,14 @@ body {
   color: var(--color-text-muted);
 }
 
+.njgo-overview-links-heading ~ .njgo-overview-links-heading {
+  margin-top: 0.5rem;
+}
+
 .njgo-overview-link {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

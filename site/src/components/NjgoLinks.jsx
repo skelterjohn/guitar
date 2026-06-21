@@ -10,6 +10,18 @@ const PUBLIC_LINKS = [
   },
 ];
 
+const MEMBERS_ONLY_LINKS = [
+  { label: 'Repertoire', to: repPath },
+  {
+    label: 'Google Drive',
+    url: 'https://drive.google.com/drive/folders/11ZELfmvoDKx2DguiJBllHKZuQDzNGorW',
+  },
+];
+
+function linkKey(link) {
+  return link.to ?? link.url;
+}
+
 function OverviewLink({ link }) {
   if (link.to) {
     return (
@@ -37,19 +49,27 @@ function OverviewLink({ link }) {
 export default function NjgoLinks() {
   return (
     <nav className="njgo-overview-links" aria-label="Links">
-      <div className="njgo-overview-links-row">
+      <section
+        className="njgo-overview-links-public"
+        aria-labelledby="njgo-links-heading"
+      >
+        <h3 id="njgo-links-heading" className="njgo-overview-links-heading">
+          Links
+        </h3>
         {PUBLIC_LINKS.map((link) => (
-          <OverviewLink key={link.url} link={link} />
+          <OverviewLink key={linkKey(link)} link={link} />
         ))}
-      </div>
+      </section>
       <section
         className="njgo-overview-links-members"
         aria-labelledby="njgo-members-only-heading"
       >
         <h3 id="njgo-members-only-heading" className="njgo-overview-links-heading">
-          members only
+          Members only
         </h3>
-        <OverviewLink link={{ label: 'Repertoire', to: repPath }} />
+        {MEMBERS_ONLY_LINKS.map((link) => (
+          <OverviewLink key={linkKey(link)} link={link} />
+        ))}
       </section>
     </nav>
   );

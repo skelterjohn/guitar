@@ -167,6 +167,13 @@ export default function PdfViewer({
 
   scrollToPageRef.current = scrollToPageTop;
 
+  const finishScrollToTopPending = () => {
+    if (!scrollToTopPendingRef.current) return;
+    scrollToTopPendingRef.current = false;
+    scrollToPageRef.current(0);
+    setCurrentPage(1);
+  };
+
   useLayoutEffect(() => {
     scrollToTopPendingRef.current = true;
     setCurrentPage(1);
@@ -201,6 +208,16 @@ export default function PdfViewer({
       cancelled = true;
     };
   }, [filename, status]);
+
+  useEffect(() => {
+    if (status !== 'ready' || pageCount === 0) return undefined;
+
+    const timeout = window.setTimeout(() => {
+      scrollToTopPendingRef.current = false;
+    }, 3000);
+
+    return () => window.clearTimeout(timeout);
+  }, [status, pageCount, url]);
 
   useEffect(() => {
     let cancelled = false;
@@ -500,6 +517,13 @@ export default function PdfViewer({
 
         if (scrollToTopPendingRef.current) {
           container.scrollTop = 0;
+          if (pageNum === 1) {
+            requestAnimationFrame(() => {
+              if (renderId === renderIdRef.current) {
+                finishScrollToTopPending();
+              }
+            });
+          }
         }
 
         if (cancelled || renderId !== renderIdRef.current) return;
@@ -508,9 +532,7 @@ export default function PdfViewer({
       if (!cancelled && renderId === renderIdRef.current) {
         requestAnimationFrame(() => {
           if (scrollToTopPendingRef.current) {
-            scrollToTopPendingRef.current = false;
-            scrollToPageRef.current(0);
-            setCurrentPage(1);
+            finishScrollToTopPending();
           } else if (headerHiddenRef.current) {
             scrollToPageRef.current(currentPageRef.current - 1);
           }
@@ -520,11 +542,14 @@ export default function PdfViewer({
       if (
         renderedCount === 0 &&
         !cancelled &&
-        renderId === renderIdRef.current &&
-        renderAttempts < 5
+        renderId === renderIdRef.current
       ) {
-        renderAttempts += 1;
-        requestAnimationFrame(queueRender);
+        if (renderAttempts < 5) {
+          renderAttempts += 1;
+          requestAnimationFrame(queueRender);
+        } else {
+          scrollToTopPendingRef.current = false;
+        }
       }
     };
 
@@ -600,6 +625,7 @@ export default function PdfViewer({
     };
 
     const scrollToPage = (index) => {
+      scrollToTopPendingRef.current = false;
       scrollToPageRef.current(index);
     };
 
@@ -612,10 +638,12 @@ export default function PdfViewer({
     };
 
     const goToStart = () => {
+      scrollToTopPendingRef.current = false;
       container.scrollTo({ top: 0, behavior: 'auto' });
     };
 
     const goToEnd = () => {
+      scrollToTopPendingRef.current = false;
       container.scrollTo({
         top: container.scrollHeight - container.clientHeight,
         behavior: 'auto',

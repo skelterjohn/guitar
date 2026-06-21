@@ -1,3 +1,5 @@
+import NjgoLinks from './NjgoLinks.jsx';
+
 export default function NjgoOverview({ logo, paragraphs }) {
   const hasParagraphs = Array.isArray(paragraphs) && paragraphs.length > 0;
   if (!logo && !hasParagraphs) {
@@ -17,13 +19,13 @@ export default function NjgoOverview({ logo, paragraphs }) {
           />
         </div>
       )}
-      {hasParagraphs && (
-        <div className="njgo-overview-text">
-          {paragraphs.map((paragraph, index) => (
+      <div className="njgo-overview-text">
+        {hasParagraphs &&
+          paragraphs.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
-        </div>
-      )}
+        <NjgoLinks />
+      </div>
     </section>
   );
 }

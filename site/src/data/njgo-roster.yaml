@@ -1,12 +1,24 @@
 # Roster sourced from https://jaysonmartinez.org/njgo
 members:
   - name: "Dr. John Asmuth"
+    image: /roster/john_asmuth.jpg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5690245160080626
+        y: 0.3760235014688418
     bio: |-
       New Jersey native Dr. John Asmuth is an amateur player who picked up the classical guitar at twelve years old, taking private lessons for a time with Alice Artzt and recently with Phil Circle. He enjoys performing not only as a soloist and with Section 3 of NJGO, but also composing and transcribing music.
 
       John holds a Ph.D. in Computer Science from Rutgers University, and currently works as a software engineer in Big Tech (TM). He lives in Verona, NJ with his wife, Stephanie, and two boys, Trent and Gavin.
 
   - name: "Dr. Martin Brounstein"
+    image: /roster/martin_brounstein.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.451975987993997
+        y: 0.13600850053128322
     bio: |-
       Dr. Martin Brounstein is the Board President of Montclair Early Music. He is a retired attorney specializing in international regulatory compliance with pharmaceutical manufacturing and clinical research regulations. Martin has been playing guitar since the mid 1950s, and has been continuously teaching jazz, pop and classical guitar for several decades. As a member of the New Jersey, New York and Mid-Hudson Classical Guitar Societies, he has been instrumental in providing free recitals to communities throughout the tri-state area.
 
@@ -15,24 +27,60 @@ members:
       Martin is currently on the board of directors and regularly featured in the Bloomfield Mandolin Orchestra and plays in the New Jersey Guitar Orchestra in section three.
 
   - name: "Patrick Callahan"
+    image: /roster/patrick_callahan.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.451975987993997
+        y: 0.1560160010000625
     bio: "Patrick Callahan has been involved as a coach and adjudicator for NJMEA Honors Guitar Ensemble since its inception, and is excited to be performing with NJGO this season as a section four member. Patrick is a passionate educator and has run the classical guitar program at Franklin High School in Somerset, NJ for close to a decade. In addition to performing with the NJGO, he is an active performer for pit orchestras for musical theatre."
 
   - name: "David Chidsey"
+    image: /roster/david_chidsey.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.42668056279312144
+        y: 0.3125
     bio: |-
       David Chidsey is a guitarist/educator with a broad vision of musical concepts, ideas, and teaching philosophies. After studying music with professors Jeffrey Erickson, William Day and Ann Applegate at the University of Wisconsin-Marathon County College, David entered a college-conservatory music program at Lawrence University in Appleton WI where he studied classical guitar performance with Kevin Gallagher.
 
       After graduating from the conservatory, David earned an MM from the UW-Madison where he taught guitar as an assistant to Javier Calderon. He serves as a guitarist in section one of the NJGO.
 
   - name: "Thomas Crown"
+    image: /roster/thomas_crown.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.1
     bio: "Thomas Crown stating playing classical Guitar in 2017. Joined the Classical Guitar Corner Academy in June of 2023 and is currently enrolled. Thomas has also written pieces for the classical guitar, and is part of the Classical Guitar Society of New York’s and New Jersey Guitar Orchestra."
 
   - name: "Michele Fiorindo"
+    image: /roster/michele_fiorindo.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.5
     bio: "Michele Fiorindo is a professional guitarist who has a thriving career working as a soloist, band leader, conductor, sideman and certified music educator. After studying classical guitar with professor Christopher Kenniff at Kean University, Michele received a degree with honors in music education and classical guitar in 2007. That study of classical music influenced Michele's style and technique, both on nylon string guitar and traditional jazz hollow body guitar. Other notable teachers that influenced his style are Kurt Rosenwinkle, Pasquale Grasso, John Schofield and Barry Harris.While working as a music educator in public school systems for 17 years, From 2007 to 2010, he taught guitar at Arts High School in Newark, NJ, where he was the Director of the Guitar Ensemble and the Latin-jazz band, having directed his ensemble on multiple performances on and off campus. Michele currently works as a freelance guitarist throughout the New York metropolitan area, teaches privately, and directs strings and guitar ensembles in Union County NJ, and is also a member of the New Jersey Guitar Orchestra, an ensemble that collaborates with world-class guitarists and performs in the tri state area in various festival-colleges (Kean-WPU-NJCU-Carnegie Hall)."
 
   - name: "Rick Florio"
+    image: /roster/rick_florio.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.6334000333500084
+        y: 0.2320145009063066
     bio: "Rick is an amateur classical guitarist and is a member of the NJ Classical Guitar Society. He plays in various small ensembles in addition to the NJGO, where he serves as a section one player. Rick is a project manger working in the pharmaceutical industry space. Rick resides with his wife Joann in Hillsborough and recently became grandparents for the second time."
 
   - name: "Dr. Loren Fortna"
+    image: /roster/loren_fortna.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.4946639986659997
+        y: 0.11200700043752732
     bio: |-
       Educator, performer, and composer Dr. Loren C. Fortna has performed from New Jersey to Vancouver, British Columbia as a soloist, accompanist, ensemble member, and conductor. He holds a B.A. in Music Theoretical Studies, a M.M., an A.D., and a D.M.A in Classical Guitar Performance. He earned these degrees under the tutelage of several esteemed guitarists, including Dennis Cinelli, Stephen Aron, and Julian Gray.
 
@@ -40,18 +88,42 @@ members:
 
       Dr. Fortna has worked with award-winning conductors and composers and was a featured “Spotlight” performer at several National Assemblies of Phi Mu Alpha Sinfonia, the University of Akron Alumni Guitar Festival, and the University of Akron Guitar Series. Loren’s compositions range from quaint salon works to a full Mass with guitar accompaniment to hard rock. He recorded three hard rock albums with the band Bad Habit: Life on the Rocks (1989), Children of Rage (1993), and Whelmed (2020). Additionally, Loren released two classical guitar albums: A Song and Dance (2014) and Mertz in meinem Herzen: Select Works of Johann Kaspar Mertz (2016). Loren’s next album, Just as You Never Expected (anticipated release date 2023), is an eclectic collection of pop and heavy metal songs arranged for voice and guitar. He serves as a section four section leader for the NJGO.
 
-      “Fortna’s rendering of works…displayed impressive attention to detail and nuance. His deep admiration and understanding of the music of Piazzolla was riveting.”—Soundboard Magazine, 2008
+      “Fortna's rendering of works…displayed impressive attention to detail and nuance. His deep admiration and understanding of the music of Piazzolla was riveting.”—Soundboard Magazine, 2008
 
   - name: "Joshua Friedman"
+    image: /roster/joshua_friedman.jpg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5925
+        y: 0
     bio: "Joshua is a classical guitarist and music teacher in the northern New Jersey area. Joshua is a recent graduate from Rutgers Mason Gross School of the Arts under the direction of award-winning guitarist Jorge Caballero. He has performed for masterclasses with amazing talents, such as William Kanengiser, Michael Newman, Bokyung Byun, and Evan Taucher as well as others. When he is not performing or teaching, he works in Development at Austin Classical Guitar, the leading arts service organization for classical guitar in the United States. Austin Classical Guitar aims to bring access to music education through supported guitar programs, teacher training, free lessons, as well as online resources including GuitarCurriculum.com which has provided the groundwork for hundreds of guitar programs across the country and internationally. Joshua creates content and provides support for GuitarCurriculum.com as well as acts as grant manager for the organization. Joshua is thrilled to be part of the NJGO as a section four member and enjoys to perform with so many great musicians from across New Jersey!"
 
   - name: "Jordyn Gallagher"
+    image: /roster/jordyn_gallagher.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.5
     bio: "Jordyn Gallagher first started playing playing guitar at the age of 8. Jordyn went on to study classical guitar at The College of New Jersey, graduating with a Bachelor of Music in Instrumental Music Education, specializing in classical guitar, and a secondary focus on clarinet. Since then, Jordyn has been teaching in the Metuchen school district in New Jersey. Presently, she serves as the director of the 4th, 5th, and 6th-grade orchestras, as well as taking on the roles of kindergarten general music teacher and guitar instructor."
 
   - name: "Diego Gallardo"
+    image: /roster/diego_gallardo.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.483991995997999
+        y: 0.1
     bio: "Diego is a graduate of the Kean Conservatory of Music, holding a B.A. in Music Education, and has been a high school music teacher since 2010. His students have gone on to study at schools such as University of the Arts, Mason Gross School of Music, William Paterson University, Kean University, Montclair State University, New England Conservatory, as well as becoming well regarded area musicians. He has performed at such venues as NJPAC, Merkin Hall, Carnegie Hall, and many others. He serves as a section two guitarist for the NJGO."
 
   - name: "Crystal Gaynor"
+    image: /roster/crystal_gaynor.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.49494390899036184
+        y: 0.0
     bio: |-
       Crystal Gaynor, singer/songwriter, acoustic and classical guitarist and a self proclaimed “Late in Life Student of the 6 Stings”.As a vocalist, Crystal has recorded and performed background vocals with George Clinton /Parliament Funkadelic, Paul Schaffer of the David Lettermen Show, and many others. While serving in the United StateAir Force, Crystal performed with the USAF touring performance ensemble,“Tops in Blue.” While living in Detroit, by day Crystal worked for BMG Distribution, one of the music industries largest music distributors. And by night, as a vocalist, Crystal recorded and performed on the Techno House and Rock Music circuit with various Detroit artists.
 
@@ -60,33 +132,87 @@ members:
       In the fall of 2023, she became a member of both, the New York Classical Guitar Orchestra (NYCGO) and the New Jersey Guitar Orchestra (NJGO). Crystal is the creator of Crystal’s Music Box, Newark, NJ’s first Acoustic Guitar Meet-up. Crystal aspires to spread Peace, Love, Joy, and SMILES through music, while living #ThatCrystalClearLife, one note at a time!
 
   - name: "Mario Giordano"
+    image: /roster/mario_giordano.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5053360013340004
+        y: 0.1560160010000625
     bio: "Mario Giordano is a guitarist and sophomore Jazz/Classical performance major at William Paterson University. Outside of school, he is a member of the United States Guitar Orchestra, the pop funk band Jude and the Strangers, and his own rock band Echo Road, for which he recorded and produced their recent debut album, Out in the Open. Mario also co-owns Sovereign Stage Productions, which puts on and promotes live performances for New Jersey artists. Mario is excitedly looking for to his first tour with the NJGO as a guitarist in section two."
 
   - name: "Lucy Gomez"
+    image: /roster/lucy_gomez.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.1
     bio: "Lucy Gomez is one of the first members that graduated into the NJGO from the NJMEA High School Honors Guitar Ensemble. She is currently working towards her degree to achieve her Bachelors of Science in Nursing. She is a proud member of section two in the NJGO."
 
   - name: "Andres Holguin"
+    image: /roster/andres_holguin.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5033350703491402
+        y: 0.3100160162506348
     bio: "Andrés Holguin has been involved in music all his life whether performing, composing, or as a recoding engineer. He holds a classical guitar performance degree from Montclair State University and has studied classical guitar with Denis Cinnelli and Oren Fader. Aside from his classical performances, Andres Holguin has also performed and toured the US and Europe with such rock groups as Los Iracundos, Grace Notes, and Bad Habit playing electric guitar. Andrés has also performed with such ensembles as The Bloomfield Mandolin Orchestra, Duo Amici, and has also composed various instrumental pop-funk compositions that can be heard on the major music streaming platforms. He is currently an ESL teacher in Elizabeth Public Schools and devotes much of his time in his recoding studio “Holguin Studios” as a recoding/mixing engineer for various local artists. In his recording studio, Andrés has had the great honor to record NJGO’s own Dr. Loren Fortna classical guitar solo albums that can also be found in all major music streaming platforms. You can find him on Instagram and other social media platforms. Andres is a section three member of the NJGO."
 
   - name: "Matt Jardim"
+    image: /roster/matt_jardim.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5500260552371027
+        y: 0.30501582093050514
     bio: "Matt Jardim is a performer and music educator with 31 years experience teaching music in the public school mostly teaching high school guitar. Upon graduating from Rutgers University’s Jazz program where he studied with Ted Dunbar and Kevin Eubanks and performed with visiting artists such as Dizzy Gillespie, Slide Hampton, Kenny Burrell among many other notable jazz luminaries, Matt went on to earn a music education masters from New Jersey City University. Matt’s high school guitar ensembles from his current position in Mountain Lakes and formerly at Elizabeth have performed at county and state teens arts festivals and the State Theater in New Brunswick. As a performer, Matt has played all over the tri-state area in Soul, R & B and Jazz bands including his current tenure in the Epic Soul Band. Matt recently put out two album recordings under his own name with the release of Threshold in 2020 and Rapid Ascent in 2021. Matt serves as a section two guitarist for the NJGO."
 
   - name: "Andrew Jaworski"
+    image: /roster/andrew_jaworski.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.4946639986659997
+        y: 0.1800175010938184
     bio: |-
       Andrew is a professional teacher, musician, recording engineer, and producer. He graduated from The Hartt School in 2008 with a degree in Music Production and Technology, and has been working for various studios and production companies ever since. In 2008, Andrew started his own music company, Sites and Sounds Productions LLC, that specializes in mobile recording and CD duplication for middle- and high-school music concerts. As a performing classical and rock guitarist, he also teaches lessons and works part-time as a high-school marching band faculty member.
 
       At Montclair State University, Andrew earned a Master of Arts in Teaching degree in order to help cultivate a deep respect and love for sound and music. Andrew is section leader two in the NJGO.
 
   - name: "Christopher Joseph"
+    image: /roster/christopher_joseph.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.4040877554847178
+        y: 0.32404050506313287
     bio: "Christopher Joseph is a classical guitarist based out of Brooklyn New York. He has studied with Francisco Roldan at NJCU as well as taken lessons from Dr. Ana Maria Rosado and Dr. Joao Luiz Rezende Lopes. He himself has and still plays for special events such as luncheons, weddings and churches. He was a member of Orpheus Guitar Trio and Quintero Paisano. With the former he has had a Carnegie debut with multiple departments from NJCU and the latter he has recorded some music for Guitar Quintet. Chris is also the founder and owner of ECGNentertainment which is media project meant to propel the emerging classical guitarists into the professional music world. Chris is an avid tik-tokker who is constantly sharing music and new things he is learning and when away from music you can find him hanging with friends, playing chess or pool either locally or in online forums. He is a very down to earth and upbeat person who simply wants classical guitar to be even more recognized than it was yesterday."
 
   - name: "Parvathi Kumar"
+    image: /roster/parvathi_kumar.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5033350703491402
+        y: 0.1200125004883003
     bio: "Parvathi Kumar was born in Halifax, Nova Scotia and raised in Montreal, Quebec. As a child she wanted to learn piano, but for various good reasons, a classical guitar fell into her hands instead, and with the help of wonderful teachers in Montreal she built a strong foundation and deep love for classical guitar. Though earning a bachelor's degree in Electrical Engineering from Concordia University in Montreal, a master's degree in Computer Science from NJIT in Newark, and working for ten years in software design & development for IT firms in Denmark, CT and NJ, classical guitar always remained a serious and passionate interest. In Denmark and CT, she was involved with the local classical guitar societies, attending outstanding master classes and concerts, and learning from the best of the best. After settling in NJ in 2001 and starting a family, she connected with the NJ Classical Guitar Society, attended the yearly NY Guitar Seminar at Mannes, and took private lessons to further her skills and repertoire. Joining NJGO as a section three member in the fall of 2021 has been an added blessing and experience to continue her learning and love of the instrument. Parvathi is also a professional fine art photographer, exhibits her work throughout the world, and offers photo services as well as photo book design. She is an active member of local and international art associations, collaborates with artists of other media, and has given workshops and talks on the art of photography. Outside of guitar and photography, Parvathi has advanced training in Bharata Natyam (South Indian Classical Dance), and is a certified yoga instructor. She lives in Bridgewater, NJ with her husband and two sons."
 
   - name: "Jo Lucev"
+    image: /roster/jo_lucev.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5737327188940092
+        y: 0.4320540067508438
     bio: "During high school, Jo had the incredible opportunity to be part of the guitar ensemble program at Franklin High School. Under the direction of Patrick Callahan, Jo quickly developing a passion for guitar. This experience not only deepened Jo’s love for guitar and music, but also inspired Jo to pursue a degree in music education. Jo is thrilled to continue a musical journey in college and aims to combine a passion for guitar with a dedication to teaching and inspiring future musicians."
 
   - name: "Sandy Meltzer"
+    image: /roster/sandy_meltzer.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5700364773319437
+        y: 0.3100160162506348
     bio: |-
       Sandy Meltzer began her career as a French Horn player. By the age of 12 she was already a member of the Westchester Philharmonic and the Westchester Symphony. She went on to study at Manhattan School of Music where she earned both her Bachelor’s and Master’s degrees and subsequently taught in the pre-college division there for 12 years. During this time, she was an active freelancer in the New York metropolitan area performing in groups such as the Julius Grossman Orchestra, American Chamber Opera Company, the National Orchestral Association and the Village Chamber Orchestra as well as numerous regional theater companies, occasional subbing on Broadway and one national tour. She was also a featured soloist with the Village Chamber Orchestra and the Bloomingdale House of Music Chamber Orchestra.
 
@@ -95,18 +221,42 @@ members:
       Since retiring from teaching in 2021, she has taken the opportunity to hone her skills as a classical guitarist. She joined 2 groups in this capacity, the NJGO as well as the Montclair Early Music Society where she was recently appointed Assistant Music Director. She feels it is a true privilege to perform with the extremely talented members of the NJGO as a member of section four.
 
   - name: "Michael Monroe"
+    image: /roster/michael_monroe.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.47665450755601874
+        y: 0.18001484432985666
     bio: "Michael’s classical guitar career began during his middle school years at Classen School of Advanced Studies. While he expanded his interests to jazz and rock during high school, Michael continued to study classical guitar under the tutelage of Dr. Matt Denman and received the highest possible ratings during state competitions in his home state of Oklahoma. After briefly majoring in music at Loyola University in New Orleans, Michael continued to practice guitar throughout college and his residency in Guangzhou, China. He has since remained active in the NYC Classical Guitar and New Jersey Guitar Orchestras, where he serves as a section one member."
 
   - name: "Edison Pereyra"
+    image: /roster/edison_pereyra.jpg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.4820926307894243
+        y: 0.1200400050006251
     bio: "Edison Pereyra is a Dominican-American classical guitarist and has performed throughout much of the U.S., Caribbean, and Europe. He holds a master’s degree from the New England Conservatory of Music. With seven years of experience teaching guitar & piano, Edison has developed an incredible amount of patience and efficiency in his craft. He has also played and/or studied with world-famous guitarists João Luiz and Eliot Fisk. Edison is also a member of the NJ Guitar Orchestra as a section two player, and performs with several other ensembles."
 
   - name: "Christopher Perez"
+    image: /roster/christopher_perez.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.41369047619047616
+        y: 0.3520440055006876
     bio: |-
       Chris is a New Jersey native and a classical guitarist, who has been playing guitar since the age of 16. He began playing classical guitar after discovering and falling in love with the music of Francisco Tárrega. He is also passionate about studying the works of Heitor Villa-Lobos, Agustín Barrios, and Frederic Chopin. He is honored to be playing for section one of the New Jersey Guitar Orchestra.
 
       Chris is also a certified civil trial attorney and a partner and co-founder of a vibrant law practice. Chris is an alumni of Rutgers University, where he obtained a Bachelor’s Degree in English and a Doctorate in Law. Chris is happily married and the proud father of three beautiful children.
 
   - name: "Suyla Polat"
+    image: /roster/suyla_polat.jpg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.3863551401869159
+        y: 0.08800000000000003
     bio: |-
       Suyla Polat, born in Istanbul in 2005, is a classical guitarist whose musical journey began at the age of four under the mentorship of her father, Haşim Polat.
 
@@ -119,33 +269,81 @@ members:
       Suyla is also very interested in biology, and is currently doing a double major at Kean University in America, working with Dr. Celil Refik Kaya.
 
   - name: "Omar Reyes"
+    image: /roster/omar_reyes.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.6300677436164669
+        y: 0.2300167975311535
     bio: "Omar Reyes is a Newark native and has been playing guitar since he the age of 12. He was introduced to classical guitar while studying with Jayson Martinez at Essex County College. After earning his Associates Degree in Music, Omar earned his BA from NJCU in Music Education. Omar currently teaches elementary and middle school music in his hometown for the Newark Public Schools, where he graciously gives back to his community. Omar serves as a section one member of our NJGO."
 
   - name: "Dora Rodriguez"
+    image: /roster/dora_rodriguez.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.6068034017008505
+        y: 0.0760470058757345
     bio: "Dora was a part of the NJMEA Guitar Honors Ensemble during high school and soon became a member of Section 3 of the NJGO after she graduated. She is currently attending Montclair State University to pursue my Music Therapy & Criminal Justice career."
 
   - name: "Dr. Juan Carlos Rodriguez Argaez"
+    image: /roster/juan_carlos_rodriguez_argaez.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.5
     bio: "Juan’s first guitar teacher was Ramiro Isaza Mejía, from the National University of Colombia. He studied Music with emphasis in classical guitar with Carlos Rocca Lynn at Universidad de los Andes. He has taken master classes with classical guitarists such as Aniello Desiderio, Betho Davezac, Carlos Barbosa Lima, Costas Cotsiolis, Fábio Zanon, Sharon Isbin, Ricardo Cobo, Lito Romero, Michael Newman, among others. Juan Carlos stopped playing the guitar for few years to dedicate himself to his other great passion: literature. He holds a master's degree in literature and a doctorate in literature, both from the Universidad de los Andes as well. Over time, Juan Carlos has become a passionate poetry reader who very occasionally comes up with a good idea and/or with a kind of descent verse. He has written two completely unknown poetry books: Selfies: Plumas de la voluntad (2017), and another whose title is a little long and he does not even want to bother mentioning. He has been writing a third attempt of his first novel for a few years and at this moment he does not even know if he is going to finish it. In any case, he is not in a big a hurry. Juan Carlos has studied literature with personalities such as Sophocles, Aeschylus, Aristotle, Horace, Virgil, and Sappho, to mention only some of the first ones. He has worked in the literary archives of Colombian writers like the poet María Mercedes Carranza and Rafael Humberto Moreno-Durán. His academic interests, among many others, are the theory of autobiography, and the impossibility of the novel of the second half of the XXI century in Latin America (he is not that optimistic). He thinks that this little “bio” could not be written if he had not come across “Autobiography as De-Facedment” by Paul de Man. That is why he really enjoys thinking about people´s bios and, above all, epitaphs. Like everyone, Juan Carlos is a multifaceted person, so he usually rejoices when recalling one of his friends (Vicente Guedes) when he said: “My soul is a hidden orchestra; I don’t know what instruments, what violins and harps —[and guitars!]— drums and tambours, sound and clash inside me. I know myself only as a Symphony.” In 2021 he moved to the United States since his mother, his sister and her two adorable children are living here. He had the opportunity to teach Spanish at Monmouth University in 2023, although he is still waiting for other opportunities. In 2023 he also joined this amazing group of people who is the NJGO, where he serves as a section one guitarist."
 
   - name: "Dr. Steve Sabet"
+    image: /roster/steve_sabet.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5500260552371027
+        y: 0.16501425836946755
     bio: "Dr. Steven Sabet is a music teacher at the Thomas Jefferson Arts Academy where he teaches guitar and music technology. He is also adjunct professor at Kean University and has taught at Rutgers where he received a Doctorate in Music Education. His doctoral research was published by the Journal of Popular Music Education. Sabet’s guitar work can be heard on several studio albums on platforms like Apple Music and Spotify. He studied guitar at The Hartt School and Florida State University before becoming a teacher and performer. Dr. Sabet serves as concertmaster for the NJGO."
 
   - name: "Alex Sieira"
+    image: /roster/alex_sieira.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5549141965678627
+        y: 0.040002500156259724
     bio: "Alex is a professional musician, educator, performer, and independent recording artist specializing in guitar from the Tri-State area. He possesses a Bachelor of Arts degree in Music Education K-12 with a concentration in Classical Guitar from New Jersey City University (2016), a Masters Degree in Music Education from New Jersey City University (May 2020), and a Masters Degree in Educational Leadership from Montclair State University (August 2022). Being in the profession since the age of 14 has allowed him to perform in a variety of venues, such as Trumpets, Prudential Center, NJPAC, Community Theaters, and more. This has allowed him the privilege of performing with prominent musicians of all genres, and continues to be an active performer and educator. Lastly, you may find his music on all streaming platforms. Alex serves as a section two member of the NJGO."
 
   - name: "Gioconda R. Simmonds Zanetti"
+    image: /roster/gioconda_simmonds_zanetti.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.2
+        y: 0.3
     bio: |-
       Ecuadorean-born American, Gioconda R. Simmonds Zanetti was raised in the Upper West Side of Manhattan and began her guitar studies when she was six years old at the former City Music School of New York. Other instruments such as the violin, piano and accordion were also explored but the Classical Guitar has always remained her passion.
 
       Gioconda holds a Master of Architecture degree from the University at Buffalo. She is an amateur classical guitarist who is excited to be part of Section 4 of NJGO. She is also the proud mother of her two children, Giovanna and Desiderio.
 
   - name: "Jeffrey Wilt"
+    image: /roster/jeffrey_wilt.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5967170401250651
+        y: 0.3150162115707645
     bio: |-
       Jeff Wilt has played guitar since the early 1960’s when his uncle (an organist) took note of his interest in Channel 13’s presentations of classical guitar legend Andres Segovia’s “Masterclass” television series and purchased Jeff’s first guitar. His parents finally relented and engaged a teacher in the mid-60’s after listening to Jeff banging on a guitar he couldn’t even tune for two years! His early studies tended toward jazz. He lost interest as the jazz became progressively more…well, progressive! After not playing during college, Jeff returned to guitar around 1980 and taught himself classical guitar. As an adult, Jeff has relied on direction provided by a small army of accomplished classical guitarist friends, as well as classes with international concert guitarists at the annual convention of the Guitar Foundation of America.
 
       Now retired from the life insurance industry where he was in regional sales management for 35 years, Jeff plays in the New York City Guitar Orchestra and in several small ensembles with friends in addition to performing with the New Jersey Guitar Orchestra. He is on the Board of Directors of the New York City Classical Guitar Society. He is married to Lori Wilt with three adult children, Michala, Carmine and Kathleen. Jeff is also a lifelong motorcyclist and enjoys daily walks with Holly, the Golden Retriever. He is section leader three of the NJGO.
 
   - name: "Cem Yigit"
+    image: /roster/cem_yigit.jpeg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.5
     bio: |-
       Cem has been playing guitar with passion since the mid-1980s, developing a deep appreciation for both classical and flamenco styles through years of solo practice. His musical interests extend beyond performance into the mathematics of music, including computer-aided harmonization and eastern musical tonal systems.
 

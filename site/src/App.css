@@ -242,7 +242,7 @@ body {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(34rem, 1fr));
   align-items: start;
   gap: 0.75rem;
 }
@@ -251,7 +251,25 @@ body {
   background: var(--color-surface);
   border: 1px solid var(--color-border-light);
   border-radius: 4px;
-  padding: 1rem 1.15rem;
+  overflow: hidden;
+}
+
+.njgo-roster-photo-frame {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.njgo-roster-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.njgo-roster-card-body {
+  padding: 0.85rem 1.15rem 1rem;
 }
 
 .njgo-roster-name {

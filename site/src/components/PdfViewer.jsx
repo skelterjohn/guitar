@@ -176,6 +176,14 @@ export default function PdfViewer({
     }
   }, [url]);
 
+  useLayoutEffect(() => {
+    if (status !== 'ready') return;
+    const container = containerRef.current;
+    if (container) {
+      container.scrollTop = 0;
+    }
+  }, [status, url]);
+
   useEffect(() => {
     if (status !== 'ready') return undefined;
 
@@ -490,6 +498,10 @@ export default function PdfViewer({
         renderTasksRef.current[pageNum - 1] = null;
         renderedCount += 1;
 
+        if (scrollToTopPendingRef.current) {
+          container.scrollTop = 0;
+        }
+
         if (cancelled || renderId !== renderIdRef.current) return;
       }
 
@@ -583,6 +595,7 @@ export default function PdfViewer({
     };
 
     const updateCurrentPage = () => {
+      if (scrollToTopPendingRef.current) return;
       setCurrentPage(getCurrentPageIndex() + 1);
     };
 
@@ -614,6 +627,12 @@ export default function PdfViewer({
     updateCurrentPage();
 
     const onScroll = () => {
+      if (scrollToTopPendingRef.current) {
+        if (container.scrollTop !== 0) {
+          container.scrollTop = 0;
+        }
+        return;
+      }
       penScrollLockRef.current?.restoreScroll();
       updateCurrentPage();
     };
@@ -756,6 +775,12 @@ export default function PdfViewer({
     container.addEventListener('contextmenu', onContextMenu);
 
     const resizeObserver = new ResizeObserver(() => {
+      if (scrollToTopPendingRef.current) {
+        if (container.scrollTop !== 0) {
+          container.scrollTop = 0;
+        }
+        return;
+      }
       updateCurrentPage();
       if (headerHiddenRef.current) {
         scrollToPageRef.current(currentPageRef.current - 1);

@@ -845,6 +845,7 @@ body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-anchor: none;
   background: var(--color-viewer-bg);
   touch-action: pan-x pan-y;
   overscroll-behavior: contain;
@@ -870,6 +871,7 @@ body {
   width: 100%;
   flex-shrink: 0;
   position: relative;
+  overflow-anchor: none;
 }
 
 .viewer-page-frame {

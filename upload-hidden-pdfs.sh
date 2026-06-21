@@ -7,8 +7,8 @@ Upload each subdirectory of site/src/data/hidden/ to the same-named prefix in th
 
   site/src/data/hidden/foo/x.pdf  ->  gs://BUCKET/foo/x.pdf
 
-Each hidden subdirectory is rsync'd independently (-d only affects that prefix),
-so top-level bucket objects are not removed.
+Each hidden subdirectory is rsync'd independently. Local files are uploaded and
+replaced when they differ; remote-only files are left in place.
 
 Usage:
   ./upload-hidden-pdfs.sh [BUCKET]
@@ -24,7 +24,7 @@ EOF
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 HIDDEN_DIR="${HIDDEN_DIR:-$ROOT/site/src/data/hidden}"
 PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
-RSYNC_MODE=(-d)
+RSYNC_MODE=()
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   usage

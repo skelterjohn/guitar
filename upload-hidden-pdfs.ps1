@@ -25,11 +25,11 @@ if ($dirs.Count -eq 0) {
     exit 1
 }
 
-$rsyncMode = if ($DryRun) { '-n' } else { '-d' }
+$rsyncArgs = if ($DryRun) { @('-n') } else { @() }
 
 foreach ($dir in $dirs) {
     $src = ($dir.FullName.TrimEnd('\', '/') + '/')
     $dest = "gs://$PdfBucket/$($dir.Name)/"
     Write-Host "Syncing $src -> $dest"
-    & gsutil -m rsync -r $rsyncMode $src $dest
+    & gsutil -m rsync -r @rsyncArgs $src $dest
 }

@@ -6,6 +6,7 @@ import { CHORD_ROMAN_NUMERAL_OFF, chordGlyphBoundsPx, chordGlyphRenderWidthPx } 
 import {
   getGlyphById,
   GLYPH_SIZE_MM,
+  glyphStampSizeScale,
   isChordGlyph,
   isTextGlyph,
   TEXT_GLYPH_DEFAULT,
@@ -172,13 +173,14 @@ export async function buildGlyphStamp(
   layoutWidthPx,
   { sizeScale = 1, displayWidth = 0 } = {},
 ) {
-  const cacheKey = stampCacheKey(spec, layoutWidthPx, { sizeScale, displayWidth });
+  const stampScale = glyphStampSizeScale(spec.glyphId, sizeScale);
+  const cacheKey = stampCacheKey(spec, layoutWidthPx, { sizeScale: stampScale, displayWidth });
   if (stampCache.has(cacheKey)) {
     return stampCache.get(cacheKey);
   }
 
   const promise = (async () => {
-    const sizePx = stampSizePx(layoutWidthPx, sizeScale, displayWidth);
+    const sizePx = stampSizePx(layoutWidthPx, stampScale, displayWidth);
 
     if (isChordGlyph(spec.glyphId)) {
       const chord = spec.chord ?? {};

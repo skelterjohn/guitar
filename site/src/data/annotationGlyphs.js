@@ -159,6 +159,19 @@ export function isTextGlyph(typeOrGlyph) {
   return type === TEXT_GLYPH_ID;
 }
 
+export const NOTE_REST_GLYPH_SIZE_SCALE = 2;
+
+export function isNoteRestGlyph(glyphId) {
+  return (
+    typeof glyphId === 'string'
+    && (glyphId.startsWith('note-') || glyphId.startsWith('rest-'))
+  );
+}
+
+export function glyphStampSizeScale(glyphId, baseScale = 1) {
+  return isNoteRestGlyph(glyphId) ? baseScale * NOTE_REST_GLYPH_SIZE_SCALE : baseScale;
+}
+
 export function glyphDisplayText(glyph) {
   if (isTextGlyph(glyph)) {
     const text = glyph.text?.trim();
@@ -182,7 +195,8 @@ export function glyphEraseRadiusPx(glyph, glyphSizePx) {
     });
     return Math.hypot(widthPx, heightPx) * 0.38;
   }
-  return glyphSizePx * GLYPH_ERASE_RADIUS_RATIO;
+  const sizeScale = isNoteRestGlyph(glyph.type ?? glyph.glyphId) ? NOTE_REST_GLYPH_SIZE_SCALE : 1;
+  return glyphSizePx * GLYPH_ERASE_RADIUS_RATIO * sizeScale;
 }
 
 export function isDynamicGlyph(glyph) {

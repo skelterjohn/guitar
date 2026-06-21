@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { isNoteRestGlyph } from '../data/annotationGlyphs.js';
 import {
   buildGlyphStamp,
   glyphDrawSpecFromDrop,
@@ -7,6 +8,7 @@ import {
 } from '../utils/annotationRaster.js';
 
 const GLYPH_BUTTON_PADDING_PX = 6;
+const NOTE_REST_GLYPH_BUTTON_PADDING_PX = 1;
 
 export default function MenuGlyphButton({
   glyph,
@@ -46,15 +48,23 @@ export default function MenuGlyphButton({
 
   const contentWidth = stampSize?.width ?? glyphSizePx;
   const contentHeight = stampSize?.height ?? glyphSizePx;
+  const compact = isNoteRestGlyph(glyph.id);
+  const buttonPaddingPx = compact
+    ? NOTE_REST_GLYPH_BUTTON_PADDING_PX
+    : GLYPH_BUTTON_PADDING_PX;
 
   return (
     <button
       type="button"
-      className="annotation-menu-glyph"
+      className={
+        compact
+          ? 'annotation-menu-glyph annotation-menu-glyph--compact'
+          : 'annotation-menu-glyph'
+      }
       style={{
-        minWidth: `${contentWidth + GLYPH_BUTTON_PADDING_PX * 2}px`,
-        minHeight: `${contentHeight + GLYPH_BUTTON_PADDING_PX * 2}px`,
-        padding: `${GLYPH_BUTTON_PADDING_PX}px`,
+        minWidth: `${contentWidth + buttonPaddingPx * 2}px`,
+        minHeight: `${contentHeight + buttonPaddingPx * 2}px`,
+        padding: `${buttonPaddingPx}px`,
       }}
       aria-label={`Drag ${glyph.label} onto score`}
       onPointerDown={onPointerDown}

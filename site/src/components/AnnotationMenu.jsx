@@ -14,6 +14,7 @@ import {
   TEXT_GLYPH_ID,
 } from '../data/annotationGlyphs.js';
 import ChordGridEditor, { ChordGridIcon } from './ChordGridEditor.jsx';
+import MenuGlyphButton from './MenuGlyphButton.jsx';
 import {
   CHORD_GLYPH_ID,
   serializeChordDiagram,
@@ -490,28 +491,16 @@ export default function AnnotationMenu({
   if (!anchor) return null;
 
   const glyphSizePx = annotationGlyphSizePx(pdfZoom);
-  const glyphButtonPaddingPx = 6;
-  const glyphButtonStyle = {
-    minWidth: `${glyphSizePx + glyphButtonPaddingPx * 2}px`,
-    minHeight: `${glyphSizePx + glyphButtonPaddingPx * 2}px`,
-  };
-  const symbolStyle = { fontSize: `${glyphSizePx}px` };
   const isReady = menuPosition != null;
   const chordModeActive = annotationTool === 'chord';
 
-  const renderMenuGlyph = (glyph, symbolClassName = 'annotation-menu-glyph-symbol') => (
-    <button
+  const renderMenuGlyph = (glyph) => (
+    <MenuGlyphButton
       key={glyph.id}
-      type="button"
-      className="annotation-menu-glyph"
-      style={glyphButtonStyle}
-      aria-label={`Drag ${glyph.label} onto score`}
+      glyph={glyph}
+      glyphSizePx={glyphSizePx}
       onPointerDown={(event) => startGlyphDrag(event, glyph)}
-    >
-      <span className={symbolClassName} style={symbolStyle} aria-hidden="true">
-        {glyph.symbol}
-      </span>
-    </button>
+    />
   );
 
   const renderColorSwatches = () => (
@@ -623,24 +612,16 @@ export default function AnnotationMenu({
               {ANNOTATION_ACCIDENTAL_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
             </div>
             <div className="annotation-menu-glyphs">
-              {ANNOTATION_NUMBER_GLYPHS.map((glyph) =>
-                renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
-              )}
+              {ANNOTATION_NUMBER_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
             </div>
             <div className="annotation-menu-glyphs">
-              {ANNOTATION_CIRCLED_NUMBER_GLYPHS.map((glyph) =>
-                renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
-              )}
+              {ANNOTATION_CIRCLED_NUMBER_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
             </div>
             <div className="annotation-menu-glyphs">
-              {ANNOTATION_FINGERING_GLYPHS.map((glyph) =>
-                renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--number'),
-              )}
+              {ANNOTATION_FINGERING_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
             </div>
             <div className="annotation-menu-glyphs">
-              {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) =>
-                renderMenuGlyph(glyph, 'annotation-menu-glyph-symbol annotation-menu-glyph-symbol--dynamic'),
-              )}
+              {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
             </div>
             <div className="annotation-menu-glyphs">
               {ANNOTATION_NOTE_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
@@ -684,7 +665,6 @@ export default function AnnotationMenu({
               rotate={chordRotate}
               onRotateChange={setChordRotate}
               glyphSizePx={glyphSizePx}
-              annotationColor={annotationColor}
               onChordGlyphPointerDown={startChordGlyphDrag}
             />
           </div>

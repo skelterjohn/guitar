@@ -16,8 +16,13 @@ import { PEN_BASE_WIDTH, PEN_THINNING } from './stylusInput.js';
 /** Glyph height as a fraction of page overlay width (≈5mm at ~800px). */
 export const GLYPH_SIZE_LAYOUT_RATIO = (GLYPH_SIZE_MM * (96 / 25.4)) / 800;
 
+export function layoutWidthPxForGlyphSize(glyphSizePx) {
+  return glyphSizePx / GLYPH_SIZE_LAYOUT_RATIO;
+}
+
 export const RASTER_EXPORT_TYPE = 'image/webp';
 export const RASTER_EXPORT_QUALITY = 0.92;
+export const MENU_GLYPH_COLOR = '#f8fafc';
 
 const MUSIC_GLYPH_FONT = "'Segoe UI Symbol', 'Noto Music', 'Bravura Text', serif";
 const stampCache = new Map();

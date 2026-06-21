@@ -1746,6 +1746,11 @@ body {
   touch-action: none;
 }
 
+.annotation-menu-glyph-raster {
+  display: block;
+  pointer-events: none;
+}
+
 .annotation-menu-glyph--button {
   cursor: pointer;
   touch-action: manipulation;

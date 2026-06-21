@@ -1,5 +1,5 @@
-import ChordDiagram from './ChordDiagram.jsx';
 import ChordRomanNumeralWheel from './ChordRomanNumeralWheel.jsx';
+import MenuChordGlyphDrag from './MenuChordGlyphDrag.jsx';
 import {
   CHORD_GRID_HIT_DISPLAY_RADIUS,
   CHORD_GRID_LEFT_COLUMN_X,
@@ -7,9 +7,6 @@ import {
   CHORD_GRID_MARK_OUTLINE,
   CHORD_GRID_VIEW_HEIGHT,
   CHORD_GRID_VIEW_WIDTH,
-  CHORD_ROMAN_NUMERAL_OFF,
-  chordGlyphBoundsPx,
-  chordGlyphMaxDragBoundsPx,
   chordGridIntersectionKey,
   chordGridIntersections,
 } from '../data/chordGrid.js';
@@ -37,7 +34,6 @@ export default function ChordGridEditor({
   rotate,
   onRotateChange,
   glyphSizePx,
-  annotationColor,
   onChordGlyphPointerDown,
 }) {
   const handleIntersectionClick = (x, y) => {
@@ -75,16 +71,6 @@ export default function ChordGridEditor({
       return next;
     });
   };
-
-  const showNumeral = romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
-  const { diagramWidthPx } = chordGlyphBoundsPx(glyphSizePx, {
-    showNumeral,
-    marks,
-    rotate,
-    romanNumeral,
-  });
-  const { widthPx: dragBoxWidthPx, heightPx: dragBoxHeightPx } =
-    chordGlyphMaxDragBoundsPx(glyphSizePx);
 
   return (
     <>
@@ -158,28 +144,13 @@ export default function ChordGridEditor({
           </svg>
         </div>
       </div>
-      <button
-        type="button"
-        className="annotation-menu-glyph annotation-menu-chord-glyph-drag"
-        style={{
-          minWidth: `${dragBoxWidthPx + 12}px`,
-          minHeight: `${dragBoxHeightPx + 12}px`,
-        }}
-        aria-label="Drag chord onto score"
+      <MenuChordGlyphDrag
+        marks={marks}
+        romanNumeral={romanNumeral}
+        rotate={rotate}
+        glyphSizePx={glyphSizePx}
         onPointerDown={onChordGlyphPointerDown}
-      >
-        <ChordDiagram
-          marks={marks}
-          romanNumeral={romanNumeral}
-          widthPx={diagramWidthPx}
-          color={annotationColor}
-          forGlyph
-          rotate={rotate}
-          numeralSizePx={glyphSizePx}
-          lineClassName="annotation-menu-chord-grid-lines"
-          numeralClassName="annotation-chord-diagram-numeral"
-        />
-      </button>
+      />
     </>
   );
 }

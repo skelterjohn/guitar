@@ -1,7 +1,7 @@
 export const siteTitle = 'skj :: guitar';
 export const siteHeading = 'skelterjohn :: guitar';
-export const repTitle = 'skj :: NJGO';
-export const repHeading = 'NJGO';
+export const repTitle = 'NJGO';
+export const repHeading = 'New Jersey Guitar Orchestra';
 export const repDescription = 'performance repertoire for NJGO';
 export const catalogPath = '/catalog';
 export const repPath = '/rep';

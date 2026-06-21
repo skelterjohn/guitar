@@ -1,4 +1,5 @@
 import repertoire from '../data/repertoire.js';
+import BackFromRep from '../components/BackFromRep.jsx';
 import Catalog from '../components/Catalog.jsx';
 import RepPasswordGate from '../components/RepPasswordGate.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
@@ -20,6 +21,7 @@ export default function Rep() {
           <header className="page-header">
             <div className="page-header-top">
               <div className="page-header-title">
+                <BackFromRep />
                 <h1>{repHeading}</h1>
               </div>
             </div>

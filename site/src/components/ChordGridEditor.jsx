@@ -9,6 +9,7 @@ import {
   CHORD_GRID_VIEW_WIDTH,
   CHORD_ROMAN_NUMERAL_OFF,
   chordGlyphBoundsPx,
+  chordGlyphMaxDragBoundsPx,
   chordGridIntersectionKey,
   chordGridIntersections,
 } from '../data/chordGrid.js';
@@ -76,8 +77,14 @@ export default function ChordGridEditor({
   };
 
   const showNumeral = romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
-  const { widthPx: previewWidthPx, heightPx: previewHeightPx, diagramWidthPx } =
-    chordGlyphBoundsPx(glyphSizePx, { showNumeral, marks, rotate, romanNumeral });
+  const { diagramWidthPx } = chordGlyphBoundsPx(glyphSizePx, {
+    showNumeral,
+    marks,
+    rotate,
+    romanNumeral,
+  });
+  const { widthPx: dragBoxWidthPx, heightPx: dragBoxHeightPx } =
+    chordGlyphMaxDragBoundsPx(glyphSizePx);
 
   return (
     <>
@@ -155,8 +162,8 @@ export default function ChordGridEditor({
         type="button"
         className="annotation-menu-glyph annotation-menu-chord-glyph-drag"
         style={{
-          minWidth: `${previewWidthPx + 12}px`,
-          minHeight: `${previewHeightPx + 12}px`,
+          minWidth: `${dragBoxWidthPx + 12}px`,
+          minHeight: `${dragBoxHeightPx + 12}px`,
         }}
         aria-label="Drag chord onto score"
         onPointerDown={onChordGlyphPointerDown}

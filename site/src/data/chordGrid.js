@@ -461,3 +461,46 @@ export function chordGlyphBoundsPx(
     renderWidthPx: gridLayout.heightPx,
   };
 }
+
+const CHORD_GLYPH_DRAG_MAX_MARK_CONFIGS = [
+  null,
+  new Map([
+    [
+      chordGridIntersectionKey(CHORD_GRID_RIGHTMOST_VERTICAL_X, CHORD_GRID_HORIZONTAL_LINES[0]),
+      CHORD_GRID_MARK_FILLED,
+    ],
+  ]),
+];
+
+export function chordGlyphMaxDragBoundsPx(glyphSizePx) {
+  let widthPx = 0;
+  let heightPx = 0;
+
+  for (const marks of CHORD_GLYPH_DRAG_MAX_MARK_CONFIGS) {
+    for (const rotate of [false, true]) {
+      const withoutNumeral = chordGlyphBoundsPx(glyphSizePx, {
+        showNumeral: false,
+        marks,
+        rotate,
+        romanNumeral: CHORD_ROMAN_NUMERAL_OFF,
+      });
+      widthPx = Math.max(widthPx, withoutNumeral.widthPx);
+      heightPx = Math.max(heightPx, withoutNumeral.heightPx);
+
+      for (const { value: romanNumeral } of CHORD_ROMAN_NUMERAL_OPTIONS) {
+        if (romanNumeral === CHORD_ROMAN_NUMERAL_OFF) continue;
+
+        const withNumeral = chordGlyphBoundsPx(glyphSizePx, {
+          showNumeral: true,
+          marks,
+          rotate,
+          romanNumeral,
+        });
+        widthPx = Math.max(widthPx, withNumeral.widthPx);
+        heightPx = Math.max(heightPx, withNumeral.heightPx);
+      }
+    }
+  }
+
+  return { widthPx, heightPx };
+}

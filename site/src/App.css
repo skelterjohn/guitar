@@ -1623,8 +1623,8 @@ body {
 .annotation-menu-chord-numeral-wheel {
   box-sizing: border-box;
   display: inline-block;
-  width: 4ch;
-  padding: 0.2em 0;
+  min-width: 4.25em;
+  padding: 0.2em 0.5em;
   border: 1px solid rgb(148 163 184 / 45%);
   border-radius: 0.25rem;
   background: rgb(100 116 139 / 55%);

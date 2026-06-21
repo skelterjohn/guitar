@@ -57,6 +57,20 @@ function getMenuDimensions(menuEl) {
   return { width: rect.width, height: rect.height };
 }
 
+function isClientPointOverMenu(clientX, clientY, menuEl) {
+  if (!menuEl) return false;
+
+  const rect = menuEl.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return false;
+
+  return (
+    clientX >= rect.left &&
+    clientX <= rect.right &&
+    clientY >= rect.top &&
+    clientY <= rect.bottom
+  );
+}
+
 function clampMenuPosition(left, top, menuWidth, menuHeight) {
   if (menuWidth <= 0 || menuHeight <= 0) {
     return { left, top };
@@ -123,6 +137,12 @@ export default function AnnotationMenu({
 
   const updateGlyphDragPreview = (drag, clientX, clientY) => {
     const dragPoint = glyphDragClientPosition(drag.pointerType, clientX, clientY);
+
+    if (isClientPointOverMenu(dragPoint.clientX, dragPoint.clientY, menuRef.current)) {
+      onGlyphDragPreview?.(null);
+      return;
+    }
+
     const drop = pageDropFromClientPoint(dragPoint.clientX, dragPoint.clientY);
 
     if (!drop) {
@@ -372,6 +392,10 @@ export default function AnnotationMenu({
         event.clientX,
         event.clientY,
       );
+      if (isClientPointOverMenu(dropPoint.clientX, dropPoint.clientY, menuRef.current)) {
+        return;
+      }
+
       const drop = pageDropFromClientPoint(dropPoint.clientX, dropPoint.clientY);
       if (!drop) return;
 

@@ -36,11 +36,24 @@ if (!existsSync(pdfDir)) {
   process.exit(0);
 }
 
-const onDisk = new Set(
-  readdirSync(pdfDir).filter((name) => name.endsWith('.pdf')),
-);
+function listPdfFiles(dir, prefix = '') {
+  const results = [];
 
-const missing = [...referenced].filter((file) => !onDisk.has(file));
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      results.push(...listPdfFiles(join(dir, entry.name), rel));
+    } else if (entry.name.endsWith('.pdf')) {
+      results.push(rel);
+    }
+  }
+
+  return results;
+}
+
+const onDisk = new Set(listPdfFiles(pdfDir).map((file) => file.normalize('NFC')));
+
+const missing = [...referenced].filter((file) => !onDisk.has(file.normalize('NFC')));
 const errors = [];
 
 if (missing.length > 0) {

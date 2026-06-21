@@ -6,28 +6,28 @@ sections:
         description: John Asmuth
         pdfs:
           - label: score
-            file: Breakfast around the Sun.pdf
+            file: PASSWORD/breakfast_around_score.pdf
           - label: guitar 1
-            file: Breakfast around the Sun-Classical_Guitar_1.pdf
+            file: PASSWORD/breakfast_around_1.pdf
           - label: guitar 2
-            file: Breakfast around the Sun-Classical_Guitar_2.pdf
+            file: PASSWORD/breakfast_around_2.pdf
           - label: guitar 3
-            file: Breakfast around the Sun-Classical_Guitar_3.pdf
+            file: PASSWORD/breakfast_around_3.pdf
           - label: guitar 4
-            file: Breakfast around the Sun-Classical_Guitar_4.pdf
+            file: PASSWORD/breakfast_around_4.pdf
       - title: Strummed Heat, Midnight Feet
         description: Mark Houghton
         pdfs:
           - label: score
-            file: Strummed Heat, Midnight Feet_Score.pdf
+            file: PASSWORD/strummed_heat_score.pdf
           - label: guitar 1
-            file: Part 1_ Strummed Heat, Midnight Feet.pdf
+            file: PASSWORD/strummed_heat_1.pdf
           - label: guitar 2
-            file: Part 2_ Strummed Heat, Midnight Feet.pdf
+            file: PASSWORD/strummed_heat_2.pdf
           - label: guitar 3
-            file: Part 3_ Strummed Heat, Midnight Feet.pdf
+            file: PASSWORD/strummed_heat_3.pdf
           - label: guitar 4
-            file: Part 4_ Strummed Heat, Midnight Feet.pdf
+            file: PASSWORD/strummed_heat_4.pdf
         links:
           - label: GCC Guitar Ensembles
             url: https://www.youtube.com/watch?v=ZxzjLE_K4YQ
@@ -35,17 +35,17 @@ sections:
         description: Bernard Piris
         pdfs:
           - label: score
-            file: Score_ Détours.pdf
+            file: PASSWORD/detours_score.pdf
           - label: guitar 1
-            file: Guitar 1_ Détours.pdf
+            file: PASSWORD/detours_1.pdf
           - label: guitar 2
-            file: Guitar 2_ Détours.pdf
+            file: PASSWORD/detours_2.pdf
           - label: guitar 3
-            file: Guitar 3_ Détours.pdf
+            file: PASSWORD/detours_3.pdf
           - label: guitar 4
-            file: Guitar 4_ Détours.pdf
+            file: PASSWORD/detours_4.pdf
           - label: bass
-            file: Bass_ Détours.pdf
+            file: PASSWORD/detours_bass.pdf
         links:
           - label: Drôme de guitares
             url: https://www.youtube.com/watch?v=h-hs29-rnmY
@@ -53,15 +53,15 @@ sections:
         description: Nicolas Kahn
         pdfs:
           - label: score
-            file: Innerland_ Score.pdf
+            file: PASSWORD/innerland_score.pdf
           - label: guitar 1
-            file: Innerland_ Guitar 1.pdf
+            file: PASSWORD/innerland_1.pdf
           - label: guitar 2
-            file: Innerland_ Guitar 2.pdf
+            file: PASSWORD/innerland_2.pdf
           - label: guitar 3
-            file: Innerland_ Guitar 3.pdf
+            file: PASSWORD/innerland_3.pdf
           - label: guitar 4
-            file: Innerland_ Guitar 4.pdf
+            file: PASSWORD/innerland_4.pdf
         links:
           - label: Elfasci, Erard, Nicho, Santiago
             url: https://www.youtube.com/watch?v=8wVzt5jwRqk
@@ -69,17 +69,17 @@ sections:
         description: Douglas Lora
         pdfs:
           - label: score
-            file: Baião Guri -score (published).pdf
+            file: PASSWORD/baiao_guri_score.pdf
           - label: guitar 1
-            file: Baião Guri part 1 fingered.pdf
+            file: PASSWORD/baiao_guri_1.pdf
           - label: guitar 2
-            file: Baião Guri part 2 fingered .pdf
+            file: PASSWORD/baiao_guri_2.pdf
           - label: guitar 3
-            file: Baião Guri part 3 fingered.pdf
+            file: PASSWORD/baiao_guri_3.pdf
           - label: guitar 4
-            file: Baião Guri part 4 fingered.pdf
+            file: PASSWORD/baiao_guri_4.pdf
           - label: guitar 5
-            file: Baião Guri part 5 fingered.pdf
+            file: PASSWORD/baiao_guri_5.pdf
         links:
           - label: ASU Guitar Orchestra
             url: https://www.youtube.com/watch?v=RQgFKNLj3ho

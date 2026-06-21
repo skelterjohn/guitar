@@ -22,17 +22,6 @@ export default function Rep() {
               <BackToHome />
               <h1>{repHeading}</h1>
             </div>
-            <div className="repo-source">
-              <span className="repo-label">pdfs and site built from</span>
-              <a
-                className="repo-link"
-                href="https://github.com/skelterjohn/guitar"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                github.com/skelterjohn/guitar
-              </a>
-            </div>
           </div>
           <p>{repDescription}</p>
         </header>

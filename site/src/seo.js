@@ -1,7 +1,7 @@
 export const siteTitle = 'skj :: guitar';
 export const siteHeading = 'skelterjohn :: guitar';
-export const repTitle = 'skj :: rep';
-export const repHeading = 'skelterjohn :: repertoire';
+export const repTitle = 'skj :: NJGO';
+export const repHeading = 'NJGO';
 export const repDescription = 'performance repertoire for NJGO';
 export const catalogPath = '/catalog';
 export const repPath = '/rep';

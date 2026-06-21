@@ -145,28 +145,34 @@ export default function AnnotationMenu({
   const chordMarksRef = useRef(chordMarks);
   const chordRomanNumeralRef = useRef(chordRomanNumeral);
   const chordRotateRef = useRef(chordRotate);
+  const onGlyphDropRef = useRef(onGlyphDrop);
+  const onGlyphDragPreviewRef = useRef(onGlyphDragPreview);
+  const annotationColorRef = useRef(annotationColor);
 
   menuTextRef.current = menuText;
   chordMarksRef.current = chordMarks;
   chordRomanNumeralRef.current = chordRomanNumeral;
   chordRotateRef.current = chordRotate;
+  onGlyphDropRef.current = onGlyphDrop;
+  onGlyphDragPreviewRef.current = onGlyphDragPreview;
+  annotationColorRef.current = annotationColor;
 
   const updateGlyphDragPreview = (drag, clientX, clientY) => {
     const dragPoint = glyphDragClientPosition(drag.pointerType, clientX, clientY);
 
     if (isClientPointOverMenu(dragPoint.clientX, dragPoint.clientY, menuRef.current)) {
-      onGlyphDragPreview?.(null);
+      onGlyphDragPreviewRef.current?.(null);
       return;
     }
 
     const drop = pageDropFromClientPoint(dragPoint.clientX, dragPoint.clientY);
 
     if (!drop) {
-      onGlyphDragPreview?.(null);
+      onGlyphDragPreviewRef.current?.(null);
       return;
     }
 
-    onGlyphDragPreview?.({
+    onGlyphDragPreviewRef.current?.({
       pageNumber: drop.pageNumber,
       x: drop.x,
       y: drop.y,
@@ -174,7 +180,7 @@ export default function AnnotationMenu({
         glyphId: drag.glyphId,
         text: drag.text,
         chord: drag.chord,
-        color: annotationColor,
+        color: annotationColorRef.current,
       }),
     });
   };
@@ -279,12 +285,13 @@ export default function AnnotationMenu({
     };
 
     const onDismissPointerUp = (event) => {
+      if (dragRef.current) return;
+
       const pending = dismissPending;
       dismissPending = null;
 
       if (!pending || event.pointerId !== pending.pointerId) return;
       if (performance.now() < dismissSuppressUntilRef.current) return;
-      if (dragRef.current) return;
       if (!isOutsideMenu(event)) return;
 
       const dx = Math.abs(event.clientX - pending.x);
@@ -430,7 +437,7 @@ export default function AnnotationMenu({
       }
 
       setIsGlyphDragging(false);
-      onGlyphDragPreview?.(null);
+      onGlyphDragPreviewRef.current?.(null);
 
       const dropPoint = glyphDragClientPosition(
         drag.pointerType,
@@ -444,7 +451,7 @@ export default function AnnotationMenu({
       const drop = pageDropFromClientPoint(dropPoint.clientX, dropPoint.clientY);
       if (!drop) return;
 
-      onGlyphDrop({
+      onGlyphDropRef.current?.({
         pageNumber: drop.pageNumber,
         glyphId: drag.glyphId,
         x: drop.x,
@@ -463,7 +470,7 @@ export default function AnnotationMenu({
       window.removeEventListener('pointerup', finishDrag);
       window.removeEventListener('pointercancel', finishDrag);
     };
-  }, [onGlyphDrop]);
+  }, []);
 
   const startMenuDrag = (event) => {
     if (event.pointerType === 'pen') return;
@@ -626,7 +633,7 @@ export default function AnnotationMenu({
               type="button"
               className="annotation-menu-clear"
               onPointerDown={(event) => event.stopPropagation()}
-              onPointerUp={(event) => {
+              onClick={(event) => {
                 event.stopPropagation();
                 onClearLayer?.();
               }}
@@ -637,7 +644,7 @@ export default function AnnotationMenu({
               type="button"
               className="annotation-menu-clear"
               onPointerDown={(event) => event.stopPropagation()}
-              onPointerUp={(event) => {
+              onClick={(event) => {
                 event.stopPropagation();
                 onClearPage?.();
               }}

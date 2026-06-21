@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import getStroke from 'perfect-freehand';
 import {
   ANNOTATION_LAYER_COLORS,
+  annotationRasterReferenceSize,
 } from '../utils/annotationPages.js';
 import {
   buildGlyphStamp,
@@ -10,9 +11,9 @@ import {
   drawGlyphStampAt,
   drawStrokeOnCanvas,
   eraseCircleOnCanvas,
+  GLYPH_DROP_SIZE_SCALE,
   loadBlobOntoCanvas,
   setCanvasPixelSize,
-  syncCanvasDimensions,
 } from '../utils/annotationRaster.js';
 import {
   clientToNormalized,
@@ -69,6 +70,7 @@ function strokeToPathData(stroke, width, height) {
 export default function AnnotationOverlay({
   pageNumber,
   pageLayers = null,
+  pageMediaSize = null,
   glyphPreview = null,
   glyphDropRequest = null,
   layerClearRequest = null,
@@ -120,14 +122,20 @@ export default function AnnotationOverlay({
   const getActiveLayerCanvas = () =>
     layerCanvasRefs.current[annotationColorRef.current];
 
-  const getReferenceLayoutSize = () => {
-    const overlay = overlayRef.current;
-    if (!overlay) return { width: 0, height: 0 };
+  const getFixedReferenceSize = () => {
+    if (pageLayers?.width > 0 && pageLayers?.height > 0) {
+      return {
+        width: pageLayers.width,
+        height: pageLayers.height,
+      };
+    }
 
-    return {
-      width: Math.round(overlay.offsetWidth),
-      height: Math.round(overlay.offsetHeight),
-    };
+    return (
+      annotationRasterReferenceSize(pageMediaSize?.width, pageMediaSize?.height) ?? {
+        width: 0,
+        height: 0,
+      }
+    );
   };
 
   const getDisplaySize = () => {
@@ -155,19 +163,13 @@ export default function AnnotationOverlay({
   };
 
   const initializeReferenceSize = () => {
-    const layout = getReferenceLayoutSize();
-    if (layout.width === 0 || layout.height === 0) return { width: 0, height: 0 };
-
-    if (pageLayers?.width > 0 && pageLayers?.height > 0) {
-      referenceSizeRef.current = {
-        width: pageLayers.width,
-        height: pageLayers.height,
-      };
-    } else if (referenceSizeRef.current.width === 0) {
-      referenceSizeRef.current = layout;
+    const reference = getFixedReferenceSize();
+    if (reference.width === 0 || reference.height === 0) {
+      return reference;
     }
 
-    return referenceSizeRef.current;
+    referenceSizeRef.current = reference;
+    return reference;
   };
 
   const ensureLayerCanvasSizes = () => {
@@ -220,39 +222,19 @@ export default function AnnotationOverlay({
     );
   };
 
-  const notifyResampledLayers = async () => {
-    const colors = ANNOTATION_LAYER_COLORS.filter(
-      (color) => pageLayers?.layers?.[color]?.blob,
-    );
-    for (const color of colors) {
-      await notifyLayerChange(color);
-    }
-  };
-
-  const resampleCanvasesToReference = (nextReference) => {
-    const previewCanvas = previewCanvasRef.current;
-
-    for (const color of ANNOTATION_LAYER_COLORS) {
-      const canvas = layerCanvasRefs.current[color];
-      if (canvas) {
-        syncCanvasDimensions(canvas, nextReference.width, nextReference.height);
-      }
-    }
-
-    if (previewCanvas) {
-      previewCanvas
-        .getContext('2d')
-        .clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-      setCanvasPixelSize(previewCanvas, nextReference.width, nextReference.height);
-    }
-
-    referenceSizeRef.current = nextReference;
-  };
-
   useLayoutEffect(() => {
     syncDisplaySize();
+    initializeReferenceSize();
+    ensureLayerCanvasSizes();
     ensurePreviewCanvasSize();
-  }, [pdfZoom, pageLayers?.width, pageLayers?.height, glyphDropRequest?.id]);
+  }, [
+    pdfZoom,
+    pageLayers?.width,
+    pageLayers?.height,
+    pageMediaSize?.width,
+    pageMediaSize?.height,
+    glyphDropRequest?.id,
+  ]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -260,31 +242,11 @@ export default function AnnotationOverlay({
 
     const observer = new ResizeObserver(() => {
       syncDisplaySize();
-
-      const nextReference = getReferenceLayoutSize();
-      if (nextReference.width === 0 || nextReference.height === 0) return;
-
-      const currentReference = referenceSizeRef.current;
-      if (currentReference.width === 0) {
-        initializeReferenceSize();
-        ensurePreviewCanvasSize();
-        return;
-      }
-
-      if (
-        nextReference.width === currentReference.width &&
-        nextReference.height === currentReference.height
-      ) {
-        return;
-      }
-
-      resampleCanvasesToReference(nextReference);
-      void notifyResampledLayers();
     });
     observer.observe(overlay);
 
     return () => observer.disconnect();
-  }, [pageNumber, pageLayers?.width, pageLayers?.height]);
+  }, [pageNumber]);
 
   useEffect(() => {
     let cancelled = false;
@@ -304,11 +266,9 @@ export default function AnnotationOverlay({
         return;
       }
 
-      if (pageLayers.width > 0 && pageLayers.height > 0) {
-        referenceSizeRef.current = {
-          width: pageLayers.width,
-          height: pageLayers.height,
-        };
+      const fixedReference = getFixedReferenceSize();
+      if (fixedReference.width > 0 && fixedReference.height > 0) {
+        referenceSizeRef.current = fixedReference;
       }
 
       for (const color of ANNOTATION_LAYER_COLORS) {
@@ -340,7 +300,7 @@ export default function AnnotationOverlay({
     return () => {
       cancelled = true;
     };
-  }, [pageLayers]);
+  }, [pageLayers, pageMediaSize?.width, pageMediaSize?.height]);
 
   const syncPreviewCanvas = async () => {
     const canvas = previewCanvasRef.current;
@@ -358,7 +318,11 @@ export default function AnnotationOverlay({
       return;
     }
 
-    const stamp = await buildGlyphStamp(glyphPreview.spec, reference.width);
+    const displayWidth = getDisplaySize().width;
+    const stamp = await buildGlyphStamp(glyphPreview.spec, reference.width, {
+      sizeScale: GLYPH_DROP_SIZE_SCALE,
+      displayWidth,
+    });
     if (!stamp) return;
     drawGlyphStampAt(
       ctx,
@@ -372,7 +336,7 @@ export default function AnnotationOverlay({
 
   useEffect(() => {
     void syncPreviewCanvas();
-  }, [glyphPreview, pageNumber, pageLayers?.width, pageLayers?.height]);
+  }, [glyphPreview, pageNumber, pageLayers?.width, pageLayers?.height, displaySize.width]);
 
   useEffect(() => {
     if (!glyphDropRequest || glyphDropRequest.pageNumber !== pageNumber) return;
@@ -385,6 +349,7 @@ export default function AnnotationOverlay({
       if (!canvas || reference.width === 0) return;
 
       const ctx = canvas.getContext('2d');
+      const displayWidth = getDisplaySize().width;
       await drawGlyphOnCanvas(
         ctx,
         glyphDropRequest.spec,
@@ -392,6 +357,7 @@ export default function AnnotationOverlay({
         glyphDropRequest.y,
         reference.width,
         reference.height,
+        { sizeScale: GLYPH_DROP_SIZE_SCALE, displayWidth },
       );
 
       if (!cancelled) {

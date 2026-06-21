@@ -3,6 +3,29 @@ import { PEN_COLOR } from './stylusInput.js';
 
 export const PAGE_RASTER_FORMAT = 'webp';
 
+/**
+ * Fixed raster width for annotation storage (~2× a ~768 CSS px tablet viewport).
+ * Height is derived per page from the PDF media box aspect ratio.
+ */
+export const ANNOTATION_RASTER_REFERENCE_WIDTH = 1536;
+
+export function annotationRasterReferenceSize(pageMediaWidth, pageMediaHeight) {
+  const mediaWidth = Number(pageMediaWidth);
+  const mediaHeight = Number(pageMediaHeight);
+  if (
+    !Number.isFinite(mediaWidth) ||
+    mediaWidth <= 0 ||
+    !Number.isFinite(mediaHeight) ||
+    mediaHeight <= 0
+  ) {
+    return null;
+  }
+
+  const width = ANNOTATION_RASTER_REFERENCE_WIDTH;
+  const height = Math.max(1, Math.round((width * mediaHeight) / mediaWidth));
+  return { width, height };
+}
+
 function normalizeLayerBlob(entry) {
   if (!entry || typeof entry !== 'object') return null;
   const blob = entry.data instanceof Blob ? entry.data : entry.blob;

@@ -106,7 +106,11 @@ export default function ChordDiagram({
       romanNumeral,
     });
     const gridLayout = bounds.gridLayout;
-    const numeralLayout = chordGlyphNumeralLayoutPx(numeralSizePx, marks, romanNumeral);
+    const numeralLayout = chordGlyphNumeralLayoutPx(
+      numeralSizePx,
+      marks,
+      romanNumeral,
+    );
     const numeralBandHeightPx = bounds.numeralBandHeightPx;
 
     return (

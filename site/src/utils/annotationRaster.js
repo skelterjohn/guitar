@@ -11,10 +11,12 @@ import {
   TEXT_GLYPH_DEFAULT,
   TEXT_GLYPH_FONT,
 } from '../data/annotationGlyphs.js';
+import { ANNOTATION_RASTER_REFERENCE_WIDTH } from './annotationPages.js';
 import { PEN_BASE_WIDTH, PEN_THINNING } from './stylusInput.js';
 
-/** Glyph height as a fraction of page overlay width (≈5mm at ~800px). */
-export const GLYPH_SIZE_LAYOUT_RATIO = (GLYPH_SIZE_MM * (96 / 25.4)) / 800;
+/** Glyph height as a fraction of the fixed annotation raster page width. */
+export const GLYPH_SIZE_LAYOUT_RATIO =
+  (GLYPH_SIZE_MM * (96 / 25.4)) / ANNOTATION_RASTER_REFERENCE_WIDTH;
 
 export function layoutWidthPxForGlyphSize(glyphSizePx) {
   return glyphSizePx / GLYPH_SIZE_LAYOUT_RATIO;
@@ -24,8 +26,31 @@ export const RASTER_EXPORT_TYPE = 'image/webp';
 export const RASTER_EXPORT_QUALITY = 0.92;
 export const MENU_GLYPH_COLOR = '#f8fafc';
 
+/** Scale for glyphs/chords stamped onto the page (menu previews stay at 1×). */
+export const GLYPH_DROP_SIZE_SCALE = 1;
+
 const MUSIC_GLYPH_FONT = "'Segoe UI Symbol', 'Noto Music', 'Bravura Text', serif";
 const stampCache = new Map();
+
+const CHORD_RASTER_SVG_STYLES = `<style><![CDATA[
+.annotation-chord-diagram-lines line {
+  stroke: currentColor;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+.annotation-chord-diagram-dot--outline {
+  fill: none;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+]]></style>`;
+
+function embedChordRasterStyles(svgMarkup) {
+  const svg = svgMarkup.includes('xmlns')
+    ? svgMarkup
+    : svgMarkup.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+  return svg.replace(/(<svg[^>]*>)/, `$1${CHORD_RASTER_SVG_STYLES}`);
+}
 
 function glyphSizePx(layoutWidthPx) {
   return layoutWidthPx * GLYPH_SIZE_LAYOUT_RATIO;
@@ -41,9 +66,7 @@ function loadImage(src) {
 }
 
 async function svgMarkupToCanvas(svgMarkup, width, height) {
-  const svg = svgMarkup.includes('xmlns')
-    ? svgMarkup
-    : svgMarkup.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+  const svg = embedChordRasterStyles(svgMarkup);
   const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);
 
@@ -53,7 +76,14 @@ async function svgMarkupToCanvas(svgMarkup, width, height) {
     canvas.width = Math.max(1, Math.ceil(width));
     canvas.height = Math.max(1, Math.ceil(height));
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    if (
+      img.naturalWidth === canvas.width
+      && img.naturalHeight === canvas.height
+    ) {
+      ctx.drawImage(img, 0, 0);
+    } else {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }
     return canvas;
   } finally {
     URL.revokeObjectURL(url);
@@ -85,13 +115,23 @@ export function glyphDrawSpecFromDrop({ glyphId, text, chord, color }) {
   };
 }
 
-function stampCacheKey(spec, layoutWidthPx) {
+function stampSizePx(layoutWidthPx, sizeScale, displayWidth) {
+  const cssSizePx = glyphSizePx(layoutWidthPx) * sizeScale;
+  if (displayWidth > 0) {
+    return cssSizePx * (layoutWidthPx / displayWidth);
+  }
+  return cssSizePx;
+}
+
+function stampCacheKey(spec, layoutWidthPx, { sizeScale = 1, displayWidth = 0 } = {}) {
   return JSON.stringify({
     glyphId: spec.glyphId,
     text: spec.text ?? null,
     chord: spec.chord ?? null,
     color: spec.color,
     layoutWidthPx: Math.round(layoutWidthPx),
+    sizeScale,
+    displayWidth: Math.round(displayWidth),
   });
 }
 
@@ -127,14 +167,18 @@ async function renderChordMarkup(spec, sizePx) {
  * Renders a glyph to an offscreen canvas. anchorX/anchorY is the placement point
  * (center for symbols/text, bounds center for chords).
  */
-export async function buildGlyphStamp(spec, layoutWidthPx) {
-  const cacheKey = stampCacheKey(spec, layoutWidthPx);
+export async function buildGlyphStamp(
+  spec,
+  layoutWidthPx,
+  { sizeScale = 1, displayWidth = 0 } = {},
+) {
+  const cacheKey = stampCacheKey(spec, layoutWidthPx, { sizeScale, displayWidth });
   if (stampCache.has(cacheKey)) {
     return stampCache.get(cacheKey);
   }
 
   const promise = (async () => {
-    const sizePx = glyphSizePx(layoutWidthPx);
+    const sizePx = stampSizePx(layoutWidthPx, sizeScale, displayWidth);
 
     if (isChordGlyph(spec.glyphId)) {
       const chord = spec.chord ?? {};
@@ -219,8 +263,16 @@ export function drawGlyphStampAt(ctx, stamp, normX, normY, layoutWidthPx, layout
   );
 }
 
-export async function drawGlyphOnCanvas(ctx, spec, normX, normY, layoutWidthPx, layoutHeightPx) {
-  const stamp = await buildGlyphStamp(spec, layoutWidthPx);
+export async function drawGlyphOnCanvas(
+  ctx,
+  spec,
+  normX,
+  normY,
+  layoutWidthPx,
+  layoutHeightPx,
+  { sizeScale = 1, displayWidth = 0 } = {},
+) {
+  const stamp = await buildGlyphStamp(spec, layoutWidthPx, { sizeScale, displayWidth });
   if (!stamp) return;
   drawGlyphStampAt(ctx, stamp, normX, normY, layoutWidthPx, layoutHeightPx);
 }

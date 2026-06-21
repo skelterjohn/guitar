@@ -84,6 +84,7 @@ export default function PdfViewer({
   const currentPageRef = useRef(1);
   const [pageNavLeft, setPageNavLeft] = useState(null);
   const [pageCount, setPageCount] = useState(0);
+  const [pageMediaSizes, setPageMediaSizes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -113,6 +114,7 @@ export default function PdfViewer({
   const annotationMenuRef = useRef(null);
   const annotationToolRef = useRef(null);
   const dismissTapPointerIdRef = useRef(null);
+  const glyphDragActiveRef = useRef(false);
   const onSaveResultRef = useRef(() => {});
 
   onSaveResultRef.current = (saved) => {
@@ -135,6 +137,7 @@ export default function PdfViewer({
   annotationColorRef.current = annotationColor;
   annotationMenuRef.current = annotationMenu;
   annotationToolRef.current = annotationTool;
+  glyphDragActiveRef.current = glyphDragActive;
 
   const isTouchAnnotating =
     Boolean(annotationMenu) &&
@@ -224,6 +227,7 @@ export default function PdfViewer({
 
     setStatus('loading');
     setPageCount(0);
+    setPageMediaSizes([]);
     setCurrentPage(1);
     setPdfZoom(1);
     setPageAnnotations({});
@@ -449,6 +453,7 @@ export default function PdfViewer({
 
       const outputScale = window.devicePixelRatio || 1;
       let renderedCount = 0;
+      const nextPageMediaSizes = [];
 
       for (let pageNum = 1; pageNum <= pageCount; pageNum += 1) {
         if (cancelled || renderId !== renderIdRef.current) return;
@@ -460,6 +465,10 @@ export default function PdfViewer({
         if (cancelled || renderId !== renderIdRef.current) return;
 
         const baseViewport = page.getViewport({ scale: 1 });
+        nextPageMediaSizes.push({
+          width: baseViewport.width,
+          height: baseViewport.height,
+        });
         const scale = Math.min(
           availableWidth / baseViewport.width,
           availableHeight / baseViewport.height,
@@ -508,6 +517,7 @@ export default function PdfViewer({
       }
 
       if (!cancelled && renderId === renderIdRef.current) {
+        setPageMediaSizes(nextPageMediaSizes);
         requestAnimationFrame(() => {
           if (scrollToTopPendingRef.current) {
             finishScrollToTopPending();
@@ -817,6 +827,7 @@ export default function PdfViewer({
 
     penScrollLockRef.current?.destroy();
     penScrollLockRef.current = createPenScrollLock(container, () => {
+      if (glyphDragActiveRef.current) return false;
       if (!annotationMenuRef.current) return false;
       const tool = annotationToolRef.current;
       return tool === 'pen' || tool === 'eraser';
@@ -1089,6 +1100,7 @@ export default function PdfViewer({
                   <AnnotationOverlay
                     pageNumber={pageNumber}
                     pageLayers={pageLayers}
+                    pageMediaSize={pageMediaSizes[index] ?? null}
                     pdfZoom={pdfZoom}
                     glyphPreview={glyphDragPreview}
                     glyphDropRequest={glyphDropRequest}

@@ -59,7 +59,11 @@ function NjgoRosterCard({ member }) {
           <div className="njgo-roster-bio-shell">
             <div
               ref={bioRef}
-              className="njgo-roster-bio njgo-roster-bio--clamped"
+              className={[
+                'njgo-roster-bio',
+                'njgo-roster-bio--clamped',
+                expanded ? 'njgo-roster-bio--clamped-hidden' : '',
+              ].filter(Boolean).join(' ')}
               aria-hidden={expanded}
             >
               {paragraphs.map((paragraph, index) => (
@@ -83,12 +87,16 @@ function NjgoRosterCard({ member }) {
             )}
           </div>
         )}
-        {hasOverflow && !expanded && (
+        {hasOverflow && (
           <button
             type="button"
-            className="njgo-roster-read-more"
+            className={[
+              'njgo-roster-read-more',
+              expanded ? 'njgo-roster-read-more--hidden' : '',
+            ].filter(Boolean).join(' ')}
             onClick={() => setExpanded(true)}
             aria-expanded={false}
+            tabIndex={expanded ? -1 : 0}
           >
             Read more
           </button>

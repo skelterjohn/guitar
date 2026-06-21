@@ -299,6 +299,10 @@ body {
   overflow: hidden;
 }
 
+.njgo-roster-bio--clamped-hidden {
+  visibility: hidden;
+}
+
 .njgo-roster-bio-shell {
   position: relative;
 }
@@ -306,14 +310,25 @@ body {
 .njgo-roster-bio--overlay {
   position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.njgo-roster-bio--overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
   left: -1.15rem;
   right: -1.15rem;
-  z-index: 1;
-  padding: 0 1.15rem 1rem;
+  z-index: -1;
   background: var(--color-surface);
-  border: 1px solid var(--color-border-light);
-  border-radius: 0 0 4px 4px;
   box-shadow: 0 0.65rem 1.25rem rgba(0, 0, 0, 0.12);
+}
+
+.njgo-roster-read-more--hidden {
+  visibility: hidden;
 }
 
 .njgo-roster-read-more {

@@ -319,6 +319,33 @@ body {
   min-width: 0;
 }
 
+@container njgo (max-width: 68.75rem) {
+  .njgo-roster-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .njgo-roster {
+    margin-inline: -1.25rem;
+    width: calc(100% + 2.5rem);
+  }
+
+  .njgo-roster-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .njgo-roster-card {
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .njgo-roster-photo-frame {
+    border-radius: 0;
+  }
+}
+
 .njgo-roster-card {
   position: relative;
   min-width: 0;

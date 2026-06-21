@@ -21,24 +21,16 @@ import {
   resolveAnnotationColor,
   setAnnotationColorPreference,
 } from '../utils/annotationColorPreference.js';
+import { createDebouncedSave, createStrokeId, loadAnnotations, requestPersistentStorage } from '../utils/pdfAnnotations.js';
+import { createPenScrollLock } from '../utils/penScrollLock.js';
+import { glyphDrawSpecFromDrop } from '../utils/annotationRaster.js';
 import {
-  createDebouncedSave,
-  createStrokeId,
-  loadAnnotations,
-  requestPersistentStorage,
-} from '../utils/pdfAnnotations.js';
-import {
-  createPenScrollLock,
-} from '../utils/penScrollLock.js';
-import { CHORD_GLYPH_ID } from '../data/chordGrid.js';
-import { GLYPH_SIZE_MM, glyphEraseRadiusPx, isTextGlyph, TEXT_GLYPH_DEFAULT, TEXT_GLYPH_ID } from '../data/annotationGlyphs.js';
-import {
-  applyPartialEraser,
-  applyGlyphEraser,
-  measureCssPxPerMm,
-  PEN_COLOR,
-} from '../utils/stylusInput.js';
-import { normalizePageEntry, normalizePages } from '../utils/annotationPages.js';
+  createPageRasterRecord,
+  normalizePageEntry,
+  normalizePages,
+  pageHasRaster,
+} from '../utils/annotationPages.js';
+import { PEN_COLOR } from '../utils/stylusInput.js';
 import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { catalogPath, repPath, viewPath } from '../seo.js';
 
@@ -100,6 +92,8 @@ export default function PdfViewer({
   const [pageAnnotations, setPageAnnotations] = useState({});
   const [annotationMenu, setAnnotationMenu] = useState(null);
   const [glyphDragActive, setGlyphDragActive] = useState(false);
+  const [glyphDragPreview, setGlyphDragPreview] = useState(null);
+  const [glyphDropRequest, setGlyphDropRequest] = useState(null);
   const [annotationTool, setAnnotationTool] = useState(null);
   const [annotationColor, setAnnotationColor] = useState(
     () => getAnnotationColorPreference() ?? PEN_COLOR,
@@ -112,6 +106,7 @@ export default function PdfViewer({
   const penScrollLockRef = useRef(null);
   const lastPenTapRef = useRef(null);
   const saveAnnotationsRef = useRef(null);
+  const pageRastersRef = useRef({});
   const annotationColorRef = useRef(annotationColor);
   const annotationMenuRef = useRef(null);
   const annotationToolRef = useRef(null);
@@ -199,7 +194,14 @@ export default function PdfViewer({
 
     loadAnnotations(filename).then((record) => {
       if (cancelled) return;
-      setPageAnnotations(normalizePages(record?.pages));
+      const pages = normalizePages(record?.pages);
+      pageRastersRef.current = Object.fromEntries(
+        Object.entries(pages).map(([key, entry]) => [
+          key,
+          createPageRasterRecord(entry.blob, entry.width, entry.height),
+        ]),
+      );
+      setPageAnnotations(pageRastersRef.current);
       setAnnotationColor(resolveAnnotationColor(record?.color));
       setStorageWarning('');
     });
@@ -228,8 +230,11 @@ export default function PdfViewer({
     setCurrentPage(1);
     setPdfZoom(1);
     setPageAnnotations({});
+    pageRastersRef.current = {};
     setAnnotationMenu(null);
     setGlyphDragActive(false);
+    setGlyphDragPreview(null);
+    setGlyphDropRequest(null);
     setStorageWarning('');
     lastPenTapRef.current = null;
     saveAnnotationsRef.current?.cancel();
@@ -296,10 +301,7 @@ export default function PdfViewer({
   const handleAnnotationColorChange = (color) => {
     setAnnotationColor(color);
     setAnnotationColorPreference(color);
-    setPageAnnotations((pages) => {
-      persistPageAnnotations(pages, color);
-      return pages;
-    });
+    persistPageAnnotations(pageRastersRef.current, color);
   };
 
   const dismissAnnotationMenu = (pointerId = null) => {
@@ -307,119 +309,55 @@ export default function PdfViewer({
       dismissTapPointerIdRef.current = pointerId;
     }
     setGlyphDragActive(false);
+    setGlyphDragPreview(null);
+    setGlyphDropRequest(null);
     annotationMenuRef.current = null;
     annotationToolRef.current = null;
     setAnnotationMenu(null);
     setAnnotationTool(null);
   };
 
-  const handleStrokeComplete = (pageNumber, stroke) => {
-    const savedStroke = {
-      id: createStrokeId(),
-      tool: 'pen',
-      color: stroke.color ?? PEN_COLOR,
-      baseWidth: stroke.baseWidth,
-      points: stroke.points,
+  const handleRasterChange = (pageNumber, blob, width, height) => {
+    const key = String(pageNumber);
+    const record = createPageRasterRecord(blob, width, height);
+    pageRastersRef.current = {
+      ...pageRastersRef.current,
+      [key]: record,
     };
-
-    setPageAnnotations((current) => {
-      const key = String(pageNumber);
-      const entry = normalizePageEntry(current[key]);
-      const next = {
-        ...current,
-        [key]: {
-          ...entry,
-          strokes: [...entry.strokes, savedStroke],
-        },
-      };
-      persistPageAnnotations(next);
-      return next;
-    });
-  };
-
-  const handleEraseAt = (pageNumber, center, radiusPx, layoutWidth, layoutHeight) => {
-    const glyphSizePx = measureCssPxPerMm() * GLYPH_SIZE_MM;
-
-    setPageAnnotations((current) => {
-      const key = String(pageNumber);
-      const entry = normalizePageEntry(current[key]);
-      const { strokes: nextStrokes, changed: strokesChanged } = applyPartialEraser(
-        entry.strokes,
-        layoutWidth,
-        layoutHeight,
-        center,
-        radiusPx,
-        createStrokeId,
-      );
-      const { glyphs: nextGlyphs, changed: glyphsChanged } = applyGlyphEraser(
-        entry.glyphs,
-        layoutWidth,
-        layoutHeight,
-        center,
-        radiusPx,
-        (glyph) => glyphEraseRadiusPx(glyph, glyphSizePx),
-      );
-
-      if (!strokesChanged && !glyphsChanged) {
-        return current;
-      }
-
-      const next = {
-        ...current,
-        [key]: {
-          ...entry,
-          strokes: nextStrokes,
-          glyphs: nextGlyphs,
-        },
-      };
-      persistPageAnnotations(next);
-      return next;
-    });
+    setPageAnnotations({ ...pageRastersRef.current });
+    persistPageAnnotations(pageRastersRef.current);
   };
 
   const handleClearCurrentPage = () => {
-    setPageAnnotations((current) => {
-      const key = String(currentPage);
-      const entry = normalizePageEntry(current[key]);
-      if (entry.strokes.length === 0 && entry.glyphs.length === 0) {
-        return current;
-      }
-      const next = { ...current };
-      delete next[key];
-      persistPageAnnotations(next);
-      return next;
-    });
+    const key = String(currentPage);
+    if (!pageHasRaster(pageRastersRef.current[key])) {
+      return;
+    }
+
+    const next = { ...pageRastersRef.current };
+    delete next[key];
+    pageRastersRef.current = next;
+    setPageAnnotations(next);
+    persistPageAnnotations(next);
+  };
+
+  const handleGlyphDragPreview = (preview) => {
+    setGlyphDragPreview(preview);
   };
 
   const handleGlyphDrop = ({ pageNumber, glyphId, x, y, text, chord }) => {
-    const glyph = {
+    setGlyphDragPreview(null);
+    setGlyphDropRequest({
       id: createStrokeId(),
-      type: glyphId,
+      pageNumber,
       x,
       y,
-      color: annotationColor,
-    };
-
-    if (glyphId === TEXT_GLYPH_ID) {
-      glyph.text = text?.trim() || TEXT_GLYPH_DEFAULT;
-    } else if (glyphId === CHORD_GLYPH_ID) {
-      glyph.chord = chord;
-    } else if (text != null && String(text).trim()) {
-      glyph.text = String(text).trim();
-    }
-
-    setPageAnnotations((current) => {
-      const key = String(pageNumber);
-      const entry = normalizePageEntry(current[key]);
-      const next = {
-        ...current,
-        [key]: {
-          ...entry,
-          glyphs: [...entry.glyphs, glyph],
-        },
-      };
-      persistPageAnnotations(next);
-      return next;
+      spec: glyphDrawSpecFromDrop({
+        glyphId,
+        text,
+        chord,
+        color: annotationColorRef.current,
+      }),
     });
   };
 
@@ -1084,8 +1022,9 @@ export default function PdfViewer({
         {status === 'ready' && (
           <div className="viewer-zoom-surface" style={{ zoom: pdfZoom }}>
             {Array.from({ length: pageCount }, (_, index) => {
-              const pageEntry = normalizePageEntry(
-                pageAnnotations[String(index + 1)],
+              const pageNumber = index + 1;
+              const pageRaster = normalizePageEntry(
+                pageAnnotations[String(pageNumber)],
               );
 
               return (
@@ -1098,7 +1037,7 @@ export default function PdfViewer({
               >
                 <div
                   className="viewer-page-frame"
-                  data-page-number={index + 1}
+                  data-page-number={pageNumber}
                 >
                   <canvas
                     ref={(element) => {
@@ -1106,9 +1045,11 @@ export default function PdfViewer({
                     }}
                   />
                   <AnnotationOverlay
-                    pageNumber={index + 1}
-                    strokes={pageEntry.strokes}
-                    glyphs={pageEntry.glyphs}
+                    pageNumber={pageNumber}
+                    pageRaster={pageRaster}
+                    pdfZoom={pdfZoom}
+                    glyphPreview={glyphDragPreview}
+                    glyphDropRequest={glyphDropRequest}
                     annotationColor={annotationColor}
                     annotationTool={annotationTool}
                     isAnnotationMenuOpen={Boolean(annotationMenu)}
@@ -1116,8 +1057,7 @@ export default function PdfViewer({
                     touchDrawActive={isTouchAnnotating}
                     isGlyphDragActive={glyphDragActive}
                     lastPenTapRef={lastPenTapRef}
-                    onStrokeComplete={handleStrokeComplete}
-                    onEraseAt={handleEraseAt}
+                    onRasterChange={handleRasterChange}
                     onOpenMenu={(clientX, clientY) =>
                       setAnnotationMenu({ clientX, clientY })
                     }
@@ -1198,6 +1138,7 @@ export default function PdfViewer({
         annotationTool={annotationTool}
         onAnnotationToolChange={setAnnotationTool}
         onGlyphDrop={handleGlyphDrop}
+        onGlyphDragPreview={handleGlyphDragPreview}
         onClearPage={handleClearCurrentPage}
         onGlyphDragChange={setGlyphDragActive}
       />

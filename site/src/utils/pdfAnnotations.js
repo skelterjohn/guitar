@@ -1,4 +1,4 @@
-const DB_NAME = 'guitar-annotations-v1';
+const DB_NAME = 'guitar-annotations-v2';
 const STORE_NAME = 'annotations';
 const DB_VERSION = 1;
 

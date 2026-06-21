@@ -1,16 +1,19 @@
+export const PAGE_RASTER_FORMAT = 'webp';
+
 export function normalizePageEntry(entry) {
-  if (Array.isArray(entry)) {
-    return { strokes: entry, glyphs: [] };
-  }
-
   if (!entry || typeof entry !== 'object') {
-    return { strokes: [], glyphs: [] };
+    return null;
   }
 
-  return {
-    strokes: Array.isArray(entry.strokes) ? entry.strokes : [],
-    glyphs: Array.isArray(entry.glyphs) ? entry.glyphs : [],
-  };
+  const blob = entry.data instanceof Blob ? entry.data : entry.blob;
+  const width = Number(entry.width);
+  const height = Number(entry.height);
+
+  if (blob && Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0) {
+    return { blob, width, height };
+  }
+
+  return null;
 }
 
 export function normalizePages(pages) {
@@ -18,9 +21,23 @@ export function normalizePages(pages) {
     return {};
   }
 
-  return Object.fromEntries(
-    Object.entries(pages).map(([key, entry]) => [key, normalizePageEntry(entry)]),
-  );
+  const result = {};
+  for (const [key, entry] of Object.entries(pages)) {
+    const normalized = normalizePageEntry(entry);
+    if (normalized) {
+      result[key] = normalized;
+    }
+  }
+  return result;
+}
+
+export function createPageRasterRecord(blob, width, height) {
+  return {
+    format: PAGE_RASTER_FORMAT,
+    data: blob,
+    width,
+    height,
+  };
 }
 
 export function emptyPages() {
@@ -63,4 +80,8 @@ export function pageDropFromClientPoint(clientX, clientY) {
     x: Math.min(1, Math.max(0, (clientX - rect.left) / rect.width)),
     y: Math.min(1, Math.max(0, (clientY - rect.top) / rect.height)),
   };
+}
+
+export function pageHasRaster(entry) {
+  return normalizePageEntry(entry) != null;
 }

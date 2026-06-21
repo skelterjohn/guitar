@@ -1,6 +1,17 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import getStroke from 'perfect-freehand';
 import {
+  buildGlyphStamp,
+  canvasToPageBlob,
+  drawGlyphOnCanvas,
+  drawGlyphStampAt,
+  drawStrokeOnCanvas,
+  eraseCircleOnCanvas,
+  loadBlobOntoCanvas,
+  setCanvasPixelSize,
+  syncCanvasDimensions,
+} from '../utils/annotationRaster.js';
+import {
   clientToNormalized,
   effectivePressure,
   ERASER_CIRCLE_FILL,
@@ -12,9 +23,6 @@ import {
   PEN_COLOR,
   PEN_THINNING,
 } from '../utils/stylusInput.js';
-import { getGlyphById, annotationGlyphSizePx, glyphDisplayText, isChordGlyph, isDynamicGlyph, isTextGlyph, TEXT_GLYPH_FONT } from '../data/annotationGlyphs.js';
-import ChordDiagram from './ChordDiagram.jsx';
-import { CHORD_ROMAN_NUMERAL_OFF, chordGlyphBoundsPx } from '../data/chordGrid.js';
 
 const TAP_MOVE_THRESHOLD = 10;
 const LONG_PRESS_MS = 500;
@@ -35,18 +43,14 @@ function getSvgPathFromStroke(stroke) {
   return d.join(' ');
 }
 
-function denormalizePoints(points, width, height) {
-  return points.map(([x, y, pressure = 0.5]) => [
+function strokeToPathData(stroke, width, height) {
+  if (!stroke?.points?.length || width === 0 || height === 0) return '';
+
+  const inputPoints = stroke.points.map(([x, y, pressure = 0.5]) => [
     x * width,
     y * height,
     pressure,
   ]);
-}
-
-function strokeToPathData(stroke, width, height) {
-  if (!stroke.points?.length || width === 0 || height === 0) return '';
-
-  const inputPoints = denormalizePoints(stroke.points, width, height);
   const baseWidth = stroke.baseWidth ?? PEN_BASE_WIDTH;
   const outline = getStroke(inputPoints, {
     size: baseWidth,
@@ -61,11 +65,12 @@ function strokeToPathData(stroke, width, height) {
 
 export default function AnnotationOverlay({
   pageNumber,
-  strokes = [],
-  glyphs = [],
+  pageRaster = null,
+  glyphPreview = null,
+  glyphDropRequest = null,
+  pdfZoom = 1,
   lastPenTapRef,
-  onStrokeComplete,
-  onEraseAt,
+  onRasterChange,
   onOpenMenu,
   onDismissMenu,
   isGlyphDragActive = false,
@@ -76,28 +81,29 @@ export default function AnnotationOverlay({
   touchDrawActive = false,
 }) {
   const overlayRef = useRef(null);
-  const svgRef = useRef(null);
+  const rasterCanvasRef = useRef(null);
+  const previewCanvasRef = useRef(null);
+  const referenceSizeRef = useRef({ width: 0, height: 0 });
   const activeStrokeRef = useRef(null);
   const eraserStrokeRef = useRef(false);
   const penPendingRef = useRef(null);
+  const skipNextBlobLoadRef = useRef(false);
   const isGlyphDragActiveRef = useRef(isGlyphDragActive);
   const annotationColorRef = useRef(annotationColor);
   const annotationToolRef = useRef(annotationTool);
   const isMenuOpenRef = useRef(isAnnotationMenuOpen);
   const pxPerMmRef = useRef(measureCssPxPerMm());
   const callbacksRef = useRef({
-    onStrokeComplete,
-    onEraseAt,
+    onRasterChange,
     onOpenMenu,
     onDismissMenu,
   });
-  const [layoutSize, setLayoutSize] = useState({ width: 0, height: 0 });
+  const [displaySize, setDisplaySize] = useState({ width: 0, height: 0 });
   const [draftStroke, setDraftStroke] = useState(null);
   const [eraserCursor, setEraserCursor] = useState(null);
 
   callbacksRef.current = {
-    onStrokeComplete,
-    onEraseAt,
+    onRasterChange,
     onOpenMenu,
     onDismissMenu,
   };
@@ -106,32 +112,240 @@ export default function AnnotationOverlay({
   annotationToolRef.current = annotationTool;
   isMenuOpenRef.current = isAnnotationMenuOpen;
 
-  const syncLayoutSize = () => {
+  const getReferenceLayoutSize = () => {
     const overlay = overlayRef.current;
-    if (!overlay) return;
+    if (!overlay) return { width: 0, height: 0 };
+
+    return {
+      width: Math.round(overlay.offsetWidth),
+      height: Math.round(overlay.offsetHeight),
+    };
+  };
+
+  const getDisplaySize = () => {
+    const overlay = overlayRef.current;
+    if (!overlay) return { width: 0, height: 0 };
 
     const rect = overlay.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return;
-
-    setLayoutSize({
+    return {
       width: Math.round(rect.width),
       height: Math.round(rect.height),
-    });
+    };
+  };
+
+  const syncDisplaySize = () => {
+    const next = getDisplaySize();
+    if (next.width === 0 || next.height === 0) return;
+    setDisplaySize(next);
+  };
+
+  const getReferenceSize = () => referenceSizeRef.current;
+
+  const getReferenceScale = () => {
+    const reference = getReferenceSize();
+    const display = getDisplaySize();
+    if (reference.width === 0 || display.width === 0) return 1;
+    return reference.width / display.width;
+  };
+
+  const initializeReferenceSize = () => {
+    const layout = getReferenceLayoutSize();
+    if (layout.width === 0 || layout.height === 0) return { width: 0, height: 0 };
+
+    if (pageRaster?.width > 0 && pageRaster?.height > 0) {
+      referenceSizeRef.current = {
+        width: pageRaster.width,
+        height: pageRaster.height,
+      };
+    } else if (referenceSizeRef.current.width === 0) {
+      referenceSizeRef.current = layout;
+    }
+
+    return referenceSizeRef.current;
+  };
+
+  const ensureRasterCanvasSize = () => {
+    const canvas = rasterCanvasRef.current;
+    const reference = initializeReferenceSize();
+    if (!canvas || reference.width === 0 || reference.height === 0) {
+      return { width: 0, height: 0 };
+    }
+
+    setCanvasPixelSize(canvas, reference.width, reference.height);
+    return reference;
+  };
+
+  const ensurePreviewCanvasSize = () => {
+    const canvas = previewCanvasRef.current;
+    const reference = ensureRasterCanvasSize();
+    if (!canvas || reference.width === 0) return reference;
+    setCanvasPixelSize(canvas, reference.width, reference.height);
+    return reference;
+  };
+
+  const notifyRasterChange = async () => {
+    const canvas = rasterCanvasRef.current;
+    if (!canvas || canvas.width === 0 || canvas.height === 0) return;
+
+    const blob = await canvasToPageBlob(canvas);
+    if (!blob) return;
+
+    skipNextBlobLoadRef.current = true;
+    callbacksRef.current.onRasterChange?.(
+      pageNumber,
+      blob,
+      canvas.width,
+      canvas.height,
+    );
+  };
+
+  const resampleCanvasesToReference = (nextReference) => {
+    const rasterCanvas = rasterCanvasRef.current;
+    const previewCanvas = previewCanvasRef.current;
+    if (!rasterCanvas || nextReference.width === 0) return;
+
+    syncCanvasDimensions(rasterCanvas, nextReference.width, nextReference.height);
+    if (previewCanvas) {
+      previewCanvas.getContext('2d').clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      setCanvasPixelSize(previewCanvas, nextReference.width, nextReference.height);
+    }
+    referenceSizeRef.current = nextReference;
   };
 
   useLayoutEffect(() => {
-    syncLayoutSize();
-  }, [strokes.length, glyphs.length]);
+    syncDisplaySize();
+    ensurePreviewCanvasSize();
+  }, [pdfZoom, pageRaster?.width, pageRaster?.height, glyphDropRequest?.id]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
     if (!overlay) return undefined;
 
-    const observer = new ResizeObserver(syncLayoutSize);
+    const observer = new ResizeObserver(() => {
+      syncDisplaySize();
+
+      const nextReference = getReferenceLayoutSize();
+      if (nextReference.width === 0 || nextReference.height === 0) return;
+
+      const currentReference = referenceSizeRef.current;
+      if (currentReference.width === 0) {
+        initializeReferenceSize();
+        ensurePreviewCanvasSize();
+        return;
+      }
+
+      if (
+        nextReference.width === currentReference.width &&
+        nextReference.height === currentReference.height
+      ) {
+        return;
+      }
+
+      resampleCanvasesToReference(nextReference);
+      void notifyRasterChange();
+    });
     observer.observe(overlay);
 
     return () => observer.disconnect();
-  }, []);
+  }, [pageNumber, pageRaster?.width, pageRaster?.height]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadRaster = async () => {
+      const reference = ensureRasterCanvasSize();
+      const canvas = rasterCanvasRef.current;
+      if (!canvas || reference.width === 0) return;
+
+      if (skipNextBlobLoadRef.current) {
+        skipNextBlobLoadRef.current = false;
+        return;
+      }
+
+      if (pageRaster?.width > 0 && pageRaster?.height > 0) {
+        referenceSizeRef.current = {
+          width: pageRaster.width,
+          height: pageRaster.height,
+        };
+        setCanvasPixelSize(canvas, pageRaster.width, pageRaster.height);
+      }
+
+      await loadBlobOntoCanvas(canvas, pageRaster?.blob ?? null);
+      if (!cancelled) {
+        void syncPreviewCanvas();
+      }
+    };
+
+    void loadRaster();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pageRaster?.blob, pageRaster?.width, pageRaster?.height]);
+
+  const syncPreviewCanvas = async () => {
+    const canvas = previewCanvasRef.current;
+    const reference = ensurePreviewCanvasSize();
+    if (!canvas || reference.width === 0) return;
+
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, reference.width, reference.height);
+
+    if (
+      !glyphPreview ||
+      glyphPreview.pageNumber !== pageNumber ||
+      !glyphPreview.spec
+    ) {
+      return;
+    }
+
+    const stamp = await buildGlyphStamp(glyphPreview.spec, reference.width);
+    if (!stamp) return;
+    drawGlyphStampAt(
+      ctx,
+      stamp,
+      glyphPreview.x,
+      glyphPreview.y,
+      reference.width,
+      reference.height,
+    );
+  };
+
+  useEffect(() => {
+    void syncPreviewCanvas();
+  }, [glyphPreview, pageNumber, pageRaster?.width, pageRaster?.height]);
+
+  useEffect(() => {
+    if (!glyphDropRequest || glyphDropRequest.pageNumber !== pageNumber) return;
+
+    let cancelled = false;
+
+    const applyDrop = async () => {
+      const reference = ensureRasterCanvasSize();
+      const canvas = rasterCanvasRef.current;
+      if (!canvas || reference.width === 0) return;
+
+      const ctx = canvas.getContext('2d');
+      await drawGlyphOnCanvas(
+        ctx,
+        glyphDropRequest.spec,
+        glyphDropRequest.x,
+        glyphDropRequest.y,
+        reference.width,
+        reference.height,
+      );
+
+      if (!cancelled) {
+        await notifyRasterChange();
+      }
+    };
+
+    void applyDrop();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [glyphDropRequest?.id, pageNumber]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -170,24 +384,33 @@ export default function AnnotationOverlay({
       });
     };
 
-    const finishStroke = () => {
+    const finishStroke = async () => {
       const active = activeStrokeRef.current;
       activeStrokeRef.current = null;
       setDraftStroke(null);
 
       if (!active || active.points.length < 2) return;
 
-      callbacksRef.current.onStrokeComplete?.(pageNumber, active);
+      const reference = ensureRasterCanvasSize();
+      const canvas = rasterCanvasRef.current;
+      if (!canvas || reference.width === 0) return;
+
+      const ctx = canvas.getContext('2d');
+      drawStrokeOnCanvas(ctx, active, reference.width, reference.height);
+      await notifyRasterChange();
     };
 
     const applyEraserSample = (event) => {
       if (!overlay) return;
 
-      const rect = overlay.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
-      if (width === 0 || height === 0) return;
+      const display = getDisplaySize();
+      if (display.width === 0 || display.height === 0) return;
 
+      const reference = ensureRasterCanvasSize();
+      const canvas = rasterCanvasRef.current;
+      if (!canvas || reference.width === 0) return;
+
+      const referenceScale = getReferenceScale();
       const samples = getCoalescedPointerEvents(event);
       for (const sample of samples) {
         const center = clientToNormalized(overlay, sample.clientX, sample.clientY);
@@ -197,19 +420,20 @@ export default function AnnotationOverlay({
         );
 
         setEraserCursor({
-          x: center.x * width,
-          y: center.y * height,
+          x: center.x * display.width,
+          y: center.y * display.height,
           r: radiusPx,
         });
 
-        callbacksRef.current.onEraseAt?.(
-          pageNumber,
-          center,
-          radiusPx,
-          width,
-          height,
+        eraseCircleOnCanvas(
+          canvas.getContext('2d'),
+          center.x * reference.width,
+          center.y * reference.height,
+          radiusPx * referenceScale,
         );
       }
+
+      void notifyRasterChange();
     };
 
     const clearPenPending = (pending = penPendingRef.current) => {
@@ -372,7 +596,7 @@ export default function AnnotationOverlay({
       }
 
       const pending = penPendingRef.current;
-      if (pending && pending.pointerId === event.pointerId) {
+      if (pending && event.pointerId === pending.pointerId) {
         const wasLongPress = pending.longPressTriggered;
         const tapMovement = Math.hypot(
           event.clientX - pending.startX,
@@ -433,7 +657,7 @@ export default function AnnotationOverlay({
         return;
       }
 
-      finishStroke();
+      void finishStroke();
     };
 
     const onPointerCancel = (event) => {
@@ -462,8 +686,17 @@ export default function AnnotationOverlay({
     };
   }, [pageNumber, lastPenTapRef, menuPointerActive]);
 
-  const visibleStrokes = draftStroke ? [...strokes, draftStroke] : strokes;
-  const glyphSizePx = annotationGlyphSizePx();
+  useEffect(() => {
+    if (pageRaster?.blob) return;
+    const canvas = rasterCanvasRef.current;
+    if (!canvas || canvas.width === 0) return;
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  }, [pageRaster?.blob]);
+
+  const draftPath =
+    draftStroke && displaySize.width > 0 && displaySize.height > 0
+      ? strokeToPathData(draftStroke, displaySize.width, displaySize.height)
+      : '';
 
   return (
     <div
@@ -475,127 +708,42 @@ export default function AnnotationOverlay({
       }`}
       aria-hidden="true"
     >
-      {layoutSize.width > 0 && layoutSize.height > 0 && (
-        <svg
-          ref={svgRef}
-          className="annotation-overlay-canvas"
-          viewBox={`0 0 ${layoutSize.width} ${layoutSize.height}`}
-          aria-hidden="true"
-        >
-          {visibleStrokes.map((stroke, index) => {
-            const path = strokeToPathData(stroke, layoutSize.width, layoutSize.height);
-            if (!path) return null;
-
-            return (
-              <path
-                key={stroke.id ?? `draft-${index}`}
-                d={path}
-                fill={stroke.color ?? annotationColorRef.current}
-                pointerEvents="none"
-              />
-            );
-          })}
-          {glyphs.map((glyph) => {
-            const x = glyph.x * layoutSize.width;
-            const y = glyph.y * layoutSize.height;
-
-            if (isTextGlyph(glyph)) {
-              const label = glyphDisplayText(glyph);
-              return (
-                <g
-                  key={glyph.id}
-                  className="annotation-glyph-group"
-                  transform={`translate(${x}, ${y})`}
-                >
-                  <text
-                    className="annotation-glyph annotation-glyph--text"
-                    fontSize={glyphSizePx}
-                    style={{ fontFamily: TEXT_GLYPH_FONT, fontWeight: 600 }}
-                    fill={glyph.color ?? annotationColorRef.current}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    pointerEvents="none"
-                  >
-                    {label}
-                  </text>
-                </g>
-              );
-            }
-
-            if (isChordGlyph(glyph)) {
-              const showNumeral =
-                glyph.chord?.romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
-              const rotate = glyph.chord?.rotate === true;
-              const { widthPx: boundsWidthPx, heightPx: boundsHeightPx, diagramWidthPx } =
-                chordGlyphBoundsPx(glyphSizePx, {
-                  showNumeral,
-                  marks: glyph.chord?.marks,
-                  rotate,
-                  romanNumeral: glyph.chord?.romanNumeral,
-                });
-
-              return (
-                <g
-                  key={glyph.id}
-                  className="annotation-glyph-group"
-                  transform={`translate(${x - boundsWidthPx / 2}, ${y - boundsHeightPx / 2})`}
-                >
-                  <ChordDiagram
-                    marks={glyph.chord?.marks ?? []}
-                    romanNumeral={glyph.chord?.romanNumeral ?? CHORD_ROMAN_NUMERAL_OFF}
-                    widthPx={diagramWidthPx}
-                    color={glyph.color ?? annotationColorRef.current}
-                    forGlyph
-                    rotate={rotate}
-                    numeralSizePx={glyphSizePx}
-                    lineClassName="annotation-chord-diagram-lines"
-                    numeralClassName="annotation-chord-diagram-numeral"
-                  />
-                </g>
-              );
-            }
-
-            const glyphDef = getGlyphById(glyph.type);
-            const symbol = glyphDef?.symbol;
-            if (!symbol) return null;
-
-            return (
-              <g
-                key={glyph.id}
-                className="annotation-glyph-group"
-                transform={`translate(${x}, ${y})`}
-              >
-                <text
-                  className={`annotation-glyph${
-                    glyphDef.fontFamily && !isDynamicGlyph(glyphDef)
-                      ? ' annotation-glyph--number'
-                      : ''
-                  }${isDynamicGlyph(glyphDef) ? ' annotation-glyph--dynamic' : ''}`}
-                  fontSize={glyphSizePx}
-                  fontFamily={glyphDef.fontFamily}
-                  fontStyle={glyphDef.fontStyle}
-                  fontWeight={glyphDef.fontWeight}
-                  fill={glyph.color ?? annotationColorRef.current}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
+      {displaySize.width > 0 && displaySize.height > 0 && (
+        <>
+          <canvas
+            ref={rasterCanvasRef}
+            className="annotation-raster-canvas"
+          />
+          <canvas
+            ref={previewCanvasRef}
+            className="annotation-preview-canvas"
+          />
+          {(draftPath || eraserCursor) && (
+            <svg
+              className="annotation-overlay-canvas"
+              viewBox={`0 0 ${displaySize.width} ${displaySize.height}`}
+              aria-hidden="true"
+            >
+              {draftPath && (
+                <path
+                  d={draftPath}
+                  fill={draftStroke.color ?? annotationColorRef.current}
                   pointerEvents="none"
-                >
-                  {symbol}
-                </text>
-              </g>
-            );
-          })}
-          {eraserCursor && (
-            <circle
-              className="annotation-eraser-cursor"
-              cx={eraserCursor.x}
-              cy={eraserCursor.y}
-              r={eraserCursor.r}
-              fill={ERASER_CIRCLE_FILL}
-              pointerEvents="none"
-            />
+                />
+              )}
+              {eraserCursor && (
+                <circle
+                  className="annotation-eraser-cursor"
+                  cx={eraserCursor.x}
+                  cy={eraserCursor.y}
+                  r={eraserCursor.r}
+                  fill={ERASER_CIRCLE_FILL}
+                  pointerEvents="none"
+                />
+              )}
+            </svg>
           )}
-        </svg>
+        </>
       )}
     </div>
   );

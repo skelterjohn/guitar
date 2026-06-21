@@ -1,10 +1,13 @@
 export const siteTitle = 'skj :: guitar';
 export const siteHeading = 'skelterjohn :: guitar';
 export const repTitle = 'NJGO';
+export const njgoTitle = 'NJGO';
 export const repHeading = 'New Jersey Guitar Orchestra';
 export const repDescription = 'performance repertoire for NJGO';
 export const catalogPath = '/catalog';
 export const repPath = '/rep';
+export const njgoPath = '/njgo';
+export const njgoOrigin = 'https://njgo.org';
 export const siteManifest = '/manifest.webmanifest';
 export const siteOrigin = 'https://guitar.skelterjohn.me';
 export const catalogUrl = `${siteOrigin}${catalogPath}`;

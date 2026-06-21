@@ -315,7 +315,7 @@ body {
 
 .njgo-overview-links {
   display: inline-grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--njgo-gap);
   margin-top: 1rem;
   width: max-content;
@@ -346,9 +346,9 @@ body {
   min-width: 0;
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
   gap: 0.2rem;
   min-height: 0;
   padding: 0.65rem 0.75rem;
@@ -360,6 +360,7 @@ body {
   background: var(--color-link-bg);
   border: 1px solid var(--color-link-border);
   border-radius: 3px;
+  overflow: hidden;
 }
 
 .njgo-overview-link:hover {
@@ -371,6 +372,22 @@ body {
   align-items: center;
   justify-content: flex-start;
   gap: 0.3rem;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+@container njgo (max-width: 42rem) {
+  .njgo-overview-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .njgo-overview-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
 }
 
 .njgo-footer {

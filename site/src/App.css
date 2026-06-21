@@ -237,6 +237,61 @@ body {
   margin-bottom: 0;
 }
 
+.njgo-roster-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  align-items: start;
+  gap: 0.75rem;
+}
+
+.njgo-roster-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: 4px;
+  padding: 1rem 1.15rem;
+}
+
+.njgo-roster-name {
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+  font-weight: normal;
+  color: var(--color-text-heading);
+}
+
+.njgo-roster-bio p {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.njgo-roster-bio p:last-child {
+  margin-bottom: 0;
+}
+
+.njgo-roster-bio--clamped {
+  max-height: 14em;
+  overflow: hidden;
+}
+
+.njgo-roster-read-more {
+  margin: 0.65rem 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--color-link-text);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.njgo-roster-read-more:hover {
+  color: var(--color-text-heading);
+}
+
 .pdf-links {
   display: flex;
   flex-wrap: wrap;

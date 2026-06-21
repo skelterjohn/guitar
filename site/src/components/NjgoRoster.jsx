@@ -119,7 +119,10 @@ export default function NjgoRoster({ members }) {
   const shuffledMembers = useMemo(() => shuffleMembers(members), [members]);
 
   return (
-    <section className="njgo-roster" aria-label="Members">
+    <section className="njgo-roster" aria-labelledby="njgo-roster-heading">
+      <h2 id="njgo-roster-heading" className="njgo-roster-heading">
+        Meet the NJGO Performers
+      </h2>
       <ul className="njgo-roster-grid">
         {shuffledMembers.map((member) => (
           <li key={member.name}>

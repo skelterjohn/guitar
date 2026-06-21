@@ -363,6 +363,14 @@ body {
   min-width: 0;
 }
 
+.njgo-roster-heading {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+  color: var(--color-text-heading);
+}
+
 .njgo-roster-grid > li {
   min-width: 0;
 }
@@ -371,6 +379,10 @@ body {
   .njgo-roster {
     margin-inline: -1.25rem;
     width: calc(100% + 2.5rem);
+  }
+
+  .njgo-roster-heading {
+    padding-left: 1.25rem;
   }
 
   .njgo-roster-grid {

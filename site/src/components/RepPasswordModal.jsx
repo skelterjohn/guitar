@@ -3,11 +3,26 @@ import { createPortal } from 'react-dom';
 
 export default function RepPasswordModal({ onSubmit }) {
   const [value, setValue] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const inputId = useId();
+  const errorId = useId();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    onSubmit(value);
+    setError('');
+    setSubmitting(true);
+
+    try {
+      const accepted = await onSubmit(value);
+      if (!accepted) {
+        setError('Incorrect password.');
+      }
+    } catch {
+      setError('Could not verify password. Try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return createPortal(
@@ -29,13 +44,31 @@ export default function RepPasswordModal({ onSubmit }) {
             className="rep-password-input"
             type="password"
             value={value}
-            onChange={(event) => setValue(event.target.value)}
+            onChange={(event) => {
+              setValue(event.target.value);
+              if (error) setError('');
+            }}
             autoComplete="current-password"
             autoFocus
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={error ? errorId : undefined}
+            disabled={submitting}
           />
+          <p
+            id={errorId}
+            className="rep-password-error"
+            role={error ? 'alert' : undefined}
+            aria-live="polite"
+          >
+            {error}
+          </p>
           <div className="rep-password-actions">
-            <button className="rep-password-submit" type="submit" disabled={!value.trim()}>
-              Submit
+            <button
+              className="rep-password-submit"
+              type="submit"
+              disabled={!value.trim() || submitting}
+            >
+              {submitting ? 'Checking…' : 'Submit'}
             </button>
           </div>
         </form>

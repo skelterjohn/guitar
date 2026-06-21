@@ -123,6 +123,7 @@ export default function NjgoRoster({ members }) {
       <h2 id="njgo-roster-heading" className="njgo-roster-heading">
         Meet the NJGO Performers
       </h2>
+      <p className="njgo-roster-note">in no particular order</p>
       <ul className="njgo-roster-grid">
         {shuffledMembers.map((member) => (
           <li key={member.name}>

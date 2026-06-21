@@ -296,24 +296,50 @@ body {
 }
 
 .njgo-overview-links {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--njgo-gap);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
   margin-top: 1rem;
+  max-width: 100%;
+}
+
+.njgo-overview-links-row {
+  display: inline-grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--njgo-gap);
+  width: max-content;
+  max-width: 100%;
+}
+
+.njgo-overview-links-members {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.njgo-overview-links-heading {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: normal;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
 }
 
 .njgo-overview-link {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: 0.2rem;
-  min-height: 4rem;
-  padding: 0.75rem 0.5rem;
+  min-height: 0;
+  padding: 0.65rem 0.75rem;
   font-size: 0.875rem;
   font-family: system-ui, sans-serif;
   text-decoration: none;
-  text-align: center;
+  text-align: left;
   color: var(--color-link-text);
   background: var(--color-link-bg);
   border: 1px solid var(--color-link-border);
@@ -327,15 +353,8 @@ body {
 .njgo-overview-link-label {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.3rem;
-}
-
-.njgo-overview-link-note {
-  font-size: 0.75rem;
-  font-weight: normal;
-  color: var(--color-text-muted);
-  letter-spacing: 0.02em;
 }
 
 @container njgo (max-width: 68.75rem) {
@@ -422,11 +441,18 @@ body {
 }
 
 .njgo-roster-heading {
-  margin: 0 0 1rem;
+  margin: 0 0 0.35rem;
   font-size: 1.15rem;
   font-weight: normal;
   letter-spacing: 0.04em;
   color: var(--color-text-heading);
+}
+
+.njgo-roster-note {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--color-text-muted);
 }
 
 .njgo-roster-grid > li {
@@ -440,6 +466,10 @@ body {
   }
 
   .njgo-roster-heading {
+    padding-left: 1.25rem;
+  }
+
+  .njgo-roster-note {
     padding-left: 1.25rem;
   }
 

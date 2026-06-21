@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import catalog from '../data/catalog.js';
 import repertoire from '../data/repertoire.js';
 import PdfViewer from '../components/PdfViewer.jsx';
+import RepPasswordGate from '../components/RepPasswordGate.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { catalogPath, pageTitle, repPath, viewPageUrl, viewPath } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
@@ -93,7 +94,7 @@ export default function ViewPdf() {
     url: viewPageUrl(decoded),
   });
 
-  return (
+  const viewer = (
     <PdfViewer
       filename={decoded}
       pdfHash={pdf?.hash}
@@ -105,5 +106,11 @@ export default function ViewPdf() {
       backLabel={fromRep ? 'Repertoire' : 'Catalog'}
       viewState={fromRep ? { from: repPath } : undefined}
     />
+  );
+
+  return fromRep ? (
+    <RepPasswordGate blockContent>{viewer}</RepPasswordGate>
+  ) : (
+    viewer
   );
 }

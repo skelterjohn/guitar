@@ -49,7 +49,7 @@ export default function AnnotationHelpModal({ open, onClose }) {
             <h3>Saving and sharing</h3>
             <ul>
               <li>
-                Annotations are not private and are not shared.
+                Annotations are private and are not shared.
               </li>
               <li>
                 They are saved locally as site data in this browser window or

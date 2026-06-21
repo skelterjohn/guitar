@@ -20,8 +20,10 @@ export default function Njgo() {
       <header className="page-header">
         <h1>New Jersey Guitar Orchestra</h1>
       </header>
-      <NjgoOverview logo={overview.logo} paragraphs={overview.paragraphs} />
-      <NjgoRoster members={roster.members} />
+      <div className="njgo-page">
+        <NjgoOverview logo={overview.logo} paragraphs={overview.paragraphs} />
+        <NjgoRoster members={roster.members} />
+      </div>
     </main>
   );
 }

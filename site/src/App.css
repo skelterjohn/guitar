@@ -237,15 +237,35 @@ body {
   margin-bottom: 0;
 }
 
-.njgo-overview {
+.njgo-page {
   --njgo-col-min: 34rem;
   --njgo-gap: 0.75rem;
+  container-type: inline-size;
+  container-name: njgo;
+  min-width: 0;
+}
+
+.njgo-overview {
   display: flex;
   align-items: flex-start;
   gap: 1.25rem;
-  width: calc(2 * var(--njgo-col-min) + var(--njgo-gap));
-  max-width: 100%;
+  width: 100%;
+  max-width: calc(2 * var(--njgo-col-min) + var(--njgo-gap));
   margin: 0 auto 1.25rem;
+}
+
+@container njgo (max-width: 68.75rem) {
+  .njgo-overview {
+    max-width: none;
+    margin-inline: 0;
+  }
+}
+
+@media (max-width: 68.75rem) {
+  .njgo-overview {
+    max-width: none;
+    margin-inline: 0;
+  }
 }
 
 .njgo-overview-logo-wrap {
@@ -261,6 +281,7 @@ body {
 .njgo-overview-text {
   flex: 1 1 0;
   min-width: 0;
+  align-self: stretch;
 }
 
 .njgo-overview p {
@@ -275,12 +296,11 @@ body {
 
 @media (max-width: 640px) {
   .njgo-overview {
-    flex-direction: column;
+    gap: 0.85rem;
   }
 
   .njgo-overview-logo-wrap {
-    flex-basis: auto;
-    max-width: 8rem;
+    flex: 0 0 5rem;
   }
 }
 
@@ -289,13 +309,19 @@ body {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(34rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(var(--njgo-col-min), 100%), 1fr));
   align-items: start;
-  gap: 0.75rem;
+  gap: var(--njgo-gap);
+  min-width: 0;
+}
+
+.njgo-roster-grid > li {
+  min-width: 0;
 }
 
 .njgo-roster-card {
   position: relative;
+  min-width: 0;
   background: var(--color-surface);
   border: 1px solid var(--color-border-light);
   border-radius: 4px;

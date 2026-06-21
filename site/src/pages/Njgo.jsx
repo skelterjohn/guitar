@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import NjgoFooter from '../components/NjgoFooter.jsx';
 import NjgoOverview from '../components/NjgoOverview.jsx';
 import NjgoRoster from '../components/NjgoRoster.jsx';
 import overview from '../data/njgo-overview.js';
@@ -27,6 +28,7 @@ export default function Njgo() {
         <NjgoOverview logo={overview.logo} paragraphs={overview.paragraphs} />
         <NjgoRoster members={roster.members} />
       </div>
+      <NjgoFooter />
     </main>
   );
 }

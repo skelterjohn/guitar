@@ -295,6 +295,24 @@ body {
   margin-bottom: 0;
 }
 
+.njgo-overview-director {
+  margin: 0 0 0.65rem;
+}
+
+.njgo-overview-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-family: system-ui, sans-serif;
+  color: var(--color-link-text);
+  text-decoration: none;
+}
+
+.njgo-overview-email:hover {
+  text-decoration: underline;
+}
+
 .njgo-overview-links {
   display: inline-grid;
   grid-template-columns: repeat(4, 1fr);
@@ -353,6 +371,34 @@ body {
   align-items: center;
   justify-content: flex-start;
   gap: 0.3rem;
+}
+
+.njgo-footer {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  justify-content: center;
+}
+
+.njgo-footer-email {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: system-ui, sans-serif;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--color-link-text);
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-link-border);
+  border-radius: 0.25rem;
+}
+
+.njgo-footer-email:hover {
+  background: var(--color-link-bg-hover);
 }
 
 @container njgo (max-width: 68.75rem) {

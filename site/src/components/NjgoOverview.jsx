@@ -1,4 +1,7 @@
+import EmailIcon from './EmailIcon.jsx';
 import NjgoLinks from './NjgoLinks.jsx';
+
+const DIRECTOR_EMAIL = 'newjerseyguitarorchestra@gmail.com';
 
 export default function NjgoOverview({ logo, paragraphs }) {
   const hasParagraphs = Array.isArray(paragraphs) && paragraphs.length > 0;
@@ -24,6 +27,12 @@ export default function NjgoOverview({ logo, paragraphs }) {
           paragraphs.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
+        <p className="njgo-overview-director">
+          <a className="njgo-overview-email" href={`mailto:${DIRECTOR_EMAIL}`}>
+            <EmailIcon />
+            Jayson Martinez, Director
+          </a>
+        </p>
         <NjgoLinks />
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as pdfjs from 'pdfjs-dist';
 import PdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
@@ -324,6 +324,14 @@ export default function PdfViewer({
     setAnnotationMenu(null);
     setAnnotationTool(null);
   };
+
+  const openAnnotationMenuAt = useCallback((clientX, clientY) => {
+    if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) {
+      return;
+    }
+
+    setAnnotationMenu({ clientX, clientY, openId: performance.now() });
+  }, []);
 
   const handleRasterChange = (pageNumber, color, blob, width, height) => {
     const key = String(pageNumber);
@@ -693,7 +701,7 @@ export default function PdfViewer({
           const clientY = tapStartY;
           tapStartX = null;
           tapStartY = null;
-          setAnnotationMenu({ clientX, clientY });
+          openAnnotationMenuAt(clientX, clientY);
         }, LONG_PRESS_MS);
       }
     };
@@ -759,18 +767,20 @@ export default function PdfViewer({
       tapStartY = null;
     };
 
-    const onContextMenu = (event) => {
-      if (!event.target.closest('.viewer-page-frame')) return;
-
-      event.preventDefault();
-      setAnnotationMenu({ clientX: event.clientX, clientY: event.clientY });
-    };
-
     container.addEventListener('pointerdown', onPointerDown);
     container.addEventListener('pointermove', onPointerMove);
     container.addEventListener('pointerup', onPointerUp);
     container.addEventListener('pointercancel', onPointerCancel);
-    container.addEventListener('contextmenu', onContextMenu);
+
+    const onContextMenu = (event) => {
+      if (!event.target.closest('.viewer-page-frame')) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      openAnnotationMenuAt(event.clientX, event.clientY);
+    };
+
+    container.addEventListener('contextmenu', onContextMenu, { capture: true });
 
     const resizeObserver = new ResizeObserver(() => {
       if (scrollToTopPendingRef.current) {
@@ -794,10 +804,10 @@ export default function PdfViewer({
       container.removeEventListener('pointermove', onPointerMove);
       container.removeEventListener('pointerup', onPointerUp);
       container.removeEventListener('pointercancel', onPointerCancel);
-      container.removeEventListener('contextmenu', onContextMenu);
+      container.removeEventListener('contextmenu', onContextMenu, { capture: true });
       resizeObserver.disconnect();
     };
-  }, [status, pageCount]);
+  }, [status, pageCount, openAnnotationMenuAt]);
 
   useEffect(() => {
     if (status !== 'ready') return undefined;
@@ -1091,9 +1101,7 @@ export default function PdfViewer({
                     isGlyphDragActive={glyphDragActive}
                     lastPenTapRef={lastPenTapRef}
                     onRasterChange={handleRasterChange}
-                    onOpenMenu={(clientX, clientY) =>
-                      setAnnotationMenu({ clientX, clientY })
-                    }
+                    onOpenMenu={openAnnotationMenuAt}
                     onDismissMenu={dismissAnnotationMenu}
                   />
                 </div>

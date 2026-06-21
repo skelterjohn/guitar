@@ -54,8 +54,23 @@ function getMenuDimensions(menuEl) {
     return { width: 0, height: 0 };
   }
 
-  const rect = menuEl.getBoundingClientRect();
-  return { width: rect.width, height: rect.height };
+  return {
+    width: menuEl.offsetWidth,
+    height: menuEl.offsetHeight,
+  };
+}
+
+function positionMenuFromAnchor(menuEl, clientX, clientY) {
+  if (!menuEl || !Number.isFinite(clientX) || !Number.isFinite(clientY)) {
+    return null;
+  }
+
+  const { width, height } = getMenuDimensions(menuEl);
+  if (width <= 0 || height <= 0) {
+    return null;
+  }
+
+  return menuPositionUpperRightOnPoint(clientX, clientY, width, height);
 }
 
 function isClientPointOverMenu(clientX, clientY, menuEl) {
@@ -89,10 +104,10 @@ function clampMenuPosition(left, top, menuWidth, menuHeight) {
   };
 }
 
-function menuPositionCenteredOnPoint(clientX, clientY, menuWidth, menuHeight) {
+function menuPositionUpperRightOnPoint(clientX, clientY, menuWidth, menuHeight) {
   return clampMenuPosition(
-    clientX - menuWidth / 2,
-    clientY - menuHeight / 2,
+    clientX - menuWidth,
+    clientY,
     menuWidth,
     menuHeight,
   );
@@ -181,25 +196,54 @@ export default function AnnotationMenu({
     if (!anchor) {
       menuPositionRef.current = null;
       setMenuPosition(null);
-      return;
+      return undefined;
+    }
+
+    const { clientX, clientY } = anchor;
+    let cancelled = false;
+    let rafId = 0;
+    let attempts = 0;
+
+    const applyPosition = () => {
+      if (cancelled) return true;
+
+      const menu = menuRef.current;
+      const next = positionMenuFromAnchor(menu, clientX, clientY);
+      if (!next) return false;
+
+      menuPositionRef.current = next;
+      setMenuPosition(next);
+      dismissSuppressUntilRef.current = performance.now() + 400;
+      setMenuText(TEXT_GLYPH_DEFAULT);
+      return true;
+    };
+
+    const retry = () => {
+      if (applyPosition() || attempts >= 12) return;
+      attempts += 1;
+      rafId = requestAnimationFrame(retry);
+    };
+
+    if (!applyPosition()) {
+      rafId = requestAnimationFrame(retry);
     }
 
     const menu = menuRef.current;
-    if (!menu) return;
+    const observer =
+      menu && typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            applyPosition();
+          })
+        : null;
+    if (menu && observer) {
+      observer.observe(menu);
+    }
 
-    const { width, height } = getMenuDimensions(menu);
-    if (width <= 0 || height <= 0) return;
-
-    const next = menuPositionCenteredOnPoint(
-      anchor.clientX,
-      anchor.clientY,
-      width,
-      height,
-    );
-    menuPositionRef.current = next;
-    setMenuPosition(next);
-    dismissSuppressUntilRef.current = performance.now() + 400;
-    setMenuText(TEXT_GLYPH_DEFAULT);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafId);
+      observer?.disconnect();
+    };
   }, [anchor]);
 
   useEffect(() => {
@@ -491,7 +535,10 @@ export default function AnnotationMenu({
   if (!anchor) return null;
 
   const glyphSizePx = annotationGlyphSizePx(pdfZoom);
-  const isReady = menuPosition != null;
+  const isReady =
+    menuPosition != null &&
+    Number.isFinite(menuPosition.left) &&
+    Number.isFinite(menuPosition.top);
   const chordModeActive = annotationTool === 'chord';
 
   const renderMenuGlyph = (glyph) => (
@@ -557,8 +604,8 @@ export default function AnnotationMenu({
         ref={menuRef}
         className="annotation-menu"
         style={{
-          left: isReady ? `${menuPosition.left}px` : '0px',
-          top: isReady ? `${menuPosition.top}px` : '0px',
+          left: isReady ? `${menuPosition.left}px` : '-9999px',
+          top: isReady ? `${menuPosition.top}px` : '-9999px',
           visibility: isReady ? 'visible' : 'hidden',
           pointerEvents: isReady ? 'auto' : 'none',
         }}

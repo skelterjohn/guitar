@@ -12,8 +12,8 @@ export default function NjgoOverview({ logo, paragraphs }) {
             className="njgo-overview-logo"
             src={logo}
             alt="New Jersey Guitar Orchestra"
-            width={1000}
-            height={680}
+            width={189}
+            height={441}
           />
         </div>
       )}

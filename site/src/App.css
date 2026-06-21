@@ -237,6 +237,53 @@ body {
   margin-bottom: 0;
 }
 
+.njgo-overview {
+  --njgo-col-min: 34rem;
+  --njgo-gap: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  width: calc(2 * var(--njgo-col-min) + var(--njgo-gap));
+  max-width: 100%;
+  margin: 0 auto 1.25rem;
+}
+
+.njgo-overview-logo-wrap {
+  flex: 0 0 min(20%, 8rem);
+}
+
+.njgo-overview-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.njgo-overview-text {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.njgo-overview p {
+  margin: 0 0 0.65rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.njgo-overview p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .njgo-overview {
+    flex-direction: column;
+  }
+
+  .njgo-overview-logo-wrap {
+    flex-basis: auto;
+    max-width: 8rem;
+  }
+}
+
 .njgo-roster-grid {
   list-style: none;
   margin: 0;

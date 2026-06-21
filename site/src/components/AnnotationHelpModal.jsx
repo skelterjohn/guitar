@@ -80,13 +80,30 @@ export default function AnnotationHelpModal({ open, onClose }) {
                 With the menu open, select the pencil or eraser at the bottom
                 left, then draw or erase with your finger or mouse.
               </li>
-			  <li>Drag the glyph menu around to move it out of the way.</li>
+              <li>Drag the glyph menu around to move it out of the way.</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Layers</h3>
+            <ul>
               <li>
-                Choose a color with the swatches at the bottom right of the
-                menu.
+                Annotations are stored in four color layers: black, green, blue,
+                and red.
               </li>
               <li>
-                <strong>clear</strong> removes all annotations on the current
+                Choose the active layer with the color swatches labeled{' '}
+                <strong>layers</strong> at the bottom right of the glyph menu.
+              </li>
+              <li>
+                Pen, eraser, and glyph strokes are drawn on the active layer
+                only.
+              </li>
+              <li>
+                <strong>Clear layer</strong> removes annotations on the current
+                page for the active layer.
+              </li>
+              <li>
+                <strong>Clear page</strong> removes all layers on the current
                 page.
               </li>
             </ul>

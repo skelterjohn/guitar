@@ -35,7 +35,12 @@ function NjgoRosterCard({ member }) {
   }, [paragraphs, expanded]);
 
   return (
-    <article className="njgo-roster-card">
+    <article
+      className={[
+        'njgo-roster-card',
+        expanded ? 'njgo-roster-card--expanded' : '',
+      ].filter(Boolean).join(' ')}
+    >
       {member.image && (
         <div className="njgo-roster-photo-frame">
           <img
@@ -51,26 +56,41 @@ function NjgoRosterCard({ member }) {
       <div className="njgo-roster-card-body">
         <h2 className="njgo-roster-name">{member.name}</h2>
         {paragraphs.length > 0 && (
-          <div
-            ref={bioRef}
-            className={[
-              'njgo-roster-bio',
-              !expanded ? 'njgo-roster-bio--clamped' : '',
-            ].filter(Boolean).join(' ')}
-          >
-            {paragraphs.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}
+          <div className="njgo-roster-bio-shell">
+            <div
+              ref={bioRef}
+              className="njgo-roster-bio njgo-roster-bio--clamped"
+              aria-hidden={expanded}
+            >
+              {paragraphs.map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
+            {expanded && (
+              <div className="njgo-roster-bio njgo-roster-bio--overlay">
+                {paragraphs.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+                <button
+                  type="button"
+                  className="njgo-roster-read-more"
+                  onClick={() => setExpanded(false)}
+                  aria-expanded
+                >
+                  Read less
+                </button>
+              </div>
+            )}
           </div>
         )}
-        {hasOverflow && (
+        {hasOverflow && !expanded && (
           <button
             type="button"
             className="njgo-roster-read-more"
-            onClick={() => setExpanded((current) => !current)}
-            aria-expanded={expanded}
+            onClick={() => setExpanded(true)}
+            aria-expanded={false}
           >
-            {expanded ? 'Read less' : 'Read more'}
+            Read more
           </button>
         )}
       </div>

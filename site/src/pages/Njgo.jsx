@@ -18,7 +18,10 @@ export default function Njgo() {
   return (
     <main className="page">
       <header className="page-header">
-        <h1>New Jersey Guitar Orchestra</h1>
+        <h1 className="njgo-page-title">
+          <span className="njgo-page-title-line">New Jersey</span>
+          <span className="njgo-page-title-line">Guitar Orchestra</span>
+        </h1>
       </header>
       <div className="njgo-page">
         <NjgoOverview logo={overview.logo} paragraphs={overview.paragraphs} />

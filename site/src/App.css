@@ -245,6 +245,20 @@ body {
   min-width: 0;
 }
 
+.njgo-page-title-line + .njgo-page-title-line::before {
+  content: ' ';
+}
+
+@media (max-width: 640px) {
+  .njgo-page-title-line {
+    display: block;
+  }
+
+  .njgo-page-title-line + .njgo-page-title-line::before {
+    content: none;
+  }
+}
+
 .njgo-overview {
   display: flex;
   align-items: flex-start;

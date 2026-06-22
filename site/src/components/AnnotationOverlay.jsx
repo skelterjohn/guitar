@@ -472,23 +472,31 @@ export default function AnnotationOverlay({
     const finishStroke = async () => {
       const active = activeStrokeRef.current;
       activeStrokeRef.current = null;
-      setDraftStroke(null);
 
-      if (!active || active.points.length < 2) return;
+      if (!active || active.points.length < 2) {
+        setDraftStroke(null);
+        return;
+      }
 
       const reference = ensureActiveLayerCanvasSize();
       const canvas = getActiveLayerCanvas();
       const resolvedReference =
         reference.width > 0 ? reference : referenceSizeRef.current;
-      if (!canvas || resolvedReference.width === 0) return;
+      if (!canvas || resolvedReference.width === 0) {
+        setDraftStroke(null);
+        return;
+      }
 
+      const display = getDisplaySize();
       const ctx = canvas.getContext('2d');
       drawStrokeOnCanvas(
         ctx,
         active,
         resolvedReference.width,
         resolvedReference.height,
+        { displayWidth: display.width },
       );
+      setDraftStroke(null);
       await notifyLayerChange(annotationColorRef.current);
     };
 

@@ -4,10 +4,18 @@ export const PEN_THINNING = 0.8;
 export const PEN_STROKE_SMOOTHING = 0.5;
 export const PEN_STROKE_STREAMLINE = 0.5;
 
+/** Scale stroke width from CSS display pixels to fixed raster layout pixels. */
+export function penStrokeSizeScale(layoutWidthPx, displayWidthPx) {
+  if (!displayWidthPx || displayWidthPx <= 0 || !layoutWidthPx || layoutWidthPx <= 0) {
+    return 1;
+  }
+  return layoutWidthPx / displayWidthPx;
+}
+
 /** perfect-freehand options: pen uses hardware pressure; touch/mouse use speed. */
-export function penStrokeOutlineOptions(pointerType = 'mouse') {
+export function penStrokeOutlineOptions(pointerType = 'mouse', sizeScale = 1) {
   return {
-    size: PEN_BASE_WIDTH,
+    size: PEN_BASE_WIDTH * sizeScale,
     thinning: PEN_THINNING,
     smoothing: PEN_STROKE_SMOOTHING,
     streamline: PEN_STROKE_STREAMLINE,

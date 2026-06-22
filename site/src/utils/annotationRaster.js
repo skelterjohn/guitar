@@ -13,7 +13,7 @@ import {
   TEXT_GLYPH_FONT,
 } from '../data/annotationGlyphs.js';
 import { ANNOTATION_RASTER_REFERENCE_WIDTH } from './annotationPages.js';
-import { PEN_BASE_WIDTH, penStrokeOutlineOptions } from './stylusInput.js';
+import { PEN_BASE_WIDTH, penStrokeOutlineOptions, penStrokeSizeScale } from './stylusInput.js';
 
 /** Glyph height as a fraction of the fixed annotation raster page width. */
 export const GLYPH_SIZE_LAYOUT_RATIO =
@@ -293,7 +293,13 @@ export async function drawGlyphOnCanvas(
   drawGlyphStampAt(ctx, stamp, normX, normY, layoutWidthPx, layoutHeightPx);
 }
 
-export function drawStrokeOnCanvas(ctx, stroke, layoutWidthPx, layoutHeightPx) {
+export function drawStrokeOnCanvas(
+  ctx,
+  stroke,
+  layoutWidthPx,
+  layoutHeightPx,
+  { displayWidth = 0 } = {},
+) {
   if (!stroke?.points?.length || stroke.points.length < 2) return;
 
   const inputPoints = stroke.points.map(([x, y, pressure = 0.5]) => [
@@ -301,9 +307,10 @@ export function drawStrokeOnCanvas(ctx, stroke, layoutWidthPx, layoutHeightPx) {
     y * layoutHeightPx,
     pressure,
   ]);
-  const baseWidth = stroke.baseWidth ?? PEN_BASE_WIDTH;
+  const sizeScale = penStrokeSizeScale(layoutWidthPx, displayWidth);
+  const baseWidth = (stroke.baseWidth ?? PEN_BASE_WIDTH) * sizeScale;
   const outline = getStroke(inputPoints, {
-    ...penStrokeOutlineOptions(stroke.pointerType),
+    ...penStrokeOutlineOptions(stroke.pointerType, sizeScale),
     size: baseWidth,
   });
 

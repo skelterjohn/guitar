@@ -34,7 +34,7 @@ export default function AnnotationHelpModal({ open, onClose }) {
         aria-labelledby="annotation-help-title"
       >
         <div className="annotation-help-header">
-          <h2 id="annotation-help-title">Annotations</h2>
+          <h2 id="annotation-help-title">Annotations Help</h2>
           <button
             type="button"
             className="annotation-help-close"
@@ -151,6 +151,19 @@ export default function AnnotationHelpModal({ open, onClose }) {
               <li>
                 Drag the chord preview in the bottom right corner onto the
                 score, using the selected annotation color.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h3>Printing and downloading</h3>
+            <ul>
+              <li>
+				Use the download button to save the score without any of
+				your annotations.
+			  </li>
+              <li>
+				Use the print button to print or save the score with all of
+				your annotations.
               </li>
             </ul>
           </section>

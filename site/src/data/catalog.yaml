@@ -7,11 +7,11 @@ sections:
         pdfs:
           - label: score
             file: pub/haze_dance.pdf
-          - label: part 1
+          - label: guitar 1
             file: pub/haze_dance-Guitar_1.pdf
-          - label: part 2
+          - label: guitar 2
             file: pub/haze_dance-Guitar_2.pdf
-          - label: part 3
+          - label: guitar 3
             file: pub/haze_dance-Guitar_3.pdf
       - title: Breakfast around the Sun
         description: Four parts. Used musescore for the first time in a serious way, since typing is hard these days. Inspirations include Gulli Bjornsson, Olga Amelkina-Vera, and Ray Lynch.

@@ -274,6 +274,7 @@ export default function AnnotationOverlay({
       for (const color of ANNOTATION_LAYER_COLORS) {
         if (skipNextBlobLoadRef.current[color]) {
           skipNextBlobLoadRef.current[color] = false;
+          loadedLayerBlobRef.current[color] = pageLayers.layers?.[color]?.blob ?? null;
           continue;
         }
 

@@ -36,6 +36,13 @@ export const CHORD_DIAGRAM_WIDTH_RATIO = CHORD_GRID_VIEW_WIDTH / 5;
 
 export const CHORD_GLYPH_RENDER_SCALE = 1;
 
+/** Display scale for chord stamps (menu, preview, and page). */
+export const CHORD_GLYPH_SIZE_SCALE = 0.5;
+
+export function chordMenuGlyphSizePx(glyphSizePx) {
+  return glyphSizePx * CHORD_GLYPH_SIZE_SCALE;
+}
+
 export function chordDiagramWidthPx(glyphSizePx) {
   return glyphSizePx * CHORD_DIAGRAM_WIDTH_RATIO;
 }

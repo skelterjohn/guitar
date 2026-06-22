@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import {
   CHORD_GLYPH_ID,
   chordGlyphMaxDragBoundsPx,
+  chordMenuGlyphSizePx,
   serializeChordDiagram,
 } from '../data/chordGrid.js';
 import {
@@ -23,7 +24,7 @@ export default function MenuChordGlyphDrag({
   const canvasRef = useRef(null);
   const layoutWidthPx = layoutWidthPxForGlyphSize(glyphSizePx);
   const { widthPx: dragBoxWidthPx, heightPx: dragBoxHeightPx } =
-    chordGlyphMaxDragBoundsPx(glyphSizePx);
+    chordGlyphMaxDragBoundsPx(chordMenuGlyphSizePx(glyphSizePx));
 
   const spec = useMemo(() => {
     const chord = serializeChordDiagram(marks, romanNumeral, rotate);

@@ -1,8 +1,10 @@
 import {
   CHORD_GLYPH_ID,
+  CHORD_GLYPH_SIZE_SCALE,
   CHORD_ROMAN_NUMERAL_FONT,
   CHORD_ROMAN_NUMERAL_OFF,
   chordGlyphBoundsPx,
+  chordMenuGlyphSizePx,
 } from './chordGrid.js';
 import { measureCssPxPerMm } from '../utils/stylusInput.js';
 
@@ -169,7 +171,14 @@ export function isNoteRestGlyph(glyphId) {
 }
 
 export function glyphStampSizeScale(glyphId, baseScale = 1) {
-  return isNoteRestGlyph(glyphId) ? baseScale * NOTE_REST_GLYPH_SIZE_SCALE : baseScale;
+  let scale = baseScale;
+  if (isChordGlyph(glyphId)) {
+    scale *= CHORD_GLYPH_SIZE_SCALE;
+  }
+  if (isNoteRestGlyph(glyphId)) {
+    scale *= NOTE_REST_GLYPH_SIZE_SCALE;
+  }
+  return scale;
 }
 
 export function glyphDisplayText(glyph) {
@@ -187,7 +196,7 @@ export function glyphEraseRadiusPx(glyph, glyphSizePx) {
   }
   if (isChordGlyph(glyph)) {
     const showNumeral = glyph.chord?.romanNumeral !== CHORD_ROMAN_NUMERAL_OFF;
-    const { widthPx, heightPx } = chordGlyphBoundsPx(glyphSizePx, {
+    const { widthPx, heightPx } = chordGlyphBoundsPx(chordMenuGlyphSizePx(glyphSizePx), {
       showNumeral,
       marks: glyph.chord?.marks,
       rotate: glyph.chord?.rotate === true,

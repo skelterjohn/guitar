@@ -24,7 +24,7 @@ export function layoutWidthPxForGlyphSize(glyphSizePx) {
 }
 
 export const RASTER_EXPORT_TYPE = 'image/webp';
-export const RASTER_EXPORT_QUALITY = 0.92;
+export const RASTER_EXPORT_QUALITY = 0.97;
 export const MENU_GLYPH_COLOR = '#f8fafc';
 
 /** Scale for glyphs/chords stamped onto the page (menu previews stay at 1×). */
@@ -66,24 +66,33 @@ function loadImage(src) {
   });
 }
 
+function ensureSvgDimensions(svgMarkup, width, height) {
+  const w = Math.max(1, Math.ceil(width));
+  const h = Math.max(1, Math.ceil(height));
+  return svgMarkup.replace(/<svg([^>]*)>/, (match, attrs) => {
+    const cleaned = attrs.replace(/\s(width|height)="[^"]*"/gi, '');
+    return `<svg${cleaned} width="${w}" height="${h}">`;
+  });
+}
+
 async function svgMarkupToCanvas(svgMarkup, width, height) {
-  const svg = embedChordRasterStyles(svgMarkup);
+  const w = Math.max(1, Math.ceil(width));
+  const h = Math.max(1, Math.ceil(height));
+  const svg = ensureSvgDimensions(embedChordRasterStyles(svgMarkup), w, h);
   const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);
 
   try {
     const img = await loadImage(url);
     const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.ceil(width));
-    canvas.height = Math.max(1, Math.ceil(height));
+    canvas.width = w;
+    canvas.height = h;
     const ctx = canvas.getContext('2d');
-    if (
-      img.naturalWidth === canvas.width
-      && img.naturalHeight === canvas.height
-    ) {
+    ctx.imageSmoothingEnabled = false;
+    if (img.naturalWidth === w && img.naturalHeight === h) {
       ctx.drawImage(img, 0, 0);
     } else {
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, w, h);
     }
     return canvas;
   } finally {
@@ -254,15 +263,20 @@ export async function buildGlyphStamp(
 export function drawGlyphStampAt(ctx, stamp, normX, normY, layoutWidthPx, layoutHeightPx) {
   if (!stamp?.canvas) return;
 
-  const x = normX * layoutWidthPx;
-  const y = normY * layoutHeightPx;
+  const x = Math.round(normX * layoutWidthPx);
+  const y = Math.round(normY * layoutHeightPx);
+  const drawX = Math.round(x - stamp.anchorX);
+  const drawY = Math.round(y - stamp.anchorY);
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
   ctx.drawImage(
     stamp.canvas,
-    x - stamp.anchorX,
-    y - stamp.anchorY,
+    drawX,
+    drawY,
     stamp.width,
     stamp.height,
   );
+  ctx.restore();
 }
 
 export async function drawGlyphOnCanvas(
@@ -326,7 +340,12 @@ export async function loadBlobOntoCanvas(canvas, blob) {
   try {
     const img = await loadImage(url);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
+    ctx.imageSmoothingEnabled = false;
+    if (img.naturalWidth === canvas.width && img.naturalHeight === canvas.height) {
+      ctx.drawImage(img, 0, 0);
+    } else {
+      ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
+    }
   } finally {
     URL.revokeObjectURL(url);
   }

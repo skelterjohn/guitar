@@ -30,7 +30,7 @@ import {
   measureCssPxPerMm,
   PEN_BASE_WIDTH,
   PEN_COLOR,
-  PEN_THINNING,
+  penStrokeOutlineOptions,
 } from '../utils/stylusInput.js';
 
 const TAP_MOVE_THRESHOLD = 10;
@@ -61,11 +61,8 @@ function strokeToPathData(stroke, width, height) {
   ]);
   const baseWidth = stroke.baseWidth ?? PEN_BASE_WIDTH;
   const outline = getStroke(inputPoints, {
+    ...penStrokeOutlineOptions(stroke.pointerType),
     size: baseWidth,
-    thinning: PEN_THINNING,
-    smoothing: 0.5,
-    streamline: 0.5,
-    simulatePressure: true,
   });
 
   return getSvgPathFromStroke(outline);
@@ -594,6 +591,7 @@ export default function AnnotationOverlay({
     const beginPenStroke = (event, startX, startY) => {
       activeStrokeRef.current = {
         tool: 'pen',
+        pointerType: event.pointerType,
         color: annotationColorRef.current,
         baseWidth: PEN_BASE_WIDTH,
         points: [],

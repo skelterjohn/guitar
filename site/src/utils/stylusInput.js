@@ -1,6 +1,19 @@
 export const PEN_COLOR = '#dc2626';
 export const PEN_BASE_WIDTH = 4;
 export const PEN_THINNING = 0.8;
+export const PEN_STROKE_SMOOTHING = 0.5;
+export const PEN_STROKE_STREAMLINE = 0.5;
+
+/** perfect-freehand options: pen uses hardware pressure; touch/mouse use speed. */
+export function penStrokeOutlineOptions(pointerType = 'mouse') {
+  return {
+    size: PEN_BASE_WIDTH,
+    thinning: PEN_THINNING,
+    smoothing: PEN_STROKE_SMOOTHING,
+    streamline: PEN_STROKE_STREAMLINE,
+    simulatePressure: pointerType !== 'pen',
+  };
+}
 
 export const ERASER_MIN_DIAMETER_MM = 1;
 export const ERASER_MAX_DIAMETER_MM = 20;

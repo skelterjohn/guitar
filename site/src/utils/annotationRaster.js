@@ -13,7 +13,7 @@ import {
   TEXT_GLYPH_FONT,
 } from '../data/annotationGlyphs.js';
 import { ANNOTATION_RASTER_REFERENCE_WIDTH } from './annotationPages.js';
-import { PEN_BASE_WIDTH, PEN_THINNING } from './stylusInput.js';
+import { PEN_BASE_WIDTH, penStrokeOutlineOptions } from './stylusInput.js';
 
 /** Glyph height as a fraction of the fixed annotation raster page width. */
 export const GLYPH_SIZE_LAYOUT_RATIO =
@@ -303,11 +303,8 @@ export function drawStrokeOnCanvas(ctx, stroke, layoutWidthPx, layoutHeightPx) {
   ]);
   const baseWidth = stroke.baseWidth ?? PEN_BASE_WIDTH;
   const outline = getStroke(inputPoints, {
+    ...penStrokeOutlineOptions(stroke.pointerType),
     size: baseWidth,
-    thinning: PEN_THINNING,
-    smoothing: 0.5,
-    streamline: 0.5,
-    simulatePressure: true,
   });
 
   const pathData = getSvgPathFromStroke(outline);

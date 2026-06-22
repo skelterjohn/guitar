@@ -3,8 +3,6 @@ import usePageMeta from '../hooks/usePageMeta.js';
 import {
   catalogPath,
   defaultDescription,
-  repDescription,
-  repPath,
   siteHeading,
   siteOrigin,
   siteTitle,
@@ -29,10 +27,6 @@ export default function Landing() {
           <span className="landing-link-desc">
             original compositions, arrangements, and transcriptions
           </span>
-        </Link>
-        <Link className="landing-link" to={repPath}>
-          <span className="landing-link-title">repertoire</span>
-          <span className="landing-link-desc">{repDescription}</span>
         </Link>
       </nav>
     </main>

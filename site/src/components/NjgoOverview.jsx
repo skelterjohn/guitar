@@ -11,6 +11,10 @@ export default function NjgoOverview({ logo, paragraphs }) {
 
   return (
     <section className="njgo-overview" aria-label="About">
+      <h1 className="njgo-page-title">
+        <span className="njgo-page-title-line">New Jersey</span>
+        <span className="njgo-page-title-line">Guitar Orchestra</span>
+      </h1>
       {logo && (
         <div className="njgo-overview-logo-wrap">
           <img

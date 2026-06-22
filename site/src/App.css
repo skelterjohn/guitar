@@ -49,14 +49,6 @@ body {
   padding-top: 0.75rem;
 }
 
-.page--njgo .page-header {
-  border-bottom: none;
-  padding-bottom: 0;
-  width: 100%;
-  max-width: calc(2 * var(--njgo-col-min) + var(--njgo-gap));
-  margin-inline: auto;
-}
-
 .toc {
   display: none;
 }
@@ -257,6 +249,16 @@ body {
   min-width: 0;
 }
 
+.njgo-page-title {
+  margin: 0 0 0.65rem;
+  font-size: 1.75rem;
+  font-weight: normal;
+  letter-spacing: 0.02em;
+  color: var(--color-text-heading);
+  grid-column: 2;
+  grid-row: 1;
+}
+
 .njgo-page-title-line + .njgo-page-title-line::before {
   content: ' ';
 }
@@ -272,9 +274,10 @@ body {
 }
 
 .njgo-overview {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.25rem;
+  display: grid;
+  grid-template-columns: min(20%, 8rem) 1fr;
+  column-gap: 1.25rem;
+  align-items: start;
   width: 100%;
   max-width: calc(2 * var(--njgo-col-min) + var(--njgo-gap));
   min-width: 0;
@@ -282,7 +285,8 @@ body {
 }
 
 .njgo-overview-logo-wrap {
-  flex: 0 0 min(20%, 8rem);
+  grid-column: 1;
+  grid-row: 2;
 }
 
 .njgo-overview-logo {
@@ -292,9 +296,9 @@ body {
 }
 
 .njgo-overview-text {
-  flex: 1 1 0;
+  grid-column: 2;
+  grid-row: 2;
   min-width: 0;
-  align-self: stretch;
 }
 
 .njgo-overview p {
@@ -431,21 +435,20 @@ body {
 }
 
 @container njgo (max-width: 68.75rem) {
-  .page--njgo .page-header {
+  .njgo-overview {
+    grid-template-columns: 1fr;
     max-width: none;
     margin-inline: 0;
   }
 
-  .njgo-overview {
-    max-width: none;
-    margin-inline: 0;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
+  .njgo-page-title {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .njgo-overview-logo-wrap {
-    flex: none;
+    grid-column: 1;
+    grid-row: auto;
     container-type: inline-size;
     width: 100%;
     aspect-ratio: 441 / 189;
@@ -465,6 +468,8 @@ body {
   }
 
   .njgo-overview-text {
+    grid-column: 1;
+    grid-row: auto;
     width: 100%;
   }
 
@@ -474,21 +479,20 @@ body {
 }
 
 @media (max-width: 68.75rem) {
-  .page--njgo .page-header {
+  .njgo-overview {
+    grid-template-columns: 1fr;
     max-width: none;
     margin-inline: 0;
   }
 
-  .njgo-overview {
-    max-width: none;
-    margin-inline: 0;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
+  .njgo-page-title {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .njgo-overview-logo-wrap {
-    flex: none;
+    grid-column: 1;
+    grid-row: auto;
     container-type: inline-size;
     width: 100%;
     aspect-ratio: 441 / 189;
@@ -508,6 +512,8 @@ body {
   }
 
   .njgo-overview-text {
+    grid-column: 1;
+    grid-row: auto;
     width: 100%;
   }
 }

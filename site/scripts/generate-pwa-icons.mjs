@@ -36,11 +36,30 @@ const njgoTargets = [
   { file: 'njgo-apple-touch-icon.png', size: 180 },
 ];
 
-for (const { file, size } of njgoTargets) {
-  await sharp(njgoLogo)
-    .resize(size, size, { fit: 'contain', background: njgoThemeColor })
+async function writeNjgoIcon(size, outPath) {
+  const logo = await sharp(njgoLogo)
+    .resize(size, size, {
+      fit: 'contain',
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
     .png()
-    .toFile(join(publicDir, file));
+    .toBuffer();
+
+  await sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 1 },
+    },
+  })
+    .composite([{ input: logo, gravity: 'center' }])
+    .png()
+    .toFile(outPath);
+}
+
+for (const { file, size } of njgoTargets) {
+  await writeNjgoIcon(size, join(publicDir, file));
   console.log(`pwa-icons → public/${file}`);
 }
 

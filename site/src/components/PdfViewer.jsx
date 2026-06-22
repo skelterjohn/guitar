@@ -1086,9 +1086,9 @@ export default function PdfViewer({
   }, [status, pageCount]);
 
   useLayoutEffect(() => {
-    if (!headerHidden || status !== 'ready' || pageCount === 0) return;
+    if (status !== 'ready' || pageCount === 0) return;
     resetPageScrollRef.current();
-  }, [headerHidden, status, pageCount]);
+  }, [headerHidden, footerHidden, status, pageCount]);
 
   useLayoutEffect(() => {
     if (status !== 'ready' || pageCount === 0 || !displayReady) {
@@ -1261,8 +1261,8 @@ export default function PdfViewer({
       )}
       <div
         className={`viewer-content${headerHidden ? ' is-header-hidden' : ''}${
-          !footerHidden && sectionPieces.length > 0 ? ' is-footer-visible' : ''
-        }${isTouchAnnotating ? ' is-touch-annotating' : ''}${
+          isTouchAnnotating ? ' is-touch-annotating' : ''
+        }${
           showLoading ? ' is-loading' : ''
         }`}
         ref={containerRef}

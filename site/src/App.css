@@ -858,14 +858,6 @@ body {
   z-index: 3;
 }
 
-.viewer-footer-chrome:not(.is-collapsed) {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  pointer-events: auto;
-}
-
 .viewer-footer-chrome.is-collapsed {
   height: 0;
   overflow: visible;
@@ -1343,10 +1335,6 @@ body {
 
 .viewer-content.is-loading {
   overflow: hidden;
-}
-
-.viewer-content.is-footer-visible {
-  padding-bottom: 4rem;
 }
 
 .viewer-zoom-surface {

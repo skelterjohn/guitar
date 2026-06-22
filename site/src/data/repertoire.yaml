@@ -83,3 +83,422 @@ sections:
         links:
           - label: ASU Guitar Orchestra
             url: https://www.youtube.com/watch?v=RQgFKNLj3ho
+  - id: njgo2026
+    title: NJGO 2026
+    pieces:
+      - title: The Promise of Something New
+        description: Matthew Cochran
+        pdfs:
+          - label: score
+            file: PASSWORD/promise_score.pdf
+          - label: guitar 1
+            file: PASSWORD/promise_1.pdf
+          - label: guitar 2
+            file: PASSWORD/promise_2.pdf
+          - label: guitar 3
+            file: PASSWORD/promise_3.pdf
+          - label: guitar 4
+            file: PASSWORD/promise_4.pdf
+      - title: Sail Off the Edge
+        description: Andrew York
+        pdfs:
+          - label: score
+            file: PASSWORD/sail_off_score.pdf
+          - label: guitar 1
+            file: PASSWORD/sail_off_1.pdf
+          - label: guitar 2
+            file: PASSWORD/sail_off_2.pdf
+          - label: guitar 3
+            file: PASSWORD/sail_off_3.pdf
+          - label: guitar 4
+            file: PASSWORD/sail_off_4.pdf
+      - title: Pulsar
+        description: Olga Amelkina-Vera
+        pdfs:
+          - label: score
+            file: PASSWORD/pulsar_olga_score.pdf
+          - label: guitar 1
+            file: PASSWORD/pulsar_olga_1.pdf
+          - label: guitar 2
+            file: PASSWORD/pulsar_olga_2.pdf
+          - label: guitar 3
+            file: PASSWORD/pulsar_olga_3.pdf
+          - label: guitar 4
+            file: PASSWORD/pulsar_olga_4.pdf
+      - title: Concertino
+        description: Jan Bartlema
+        pdfs:
+          - label: score
+            file: PASSWORD/conertino_bartlema_score.pdf
+          - label: guitar 1
+            file: PASSWORD/conertino_bartlema_1.pdf
+          - label: guitar 2
+            file: PASSWORD/conertino_bartlema_2.pdf
+          - label: guitar 3
+            file: PASSWORD/conertino_bartlema_3.pdf
+          - label: guitar 4
+            file: PASSWORD/conertino_bartlema_4.pdf
+          - label: bass
+            file: PASSWORD/conertino_bartlema_bass.pdf
+          - label: soloist 1
+            file: PASSWORD/conertino_bartlema_solo1.pdf
+          - label: soloist 2
+            file: PASSWORD/conertino_bartlema_solo2.pdf
+  - id: njgo2025
+    title: NJGO 2025
+    pieces:
+      - title: Fools Rushing In
+        description: John Asmuth
+        pdfs:
+          - label: score
+            file: PASSWORD/fools_rushing_score.pdf
+          - label: guitar 1
+            file: PASSWORD/fools_rushing_1.pdf
+          - label: guitar 2
+            file: PASSWORD/fools_rushing_2.pdf
+          - label: guitar 3
+            file: PASSWORD/fools_rushing_3.pdf
+          - label: guitar 4
+            file: PASSWORD/fools_rushing_4.pdf
+      - title: Everything Leads to Something Else
+        description: Olga Amelkina-Vera
+        pdfs:
+          - label: score
+            file: PASSWORD/else_score.pdf
+          - label: guitar 1
+            file: PASSWORD/else_1.pdf
+          - label: guitar 2
+            file: PASSWORD/else_2.pdf
+          - label: guitar 3
+            file: PASSWORD/else_3.pdf
+          - label: guitar 4
+            file: PASSWORD/else_4.pdf
+          - label: bass
+            file: PASSWORD/else_bass.pdf
+      - title: Intermezzo
+        description: Olga Amelkina-Vera
+        pdfs:
+          - label: score
+            file: PASSWORD/intermezzo_score.pdf
+          - label: guitar 1
+            file: PASSWORD/intermezzo_1.pdf
+          - label: guitar 2
+            file: PASSWORD/intermezzo_2.pdf
+          - label: guitar 3
+            file: PASSWORD/intermezzo_3.pdf
+          - label: guitar 4
+            file: PASSWORD/intermezzo_4.pdf
+      - title: Nebulae
+        description: Olga Amelkina-Vera
+        pdfs:
+          - label: score
+            file: PASSWORD/nebulae_score.pdf
+          - label: guitar 1
+            file: PASSWORD/nebulae_1.pdf
+          - label: guitar 2
+            file: PASSWORD/nebulae_2.pdf
+          - label: guitar 3
+            file: PASSWORD/nebulae_3.pdf
+          - label: guitar 4
+            file: PASSWORD/nebulae_4.pdf
+      - title: Finn's River
+        description: Olga Amelkina-Vera
+        pdfs:
+          - label: score
+            file: PASSWORD/finns_river_score.pdf
+          - label: guitar 1
+            file: PASSWORD/finns_river_1.pdf
+          - label: guitar 2
+            file: PASSWORD/finns_river_2.pdf
+          - label: guitar 3
+            file: PASSWORD/finns_river_3.pdf
+          - label: guitar 4
+            file: PASSWORD/finns_river_4.pdf
+          - label: bass
+            file: PASSWORD/finns_river_bass.pdf
+          - label: solo
+            file: PASSWORD/finns_river_solo.pdf
+  - id: njgo2024
+    title: NJGO 2024
+    pieces:
+      - title: Mbira
+        description: William Kanengiser
+        pdfs:
+          - label: score
+            file: PASSWORD/mbira_score.pdf
+          - label: guitar 1
+            file: PASSWORD/mbira_1.pdf
+          - label: guitar 2
+            file: PASSWORD/mbira_2.pdf
+          - label: guitar 3
+            file: PASSWORD/mbira_3.pdf
+          - label: guitar 4
+            file: PASSWORD/mbira_4.pdf
+      - title: Granada
+        description: Dave Hart
+        pdfs:
+          - label: score
+            file: PASSWORD/granada_score.pdf
+          - label: guitar 1
+            file: PASSWORD/granada_1.pdf
+          - label: guitar 2
+            file: PASSWORD/granada_2.pdf
+          - label: guitar 3
+            file: PASSWORD/granada_3.pdf
+          - label: guitar 4
+            file: PASSWORD/granada_4.pdf
+      - title: Spin
+        description: Andrew York
+        pdfs:
+          - label: score
+            file: PASSWORD/spin_score.pdf
+          - label: guitar 1
+            file: PASSWORD/spin_1.pdf
+          - label: guitar 2
+            file: PASSWORD/spin_2.pdf
+          - label: guitar 3
+            file: PASSWORD/spin_3.pdf
+          - label: guitar 4
+            file: PASSWORD/spin_4.pdf
+      - title: Metal
+        description: Jurg Kindle
+        pdfs:
+          - label: score
+            file: PASSWORD/metal_score.pdf
+          - label: guitar 1
+            file: PASSWORD/metal_1.pdf
+          - label: guitar 2
+            file: PASSWORD/metal_2.pdf
+          - label: guitar 3
+            file: PASSWORD/metal_3.pdf
+          - label: guitar 4
+            file: PASSWORD/metal_4.pdf
+      - title: Catwalk
+        description: Andrew York
+        pdfs:
+          - label: score
+            file: PASSWORD/catwalk_score.pdf
+          - label: guitar 1
+            file: PASSWORD/catwalk_1.pdf
+          - label: guitar 2
+            file: PASSWORD/catwalk_2.pdf
+          - label: guitar 3
+            file: PASSWORD/catwalk_3.pdf
+          - label: guitar 4
+            file: PASSWORD/catwalk_4.pdf
+      - title: Autumnal
+        description: Matthew Halper
+        pdfs:
+          - label: score
+            file: PASSWORD/autumnal_score.pdf
+          - label: guitar 1
+            file: PASSWORD/autumnal_1.pdf
+          - label: guitar 2
+            file: PASSWORD/autumnal_2.pdf
+          - label: guitar 3
+            file: PASSWORD/autumnal_3.pdf
+          - label: guitar 4
+            file: PASSWORD/autumnal_4.pdf
+  - id: njgo2023
+    title: NJGO 2023
+    pieces:
+      - title: Grises y Soles
+        description: Máximo Diego Pujol
+        pdfs:
+          - label: score
+            file: PASSWORD/grises_soles_score.pdf
+          - label: guitar 1
+            file: PASSWORD/grises_soles_1.pdf
+          - label: guitar 2
+            file: PASSWORD/grises_soles_2.pdf
+          - label: guitar 3
+            file: PASSWORD/grises_soles_3.pdf
+          - label: guitar 4
+            file: PASSWORD/grises_soles_4.pdf
+      - title: Venti da Sud
+        description: Giorgio Tortora
+        pdfs:
+          - label: score
+            file: PASSWORD/venti_da_sud_score.pdf
+          - label: guitar 1
+            file: PASSWORD/venti_da_sud_1.pdf
+          - label: guitar 2
+            file: PASSWORD/venti_da_sud_2.pdf
+          - label: guitar 3
+            file: PASSWORD/venti_da_sud_3.pdf
+          - label: guitar 4
+            file: PASSWORD/venti_da_sud_4.pdf
+      - title: Dusty Grooves
+        description: Clarice Assad
+        pdfs:
+          - label: score
+            file: PASSWORD/dusty_grooves_score.pdf
+          - label: guitar 1
+            file: PASSWORD/dusty_grooves_1.pdf
+          - label: guitar 2
+            file: PASSWORD/dusty_grooves_2.pdf
+          - label: guitar 3
+            file: PASSWORD/dusty_grooves_3.pdf
+          - label: guitar 4
+            file: PASSWORD/dusty_grooves_4.pdf
+          - label: bass
+            file: PASSWORD/dusty_grooves_bass.pdf
+      - title: Band of Hope
+        description: Mark Houghton
+        pdfs:
+          - label: score
+            file: PASSWORD/band_of_hope_score.pdf
+          - label: guitar 1
+            file: PASSWORD/band_of_hope_1.pdf
+          - label: guitar 2
+            file: PASSWORD/band_of_hope_2.pdf
+          - label: guitar 3
+            file: PASSWORD/band_of_hope_3.pdf
+          - label: guitar 4
+            file: PASSWORD/band_of_hope_4.pdf
+      - title: Pulsar
+        description: Vincent Lindsey-Clark
+        pdfs:
+          - label: guitar 1
+            file: PASSWORD/pulsar_clark_1.pdf
+          - label: guitar 2
+            file: PASSWORD/pulsar_clark_2.pdf
+          - label: guitar 3
+            file: PASSWORD/pulsar_clark_3.pdf
+          - label: guitar 4
+            file: PASSWORD/pulsar_clark_4.pdf
+      - title: Air and Lamentations
+        description: Matthew Halper
+        pdfs:
+          - label: score
+            file: PASSWORD/lamentations_score.pdf
+          - label: guitar 1
+            file: PASSWORD/lamentations_1.pdf
+          - label: guitar 2
+            file: PASSWORD/lamentations_2.pdf
+          - label: guitar 3
+            file: PASSWORD/lamentations_3.pdf
+          - label: guitar 4
+            file: PASSWORD/lamentations_4.pdf
+      - title: Danse Macabre
+        description: Matthew Halper
+        pdfs:
+          - label: score
+            file: PASSWORD/danse_macabre_score.pdf
+          - label: guitar 1
+            file: PASSWORD/danse_macabre_1.pdf
+          - label: guitar 2
+            file: PASSWORD/danse_macabre_2.pdf
+          - label: guitar 3
+            file: PASSWORD/danse_macabre_3.pdf
+          - label: guitar 4
+            file: PASSWORD/danse_macabre_4.pdf
+      - title: Concierto de Los Angeles I
+        description: Shingo Fujii
+        pdfs:
+          - label: score
+            file: PASSWORD/los_angeles_I_score.pdf
+          - label: guitar 1
+            file: PASSWORD/los_angeles_I_1.pdf
+          - label: guitar 2
+            file: PASSWORD/los_angeles_I_2.pdf
+          - label: guitar 3
+            file: PASSWORD/los_angeles_I_3.pdf
+          - label: guitar 4
+            file: PASSWORD/los_angeles_I_4.pdf
+          - label: guitar 5
+            file: PASSWORD/los_angeles_I_5.pdf
+          - label: solo
+            file: PASSWORD/los_angeles_I_solo.pdf
+      - title: Concierto de Los Angeles II
+        description: Shingo Fujii
+        pdfs:
+          - label: score
+            file: PASSWORD/los_angeles_II_score.pdf
+          - label: guitar 1
+            file: PASSWORD/los_angeles_II_1.pdf
+          - label: guitar 2
+            file: PASSWORD/los_angeles_II_2.pdf
+          - label: guitar 3
+            file: PASSWORD/los_angeles_II_3.pdf
+          - label: guitar 4
+            file: PASSWORD/los_angeles_II_4.pdf
+          - label: guitar 5
+            file: PASSWORD/los_angeles_II_5.pdf
+          - label: solo
+            file: PASSWORD/los_angeles_II_solo.pdf
+      - title: Concierto de Los Angeles III
+        description: Shingo Fujii
+        pdfs:
+          - label: score
+            file: PASSWORD/los_angeles_III_score.pdf
+          - label: guitar 1
+            file: PASSWORD/los_angeles_III_1.pdf
+          - label: guitar 2
+            file: PASSWORD/los_angeles_III_2.pdf
+          - label: guitar 3
+            file: PASSWORD/los_angeles_III_3.pdf
+          - label: guitar 4
+            file: PASSWORD/los_angeles_III_4.pdf
+          - label: guitar 5
+            file: PASSWORD/los_angeles_III_5.pdf
+          - label: solo
+            file: PASSWORD/los_angeles_III_solo.pdf
+  - id: njgo2021
+    title: NJGO 2021
+    pieces:
+      - title: Playground
+        description: Andrew York
+        pdfs:
+          - label: score
+            file: PASSWORD/playground_score.pdf
+          - label: guitar 1
+            file: PASSWORD/playground_1.pdf
+          - label: guitar 2
+            file: PASSWORD/playground_2.pdf
+          - label: guitar 3
+            file: PASSWORD/playground_3.pdf
+          - label: guitar 4
+            file: PASSWORD/playground_4.pdf
+      - title: Concerto en Re majeur
+        description: Georg Philipp Telemann
+        pdfs:
+          - label: guitar 1
+            file: PASSWORD/concerto_telemann_1.pdf
+          - label: guitar 2
+            file: PASSWORD/concerto_telemann_2.pdf
+          - label: guitar 3
+            file: PASSWORD/concerto_telemann_3.pdf
+          - label: guitar 4
+            file: PASSWORD/concerto_telemann_4.pdf
+      - title: Sailing Home
+        description: Mark Houghton
+        pdfs:
+          - label: score
+            file: PASSWORD/sailing_score.pdf
+      - title: Nebulae
+        description: Olga Amelkina-Vera
+        pdfs:
+          - label: score
+            file: PASSWORD/nebulae_score.pdf
+          - label: guitar 1
+            file: PASSWORD/nebulae_1.pdf
+          - label: guitar 2
+            file: PASSWORD/nebulae_2.pdf
+          - label: guitar 3
+            file: PASSWORD/nebulae_3.pdf
+          - label: guitar 4
+            file: PASSWORD/nebulae_4.pdf
+      - title: Air and Lamentations
+        description: Matthew Halper
+        pdfs:
+          - label: score
+            file: PASSWORD/lamentations_score.pdf
+          - label: guitar 1
+            file: PASSWORD/lamentations_1.pdf
+          - label: guitar 2
+            file: PASSWORD/lamentations_2.pdf
+          - label: guitar 3
+            file: PASSWORD/lamentations_3.pdf
+          - label: guitar 4
+            file: PASSWORD/lamentations_4.pdf

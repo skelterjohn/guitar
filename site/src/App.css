@@ -1336,6 +1336,8 @@ body {
   background: var(--color-viewer-bg);
   touch-action: pan-x pan-y;
   overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
 }
 
 .viewer-content.is-footer-visible {
@@ -1344,17 +1346,17 @@ body {
 
 .viewer-zoom-surface {
   width: 100%;
-}
-
-.viewer-content.is-header-hidden .viewer-page-slot.is-current {
-  align-items: flex-start;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  align-items: center;
 }
 
 .viewer-page-slot {
   display: none;
   align-items: center;
   justify-content: center;
-  min-height: 100%;
   width: 100%;
   flex-shrink: 0;
   position: relative;

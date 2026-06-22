@@ -1091,7 +1091,10 @@ export default function PdfViewer({
           <p className="viewer-status viewer-status-error">{errorMessage}</p>
         )}
         {status === 'ready' && (
-          <div className="viewer-zoom-surface" style={{ zoom: pdfZoom }}>
+          <div
+            className={`viewer-zoom-surface${pdfZoom > 1 ? ' is-zoomed' : ''}`}
+            style={{ zoom: pdfZoom }}
+          >
             {Array.from({ length: pageCount }, (_, index) => {
               const pageNumber = index + 1;
               const isCurrent = pageNumber === currentPage;

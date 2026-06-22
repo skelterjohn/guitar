@@ -1331,7 +1331,7 @@ body {
 .viewer-content {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  overflow: auto;
   overflow-anchor: none;
   background: var(--color-viewer-bg);
   touch-action: pan-x pan-y;
@@ -1353,6 +1353,16 @@ body {
   align-items: center;
 }
 
+.viewer-zoom-surface.is-zoomed {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.viewer-zoom-surface.is-zoomed .viewer-page-slot.is-current {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
 .viewer-page-slot {
   display: none;
   align-items: center;
@@ -1372,11 +1382,11 @@ body {
   display: inline-block;
   max-width: 100%;
   touch-action: pan-x pan-y;
+  box-shadow: 0 2px 12px rgb(15 23 42 / 35%);
 }
 
 .viewer-page-slot canvas {
   display: block;
-  box-shadow: 0 2px 12px rgb(15 23 42 / 35%);
   touch-action: pan-x pan-y;
 }
 

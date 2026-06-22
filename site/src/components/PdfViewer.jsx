@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { flushSync } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { pdfUrl } from '../config.js';
-import { acquirePdfDocument } from '../pdfDocumentCache.js';
+import { acquirePdfDocument, releasePdfDocument } from '../pdfDocumentCache.js';
 import { getCachedRender, setCachedRender } from '../pdfRenderCache.js';
 import {
   findPdfByFile,
@@ -279,6 +279,7 @@ export default function PdfViewer({
         loadedUrlRef.current = null;
       }
       pdfDocRef.current = null;
+      releasePdfDocument(url);
     };
   }, [url]);
 
@@ -459,6 +460,7 @@ export default function PdfViewer({
 
     const renderPages = async () => {
       const renderId = ++renderIdRef.current;
+      const renderUrl = url;
 
       await cancelActiveRenders();
       if (cancelled || renderId !== renderIdRef.current) return;
@@ -468,6 +470,16 @@ export default function PdfViewer({
 
       const numPages = doc.numPages;
       if (numPages === 0) return;
+
+      const isRenderActive = () =>
+        !cancelled &&
+        renderId === renderIdRef.current &&
+        loadedUrlRef.current === renderUrl &&
+        pdfDocRef.current === doc;
+
+      const isBenignRenderError = (err) =>
+        err?.name === 'RenderingCancelledException' ||
+        String(err?.message ?? '').includes('Invalid page request');
 
       const availableWidth = container.clientWidth;
       const availableHeight = container.clientHeight;
@@ -480,7 +492,7 @@ export default function PdfViewer({
       const nextPageMediaSizes = Array.from({ length: numPages });
 
       const renderOnePage = async (pageNum) => {
-        if (cancelled || renderId !== renderIdRef.current) return null;
+        if (!isRenderActive()) return null;
         if (pageNum < 1 || pageNum > numPages) return null;
 
         const canvas = canvasRefs.current[pageNum - 1];
@@ -490,11 +502,11 @@ export default function PdfViewer({
         try {
           page = await doc.getPage(pageNum);
         } catch (err) {
-          if (cancelled || renderId !== renderIdRef.current) return null;
+          if (!isRenderActive() || isBenignRenderError(err)) return null;
           console.error('PDF render failed:', err);
           return null;
         }
-        if (cancelled || renderId !== renderIdRef.current) return null;
+        if (!isRenderActive()) return null;
 
         const baseViewport = page.getViewport({ scale: 1 });
         const mediaSize = {
@@ -543,14 +555,14 @@ export default function PdfViewer({
         try {
           await renderTask.promise;
         } catch (err) {
-          if (err?.name === 'RenderingCancelledException') return null;
+          if (!isRenderActive() || isBenignRenderError(err)) return null;
           console.error('PDF render failed:', err);
           return null;
         } finally {
           renderTasksRef.current[pageNum - 1] = null;
         }
 
-        if (cancelled || renderId !== renderIdRef.current) return null;
+        if (!isRenderActive()) return null;
 
         try {
           const bitmap = await createImageBitmap(canvas);
@@ -614,6 +626,7 @@ export default function PdfViewer({
       renderChain = renderChain
         .then(() => renderPages())
         .catch((err) => {
+          if (String(err?.message ?? '').includes('Invalid page request')) return;
           console.error('PDF render failed:', err);
         });
     };

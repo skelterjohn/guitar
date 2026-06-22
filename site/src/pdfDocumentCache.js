@@ -12,6 +12,7 @@ function evictOldestDocument() {
   let oldestAccess = Infinity;
 
   for (const [key, entry] of docCache) {
+    if ((entry.refCount ?? 0) > 0) continue;
     if (entry.lastAccess < oldestAccess) {
       oldestAccess = entry.lastAccess;
       oldestKey = key;
@@ -37,6 +38,7 @@ export async function acquirePdfDocument(url) {
   const resolved = resolvePdfUrl(url);
   const cached = docCache.get(resolved);
   if (cached) {
+    cached.refCount = (cached.refCount ?? 0) + 1;
     cached.lastAccess = Date.now();
     console.log(`[pdf] cache hit (parsed): ${pdfLogLabel(resolved)}`);
     return cached.doc;
@@ -52,6 +54,7 @@ export async function acquirePdfDocument(url) {
     loadingTask,
     lastAccess: Date.now(),
     byteLength,
+    refCount: 1,
   });
 
   while (docCache.size > MAX_DOCS) {
@@ -66,4 +69,12 @@ export async function acquirePdfDocument(url) {
   console.log(`[pdf] cache add (parsed): ${pdfLogLabel(resolved)} [${sizeLabel}]`);
 
   return doc;
+}
+
+export function releasePdfDocument(url) {
+  const resolved = resolvePdfUrl(url);
+  const entry = docCache.get(resolved);
+  if (!entry) return;
+
+  entry.refCount = Math.max(0, (entry.refCount ?? 1) - 1);
 }

@@ -45,19 +45,21 @@ async function storageCacheStats() {
   return { count: keys.length, bytes };
 }
 
-async function readFromCacheApi(url) {
+async function readFromCacheApi(url, onPhase) {
   if (!('caches' in globalThis)) return null;
 
   const cache = await caches.open(CACHE_NAME);
   const response = await cache.match(url);
   if (!response) return null;
 
+  onPhase?.('loading');
   console.log(`[pdf] cache hit (storage): ${pdfLogLabel(url)}`);
   const buffer = await response.arrayBuffer();
   return new Uint8Array(buffer);
 }
 
-async function fetchAndStore(url) {
+async function fetchAndStore(url, onPhase) {
+  onPhase?.('downloading');
   console.log(`[pdf] downloading: ${pdfLogLabel(url)}`);
   const response = await fetch(url);
   if (!response.ok) {
@@ -81,16 +83,17 @@ async function fetchAndStore(url) {
   return new Uint8Array(buffer);
 }
 
-async function loadPdfBytes(url) {
+async function loadPdfBytes(url, onPhase) {
   const resolved = resolvePdfUrl(url);
 
-  const cached = await readFromCacheApi(resolved);
+  const cached = await readFromCacheApi(resolved, onPhase);
   if (cached) return cached;
 
-  return fetchAndStore(resolved);
+  return fetchAndStore(resolved, onPhase);
 }
 
-export async function fetchPdfBytes(url) {
+export async function fetchPdfBytes(url, options = {}) {
+  const { onPhase } = options;
   const resolved = resolvePdfUrl(url);
 
   const cached = memoryCache.get(resolved);
@@ -101,7 +104,7 @@ export async function fetchPdfBytes(url) {
 
   let pending = inflight.get(resolved);
   if (!pending) {
-    pending = loadPdfBytes(url);
+    pending = loadPdfBytes(url, onPhase);
     inflight.set(resolved, pending);
   }
 

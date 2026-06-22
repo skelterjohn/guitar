@@ -38,6 +38,17 @@ import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { buildPrintSheets } from '../utils/printPdf.js';
 import { catalogPath, repPath, viewPath } from '../seo.js';
 
+function loadStatusMessage(phase) {
+  switch (phase) {
+    case 'downloading':
+      return 'Downloading…';
+    case 'rendering':
+      return 'Rendering…';
+    default:
+      return 'Loading…';
+  }
+}
+
 export default function PdfViewer({
   filename,
   pdfHash,
@@ -84,6 +95,7 @@ export default function PdfViewer({
   const [pageBaseDisplaySizes, setPageBaseDisplaySizes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('loading');
+  const [loadPhase, setLoadPhase] = useState('loading');
   const [displayReady, setDisplayReady] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [headerHidden, setHeaderHidden] = useState(false);
@@ -224,6 +236,7 @@ export default function PdfViewer({
   useLayoutEffect(() => {
     loadedUrlRef.current = null;
     setStatus('loading');
+    setLoadPhase('loading');
     setDisplayReady(false);
     setPageCount(0);
     setPageMediaSizes([]);
@@ -256,13 +269,18 @@ export default function PdfViewer({
       if (cancelled) return;
 
       try {
-        const doc = await acquirePdfDocument(url);
+        const doc = await acquirePdfDocument(url, {
+          onPhase: (phase) => {
+            if (!cancelled) setLoadPhase(phase);
+          },
+        });
         if (cancelled) return;
 
         pdfDocRef.current = doc;
         loadedUrlRef.current = url;
         setPageCount(doc.numPages);
         setStatus('ready');
+        setLoadPhase('rendering');
       } catch (err) {
         if (cancelled) return;
         setStatus('error');
@@ -437,6 +455,8 @@ export default function PdfViewer({
     let lastContainerWidth = 0;
     let lastContainerHeight = 0;
     let renderAttempts = 0;
+
+    setLoadPhase('rendering');
 
     const cancelActiveRenders = async () => {
       const tasks = renderTasksRef.current.filter(Boolean);
@@ -1247,7 +1267,11 @@ export default function PdfViewer({
         }`}
         ref={containerRef}
       >
-        {showLoading && <p className="viewer-status">Loading…</p>}
+        {showLoading && (
+          <p className="viewer-status" role="status" aria-live="polite">
+            {loadStatusMessage(loadPhase)}
+          </p>
+        )}
         {status === 'error' && (
           <p className="viewer-status viewer-status-error">{errorMessage}</p>
         )}

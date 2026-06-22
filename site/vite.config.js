@@ -5,9 +5,44 @@ import { defaultDescription, siteOrigin, siteTitle } from './src/seo.js';
 
 const gcsPdfOrigin = 'https://storage.googleapis.com/skelterjohnguitar-pdf';
 
+function devPwaQuiet() {
+  const stubManifest = JSON.stringify({
+    name: 'dev',
+    short_name: 'dev',
+    start_url: '/',
+    display: 'browser',
+    icons: [],
+  });
+
+  return {
+    name: 'dev-pwa-quiet',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.split('?')[0] === '/manifest.webmanifest') {
+          res.setHeader('Content-Type', 'application/manifest+json');
+          res.end(stubManifest);
+          return;
+        }
+        next();
+      });
+    },
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        return html.replace(/<link rel="manifest"[^>]*>\s*/i, '');
+      },
+    },
+  };
+}
+
 export default defineConfig({
+  esbuild: {
+    jsx: 'automatic',
+  },
   plugins: [
-    react(),
+    react({ jsxRuntime: 'automatic' }),
+    devPwaQuiet(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [

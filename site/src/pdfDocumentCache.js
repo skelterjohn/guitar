@@ -4,7 +4,7 @@ import { fetchPdfBytes, pdfLogLabel, resolvePdfUrl } from './pdfCache.js';
 
 pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
 
-const MAX_DOCS = 5;
+const MAX_DOCS = 15;
 const docCache = new Map();
 
 function evictOldestDocument() {
@@ -30,7 +30,7 @@ export async function acquirePdfDocument(url) {
   const cached = docCache.get(resolved);
   if (cached) {
     cached.lastAccess = Date.now();
-    console.log(`[pdf] document cache hit: ${pdfLogLabel(resolved)}`);
+    console.log(`[pdf] cache hit (parsed): ${pdfLogLabel(resolved)}`);
     return cached.doc;
   }
 

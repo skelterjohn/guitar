@@ -787,6 +787,10 @@ export default function PdfViewer({
 
       event.preventDefault();
       event.stopPropagation();
+      if (annotationMenuRef.current) {
+        dismissAnnotationMenu();
+        return;
+      }
       openAnnotationMenuAt(event.clientX, event.clientY);
     };
 

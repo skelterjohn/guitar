@@ -52,6 +52,9 @@ body {
 .page--njgo .page-header {
   border-bottom: none;
   padding-bottom: 0;
+  width: 100%;
+  max-width: calc(2 * var(--njgo-col-min) + var(--njgo-gap));
+  margin-inline: auto;
 }
 
 .toc {
@@ -428,6 +431,11 @@ body {
 }
 
 @container njgo (max-width: 68.75rem) {
+  .page--njgo .page-header {
+    max-width: none;
+    margin-inline: 0;
+  }
+
   .njgo-overview {
     max-width: none;
     margin-inline: 0;
@@ -466,6 +474,11 @@ body {
 }
 
 @media (max-width: 68.75rem) {
+  .page--njgo .page-header {
+    max-width: none;
+    margin-inline: 0;
+  }
+
   .njgo-overview {
     max-width: none;
     margin-inline: 0;

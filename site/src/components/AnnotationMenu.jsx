@@ -131,6 +131,7 @@ export default function AnnotationMenu({
   const dragRef = useRef(null);
   const menuPositionRef = useRef(null);
   const dismissSuppressUntilRef = useRef(0);
+  const annotationToolRef = useRef(annotationTool);
   const textInputRef = useRef(null);
   const menuTextRef = useRef(TEXT_GLYPH_DEFAULT);
   const textDragPendingRef = useRef(null);
@@ -156,6 +157,7 @@ export default function AnnotationMenu({
   onGlyphDropRef.current = onGlyphDrop;
   onGlyphDragPreviewRef.current = onGlyphDragPreview;
   annotationColorRef.current = annotationColor;
+  annotationToolRef.current = annotationTool;
 
   const updateGlyphDragPreview = (drag, clientX, clientY) => {
     const dragPoint = glyphDragClientPosition(drag.pointerType, clientX, clientY);
@@ -272,7 +274,17 @@ export default function AnnotationMenu({
       );
     };
 
+    const shouldDismissPointer = (event) => {
+      if (event.pointerType === 'touch') return true;
+      if (event.pointerType === 'mouse' && event.button === 0) {
+        const tool = annotationToolRef.current;
+        return tool !== 'pen' && tool !== 'eraser';
+      }
+      return false;
+    };
+
     const onDismissPointerDown = (event) => {
+      if (!shouldDismissPointer(event)) return;
       if (performance.now() < dismissSuppressUntilRef.current) return;
       if (dragRef.current) return;
       if (!isOutsideMenu(event)) return;
@@ -285,6 +297,7 @@ export default function AnnotationMenu({
     };
 
     const onDismissPointerUp = (event) => {
+      if (!shouldDismissPointer(event)) return;
       if (dragRef.current) return;
 
       const pending = dismissPending;
@@ -307,15 +320,27 @@ export default function AnnotationMenu({
       }
     };
 
+    const onDismissContextMenu = (event) => {
+      if (performance.now() < dismissSuppressUntilRef.current) return;
+      if (dragRef.current) return;
+      if (!isOutsideMenu(event)) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      onClose();
+    };
+
     const capture = { capture: true };
     window.addEventListener('pointerdown', onDismissPointerDown, capture);
     window.addEventListener('pointerup', onDismissPointerUp, capture);
     window.addEventListener('pointercancel', onDismissPointerCancel, capture);
+    window.addEventListener('contextmenu', onDismissContextMenu, capture);
 
     return () => {
       window.removeEventListener('pointerdown', onDismissPointerDown, capture);
       window.removeEventListener('pointerup', onDismissPointerUp, capture);
       window.removeEventListener('pointercancel', onDismissPointerCancel, capture);
+      window.removeEventListener('contextmenu', onDismissContextMenu, capture);
     };
   }, [anchor, onClose]);
 

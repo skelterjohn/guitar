@@ -18,13 +18,13 @@ export default function Njgo() {
 
   return (
     <main className="page page--njgo">
-      <header className="page-header">
-        <h1 className="njgo-page-title">
-          <span className="njgo-page-title-line">New Jersey</span>
-          <span className="njgo-page-title-line">Guitar Orchestra</span>
-        </h1>
-      </header>
       <div className="njgo-page">
+        <header className="page-header">
+          <h1 className="njgo-page-title">
+            <span className="njgo-page-title-line">New Jersey</span>
+            <span className="njgo-page-title-line">Guitar Orchestra</span>
+          </h1>
+        </header>
         <NjgoOverview logo={overview.logo} paragraphs={overview.paragraphs} />
         <NjgoRoster members={roster.members} />
       </div>

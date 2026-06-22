@@ -34,7 +34,6 @@ import {
 } from '../utils/stylusInput.js';
 
 const TAP_MOVE_THRESHOLD = 10;
-const LONG_PRESS_MS = 500;
 
 function getSvgPathFromStroke(stroke) {
   if (!stroke.length) return '';
@@ -665,16 +664,6 @@ export default function AnnotationOverlay({
         longPressTriggered: false,
         touchEraser: isToolEraser,
       };
-
-      if (isPen) {
-        pending.longPressTimer = setTimeout(() => {
-          pending.longPressTriggered = true;
-          pending.longPressTimer = null;
-          callbacksRef.current.onOpenMenu?.(pending.startX, pending.startY);
-          activeStrokeRef.current = null;
-          setDraftStroke(null);
-        }, LONG_PRESS_MS);
-      }
 
       penPendingRef.current = pending;
     };

@@ -1058,7 +1058,7 @@ export default function PdfViewer({
   }, [headerHidden, status, pageCount]);
 
   useLayoutEffect(() => {
-    if (status !== 'ready' || pageCount === 0) {
+    if (status !== 'ready' || pageCount === 0 || !displayReady) {
       setPageNavLeft(null);
       return;
     }
@@ -1072,53 +1072,51 @@ export default function PdfViewer({
     const start = toolbarStartRef.current;
     const end = toolbarEndRef.current;
     const nav = pageNavRef.current;
-    if (!toolbar || !start || !nav) return;
+    const chrome = toolbar?.closest('.viewer-chrome');
+    if (!toolbar || !start || !nav || !chrome) return;
 
-    const gap = 16;
-    const pushPadding = 16;
-
-    const getClusterRight = (element) => {
-      const toolbarLeft = toolbar.getBoundingClientRect().left;
-      let maxRight = element.getBoundingClientRect().right - toolbarLeft;
-
-      for (const child of element.querySelectorAll('a, .pdf-links')) {
-        const childRight = child.getBoundingClientRect().right - toolbarLeft;
-        maxRight = Math.max(maxRight, childRight);
-      }
-
-      return maxRight;
-    };
+    const gap = 12;
+    const pushPadding = 8;
 
     const updatePageNavPosition = () => {
+      const originLeft = chrome.getBoundingClientRect().left;
       const toolbarRect = toolbar.getBoundingClientRect();
+      const toolbarOffset = toolbarRect.left - originLeft;
       const toolbarWidth = toolbarRect.width;
       const navWidth = nav.getBoundingClientRect().width;
-      const clusterRight = getClusterRight(start);
+      const clusterRight = start.getBoundingClientRect().right - originLeft;
       const endLeft = end
-        ? end.getBoundingClientRect().left - toolbarRect.left
-        : toolbarWidth;
+        ? end.getBoundingClientRect().left - originLeft
+        : toolbarOffset + toolbarWidth;
 
-      const idealLeft = (toolbarWidth - navWidth) / 2;
-      const collisionLeft = clusterRight + gap;
-      const minLeft =
-        idealLeft < collisionLeft ? collisionLeft + pushPadding : collisionLeft;
+      const idealLeft = toolbarOffset + (toolbarWidth - navWidth) / 2;
+      const minLeft = clusterRight + gap + pushPadding;
       const maxLeft = endLeft - gap - navWidth;
 
-      setPageNavLeft(
-        Math.min(Math.max(idealLeft, minLeft), Math.max(minLeft, maxLeft)),
-      );
+      let left = idealLeft;
+      if (maxLeft >= minLeft) {
+        left = Math.min(Math.max(left, minLeft), maxLeft);
+      } else {
+        left = maxLeft;
+      }
+
+      setPageNavLeft(left);
     };
 
     updatePageNavPosition();
 
-    const observer = new ResizeObserver(updatePageNavPosition);
+    const observer = new ResizeObserver(() => {
+      requestAnimationFrame(updatePageNavPosition);
+    });
     observer.observe(toolbar);
     observer.observe(start);
     if (end) observer.observe(end);
     observer.observe(nav);
+    const pdfLinks = start.querySelector('.pdf-links');
+    if (pdfLinks) observer.observe(pdfLinks);
 
     return () => observer.disconnect();
-  }, [headerHidden, status, pageCount, pdfs, filename]);
+  }, [headerHidden, status, pageCount, displayReady, pdfs, filename]);
 
   const showLoading =
     status === 'loading' || (status === 'ready' && !displayReady);

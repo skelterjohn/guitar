@@ -1092,6 +1092,52 @@ body {
   background: var(--color-link-bg-hover);
 }
 
+.viewer-print-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  color: var(--color-link-text);
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-link-border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.viewer-print-button:hover:not(:disabled) {
+  background: var(--color-link-bg-hover);
+}
+
+.viewer-print-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.viewer-download-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  color: var(--color-link-text);
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-link-border);
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.viewer-download-link:hover {
+  background: var(--color-link-bg-hover);
+  text-decoration: none;
+}
+
+.viewer-print-sheets {
+  display: none;
+}
+
 .annotation-help-backdrop {
   position: fixed;
   inset: 0;
@@ -1967,4 +2013,45 @@ body {
   display: block;
   font-size: 0.95rem;
   color: var(--color-text-muted);
+}
+
+@media print {
+  @page {
+    margin: 0.4in;
+  }
+
+  .viewer-chrome,
+  .viewer-content,
+  .viewer-footer-chrome,
+  .viewer-storage-warning,
+  .annotation-menu,
+  .annotation-help-backdrop {
+    display: none !important;
+  }
+
+  .viewer-page {
+    height: auto;
+    overflow: visible;
+  }
+
+  .viewer-print-sheets {
+    display: block !important;
+  }
+
+  .viewer-print-sheet {
+    break-inside: avoid;
+    page-break-after: always;
+  }
+
+  .viewer-print-sheet:last-child {
+    page-break-after: auto;
+  }
+
+  .viewer-print-sheet img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    box-shadow: none;
+  }
 }

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Link } from 'react-router-dom';
 import * as pdfjs from 'pdfjs-dist';
 import PdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
@@ -15,7 +16,9 @@ import AnnotationHelpModal from './AnnotationHelpModal.jsx';
 import AnnotationOverlay from './AnnotationOverlay.jsx';
 import AnnotationMenu from './AnnotationMenu.jsx';
 import ChevronIcon from './ChevronIcon.jsx';
+import DownloadIcon from './DownloadIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
+import PrintIcon from './PrintIcon.jsx';
 import {
   getAnnotationColorPreference,
   resolveAnnotationColor,
@@ -33,6 +36,7 @@ import {
 } from '../utils/annotationPages.js';
 import { PEN_COLOR } from '../utils/stylusInput.js';
 import { viewRouteFilename } from '../utils/pdfPaths.js';
+import { buildPrintSheets } from '../utils/printPdf.js';
 import { catalogPath, repPath, viewPath } from '../seo.js';
 
 let workerIdle = Promise.resolve();
@@ -103,6 +107,8 @@ export default function PdfViewer({
   );
   const [storageWarning, setStorageWarning] = useState('');
   const [annotationHelpOpen, setAnnotationHelpOpen] = useState(false);
+  const [printSheets, setPrintSheets] = useState(null);
+  const [printBusy, setPrintBusy] = useState(false);
 
   const pdfZoomRef = useRef(1);
   const isPinchingRef = useRef(false);
@@ -403,6 +409,40 @@ export default function PdfViewer({
         color: annotationColorRef.current,
       }),
     });
+  };
+
+  const handlePrint = async () => {
+    const doc = pdfDocRef.current;
+    if (!doc || printBusy || status !== 'ready' || pageCount === 0) return;
+
+    setPrintBusy(true);
+    try {
+      const sheets = await buildPrintSheets(
+        doc,
+        pageCount,
+        pageRastersRef.current,
+      );
+
+      flushSync(() => {
+        setPrintSheets(sheets);
+      });
+
+      await new Promise((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(resolve));
+      });
+
+      const cleanup = () => {
+        setPrintSheets(null);
+        setPrintBusy(false);
+        window.removeEventListener('afterprint', cleanup);
+      };
+      window.addEventListener('afterprint', cleanup);
+      window.print();
+    } catch (err) {
+      console.error('Print failed:', err);
+      setPrintSheets(null);
+      setPrintBusy(false);
+    }
   };
 
   useLayoutEffect(() => {
@@ -1001,8 +1041,23 @@ export default function PdfViewer({
               >
                 ?
               </button>
-              <a href={url} download={downloadName}>
-                Download
+              <button
+                type="button"
+                className="viewer-print-button"
+                onClick={() => void handlePrint()}
+                disabled={printBusy}
+                aria-label={printBusy ? 'Preparing print' : 'Print'}
+                aria-busy={printBusy || undefined}
+              >
+                <PrintIcon />
+              </button>
+              <a
+                href={url}
+                download={downloadName}
+                className="viewer-download-link"
+                aria-label="Download"
+              >
+                <DownloadIcon />
               </a>
             </div>
           </div>
@@ -1204,6 +1259,15 @@ export default function PdfViewer({
         open={annotationHelpOpen}
         onClose={() => setAnnotationHelpOpen(false)}
       />
+      {printSheets && (
+        <div className="viewer-print-sheets" aria-hidden="true">
+          {printSheets.map((sheet, index) => (
+            <div className="viewer-print-sheet" key={index}>
+              <img src={sheet.src} alt="" width={sheet.width} height={sheet.height} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

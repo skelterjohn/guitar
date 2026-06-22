@@ -82,7 +82,7 @@ export default function PdfViewer({
   const toolbarStartRef = useRef(null);
   const toolbarEndRef = useRef(null);
   const pageNavRef = useRef(null);
-  const scrollToPageRef = useRef(() => {});
+  const resetPageScrollRef = useRef(() => {});
   const scrollToTopPendingRef = useRef(true);
   const headerHiddenRef = useRef(false);
   const currentPageRef = useRef(1);
@@ -149,19 +149,12 @@ export default function PdfViewer({
     Boolean(annotationMenu) &&
     (annotationTool === 'pen' || annotationTool === 'eraser');
 
-  const scrollToPageTop = (index) => {
+  const resetPageScroll = () => {
     const container = containerRef.current;
-    const canvas = canvasRefs.current[index];
-    const slot = slotRefs.current[index];
-    const target = canvas ?? slot;
-    if (!container || !target) return;
+    if (!container) return;
 
     const applyScroll = () => {
-      const top =
-        target.getBoundingClientRect().top -
-        container.getBoundingClientRect().top +
-        container.scrollTop;
-      container.scrollTop = top;
+      container.scrollTop = 0;
     };
 
     applyScroll();
@@ -171,12 +164,12 @@ export default function PdfViewer({
     });
   };
 
-  scrollToPageRef.current = scrollToPageTop;
+  resetPageScrollRef.current = resetPageScroll;
 
   const finishScrollToTopPending = () => {
     if (!scrollToTopPendingRef.current) return;
     scrollToTopPendingRef.current = false;
-    scrollToPageRef.current(0);
+    resetPageScrollRef.current();
     setCurrentPage(1);
   };
 
@@ -562,7 +555,7 @@ export default function PdfViewer({
           if (scrollToTopPendingRef.current) {
             finishScrollToTopPending();
           } else if (headerHiddenRef.current) {
-            scrollToPageRef.current(currentPageRef.current - 1);
+            resetPageScrollRef.current();
           }
         });
       }
@@ -625,62 +618,30 @@ export default function PdfViewer({
     const container = containerRef.current;
     if (!container) return;
 
-    const getElementScrollTop = (element) => {
-      const containerRect = container.getBoundingClientRect();
-      const elementRect = element.getBoundingClientRect();
-      return elementRect.top - containerRect.top + container.scrollTop;
-    };
-
-    const getCurrentPageIndex = () => {
-      const anchor = container.scrollTop + container.clientHeight / 2;
-      let current = 0;
-
-      for (let index = 0; index < pageCount; index += 1) {
-        const canvas = canvasRefs.current[index];
-        const slot = slotRefs.current[index];
-        const target = canvas ?? slot;
-        if (target && getElementScrollTop(target) <= anchor) {
-          current = index;
-        }
-      }
-
-      return current;
-    };
-
-    const updateCurrentPage = () => {
-      if (scrollToTopPendingRef.current) return;
-      setCurrentPage(getCurrentPageIndex() + 1);
-    };
-
-    const scrollToPage = (index) => {
+    const goToPage = (pageNumber) => {
+      const next = Math.min(Math.max(pageNumber, 1), pageCount);
       scrollToTopPendingRef.current = false;
-      scrollToPageRef.current(index);
+      resetPageScrollRef.current();
+      setCurrentPage(next);
     };
 
     const goToPrev = () => {
-      scrollToPage(Math.max(getCurrentPageIndex() - 1, 0));
+      goToPage(currentPageRef.current - 1);
     };
 
     const goToNext = () => {
-      scrollToPage(Math.min(getCurrentPageIndex() + 1, pageCount - 1));
+      goToPage(currentPageRef.current + 1);
     };
 
     const goToStart = () => {
-      scrollToTopPendingRef.current = false;
-      container.scrollTo({ top: 0, behavior: 'auto' });
+      goToPage(1);
     };
 
     const goToEnd = () => {
-      scrollToTopPendingRef.current = false;
-      container.scrollTo({
-        top: container.scrollHeight - container.clientHeight,
-        behavior: 'auto',
-      });
+      goToPage(pageCount);
     };
 
     navigationRef.current = { goToPrev, goToNext };
-
-    updateCurrentPage();
 
     const onScroll = () => {
       if (scrollToTopPendingRef.current) {
@@ -690,7 +651,6 @@ export default function PdfViewer({
         return;
       }
       penScrollLockRef.current?.restoreScroll();
-      updateCurrentPage();
     };
 
     const onKeyDown = (event) => {
@@ -843,9 +803,8 @@ export default function PdfViewer({
         }
         return;
       }
-      updateCurrentPage();
       if (headerHiddenRef.current) {
-        scrollToPageRef.current(currentPageRef.current - 1);
+        resetPageScrollRef.current();
       }
     });
     resizeObserver.observe(container);
@@ -950,7 +909,7 @@ export default function PdfViewer({
 
   useLayoutEffect(() => {
     if (!headerHidden || status !== 'ready' || pageCount === 0) return;
-    scrollToPageRef.current(currentPageRef.current - 1);
+    resetPageScrollRef.current();
   }, [headerHidden, status, pageCount]);
 
   useLayoutEffect(() => {
@@ -1135,14 +1094,17 @@ export default function PdfViewer({
           <div className="viewer-zoom-surface" style={{ zoom: pdfZoom }}>
             {Array.from({ length: pageCount }, (_, index) => {
               const pageNumber = index + 1;
+              const isCurrent = pageNumber === currentPage;
               const pageLayers = normalizePageEntry(
                 pageAnnotations[String(pageNumber)],
               );
 
               return (
               <div
-                className="viewer-page-slot"
+                className={`viewer-page-slot${isCurrent ? ' is-current' : ''}`}
                 key={index}
+                hidden={!isCurrent}
+                aria-hidden={!isCurrent}
                 ref={(element) => {
                   slotRefs.current[index] = element;
                 }}

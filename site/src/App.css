@@ -1346,12 +1346,12 @@ body {
   width: 100%;
 }
 
-.viewer-content.is-header-hidden .viewer-page-slot {
+.viewer-content.is-header-hidden .viewer-page-slot.is-current {
   align-items: flex-start;
 }
 
 .viewer-page-slot {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   min-height: 100%;
@@ -1359,6 +1359,10 @@ body {
   flex-shrink: 0;
   position: relative;
   overflow-anchor: none;
+}
+
+.viewer-page-slot.is-current {
+  display: flex;
 }
 
 .viewer-page-frame {

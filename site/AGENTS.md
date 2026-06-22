@@ -7,6 +7,7 @@ The build runs `scripts/prerender-catalog.mjs`, `scripts/prerender-home.mjs`, an
 - `dist/index.html` — landing page with links to catalog
 - `dist/catalog.html` — prerendered catalog for `/catalog` (crawlers and first paint)
 - `dist/njgo.html` — prerendered NJGO overview + roster for `njgo.org/` and `/njgo`
+- `dist/catalog/view/*.html` — prerendered score viewer pages for `/catalog/view/…`
 
 **Keep `scripts/prerender-catalog.mjs` in sync** when you change homepage catalog layout or markup in:
 
@@ -15,6 +16,11 @@ The build runs `scripts/prerender-catalog.mjs`, `scripts/prerender-home.mjs`, an
 - `src/components/CompositionCard.jsx`
 - `src/components/TableOfContents.jsx`
 - `src/components/PdfLinkList.jsx`
+
+**Keep `scripts/prerender-catalog-views.mjs` in sync** when you change score viewer page layout or metadata in:
+
+- `src/pages/ViewPdf.jsx`
+- `src/components/PdfViewer.jsx`
 
 **Keep `scripts/prerender-njgo.mjs` in sync** when you change NJGO public page layout or markup in:
 
@@ -25,7 +31,7 @@ The build runs `scripts/prerender-catalog.mjs`, `scripts/prerender-home.mjs`, an
 - `src/data/njgo-overview.yaml`
 - `src/data/njgo-roster.yaml`
 
-After layout changes, run `npm run build` and confirm `dist/index.html` (landing), `dist/catalog.html` (catalog), and `dist/njgo.html` (NJGO) still reflect the expected structure.
+After layout changes, run `npm run build` and confirm `dist/index.html` (landing), `dist/catalog.html` (catalog), `dist/catalog/view/*.html` (score pages), and `dist/njgo.html` (NJGO) still reflect the expected structure.
 
 ## Search Console (manual)
 
@@ -34,7 +40,11 @@ After deploying to `https://guitar.skelterjohn.me`:
 1. Add `https://guitar.skelterjohn.me` as a property in [Google Search Console](https://search.google.com/search-console) (not `skelterjohn.me` — that apex domain is a separate Squarespace parking page with `noindex`).
 2. Verify ownership (DNS TXT record is usually easiest if the domain is already on Google Cloud).
 3. Submit the sitemap: `https://guitar.skelterjohn.me/sitemap.xml`
-4. Use **URL inspection** on the homepage and a few `/view/…` pages; request indexing after deploys that change catalog or SEO tags.
+4. Use **URL inspection** on `https://guitar.skelterjohn.me/catalog` first; click **Request indexing**.
+5. Inspect a few `/catalog/view/…` URLs (for example a composition title you care about) and request indexing for those too.
+6. Check **Pages** → **Sitemaps** after a day or two to confirm Google fetched the sitemap and discovered URLs. **Indexing can take days to weeks** for a new site with few inbound links.
+
+The catalog and each `/catalog/view/…` page are prerendered as static HTML for crawlers. PDF files are also linked directly at `/pdf/…`; Google may index those PDFs separately once it crawls the viewer pages.
 
 After deploying to `https://njgo.org`:
 

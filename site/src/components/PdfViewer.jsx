@@ -92,6 +92,7 @@ export default function PdfViewer({
   const [pageBaseDisplaySizes, setPageBaseDisplaySizes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('loading');
+  const [displayReady, setDisplayReady] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [headerHidden, setHeaderHidden] = useState(false);
   const [footerHidden, setFooterHidden] = useState(true);
@@ -233,6 +234,7 @@ export default function PdfViewer({
     let loadingTask = null;
 
     setStatus('loading');
+    setDisplayReady(false);
     setPageCount(0);
     setPageMediaSizes([]);
     setPageBaseDisplaySizes([]);
@@ -552,14 +554,6 @@ export default function PdfViewer({
         renderTasksRef.current[pageNum - 1] = null;
         renderedCount += 1;
 
-        if (
-          pageNum === 1 &&
-          !cancelled &&
-          renderId === renderIdRef.current
-        ) {
-          setPageBaseDisplaySizes([...pageBaseDisplaySizesRef.current]);
-        }
-
         if (scrollToTopPendingRef.current) {
           container.scrollTop = 0;
           if (pageNum === 1) {
@@ -578,11 +572,16 @@ export default function PdfViewer({
         setPageMediaSizes(nextPageMediaSizes);
         setPageBaseDisplaySizes([...pageBaseDisplaySizesRef.current]);
         requestAnimationFrame(() => {
-          if (scrollToTopPendingRef.current) {
-            finishScrollToTopPending();
-          } else if (headerHiddenRef.current) {
+          requestAnimationFrame(() => {
+            if (cancelled || renderId !== renderIdRef.current) return;
             resetPageScrollRef.current();
-          }
+            if (scrollToTopPendingRef.current) {
+              finishScrollToTopPending();
+            } else if (headerHiddenRef.current) {
+              resetPageScrollRef.current();
+            }
+            setDisplayReady(true);
+          });
         });
       }
 
@@ -628,6 +627,7 @@ export default function PdfViewer({
 
     return () => {
       cancelled = true;
+      setDisplayReady(false);
       clearTimeout(resizeTimer);
       renderIdRef.current += 1;
       observer.disconnect();
@@ -1110,8 +1110,8 @@ export default function PdfViewer({
     return () => observer.disconnect();
   }, [headerHidden, status, pageCount, pdfs, filename]);
 
-  const currentPageReady =
-    status === 'ready' && Boolean(pageBaseDisplaySizes[currentPage - 1]);
+  const showLoading =
+    status === 'loading' || (status === 'ready' && !displayReady);
 
   return (
     <div className="viewer-page">
@@ -1159,7 +1159,7 @@ export default function PdfViewer({
             </div>
           </div>
         </header>
-        {status === 'ready' && pageCount > 0 && (
+        {status === 'ready' && pageCount > 0 && displayReady && (
           <div
             className={`viewer-page-nav${headerHidden ? ' is-floating' : ''}`}
             ref={pageNavRef}
@@ -1221,19 +1221,19 @@ export default function PdfViewer({
       <div
         className={`viewer-content${headerHidden ? ' is-header-hidden' : ''}${
           !footerHidden && sectionPieces.length > 0 ? ' is-footer-visible' : ''
-        }${isTouchAnnotating ? ' is-touch-annotating' : ''}`}
+        }${isTouchAnnotating ? ' is-touch-annotating' : ''}${
+          showLoading ? ' is-loading' : ''
+        }`}
         ref={containerRef}
       >
-        {(status === 'loading' || (status === 'ready' && !currentPageReady)) && (
-          <p className="viewer-status">Loading…</p>
-        )}
+        {showLoading && <p className="viewer-status">Loading…</p>}
         {status === 'error' && (
           <p className="viewer-status viewer-status-error">{errorMessage}</p>
         )}
         {status === 'ready' && (
           <div
             className={`viewer-zoom-surface${
-              currentPageReady ? '' : ' is-preparing'
+              displayReady ? '' : ' is-preparing'
             }`}
           >
             {Array.from({ length: pageCount }, (_, index) => {

@@ -1329,6 +1329,7 @@ body {
 }
 
 .viewer-content {
+  position: relative;
   flex: 1;
   min-height: 0;
   overflow: auto;
@@ -1338,6 +1339,10 @@ body {
   overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
+}
+
+.viewer-content.is-loading {
+  overflow: hidden;
 }
 
 .viewer-content.is-footer-visible {
@@ -1354,7 +1359,10 @@ body {
 }
 
 .viewer-zoom-surface.is-preparing {
+  position: absolute;
+  inset: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .viewer-page-slot {

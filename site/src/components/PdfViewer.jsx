@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { Link } from 'react-router-dom';
-import * as pdfjs from 'pdfjs-dist';
-import PdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
 import { pdfUrl } from '../config.js';
-import { fetchPdfBytes } from '../pdfCache.js';
+import { acquirePdfDocument } from '../pdfDocumentCache.js';
+import { getCachedRender, setCachedRender } from '../pdfRenderCache.js';
 import {
   findPdfByFile,
   getPieceLabelPreference,
@@ -38,14 +37,6 @@ import { PEN_COLOR } from '../utils/stylusInput.js';
 import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { buildPrintSheets } from '../utils/printPdf.js';
 import { catalogPath, repPath, viewPath } from '../seo.js';
-
-let workerIdle = Promise.resolve();
-
-function configureWorker() {
-  pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
-}
-
-configureWorker();
 
 export default function PdfViewer({
   filename,
@@ -84,6 +75,7 @@ export default function PdfViewer({
   const pageNavRef = useRef(null);
   const resetPageScrollRef = useRef(() => {});
   const scrollToTopPendingRef = useRef(true);
+  const loadedUrlRef = useRef(null);
   const headerHiddenRef = useRef(false);
   const currentPageRef = useRef(1);
   const [pageNavLeft, setPageNavLeft] = useState(null);
@@ -229,10 +221,8 @@ export default function PdfViewer({
     return () => window.clearTimeout(timeout);
   }, [status, pageCount, url]);
 
-  useEffect(() => {
-    let cancelled = false;
-    let loadingTask = null;
-
+  useLayoutEffect(() => {
+    loadedUrlRef.current = null;
     setStatus('loading');
     setDisplayReady(false);
     setPageCount(0);
@@ -253,26 +243,24 @@ export default function PdfViewer({
     canvasRefs.current = [];
     slotRefs.current = [];
     pageBaseDisplaySizesRef.current = [];
+    pdfDocRef.current = null;
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
     }
+  }, [url]);
+
+  useEffect(() => {
+    let cancelled = false;
 
     const loadDocument = async () => {
-      await workerIdle;
       if (cancelled) return;
 
       try {
-        const data = await fetchPdfBytes(url);
+        const doc = await acquirePdfDocument(url);
         if (cancelled) return;
 
-        loadingTask = pdfjs.getDocument({ data });
-
-        const doc = await loadingTask.promise;
-        if (cancelled) {
-          await doc.destroy();
-          return;
-        }
         pdfDocRef.current = doc;
+        loadedUrlRef.current = url;
         setPageCount(doc.numPages);
         setStatus('ready');
       } catch (err) {
@@ -287,22 +275,10 @@ export default function PdfViewer({
     return () => {
       cancelled = true;
       void saveAnnotationsRef.current?.flushNow();
-      const task = loadingTask;
-      const doc = pdfDocRef.current;
+      if (loadedUrlRef.current === url) {
+        loadedUrlRef.current = null;
+      }
       pdfDocRef.current = null;
-      loadingTask = null;
-
-      workerIdle = workerIdle.then(async () => {
-        try {
-          if (task) {
-            await task.destroy();
-          } else if (doc) {
-            await doc.destroy();
-          }
-        } finally {
-          configureWorker();
-        }
-      });
     };
   }, [url]);
 
@@ -452,6 +428,7 @@ export default function PdfViewer({
 
   useLayoutEffect(() => {
     if (status !== 'ready' || pageCount === 0 || !containerRef.current) return;
+    if (loadedUrlRef.current !== url) return;
 
     const container = containerRef.current;
     let cancelled = false;
@@ -489,6 +466,9 @@ export default function PdfViewer({
       const doc = pdfDocRef.current;
       if (!doc) return;
 
+      const numPages = doc.numPages;
+      if (numPages === 0) return;
+
       const availableWidth = container.clientWidth;
       const availableHeight = container.clientHeight;
       if (availableWidth === 0 || availableHeight === 0) return;
@@ -497,23 +477,30 @@ export default function PdfViewer({
       lastContainerHeight = availableHeight;
 
       const outputScale = window.devicePixelRatio || 1;
-      let renderedCount = 0;
-      const nextPageMediaSizes = [];
+      const nextPageMediaSizes = Array.from({ length: numPages });
 
-      for (let pageNum = 1; pageNum <= pageCount; pageNum += 1) {
-        if (cancelled || renderId !== renderIdRef.current) return;
+      const renderOnePage = async (pageNum) => {
+        if (cancelled || renderId !== renderIdRef.current) return null;
+        if (pageNum < 1 || pageNum > numPages) return null;
 
         const canvas = canvasRefs.current[pageNum - 1];
-        if (!canvas) continue;
+        if (!canvas) return null;
 
-        const page = await doc.getPage(pageNum);
-        if (cancelled || renderId !== renderIdRef.current) return;
+        let page;
+        try {
+          page = await doc.getPage(pageNum);
+        } catch (err) {
+          if (cancelled || renderId !== renderIdRef.current) return null;
+          console.error('PDF render failed:', err);
+          return null;
+        }
+        if (cancelled || renderId !== renderIdRef.current) return null;
 
         const baseViewport = page.getViewport({ scale: 1 });
-        nextPageMediaSizes.push({
+        const mediaSize = {
           width: baseViewport.width,
           height: baseViewport.height,
-        });
+        };
         const scale = Math.min(
           availableWidth / baseViewport.width,
           availableHeight / baseViewport.height,
@@ -527,12 +514,22 @@ export default function PdfViewer({
           height: baseHeight,
         };
 
-        canvas.width = Math.floor(viewport.width * outputScale);
-        canvas.height = Math.floor(viewport.height * outputScale);
+        const canvasWidth = Math.floor(viewport.width * outputScale);
+        const canvasHeight = Math.floor(viewport.height * outputScale);
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
         canvas.style.width = `${baseWidth}px`;
         canvas.style.height = `${baseHeight}px`;
 
         const context = canvas.getContext('2d');
+        const renderKey = `${url}|${pageNum}|${canvasWidth}|${canvasHeight}`;
+        const cachedRender = getCachedRender(renderKey);
+
+        if (cachedRender) {
+          context.drawImage(cachedRender.bitmap, 0, 0);
+          return { pageNum, mediaSize };
+        }
+
         const transform =
           outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
         const renderTask = page.render({
@@ -546,29 +543,42 @@ export default function PdfViewer({
         try {
           await renderTask.promise;
         } catch (err) {
-          if (err?.name === 'RenderingCancelledException') return;
+          if (err?.name === 'RenderingCancelledException') return null;
           console.error('PDF render failed:', err);
-          return;
+          return null;
+        } finally {
+          renderTasksRef.current[pageNum - 1] = null;
         }
 
-        renderTasksRef.current[pageNum - 1] = null;
-        renderedCount += 1;
+        if (cancelled || renderId !== renderIdRef.current) return null;
 
-        if (scrollToTopPendingRef.current) {
-          container.scrollTop = 0;
-          if (pageNum === 1) {
-            requestAnimationFrame(() => {
-              if (renderId === renderIdRef.current) {
-                finishScrollToTopPending();
-              }
-            });
-          }
+        try {
+          const bitmap = await createImageBitmap(canvas);
+          setCachedRender(renderKey, bitmap);
+        } catch {
+          // Skip caching if the browser cannot retain this bitmap.
         }
 
-        if (cancelled || renderId !== renderIdRef.current) return;
+        return { pageNum, mediaSize };
+      };
+
+      const results = await Promise.all(
+        Array.from({ length: numPages }, (_, index) => renderOnePage(index + 1)),
+      );
+      const renderedCount = results.filter(Boolean).length;
+
+      for (const result of results) {
+        if (!result) continue;
+        nextPageMediaSizes[result.pageNum - 1] = result.mediaSize;
       }
 
-      if (!cancelled && renderId === renderIdRef.current) {
+      if (scrollToTopPendingRef.current) {
+        container.scrollTop = 0;
+      }
+
+      if (cancelled || renderId !== renderIdRef.current) return;
+
+      if (renderedCount > 0) {
         setPageMediaSizes(nextPageMediaSizes);
         setPageBaseDisplaySizes([...pageBaseDisplaySizesRef.current]);
         requestAnimationFrame(() => {

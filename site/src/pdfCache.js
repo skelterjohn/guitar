@@ -2,11 +2,11 @@ const CACHE_NAME = 'guitar-pdfs-v1';
 const memoryCache = new Map();
 const inflight = new Map();
 
-function resolveUrl(url) {
+export function resolvePdfUrl(url) {
   return new URL(url, window.location.href).href;
 }
 
-function pdfLogLabel(resolvedUrl) {
+export function pdfLogLabel(resolvedUrl) {
   const parsed = new URL(resolvedUrl);
   const name = decodeURIComponent(
     parsed.pathname.split('/').pop() || resolvedUrl,
@@ -48,7 +48,7 @@ async function fetchAndStore(url) {
 }
 
 async function loadPdfBytes(url) {
-  const resolved = resolveUrl(url);
+  const resolved = resolvePdfUrl(url);
 
   const cached = await readFromCacheApi(resolved);
   if (cached) return cached;
@@ -57,7 +57,7 @@ async function loadPdfBytes(url) {
 }
 
 export async function fetchPdfBytes(url) {
-  const resolved = resolveUrl(url);
+  const resolved = resolvePdfUrl(url);
 
   const cached = memoryCache.get(resolved);
   if (cached) {
@@ -73,8 +73,9 @@ export async function fetchPdfBytes(url) {
 
   try {
     const bytes = await pending;
-    memoryCache.set(resolved, bytes);
-    return bytes.slice();
+    const owned = bytes.slice();
+    memoryCache.set(resolved, owned);
+    return owned.slice();
   } finally {
     inflight.delete(resolved);
   }

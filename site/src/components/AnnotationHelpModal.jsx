@@ -46,6 +46,17 @@ export default function AnnotationHelpModal({ open, onClose }) {
         </div>
         <div className="annotation-help-body">
           <section>
+			<h3>Use as a performance score</h3>
+			<ul>
+				<li>
+					The intent is for this to be usable as a performance score... ONE DAY.
+				</li>
+				<li>
+					When that day arrives, it will say so here.
+				</li>
+			</ul>
+          </section>
+          <section>
             <h3>Saving and sharing</h3>
             <ul>
               <li>

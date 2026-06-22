@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import IssueIcon from './IssueIcon.jsx';
+
+const GITHUB_ISSUES_URL = 'https://github.com/skelterjohn/guitar/issues';
 
 export default function AnnotationHelpModal({ open, onClose }) {
   useEffect(() => {
@@ -35,14 +38,25 @@ export default function AnnotationHelpModal({ open, onClose }) {
       >
         <div className="annotation-help-header">
           <h2 id="annotation-help-title">Annotations Help</h2>
-          <button
-            type="button"
-            className="annotation-help-close"
-            onClick={onClose}
-            aria-label="Close"
-          >
-            ×
-          </button>
+          <div className="annotation-help-header-actions">
+            <a
+              href={GITHUB_ISSUES_URL}
+              className="annotation-help-issue-link"
+              aria-label="Report an issue on GitHub"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <IssueIcon />
+            </a>
+            <button
+              type="button"
+              className="annotation-help-close"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
         </div>
         <div className="annotation-help-body">
           <section>

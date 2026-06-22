@@ -1169,6 +1169,32 @@ body {
   color: var(--color-text-heading);
 }
 
+.annotation-help-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.annotation-help-issue-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: 0.25rem;
+  text-decoration: none;
+}
+
+.annotation-help-issue-link:hover {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
 .annotation-help-close {
   display: inline-flex;
   align-items: center;

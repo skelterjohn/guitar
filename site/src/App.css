@@ -1353,6 +1353,10 @@ body {
   align-items: center;
 }
 
+.viewer-zoom-surface.is-preparing {
+  visibility: hidden;
+}
+
 .viewer-page-slot {
   display: none;
   align-items: center;

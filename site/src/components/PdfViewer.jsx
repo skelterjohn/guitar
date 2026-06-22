@@ -552,6 +552,14 @@ export default function PdfViewer({
         renderTasksRef.current[pageNum - 1] = null;
         renderedCount += 1;
 
+        if (
+          pageNum === 1 &&
+          !cancelled &&
+          renderId === renderIdRef.current
+        ) {
+          setPageBaseDisplaySizes([...pageBaseDisplaySizesRef.current]);
+        }
+
         if (scrollToTopPendingRef.current) {
           container.scrollTop = 0;
           if (pageNum === 1) {
@@ -1049,6 +1057,9 @@ export default function PdfViewer({
     return () => observer.disconnect();
   }, [headerHidden, status, pageCount, pdfs, filename]);
 
+  const currentPageReady =
+    status === 'ready' && Boolean(pageBaseDisplaySizes[currentPage - 1]);
+
   return (
     <div className="viewer-page">
       <div className={`viewer-chrome${headerHidden ? ' is-collapsed' : ''}`}>
@@ -1160,12 +1171,18 @@ export default function PdfViewer({
         }${isTouchAnnotating ? ' is-touch-annotating' : ''}`}
         ref={containerRef}
       >
-        {status === 'loading' && <p className="viewer-status">Loading…</p>}
+        {(status === 'loading' || (status === 'ready' && !currentPageReady)) && (
+          <p className="viewer-status">Loading…</p>
+        )}
         {status === 'error' && (
           <p className="viewer-status viewer-status-error">{errorMessage}</p>
         )}
         {status === 'ready' && (
-          <div className="viewer-zoom-surface">
+          <div
+            className={`viewer-zoom-surface${
+              currentPageReady ? '' : ' is-preparing'
+            }`}
+          >
             {Array.from({ length: pageCount }, (_, index) => {
               const pageNumber = index + 1;
               const isCurrent = pageNumber === currentPage;

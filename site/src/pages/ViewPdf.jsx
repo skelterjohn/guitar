@@ -102,7 +102,10 @@ export default function ViewPdf() {
   usePageMeta({
     title: pageTitle(name),
     description,
-    url: viewPageUrl(routeName),
+    url: fromRep
+      ? `${window.location.origin}${location.pathname}`
+      : viewPageUrl(routeName),
+    noindex: fromRep,
   });
 
   const viewer = (

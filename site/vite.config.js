@@ -13,6 +13,7 @@ export default defineConfig({
       includeAssets: [
         'favicon.svg',
         'robots.txt',
+        'njgo-sitemap.xml',
         'apple-touch-icon.png',
         'pwa-init.js',
         'njgo-favicon.png',

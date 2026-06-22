@@ -1,19 +1,16 @@
-import { useLocation } from 'react-router-dom';
 import NjgoFooter from '../components/NjgoFooter.jsx';
 import NjgoOverview from '../components/NjgoOverview.jsx';
 import NjgoRoster from '../components/NjgoRoster.jsx';
 import overview from '../data/njgo-overview.js';
 import roster from '../data/njgo-roster.js';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { njgoTitle, repDescription } from '../seo.js';
+import { njgoDescription, njgoPageTitle, njgoUrl } from '../seo.js';
 
 export default function Njgo() {
-  const location = useLocation();
-
   usePageMeta({
-    title: njgoTitle,
-    description: repDescription,
-    url: `${window.location.origin}${location.pathname}`,
+    title: njgoPageTitle,
+    description: njgoDescription,
+    url: njgoUrl,
   });
 
   return (

@@ -939,6 +939,66 @@ export default function PdfViewer({
 
     let pinchStartDistance = 0;
     let pinchStartZoom = 1;
+    let wheelAccumulator = 0;
+    let wheelPageCooldown = false;
+    const WHEEL_THRESHOLD = 80;
+    const WHEEL_PAGE_COOLDOWN_MS = 350;
+
+    const tryChangePage = (direction) => {
+      if (wheelPageCooldown) return;
+      wheelPageCooldown = true;
+      window.setTimeout(() => {
+        wheelPageCooldown = false;
+      }, WHEEL_PAGE_COOLDOWN_MS);
+
+      if (direction > 0) {
+        navigationRef.current.goToNext();
+      } else {
+        navigationRef.current.goToPrev();
+      }
+    };
+
+    const onWheel = (event) => {
+      if (event.ctrlKey) {
+        event.preventDefault();
+        const newZoom = pdfZoomRef.current - event.deltaY * 0.001;
+        applyZoomAtFocalPoint(newZoom, event.clientX, event.clientY);
+        return;
+      }
+
+      if (
+        scrollToTopPendingRef.current ||
+        annotationMenuRef.current ||
+        glyphDragActiveRef.current ||
+        pageCount <= 1
+      ) {
+        return;
+      }
+
+      const zoom = pdfZoomRef.current;
+
+      if (zoom > 1) {
+        const atTop = container.scrollTop <= 0;
+        const atBottom =
+          container.scrollTop + container.clientHeight >= container.scrollHeight - 1;
+
+        if (event.deltaY > 0 && atBottom) {
+          event.preventDefault();
+          tryChangePage(1);
+        } else if (event.deltaY < 0 && atTop) {
+          event.preventDefault();
+          tryChangePage(-1);
+        }
+        return;
+      }
+
+      event.preventDefault();
+      wheelAccumulator += event.deltaY;
+      if (Math.abs(wheelAccumulator) < WHEEL_THRESHOLD) return;
+
+      tryChangePage(wheelAccumulator > 0 ? 1 : -1);
+      wheelAccumulator = 0;
+    };
 
     const onTouchStart = (event) => {
       if (event.touches.length !== 2) return;
@@ -967,13 +1027,6 @@ export default function PdfViewer({
       }
     };
 
-    const onWheel = (event) => {
-      if (!event.ctrlKey) return;
-      event.preventDefault();
-      const newZoom = pdfZoomRef.current - event.deltaY * 0.001;
-      applyZoomAtFocalPoint(newZoom, event.clientX, event.clientY);
-    };
-
     container.addEventListener('touchstart', onTouchStart, { passive: true });
     container.addEventListener('touchmove', onTouchMove, { passive: false });
     container.addEventListener('touchend', onTouchEnd, { passive: true });
@@ -987,7 +1040,7 @@ export default function PdfViewer({
       container.removeEventListener('touchcancel', onTouchEnd);
       container.removeEventListener('wheel', onWheel);
     };
-  }, [status]);
+  }, [status, pageCount]);
 
   useLayoutEffect(() => {
     if (!headerHidden || status !== 'ready' || pageCount === 0) return;

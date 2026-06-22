@@ -1338,12 +1338,27 @@ body {
   z-index: 1;
 }
 
+.annotation-eraser-mask-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  visibility: hidden;
+}
+
+.annotation-overlay.is-erasing .annotation-eraser-mask-canvas {
+  visibility: visible;
+}
+
 .annotation-overlay-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 3;
 }
 
 .viewer-page-frame.is-pen-active,
@@ -1366,8 +1381,8 @@ body {
 }
 
 .annotation-eraser-cursor {
-  stroke: rgb(236 72 153 / 70%);
-  stroke-width: 1;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
 }
 
 .annotation-glyph {

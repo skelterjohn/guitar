@@ -10,7 +10,10 @@ import {
   drawGlyphOnCanvas,
   drawGlyphStampAt,
   drawStrokeOnCanvas,
-  eraseCircleOnCanvas,
+  paintEraserMaskCircle,
+  paintEraserMaskSegment,
+  applyEraserMaskToCanvas,
+  tintEraserMaskForDisplay,
   GLYPH_DROP_SIZE_SCALE,
   loadBlobOntoCanvas,
   setCanvasPixelSize,
@@ -19,6 +22,8 @@ import {
   clientToNormalized,
   effectivePressure,
   ERASER_CIRCLE_FILL,
+  ERASER_CIRCLE_STROKE,
+  ERASER_MASK_FILL,
   eraserRadiusPx,
   getCoalescedPointerEvents,
   matchesRecentPenTap,
@@ -94,11 +99,16 @@ export default function AnnotationOverlay({
   const loadedLayerBlobRef = useRef({});
   const activeStrokeRef = useRef(null);
   const eraserStrokeRef = useRef(false);
+  const eraserMaskCanvasRef = useRef(null);
+  const eraserMaskDisplayCanvasRef = useRef(null);
+  const lastEraserPointRef = useRef(null);
   const penPendingRef = useRef(null);
   const isGlyphDragActiveRef = useRef(isGlyphDragActive);
   const annotationColorRef = useRef(annotationColor);
   const annotationToolRef = useRef(annotationTool);
   const isMenuOpenRef = useRef(isAnnotationMenuOpen);
+  const pageLayersRef = useRef(pageLayers);
+  const pageMediaSizeRef = useRef(pageMediaSize);
   const pxPerMmRef = useRef(measureCssPxPerMm());
   const callbacksRef = useRef({
     onRasterChange,
@@ -118,20 +128,24 @@ export default function AnnotationOverlay({
   annotationColorRef.current = annotationColor;
   annotationToolRef.current = annotationTool;
   isMenuOpenRef.current = isAnnotationMenuOpen;
+  pageLayersRef.current = pageLayers;
+  pageMediaSizeRef.current = pageMediaSize;
 
   const getActiveLayerCanvas = () =>
     layerCanvasRefs.current[annotationColorRef.current];
 
   const getFixedReferenceSize = () => {
-    if (pageLayers?.width > 0 && pageLayers?.height > 0) {
+    const layers = pageLayersRef.current;
+    if (layers?.width > 0 && layers?.height > 0) {
       return {
-        width: pageLayers.width,
-        height: pageLayers.height,
+        width: layers.width,
+        height: layers.height,
       };
     }
 
+    const media = pageMediaSizeRef.current;
     return (
-      annotationRasterReferenceSize(pageMediaSize?.width, pageMediaSize?.height) ?? {
+      annotationRasterReferenceSize(media?.width, media?.height) ?? {
         width: 0,
         height: 0,
       }
@@ -195,6 +209,38 @@ export default function AnnotationOverlay({
     return reference;
   };
 
+  const ensureEraserMaskSize = (reference) => {
+    if (!eraserMaskCanvasRef.current) {
+      eraserMaskCanvasRef.current = document.createElement('canvas');
+    }
+
+    const maskCanvas = eraserMaskCanvasRef.current;
+    const displayCanvas = eraserMaskDisplayCanvasRef.current;
+    setCanvasPixelSize(maskCanvas, reference.width, reference.height);
+    if (displayCanvas) {
+      setCanvasPixelSize(displayCanvas, reference.width, reference.height);
+    }
+    return maskCanvas;
+  };
+
+  const clearEraserMask = () => {
+    const maskCanvas = eraserMaskCanvasRef.current;
+    if (maskCanvas?.width > 0) {
+      maskCanvas
+        .getContext('2d')
+        .clearRect(0, 0, maskCanvas.width, maskCanvas.height);
+    }
+
+    const displayCanvas = eraserMaskDisplayCanvasRef.current;
+    if (displayCanvas?.width > 0) {
+      displayCanvas
+        .getContext('2d')
+        .clearRect(0, 0, displayCanvas.width, displayCanvas.height);
+    }
+
+    lastEraserPointRef.current = null;
+  };
+
   const ensurePreviewCanvasSize = () => {
     const canvas = previewCanvasRef.current;
     const reference = ensureLayerCanvasSizes();
@@ -227,6 +273,10 @@ export default function AnnotationOverlay({
     initializeReferenceSize();
     ensureLayerCanvasSizes();
     ensurePreviewCanvasSize();
+    const reference = referenceSizeRef.current;
+    if (reference.width > 0) {
+      ensureEraserMaskSize(reference);
+    }
   }, [
     pdfZoom,
     pageLayers?.width,
@@ -432,10 +482,17 @@ export default function AnnotationOverlay({
 
       const reference = ensureActiveLayerCanvasSize();
       const canvas = getActiveLayerCanvas();
-      if (!canvas || reference.width === 0) return;
+      const resolvedReference =
+        reference.width > 0 ? reference : referenceSizeRef.current;
+      if (!canvas || resolvedReference.width === 0) return;
 
       const ctx = canvas.getContext('2d');
-      drawStrokeOnCanvas(ctx, active, reference.width, reference.height);
+      drawStrokeOnCanvas(
+        ctx,
+        active,
+        resolvedReference.width,
+        resolvedReference.height,
+      );
       await notifyLayerChange(annotationColorRef.current);
     };
 
@@ -446,9 +503,12 @@ export default function AnnotationOverlay({
       if (display.width === 0 || display.height === 0) return;
 
       const reference = ensureActiveLayerCanvasSize();
-      const canvas = getActiveLayerCanvas();
-      if (!canvas || reference.width === 0) return;
+      const maskCanvas = ensureEraserMaskSize(reference);
+      const displayCanvas = eraserMaskDisplayCanvasRef.current;
+      if (!maskCanvas || reference.width === 0 || !displayCanvas) return;
 
+      const maskCtx = maskCanvas.getContext('2d');
+      const displayCtx = displayCanvas.getContext('2d');
       const referenceScale = getReferenceScale();
       const samples = getCoalescedPointerEvents(event);
       for (const sample of samples) {
@@ -457,6 +517,9 @@ export default function AnnotationOverlay({
           samplePressure(sample),
           pxPerMmRef.current,
         );
+        const xPx = center.x * reference.width;
+        const yPx = center.y * reference.height;
+        const radiusRefPx = radiusPx * referenceScale;
 
         setEraserCursor({
           x: center.x * display.width,
@@ -464,15 +527,59 @@ export default function AnnotationOverlay({
           r: radiusPx,
         });
 
-        eraseCircleOnCanvas(
-          canvas.getContext('2d'),
-          center.x * reference.width,
-          center.y * reference.height,
-          radiusPx * referenceScale,
-        );
+        const last = lastEraserPointRef.current;
+        if (last) {
+          paintEraserMaskSegment(
+            maskCtx,
+            last.x,
+            last.y,
+            last.r,
+            xPx,
+            yPx,
+            radiusRefPx,
+            '#fff',
+          );
+        } else {
+          paintEraserMaskCircle(maskCtx, xPx, yPx, radiusRefPx, '#fff');
+        }
+
+        lastEraserPointRef.current = { x: xPx, y: yPx, r: radiusRefPx };
       }
 
-      void notifyLayerChange(annotationColorRef.current);
+      tintEraserMaskForDisplay(displayCtx, maskCanvas, ERASER_MASK_FILL);
+    };
+
+    const beginEraserStroke = (event) => {
+      eraserStrokeRef.current = true;
+      const reference = ensureActiveLayerCanvasSize();
+      ensureEraserMaskSize(reference);
+      clearEraserMask();
+      applyEraserSample(event);
+    };
+
+    const finishEraserStroke = async (event) => {
+      if (event) {
+        applyEraserSample(event);
+      }
+
+      const reference = ensureActiveLayerCanvasSize();
+      const canvas = getActiveLayerCanvas();
+      const maskCanvas = eraserMaskCanvasRef.current;
+      const resolvedReference =
+        reference.width > 0 ? reference : referenceSizeRef.current;
+
+      if (
+        canvas &&
+        maskCanvas?.width > 0 &&
+        resolvedReference.width > 0
+      ) {
+        applyEraserMaskToCanvas(canvas.getContext('2d'), maskCanvas);
+        await notifyLayerChange(annotationColorRef.current);
+      }
+
+      clearEraserMask();
+      setEraserCursor(null);
+      eraserStrokeRef.current = false;
     };
 
     const clearPenPending = (pending = penPendingRef.current) => {
@@ -534,8 +641,7 @@ export default function AnnotationOverlay({
       ) {
         clearPenPending();
         lastPenTapRef.current = null;
-        eraserStrokeRef.current = true;
-        applyEraserSample(event);
+        beginEraserStroke(event);
         return;
       }
 
@@ -600,8 +706,7 @@ export default function AnnotationOverlay({
           const toolEraser = pending.touchEraser;
           clearPenPending(pending);
           if (toolEraser) {
-            eraserStrokeRef.current = true;
-            applyEraserSample(event);
+            beginEraserStroke(event);
           } else {
             beginPenStroke(event, pending.startX, pending.startY);
           }
@@ -628,9 +733,7 @@ export default function AnnotationOverlay({
 
       if (eraserStrokeRef.current) {
         clearPenPending();
-        applyEraserSample(event);
-        setEraserCursor(null);
-        eraserStrokeRef.current = false;
+        void finishEraserStroke(event);
         return;
       }
 
@@ -707,6 +810,7 @@ export default function AnnotationOverlay({
       clearPenPending();
       activeStrokeRef.current = null;
       eraserStrokeRef.current = false;
+      clearEraserMask();
       setDraftStroke(null);
       setEraserCursor(null);
     };
@@ -760,6 +864,10 @@ export default function AnnotationOverlay({
             ref={previewCanvasRef}
             className="annotation-preview-canvas"
           />
+          <canvas
+            ref={eraserMaskDisplayCanvasRef}
+            className="annotation-eraser-mask-canvas"
+          />
           {(draftPath || eraserCursor) && (
             <svg
               className="annotation-overlay-canvas"
@@ -780,6 +888,7 @@ export default function AnnotationOverlay({
                   cy={eraserCursor.y}
                   r={eraserCursor.r}
                   fill={ERASER_CIRCLE_FILL}
+                  stroke={ERASER_CIRCLE_STROKE}
                   pointerEvents="none"
                 />
               )}

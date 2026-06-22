@@ -4,7 +4,12 @@ export const PEN_THINNING = 0.8;
 
 export const ERASER_MIN_DIAMETER_MM = 1;
 export const ERASER_MAX_DIAMETER_MM = 20;
-export const ERASER_CIRCLE_FILL = 'rgb(236 72 153 / 45%)';
+/** Ring outline at the current eraser position. */
+export const ERASER_CIRCLE_STROKE = 'rgb(236 72 153 / 55%)';
+/** Very light fill so ink underneath stays visible in the cursor circle. */
+export const ERASER_CIRCLE_FILL = 'rgb(236 72 153 / 10%)';
+/** Uniform tint for the accumulated erase preview (not stacked per stamp). */
+export const ERASER_MASK_FILL = 'rgb(236 72 153 / 22%)';
 
 const CSS_PX_PER_MM = 96 / 25.4;
 

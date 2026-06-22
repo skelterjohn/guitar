@@ -327,6 +327,63 @@ export function eraseCircleOnCanvas(ctx, xPx, yPx, radiusPx) {
   ctx.restore();
 }
 
+export function paintEraserMaskCircle(ctx, xPx, yPx, radiusPx, fillStyle = '#fff') {
+  ctx.save();
+  ctx.fillStyle = fillStyle;
+  ctx.beginPath();
+  ctx.arc(xPx, yPx, radiusPx, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+export function paintEraserMaskSegment(
+  ctx,
+  x0,
+  y0,
+  r0,
+  x1,
+  y1,
+  r1,
+  fillStyle = '#fff',
+) {
+  const distance = Math.hypot(x1 - x0, y1 - y0);
+  const minRadius = Math.max(0.5, Math.min(r0, r1));
+  const steps = Math.max(1, Math.ceil(distance / minRadius));
+  for (let step = 0; step <= steps; step += 1) {
+    const t = step / steps;
+    paintEraserMaskCircle(
+      ctx,
+      x0 + (x1 - x0) * t,
+      y0 + (y1 - y0) * t,
+      r0 + (r1 - r0) * t,
+      fillStyle,
+    );
+  }
+}
+
+export function applyEraserMaskToCanvas(layerCtx, maskCanvas) {
+  if (!maskCanvas?.width || !maskCanvas?.height) return;
+
+  layerCtx.save();
+  layerCtx.globalCompositeOperation = 'destination-out';
+  layerCtx.drawImage(maskCanvas, 0, 0);
+  layerCtx.restore();
+}
+
+/** Tint the opaque erase mask once so preview opacity does not stack while dragging. */
+export function tintEraserMaskForDisplay(displayCtx, maskCanvas, fillStyle) {
+  if (!maskCanvas?.width || !maskCanvas?.height || !displayCtx) return;
+
+  const { width, height } = maskCanvas;
+  displayCtx.clearRect(0, 0, width, height);
+  displayCtx.save();
+  displayCtx.fillStyle = fillStyle;
+  displayCtx.fillRect(0, 0, width, height);
+  displayCtx.globalCompositeOperation = 'destination-in';
+  displayCtx.drawImage(maskCanvas, 0, 0);
+  displayCtx.restore();
+}
+
 export async function loadBlobOntoCanvas(canvas, blob) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;

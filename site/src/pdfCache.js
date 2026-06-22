@@ -15,6 +15,36 @@ export function pdfLogLabel(resolvedUrl) {
   return `${name} (${hash})`;
 }
 
+export function formatBytes(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function memoryCacheStats() {
+  let bytes = 0;
+  for (const entry of memoryCache.values()) {
+    bytes += entry.byteLength;
+  }
+  return { count: memoryCache.size, bytes };
+}
+
+async function storageCacheStats() {
+  if (!('caches' in globalThis)) return { count: 0, bytes: 0 };
+
+  const cache = await caches.open(CACHE_NAME);
+  const keys = await cache.keys();
+  let bytes = 0;
+
+  for (const request of keys) {
+    const response = await cache.match(request);
+    if (!response) continue;
+    bytes += (await response.clone().blob()).size;
+  }
+
+  return { count: keys.length, bytes };
+}
+
 async function readFromCacheApi(url) {
   if (!('caches' in globalThis)) return null;
 
@@ -38,6 +68,10 @@ async function fetchAndStore(url) {
     try {
       const cache = await caches.open(CACHE_NAME);
       await cache.put(url, response.clone());
+      const { count, bytes } = await storageCacheStats();
+      console.log(
+        `[pdf] cache add (storage): ${pdfLogLabel(url)} [${count} pdfs, ${formatBytes(bytes)}]`,
+      );
     } catch {
       // Quota or privacy mode — still return the fetched bytes.
     }
@@ -74,7 +108,14 @@ export async function fetchPdfBytes(url) {
   try {
     const bytes = await pending;
     const owned = bytes.slice();
+    const isNew = !memoryCache.has(resolved);
     memoryCache.set(resolved, owned);
+    if (isNew) {
+      const { count, bytes: totalBytes } = memoryCacheStats();
+      console.log(
+        `[pdf] cache add (memory): ${pdfLogLabel(resolved)} [${count} pdfs, ${formatBytes(totalBytes)}]`,
+      );
+    }
     return owned.slice();
   } finally {
     inflight.delete(resolved);

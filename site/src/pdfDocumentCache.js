@@ -1,6 +1,6 @@
 import * as pdfjs from 'pdfjs-dist';
 import PdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
-import { fetchPdfBytes, pdfLogLabel, resolvePdfUrl } from './pdfCache.js';
+import { fetchPdfBytes, formatBytes, pdfLogLabel, resolvePdfUrl } from './pdfCache.js';
 
 pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
 
@@ -25,6 +25,14 @@ function evictOldestDocument() {
   void entry.doc.destroy();
 }
 
+function parsedCacheStats() {
+  let bytes = 0;
+  for (const entry of docCache.values()) {
+    bytes += entry.byteLength ?? 0;
+  }
+  return { count: docCache.size, bytes };
+}
+
 export async function acquirePdfDocument(url) {
   const resolved = resolvePdfUrl(url);
   const cached = docCache.get(resolved);
@@ -35,6 +43,7 @@ export async function acquirePdfDocument(url) {
   }
 
   const data = await fetchPdfBytes(url);
+  const byteLength = data.byteLength;
   const loadingTask = pdfjs.getDocument({ data });
   const doc = await loadingTask.promise;
 
@@ -42,11 +51,19 @@ export async function acquirePdfDocument(url) {
     doc,
     loadingTask,
     lastAccess: Date.now(),
+    byteLength,
   });
 
   while (docCache.size > MAX_DOCS) {
     evictOldestDocument();
   }
+
+  const { count, bytes } = parsedCacheStats();
+  const sizeLabel =
+    bytes > 0
+      ? `${count}/${MAX_DOCS} pdfs, ${formatBytes(bytes)}`
+      : `${count}/${MAX_DOCS} pdfs`;
+  console.log(`[pdf] cache add (parsed): ${pdfLogLabel(resolved)} [${sizeLabel}]`);
 
   return doc;
 }

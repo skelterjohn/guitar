@@ -1367,10 +1367,17 @@ body {
   display: flex;
 }
 
-.viewer-page-frame {
+.viewer-page-scaler {
   position: relative;
-  display: inline-block;
-  max-width: 100%;
+  flex-shrink: 0;
+}
+
+.viewer-page-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  transform-origin: 0 0;
   touch-action: pan-x pan-y;
   box-shadow: 0 2px 12px rgb(15 23 42 / 35%);
 }

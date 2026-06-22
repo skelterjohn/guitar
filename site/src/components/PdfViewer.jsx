@@ -89,6 +89,7 @@ export default function PdfViewer({
   const [pageNavLeft, setPageNavLeft] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [pageMediaSizes, setPageMediaSizes] = useState([]);
+  const [pageBaseDisplaySizes, setPageBaseDisplaySizes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -112,6 +113,7 @@ export default function PdfViewer({
 
   const pdfZoomRef = useRef(1);
   const pendingZoomScrollRef = useRef(null);
+  const pageBaseDisplaySizesRef = useRef([]);
   const isPinchingRef = useRef(false);
   const penScrollLockRef = useRef(null);
   const lastPenTapRef = useRef(null);
@@ -149,6 +151,11 @@ export default function PdfViewer({
   const isTouchAnnotating =
     Boolean(annotationMenu) &&
     (annotationTool === 'pen' || annotationTool === 'eraser');
+
+  const getCurrentPageFrame = () => {
+    const slot = slotRefs.current[currentPageRef.current - 1];
+    return slot?.querySelector('.viewer-page-frame') ?? null;
+  };
 
   const resetPageScroll = () => {
     const container = containerRef.current;
@@ -228,6 +235,7 @@ export default function PdfViewer({
     setStatus('loading');
     setPageCount(0);
     setPageMediaSizes([]);
+    setPageBaseDisplaySizes([]);
     setCurrentPage(1);
     setPdfZoom(1);
     setPageAnnotations({});
@@ -242,6 +250,7 @@ export default function PdfViewer({
     scrollToTopPendingRef.current = true;
     canvasRefs.current = [];
     slotRefs.current = [];
+    pageBaseDisplaySizesRef.current = [];
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
     }
@@ -509,10 +518,17 @@ export default function PdfViewer({
         );
         const viewport = page.getViewport({ scale });
 
+        const baseWidth = Math.floor(viewport.width);
+        const baseHeight = Math.floor(viewport.height);
+        pageBaseDisplaySizesRef.current[pageNum - 1] = {
+          width: baseWidth,
+          height: baseHeight,
+        };
+
         canvas.width = Math.floor(viewport.width * outputScale);
         canvas.height = Math.floor(viewport.height * outputScale);
-        canvas.style.width = `${Math.floor(viewport.width)}px`;
-        canvas.style.height = `${Math.floor(viewport.height)}px`;
+        canvas.style.width = `${baseWidth}px`;
+        canvas.style.height = `${baseHeight}px`;
 
         const context = canvas.getContext('2d');
         const transform =
@@ -552,6 +568,7 @@ export default function PdfViewer({
 
       if (!cancelled && renderId === renderIdRef.current) {
         setPageMediaSizes(nextPageMediaSizes);
+        setPageBaseDisplaySizes([...pageBaseDisplaySizesRef.current]);
         requestAnimationFrame(() => {
           if (scrollToTopPendingRef.current) {
             finishScrollToTopPending();
@@ -844,22 +861,29 @@ export default function PdfViewer({
   }, [status]);
 
   useLayoutEffect(() => {
+    if (status !== 'ready') return;
+
     const pending = pendingZoomScrollRef.current;
     if (!pending) return;
     pendingZoomScrollRef.current = null;
 
     const container = containerRef.current;
-    if (!container) return;
+    const frame = getCurrentPageFrame();
+    if (!container || !frame) return;
+
+    const frameRect = frame.getBoundingClientRect();
+    const pointX = frameRect.left + pending.pageX * pending.newZoom;
+    const pointY = frameRect.top + pending.pageY * pending.newZoom;
 
     container.scrollLeft = Math.min(
-      Math.max(0, pending.scrollLeft),
+      Math.max(0, container.scrollLeft + pointX - pending.clientX),
       Math.max(0, container.scrollWidth - container.clientWidth),
     );
     container.scrollTop = Math.min(
-      Math.max(0, pending.scrollTop),
+      Math.max(0, container.scrollTop + pointY - pending.clientY),
       Math.max(0, container.scrollHeight - container.clientHeight),
     );
-  }, [pdfZoom]);
+  }, [pdfZoom, status]);
 
   useEffect(() => {
     if (status !== 'ready') return;
@@ -888,14 +912,18 @@ export default function PdfViewer({
       const clampedZoom = clampZoom(newZoom);
       if (clampedZoom === oldZoom) return;
 
-      const rect = container.getBoundingClientRect();
-      const focalX = clientX - rect.left;
-      const focalY = clientY - rect.top;
-      const ratio = clampedZoom / oldZoom;
+      const frame = getCurrentPageFrame();
+      if (!frame) return;
+
+      const frameRect = frame.getBoundingClientRect();
+      if (frameRect.width === 0 || frameRect.height === 0) return;
 
       pendingZoomScrollRef.current = {
-        scrollLeft: (container.scrollLeft + focalX) * ratio - focalX,
-        scrollTop: (container.scrollTop + focalY) * ratio - focalY,
+        clientX,
+        clientY,
+        pageX: (clientX - frameRect.left) / oldZoom,
+        pageY: (clientY - frameRect.top) / oldZoom,
+        newZoom: clampedZoom,
       };
       pdfZoomRef.current = clampedZoom;
       setPdfZoom(clampedZoom);
@@ -1137,13 +1165,21 @@ export default function PdfViewer({
           <p className="viewer-status viewer-status-error">{errorMessage}</p>
         )}
         {status === 'ready' && (
-          <div className="viewer-zoom-surface" style={{ zoom: pdfZoom }}>
+          <div className="viewer-zoom-surface">
             {Array.from({ length: pageCount }, (_, index) => {
               const pageNumber = index + 1;
               const isCurrent = pageNumber === currentPage;
               const pageLayers = normalizePageEntry(
                 pageAnnotations[String(pageNumber)],
               );
+              const baseSize = pageBaseDisplaySizes[index];
+              const pageZoom = isCurrent ? pdfZoom : 1;
+              const scaledWidth = baseSize
+                ? Math.floor(baseSize.width * pageZoom)
+                : undefined;
+              const scaledHeight = baseSize
+                ? Math.floor(baseSize.height * pageZoom)
+                : undefined;
 
               return (
               <div
@@ -1156,9 +1192,26 @@ export default function PdfViewer({
                 }}
               >
                 <div
-                  className="viewer-page-frame"
-                  data-page-number={pageNumber}
+                  className="viewer-page-scaler"
+                  style={
+                    scaledWidth && scaledHeight
+                      ? { width: scaledWidth, height: scaledHeight }
+                      : undefined
+                  }
                 >
+                  <div
+                    className="viewer-page-frame"
+                    data-page-number={pageNumber}
+                    style={
+                      baseSize
+                        ? {
+                            width: baseSize.width,
+                            height: baseSize.height,
+                            transform: `scale(${pageZoom})`,
+                          }
+                        : undefined
+                    }
+                  >
                   <canvas
                     ref={(element) => {
                       canvasRefs.current[index] = element;
@@ -1168,7 +1221,6 @@ export default function PdfViewer({
                     pageNumber={pageNumber}
                     pageLayers={pageLayers}
                     pageMediaSize={pageMediaSizes[index] ?? null}
-                    pdfZoom={pdfZoom}
                     glyphPreview={glyphDragPreview}
                     glyphDropRequest={glyphDropRequest}
                     layerClearRequest={layerClearRequest}
@@ -1183,6 +1235,7 @@ export default function PdfViewer({
                     onOpenMenu={openAnnotationMenuAt}
                     onDismissMenu={dismissAnnotationMenu}
                   />
+                </div>
                 </div>
               </div>
               );

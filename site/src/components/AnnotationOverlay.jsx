@@ -75,7 +75,6 @@ export default function AnnotationOverlay({
   glyphPreview = null,
   glyphDropRequest = null,
   layerClearRequest = null,
-  pdfZoom = 1,
   lastPenTapRef,
   onRasterChange,
   onOpenMenu,
@@ -274,7 +273,6 @@ export default function AnnotationOverlay({
       ensureEraserMaskSize(reference);
     }
   }, [
-    pdfZoom,
     pageLayers?.width,
     pageLayers?.height,
     pageMediaSize?.width,
@@ -839,57 +837,53 @@ export default function AnnotationOverlay({
       }`}
       aria-hidden="true"
     >
-      {displaySize.width > 0 && displaySize.height > 0 && (
-        <>
-          {ANNOTATION_LAYER_COLORS.map((color) => (
-            <canvas
-              key={color}
-              ref={(element) => {
-                if (element) {
-                  layerCanvasRefs.current[color] = element;
-                } else {
-                  delete layerCanvasRefs.current[color];
-                }
-              }}
-              className="annotation-raster-canvas"
-              data-annotation-layer={color}
+      {ANNOTATION_LAYER_COLORS.map((color) => (
+        <canvas
+          key={color}
+          ref={(element) => {
+            if (element) {
+              layerCanvasRefs.current[color] = element;
+            } else {
+              delete layerCanvasRefs.current[color];
+            }
+          }}
+          className="annotation-raster-canvas"
+          data-annotation-layer={color}
+        />
+      ))}
+      <canvas
+        ref={previewCanvasRef}
+        className="annotation-preview-canvas"
+      />
+      <canvas
+        ref={eraserMaskDisplayCanvasRef}
+        className="annotation-eraser-mask-canvas"
+      />
+      {displaySize.width > 0 && displaySize.height > 0 && (draftPath || eraserCursor) && (
+        <svg
+          className="annotation-overlay-canvas"
+          viewBox={`0 0 ${displaySize.width} ${displaySize.height}`}
+          aria-hidden="true"
+        >
+          {draftPath && (
+            <path
+              d={draftPath}
+              fill={draftStroke.color ?? annotationColorRef.current}
+              pointerEvents="none"
             />
-          ))}
-          <canvas
-            ref={previewCanvasRef}
-            className="annotation-preview-canvas"
-          />
-          <canvas
-            ref={eraserMaskDisplayCanvasRef}
-            className="annotation-eraser-mask-canvas"
-          />
-          {(draftPath || eraserCursor) && (
-            <svg
-              className="annotation-overlay-canvas"
-              viewBox={`0 0 ${displaySize.width} ${displaySize.height}`}
-              aria-hidden="true"
-            >
-              {draftPath && (
-                <path
-                  d={draftPath}
-                  fill={draftStroke.color ?? annotationColorRef.current}
-                  pointerEvents="none"
-                />
-              )}
-              {eraserCursor && (
-                <circle
-                  className="annotation-eraser-cursor"
-                  cx={eraserCursor.x}
-                  cy={eraserCursor.y}
-                  r={eraserCursor.r}
-                  fill={ERASER_CIRCLE_FILL}
-                  stroke={ERASER_CIRCLE_STROKE}
-                  pointerEvents="none"
-                />
-              )}
-            </svg>
           )}
-        </>
+          {eraserCursor && (
+            <circle
+              className="annotation-eraser-cursor"
+              cx={eraserCursor.x}
+              cy={eraserCursor.y}
+              r={eraserCursor.r}
+              fill={ERASER_CIRCLE_FILL}
+              stroke={ERASER_CIRCLE_STROKE}
+              pointerEvents="none"
+            />
+          )}
+        </svg>
       )}
     </div>
   );

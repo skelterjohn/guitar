@@ -1353,16 +1353,6 @@ body {
   align-items: center;
 }
 
-.viewer-zoom-surface.is-zoomed {
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-
-.viewer-zoom-surface.is-zoomed .viewer-page-slot.is-current {
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-
 .viewer-page-slot {
   display: none;
   align-items: center;

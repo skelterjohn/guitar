@@ -111,6 +111,7 @@ export default function PdfViewer({
   const [printBusy, setPrintBusy] = useState(false);
 
   const pdfZoomRef = useRef(1);
+  const pendingZoomScrollRef = useRef(null);
   const isPinchingRef = useRef(false);
   const penScrollLockRef = useRef(null);
   const lastPenTapRef = useRef(null);
@@ -842,6 +843,24 @@ export default function PdfViewer({
     };
   }, [status]);
 
+  useLayoutEffect(() => {
+    const pending = pendingZoomScrollRef.current;
+    if (!pending) return;
+    pendingZoomScrollRef.current = null;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.scrollLeft = Math.min(
+      Math.max(0, pending.scrollLeft),
+      Math.max(0, container.scrollWidth - container.clientWidth),
+    );
+    container.scrollTop = Math.min(
+      Math.max(0, pending.scrollTop),
+      Math.max(0, container.scrollHeight - container.clientHeight),
+    );
+  }, [pdfZoom]);
+
   useEffect(() => {
     if (status !== 'ready') return;
 
@@ -859,6 +878,29 @@ export default function PdfViewer({
       return Math.hypot(dx, dy);
     };
 
+    const getTouchMidpoint = (touches) => ({
+      x: (touches[0].clientX + touches[1].clientX) / 2,
+      y: (touches[0].clientY + touches[1].clientY) / 2,
+    });
+
+    const applyZoomAtFocalPoint = (newZoom, clientX, clientY) => {
+      const oldZoom = pdfZoomRef.current;
+      const clampedZoom = clampZoom(newZoom);
+      if (clampedZoom === oldZoom) return;
+
+      const rect = container.getBoundingClientRect();
+      const focalX = clientX - rect.left;
+      const focalY = clientY - rect.top;
+      const ratio = clampedZoom / oldZoom;
+
+      pendingZoomScrollRef.current = {
+        scrollLeft: (container.scrollLeft + focalX) * ratio - focalX,
+        scrollTop: (container.scrollTop + focalY) * ratio - focalY,
+      };
+      pdfZoomRef.current = clampedZoom;
+      setPdfZoom(clampedZoom);
+    };
+
     let pinchStartDistance = 0;
     let pinchStartZoom = 1;
 
@@ -873,9 +915,9 @@ export default function PdfViewer({
       if (event.touches.length !== 2 || pinchStartDistance === 0) return;
       event.preventDefault();
       const distance = getTouchDistance(event.touches);
-      setPdfZoom(
-        clampZoom(pinchStartZoom * (distance / pinchStartDistance)),
-      );
+      const newZoom = pinchStartZoom * (distance / pinchStartDistance);
+      const { x, y } = getTouchMidpoint(event.touches);
+      applyZoomAtFocalPoint(newZoom, x, y);
     };
 
     const onTouchEnd = (event) => {
@@ -883,13 +925,17 @@ export default function PdfViewer({
       pinchStartDistance = 0;
       if (event.touches.length === 0) {
         isPinchingRef.current = false;
+        if (pdfZoomRef.current <= 1) {
+          resetPageScrollRef.current();
+        }
       }
     };
 
     const onWheel = (event) => {
       if (!event.ctrlKey) return;
       event.preventDefault();
-      setPdfZoom((zoom) => clampZoom(zoom - event.deltaY * 0.001));
+      const newZoom = pdfZoomRef.current - event.deltaY * 0.001;
+      applyZoomAtFocalPoint(newZoom, event.clientX, event.clientY);
     };
 
     container.addEventListener('touchstart', onTouchStart, { passive: true });
@@ -1091,10 +1137,7 @@ export default function PdfViewer({
           <p className="viewer-status viewer-status-error">{errorMessage}</p>
         )}
         {status === 'ready' && (
-          <div
-            className={`viewer-zoom-surface${pdfZoom > 1 ? ' is-zoomed' : ''}`}
-            style={{ zoom: pdfZoom }}
-          >
+          <div className="viewer-zoom-surface" style={{ zoom: pdfZoom }}>
             {Array.from({ length: pageCount }, (_, index) => {
               const pageNumber = index + 1;
               const isCurrent = pageNumber === currentPage;

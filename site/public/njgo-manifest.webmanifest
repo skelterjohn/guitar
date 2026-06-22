@@ -1,0 +1,30 @@
+{
+  "id": "https://njgo.org",
+  "name": "New Jersey Guitar Orchestra",
+  "short_name": "NJGO",
+  "description": "performance repertoire for NJGO",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "njgo-pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "njgo-pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "njgo-pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

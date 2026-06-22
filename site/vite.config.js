@@ -10,7 +10,17 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
+      includeAssets: [
+        'favicon.svg',
+        'robots.txt',
+        'apple-touch-icon.png',
+        'pwa-init.js',
+        'njgo-favicon.png',
+        'njgo-manifest.webmanifest',
+        'njgo-apple-touch-icon.png',
+        'njgo-pwa-192x192.png',
+        'njgo-pwa-512x512.png',
+      ],
       manifest: {
         id: siteOrigin,
         name: siteTitle,

@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildNjgoJsonLd } from '../src/njgoJsonLd.js';
+import { eventDateTimeAttr, formatEventDate } from '../src/utils/formatEventDate.js';
 import { njgoDescription, njgoPageTitle, njgoUrl } from '../src/seo.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -11,6 +12,7 @@ const distNjgo = join(__dirname, '../dist/njgo.html');
 const overviewPath = join(__dirname, '../src/data/njgo-overview.yaml');
 const rosterPath = join(__dirname, '../src/data/njgo-roster.yaml');
 const directorPath = join(__dirname, '../src/data/njgo-director.yaml');
+const eventsPath = join(__dirname, '../src/data/events.yaml');
 
 const DIRECTOR_EMAIL = 'newjerseyguitarorchestra@gmail.com';
 
@@ -122,11 +124,50 @@ function renderDirector(director) {
 </article>`;
 }
 
-function renderRoster(members, director) {
-  return `<section class="njgo-roster" aria-label="People">
-  <div class="njgo-roster-tablist" role="tablist" aria-label="People">
+function eventTitle(event) {
+  if (event.name && event.location) {
+    return `${event.name} @ ${event.location}`;
+  }
+  return event.name || event.location || '';
+}
+
+function renderEvents(events) {
+  const items = Array.isArray(events) ? events : [];
+  if (items.length === 0) {
+    return '';
+  }
+
+  return `<ul class="njgo-events">${items
+    .map((event) => {
+      const formattedDate = formatEventDate(event.date);
+      const dateTimeAttr = eventDateTimeAttr(event.date);
+      const date = formattedDate && dateTimeAttr
+        ? `<p class="njgo-event-date"><time datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time></p>`
+        : '';
+      const links = Array.isArray(event.links)
+        ? `<ul class="njgo-event-links">${event.links
+            .map(
+              (link) =>
+                `<li><a class="njgo-overview-link" href="${escapeHtml(link.url)}" rel="noopener noreferrer"><span class="njgo-overview-link-label">${escapeHtml(link.name)}</span></a></li>`,
+            )
+            .join('')}</ul>`
+        : '';
+
+      return `<li><article class="njgo-event">
+  <h2 class="njgo-event-name">${escapeHtml(eventTitle(event))}</h2>
+  ${date}
+  ${links}
+</article></li>`;
+    })
+    .join('')}</ul>`;
+}
+
+function renderRoster(members, director, events) {
+  return `<section class="njgo-roster" aria-label="NJGO">
+  <div class="njgo-roster-tablist" role="tablist" aria-label="NJGO">
     <button type="button" role="tab" id="njgo-tab-director" class="njgo-roster-tab" aria-selected="true" aria-controls="njgo-panel-director">Meet the NJGO Director</button>
     <button type="button" role="tab" id="njgo-tab-performers" class="njgo-roster-tab" aria-selected="false" aria-controls="njgo-panel-performers">Meet the NJGO Performers</button>
+    <button type="button" role="tab" id="njgo-tab-concerts" class="njgo-roster-tab" aria-selected="false" aria-controls="njgo-panel-concerts">See the NJGO In Concert</button>
   </div>
   <div id="njgo-panel-director" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-director">
     ${renderDirector(director)}
@@ -139,17 +180,20 @@ function renderRoster(members, director) {
       .join('\n    ')}
   </ul>
   </div>
+  <div id="njgo-panel-concerts" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-concerts" hidden>
+    ${renderEvents(events)}
+  </div>
 </section>`;
 }
 
-function renderNjgo(overview, roster, director) {
+function renderNjgo(overview, roster, director, events) {
   const jsonLd = JSON.stringify(buildNjgoJsonLd(roster)).replaceAll('<', '\\u003c');
 
   return `<main class="page page--njgo">
   <div class="njgo-page">
     <script type="application/ld+json">${jsonLd}</script>
     ${renderOverview(overview)}
-    ${renderRoster(roster.members ?? [], director)}
+    ${renderRoster(roster.members ?? [], director, events)}
   </div>
 </main>`;
 }
@@ -182,9 +226,10 @@ function setNjgoHead(page) {
 const overview = yaml.load(readFileSync(overviewPath, 'utf8'));
 const roster = yaml.load(readFileSync(rosterPath, 'utf8'));
 const director = yaml.load(readFileSync(directorPath, 'utf8'));
+const eventsData = yaml.load(readFileSync(eventsPath, 'utf8'));
 const template = readFileSync(distIndex, 'utf8');
 const root = '<div id="root"></div>';
-const njgoHtml = renderNjgo(overview, roster, director);
+const njgoHtml = renderNjgo(overview, roster, director, eventsData.events ?? []);
 
 if (!template.includes(root)) {
   console.error('prerender: expected #root in dist/index.html');

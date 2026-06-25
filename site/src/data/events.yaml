@@ -1,0 +1,24 @@
+events:
+  - name: Boston GuitarFest
+    date: 2026-06-20T12:00:00-04:00
+    location: First Lutheran Church in Boston, MA
+  - name: Kean GuitarFest
+    date: 2026-06-13T19:00:00-04:00
+    location: Enlow Hall in Union, NJ
+  - name: Long Island Guitar Festival
+    date: 2026-05-03T11:00:00-04:00
+    location: Setauket, NY
+  - name: WPU GuitarFest
+    date: 2026-04-25T14:00:00-04:00
+    location: Shea Center for Performing Arts in Wayne, NJ
+    links:
+      - name: Concertino / Jay Bartlema
+        url: https://www.youtube.com/watch?v=Bs2aYRMXfuQ
+      - name: Sail Off the Edge / Andrew York
+        url: https://www.youtube.com/watch?v=ymqs2kI4R30
+      - name: The Promise of Something New / Matthew Cochran
+        url: https://www.youtube.com/watch?v=VuR0hA9Yndo
+      - name: Pulsar / Olga Amelkina-Vera
+        url: https://www.youtube.com/watch?v=WfI563oPDn4
+
+      

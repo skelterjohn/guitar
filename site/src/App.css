@@ -601,6 +601,55 @@ body {
   }
 }
 
+.njgo-events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--njgo-gap);
+}
+
+.njgo-events > li {
+  min-width: 0;
+}
+
+.njgo-event {
+  padding: 0.85rem 1.15rem 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: 4px;
+}
+
+.njgo-event-name {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: normal;
+  color: var(--color-text-heading);
+}
+
+.njgo-event-date {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.njgo-event-links {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--njgo-gap);
+}
+
+.njgo-event-links > li {
+  min-width: 0;
+}
+
+.njgo-event-links .njgo-overview-link {
+  width: auto;
+}
+
 .njgo-roster-grid {
   list-style: none;
   margin: 0;

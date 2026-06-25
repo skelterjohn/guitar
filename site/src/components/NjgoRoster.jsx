@@ -1,9 +1,11 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import NjgoDirector from './NjgoDirector.jsx';
+import NjgoEvents from './NjgoEvents.jsx';
 
 const TABS = [
   { id: 'director', label: 'Meet the NJGO Director' },
   { id: 'performers', label: 'Meet the NJGO Performers' },
+  { id: 'concerts', label: 'See the NJGO In Concert' },
 ];
 
 function bioParagraphs(bio) {
@@ -121,13 +123,13 @@ function NjgoRosterCard({ member }) {
   );
 }
 
-export default function NjgoRoster({ members, director }) {
+export default function NjgoRoster({ members, director, events }) {
   const [activeTab, setActiveTab] = useState('director');
   const shuffledMembers = useMemo(() => shuffleMembers(members), [members]);
 
   return (
-    <section className="njgo-roster" aria-label="People">
-      <div className="njgo-roster-tablist" role="tablist" aria-label="People">
+    <section className="njgo-roster" aria-label="NJGO">
+      <div className="njgo-roster-tablist" role="tablist" aria-label="NJGO">
         {TABS.map((tab) => (
           <button
             key={tab.id}
@@ -173,6 +175,16 @@ export default function NjgoRoster({ members, director }) {
             </li>
           ))}
         </ul>
+      </div>
+
+      <div
+        id="njgo-panel-concerts"
+        role="tabpanel"
+        className="njgo-roster-panel"
+        aria-labelledby="njgo-tab-concerts"
+        hidden={activeTab !== 'concerts'}
+      >
+        <NjgoEvents events={events} />
       </div>
     </section>
   );

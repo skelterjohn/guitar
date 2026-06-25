@@ -2,6 +2,7 @@ import NjgoFooter from '../components/NjgoFooter.jsx';
 import NjgoOverview from '../components/NjgoOverview.jsx';
 import NjgoRoster from '../components/NjgoRoster.jsx';
 import director from '../data/njgo-director.js';
+import events from '../data/events.js';
 import overview from '../data/njgo-overview.js';
 import roster from '../data/njgo-roster.js';
 import usePageMeta from '../hooks/usePageMeta.js';
@@ -18,7 +19,11 @@ export default function Njgo() {
     <main className="page page--njgo">
       <div className="njgo-page">
         <NjgoOverview logo={overview.logo} paragraphs={overview.paragraphs} />
-        <NjgoRoster members={roster.members} director={director} />
+        <NjgoRoster
+          members={roster.members}
+          director={director}
+          events={events.events}
+        />
       </div>
       <NjgoFooter />
     </main>

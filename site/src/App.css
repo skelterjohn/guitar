@@ -518,6 +518,7 @@ body {
 .njgo-roster-tablist {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.25rem 1rem;
   margin: 0 0 1rem;
   padding: 0;
@@ -559,6 +560,7 @@ body {
   column-gap: 1.25rem;
   align-items: start;
   min-width: 0;
+  margin-inline: 0;
 }
 
 .njgo-director-photo-wrap {
@@ -690,6 +692,14 @@ body {
 
 .njgo-event {
   overflow: hidden;
+  margin-inline: 0;
+}
+
+@media (min-width: 641px) {
+  .njgo-director,
+  .njgo-event {
+    margin-inline: 15rem;
+  }
 }
 
 .njgo-event--has-image {
@@ -832,7 +842,6 @@ body {
     width: calc(100% + 2.5rem);
   }
 
-  .njgo-roster-tablist,
   .njgo-roster-note {
     padding-left: 1.25rem;
   }

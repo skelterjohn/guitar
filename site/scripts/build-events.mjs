@@ -1,7 +1,8 @@
-import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
+import sharp from 'sharp';
 import { normalizeMapLink, splitEventLocation } from '../src/utils/eventLocation.js';
 import { flattenEvents, groupEventsByYear } from '../src/utils/eventYears.js';
 
@@ -10,6 +11,8 @@ const eventsYamlPath = join(__dirname, '../src/data/events.yaml');
 const imagesDir = join(__dirname, '../src/data/events');
 const publicImagesDir = join(__dirname, '../public/events');
 const eventsUrl = 'https://jaysonmartinez.org/events';
+const MAX_IMAGE_WIDTH = 1500;
+const JPEG_QUALITY = 85;
 
 function slugify(text) {
   return text
@@ -139,6 +142,24 @@ async function downloadImage(url, outputPath) {
   writeFileSync(outputPath, buffer);
 }
 
+async function optimizeEventImage(inputPath, baseName) {
+  const image = sharp(inputPath);
+  const meta = await image.metadata();
+  const pipeline = image.resize({ width: MAX_IMAGE_WIDTH, withoutEnlargement: true });
+
+  if (meta.hasAlpha) {
+    const filename = `${baseName}.png`;
+    const outputPath = join(imagesDir, filename);
+    await pipeline.png({ compressionLevel: 9 }).toFile(outputPath);
+    return { outputPath, filename };
+  }
+
+  const filename = `${baseName}.jpeg`;
+  const outputPath = join(imagesDir, filename);
+  await pipeline.jpeg({ quality: JPEG_QUALITY, mozjpeg: true }).toFile(outputPath);
+  return { outputPath, filename };
+}
+
 function toYaml(eventsByYear) {
   const header = '# Events sourced from https://jaysonmartinez.org/events\nevents:\n';
   const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
@@ -194,10 +215,17 @@ for (const event of allEvents) {
   if (!imageUrl) continue;
 
   const filename = `${eventDayKey(event)}${extensionFromUrl(imageUrl)}`;
-  const outputPath = join(imagesDir, filename);
-  await downloadImage(imageUrl, outputPath);
-  cpSync(outputPath, join(publicImagesDir, filename));
-  event.image = filename;
+  const downloadPath = join(imagesDir, filename);
+  await downloadImage(imageUrl, downloadPath);
+  const { outputPath, filename: optimizedFilename } = await optimizeEventImage(
+    downloadPath,
+    eventDayKey(event),
+  );
+  if (downloadPath !== outputPath) {
+    unlinkSync(downloadPath);
+  }
+  cpSync(outputPath, join(publicImagesDir, optimizedFilename));
+  event.image = optimizedFilename;
   delete event.imageUrl;
 }
 

@@ -125,19 +125,19 @@ function renderDirector(director) {
 function renderRoster(members, director) {
   return `<section class="njgo-roster" aria-label="People">
   <div class="njgo-roster-tablist" role="tablist" aria-label="People">
-    <button type="button" role="tab" id="njgo-tab-performers" class="njgo-roster-tab" aria-selected="true" aria-controls="njgo-panel-performers">Meet the NJGO Performers</button>
-    <button type="button" role="tab" id="njgo-tab-director" class="njgo-roster-tab" aria-selected="false" aria-controls="njgo-panel-director">Meet the NJGO Director</button>
+    <button type="button" role="tab" id="njgo-tab-director" class="njgo-roster-tab" aria-selected="true" aria-controls="njgo-panel-director">Meet the NJGO Director</button>
+    <button type="button" role="tab" id="njgo-tab-performers" class="njgo-roster-tab" aria-selected="false" aria-controls="njgo-panel-performers">Meet the NJGO Performers</button>
   </div>
-  <div id="njgo-panel-performers" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-performers">
+  <div id="njgo-panel-director" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-director">
+    ${renderDirector(director)}
+  </div>
+  <div id="njgo-panel-performers" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-performers" hidden>
     <p class="njgo-roster-note">in no particular order, past and present</p>
     <ul class="njgo-roster-grid">
     ${members
       .map((member) => `<li>${renderRosterMember(member)}</li>`)
       .join('\n    ')}
   </ul>
-  </div>
-  <div id="njgo-panel-director" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-director" hidden>
-    ${renderDirector(director)}
   </div>
 </section>`;
 }

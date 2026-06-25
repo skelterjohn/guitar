@@ -2,8 +2,8 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import NjgoDirector from './NjgoDirector.jsx';
 
 const TABS = [
-  { id: 'performers', label: 'Meet the NJGO Performers' },
   { id: 'director', label: 'Meet the NJGO Director' },
+  { id: 'performers', label: 'Meet the NJGO Performers' },
 ];
 
 function bioParagraphs(bio) {
@@ -122,7 +122,7 @@ function NjgoRosterCard({ member }) {
 }
 
 export default function NjgoRoster({ members, director }) {
-  const [activeTab, setActiveTab] = useState('performers');
+  const [activeTab, setActiveTab] = useState('director');
   const shuffledMembers = useMemo(() => shuffleMembers(members), [members]);
 
   return (
@@ -145,6 +145,20 @@ export default function NjgoRoster({ members, director }) {
       </div>
 
       <div
+        id="njgo-panel-director"
+        role="tabpanel"
+        className="njgo-roster-panel"
+        aria-labelledby="njgo-tab-director"
+        hidden={activeTab !== 'director'}
+      >
+        <NjgoDirector
+          name={director?.name}
+          image={director?.image}
+          bio={director?.bio}
+        />
+      </div>
+
+      <div
         id="njgo-panel-performers"
         role="tabpanel"
         className="njgo-roster-panel"
@@ -159,20 +173,6 @@ export default function NjgoRoster({ members, director }) {
             </li>
           ))}
         </ul>
-      </div>
-
-      <div
-        id="njgo-panel-director"
-        role="tabpanel"
-        className="njgo-roster-panel"
-        aria-labelledby="njgo-tab-director"
-        hidden={activeTab !== 'director'}
-      >
-        <NjgoDirector
-          name={director?.name}
-          image={director?.image}
-          bio={director?.bio}
-        />
       </div>
     </section>
   );

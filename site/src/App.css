@@ -536,6 +536,8 @@ body {
   letter-spacing: 0.04em;
   color: var(--color-text-muted);
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .njgo-roster-tab:hover {

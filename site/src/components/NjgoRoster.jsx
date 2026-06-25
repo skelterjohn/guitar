@@ -1,12 +1,12 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import NjgoDirector from './NjgoDirector.jsx';
 import NjgoEvents from './NjgoEvents.jsx';
-
-const TABS = [
-  { id: 'director', label: 'Meet the NJGO Director' },
-  { id: 'performers', label: 'Meet the NJGO Performers' },
-  { id: 'concerts', label: 'See the NJGO In Concert' },
-];
+import {
+  NJGO_DEFAULT_TAB,
+  NJGO_TABS,
+  njgoTabFromHash,
+  njgoTabHash,
+} from '../utils/njgoTabs.js';
 
 function bioParagraphs(bio) {
   if (typeof bio !== 'string' || !bio.trim()) return [];
@@ -124,25 +124,48 @@ function NjgoRosterCard({ member }) {
 }
 
 export default function NjgoRoster({ members, director, eventYears }) {
-  const [activeTab, setActiveTab] = useState('director');
+  const [activeTab, setActiveTab] = useState(() => (
+    typeof window !== 'undefined' ? njgoTabFromHash(window.location.hash) : NJGO_DEFAULT_TAB
+  ));
   const shuffledMembers = useMemo(() => shuffleMembers(members), [members]);
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      setActiveTab(njgoTabFromHash(window.location.hash));
+    };
+
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
+  }, []);
+
+  const selectTab = (tabId) => {
+    setActiveTab(tabId);
+    const nextHash = njgoTabHash(tabId);
+    if (window.location.hash !== nextHash) {
+      window.history.replaceState(null, '', nextHash);
+    }
+  };
 
   return (
     <section className="njgo-roster" aria-label="NJGO">
       <div className="njgo-roster-tablist" role="tablist" aria-label="NJGO">
-        {TABS.map((tab) => (
-          <button
+        {NJGO_TABS.map((tab) => (
+          <a
             key={tab.id}
-            type="button"
+            href={njgoTabHash(tab.id)}
             role="tab"
             id={`njgo-tab-${tab.id}`}
             className="njgo-roster-tab"
             aria-selected={activeTab === tab.id}
             aria-controls={`njgo-panel-${tab.id}`}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={(event) => {
+              event.preventDefault();
+              selectTab(tab.id);
+            }}
           >
             {tab.label}
-          </button>
+          </a>
         ))}
       </div>
 
@@ -161,11 +184,11 @@ export default function NjgoRoster({ members, director, eventYears }) {
       </div>
 
       <div
-        id="njgo-panel-performers"
+        id="njgo-panel-roster"
         role="tabpanel"
         className="njgo-roster-panel"
-        aria-labelledby="njgo-tab-performers"
-        hidden={activeTab !== 'performers'}
+        aria-labelledby="njgo-tab-roster"
+        hidden={activeTab !== 'roster'}
       >
         <p className="njgo-roster-note">in no particular order, past and present</p>
         <ul className="njgo-roster-grid">
@@ -178,11 +201,11 @@ export default function NjgoRoster({ members, director, eventYears }) {
       </div>
 
       <div
-        id="njgo-panel-concerts"
+        id="njgo-panel-events"
         role="tabpanel"
         className="njgo-roster-panel"
-        aria-labelledby="njgo-tab-concerts"
-        hidden={activeTab !== 'concerts'}
+        aria-labelledby="njgo-tab-events"
+        hidden={activeTab !== 'events'}
       >
         <NjgoEvents eventYears={eventYears} />
       </div>

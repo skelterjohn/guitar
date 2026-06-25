@@ -7,6 +7,7 @@ import { externalLinkIconHtml } from '../src/components/externalLinkIcon.js';
 import { eventTitle, normalizeMapLink } from '../src/utils/eventLocation.js';
 import { eventDateTimeAttr, formatEventDate } from '../src/utils/formatEventDate.js';
 import { eventYearsFromData } from '../src/utils/eventYears.js';
+import { NJGO_DEFAULT_TAB, NJGO_TABS, NJGO_TAB_IDS } from '../src/utils/njgoTabs.js';
 import { njgoDescription, njgoPageTitle, njgoUrl } from '../src/seo.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -201,17 +202,63 @@ function renderEvents(eventsData) {
     .join('')}</ul>`;
 }
 
+function renderNjgoTabScript() {
+  return `<script>
+(function () {
+  var tabs = ${JSON.stringify(NJGO_TAB_IDS)};
+  var defaultTab = ${JSON.stringify(NJGO_DEFAULT_TAB)};
+
+  function activeTabFromHash() {
+    var id = (location.hash || '').slice(1);
+    return tabs.indexOf(id) >= 0 ? id : defaultTab;
+  }
+
+  function showTab(active) {
+    tabs.forEach(function (id) {
+      var tab = document.getElementById('njgo-tab-' + id);
+      var panel = document.getElementById('njgo-panel-' + id);
+      if (tab) tab.setAttribute('aria-selected', id === active ? 'true' : 'false');
+      if (panel) {
+        if (id === active) panel.removeAttribute('hidden');
+        else panel.setAttribute('hidden', '');
+      }
+    });
+  }
+
+  function syncFromHash() {
+    showTab(activeTabFromHash());
+  }
+
+  document.querySelector('.njgo-roster-tablist')?.addEventListener('click', function (event) {
+    var link = event.target.closest('a[role="tab"]');
+    if (!link || !link.hash) return;
+    event.preventDefault();
+    var id = link.hash.slice(1);
+    if (tabs.indexOf(id) < 0) return;
+    history.replaceState(null, '', link.hash);
+    showTab(id);
+  });
+
+  window.addEventListener('hashchange', syncFromHash);
+  syncFromHash();
+})();
+</script>`;
+}
+
 function renderRoster(members, director, events) {
+  const tabLinks = NJGO_TABS.map(
+    (tab) =>
+      `<a role="tab" id="njgo-tab-${tab.id}" class="njgo-roster-tab" href="#${tab.id}" aria-selected="${tab.id === NJGO_DEFAULT_TAB ? 'true' : 'false'}" aria-controls="njgo-panel-${tab.id}">${escapeHtml(tab.label)}</a>`,
+  ).join('\n    ');
+
   return `<section class="njgo-roster" aria-label="NJGO">
   <div class="njgo-roster-tablist" role="tablist" aria-label="NJGO">
-    <button type="button" role="tab" id="njgo-tab-director" class="njgo-roster-tab" aria-selected="true" aria-controls="njgo-panel-director">Meet the NJGO Director</button>
-    <button type="button" role="tab" id="njgo-tab-performers" class="njgo-roster-tab" aria-selected="false" aria-controls="njgo-panel-performers">Meet the NJGO Performers</button>
-    <button type="button" role="tab" id="njgo-tab-concerts" class="njgo-roster-tab" aria-selected="false" aria-controls="njgo-panel-concerts">See the NJGO In Concert</button>
+    ${tabLinks}
   </div>
-  <div id="njgo-panel-director" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-director">
+  <div id="njgo-panel-director" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-director"${NJGO_DEFAULT_TAB === 'director' ? '' : ' hidden'}>
     ${renderDirector(director)}
   </div>
-  <div id="njgo-panel-performers" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-performers" hidden>
+  <div id="njgo-panel-roster" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-roster" hidden>
     <p class="njgo-roster-note">in no particular order, past and present</p>
     <ul class="njgo-roster-grid">
     ${members
@@ -219,9 +266,10 @@ function renderRoster(members, director, events) {
       .join('\n    ')}
   </ul>
   </div>
-  <div id="njgo-panel-concerts" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-concerts" hidden>
+  <div id="njgo-panel-events" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-events" hidden>
     ${renderEvents(events)}
   </div>
+  ${renderNjgoTabScript()}
 </section>`;
 }
 

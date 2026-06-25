@@ -1,4 +1,5 @@
 import ExternalLinkIcon from './ExternalLinkIcon.jsx';
+import NjgoEventPhoto from './NjgoEventPhoto.jsx';
 import { eventTitle } from '../utils/eventLocation.js';
 import { eventDateTimeAttr, formatEventDate } from '../utils/formatEventDate.js';
 export default function NjgoEvents({ events }) {
@@ -27,17 +28,7 @@ export default function NjgoEvents({ events }) {
                 event.image ? 'njgo-event--has-image' : '',
               ].filter(Boolean).join(' ')}
             >
-              {event.image && (
-                <div className="njgo-roster-photo-frame">
-                  <img
-                    className="njgo-roster-photo"
-                    src={event.image}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-              )}
+              {event.image && <NjgoEventPhoto src={event.image} />}
               <div className="njgo-roster-card-body">
                 <h2 className="njgo-event-name">{eventTitle(event)}</h2>
                 {formattedDate && dateTimeAttr && (

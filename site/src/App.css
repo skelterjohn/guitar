@@ -626,8 +626,29 @@ body {
   align-items: start;
 }
 
-.njgo-event--has-image .njgo-roster-photo-frame {
+.njgo-event--has-image .njgo-event-photo-frame {
+  position: relative;
   border-radius: 3px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.njgo-events > li:has(.njgo-event-photo-frame--expanded) {
+  position: relative;
+  z-index: 2;
+}
+
+.njgo-event.njgo-event--has-image:has(.njgo-event-photo-frame--expanded) {
+  overflow: visible;
+  z-index: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .njgo-event-photo-frame {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
 }
 
 @container njgo (max-width: 42rem) {
@@ -743,6 +764,25 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Event photo expand — image is always full cover-scale size, centered; frame clips */
+.njgo-event-photo-frame .njgo-event-photo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: none;
+  object-fit: cover;
+}
+
+.njgo-roster-photo-frame.njgo-event-photo-frame--expanded {
+  overflow: visible;
+  z-index: 1;
+}
+
+.njgo-roster-photo-frame.njgo-event-photo-frame--expanded .njgo-event-photo {
+  box-shadow: 0 4px 24px rgb(0 0 0 / 0.35);
 }
 
 .njgo-roster-card-body {

@@ -1,4 +1,10 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import NjgoDirector from './NjgoDirector.jsx';
+
+const TABS = [
+  { id: 'performers', label: 'Meet the NJGO Performers' },
+  { id: 'director', label: 'Meet the NJGO Director' },
+];
 
 function bioParagraphs(bio) {
   if (typeof bio !== 'string' || !bio.trim()) return [];
@@ -115,22 +121,59 @@ function NjgoRosterCard({ member }) {
   );
 }
 
-export default function NjgoRoster({ members }) {
+export default function NjgoRoster({ members, director }) {
+  const [activeTab, setActiveTab] = useState('performers');
   const shuffledMembers = useMemo(() => shuffleMembers(members), [members]);
 
   return (
-    <section className="njgo-roster" aria-labelledby="njgo-roster-heading">
-      <h2 id="njgo-roster-heading" className="njgo-roster-heading">
-        Meet the NJGO Performers
-      </h2>
-      <p className="njgo-roster-note">in no particular order, past and present</p>
-      <ul className="njgo-roster-grid">
-        {shuffledMembers.map((member) => (
-          <li key={member.name}>
-            <NjgoRosterCard member={member} />
-          </li>
+    <section className="njgo-roster" aria-label="People">
+      <div className="njgo-roster-tablist" role="tablist" aria-label="People">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            role="tab"
+            id={`njgo-tab-${tab.id}`}
+            className="njgo-roster-tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`njgo-panel-${tab.id}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
         ))}
-      </ul>
+      </div>
+
+      <div
+        id="njgo-panel-performers"
+        role="tabpanel"
+        className="njgo-roster-panel"
+        aria-labelledby="njgo-tab-performers"
+        hidden={activeTab !== 'performers'}
+      >
+        <p className="njgo-roster-note">in no particular order, past and present</p>
+        <ul className="njgo-roster-grid">
+          {shuffledMembers.map((member) => (
+            <li key={member.name}>
+              <NjgoRosterCard member={member} />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div
+        id="njgo-panel-director"
+        role="tabpanel"
+        className="njgo-roster-panel"
+        aria-labelledby="njgo-tab-director"
+        hidden={activeTab !== 'director'}
+      >
+        <NjgoDirector
+          name={director?.name}
+          image={director?.image}
+          bio={director?.bio}
+        />
+      </div>
     </section>
   );
 }

@@ -10,6 +10,7 @@ const distIndex = join(__dirname, '../dist/index.html');
 const distNjgo = join(__dirname, '../dist/njgo.html');
 const overviewPath = join(__dirname, '../src/data/njgo-overview.yaml');
 const rosterPath = join(__dirname, '../src/data/njgo-roster.yaml');
+const directorPath = join(__dirname, '../src/data/njgo-director.yaml');
 
 const DIRECTOR_EMAIL = 'newjerseyguitarorchestra@gmail.com';
 
@@ -101,26 +102,54 @@ function renderRosterMember(member) {
 </article>`;
 }
 
-function renderRoster(members) {
-  return `<section class="njgo-roster" aria-labelledby="njgo-roster-heading">
-  <h2 id="njgo-roster-heading" class="njgo-roster-heading">Meet the NJGO Performers</h2>
-  <p class="njgo-roster-note">in no particular order, past and present</p>
-  <ul class="njgo-roster-grid">
+function renderDirector(director) {
+  const paragraphs = bioParagraphs(director.bio);
+  const image = director.image
+    ? `<div class="njgo-director-photo-wrap">
+      <img class="njgo-director-photo" src="${escapeHtml(director.image)}" alt="" width="1200" height="1578" loading="lazy" />
+    </div>`
+    : '';
+  const bio = paragraphs.length
+    ? paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')
+    : '';
+
+  return `<article class="njgo-director">
+  ${image}
+  <div class="njgo-director-bio">
+    <h2 class="njgo-director-name">${escapeHtml(director.name ?? '')}</h2>
+    ${bio}
+  </div>
+</article>`;
+}
+
+function renderRoster(members, director) {
+  return `<section class="njgo-roster" aria-label="People">
+  <div class="njgo-roster-tablist" role="tablist" aria-label="People">
+    <button type="button" role="tab" id="njgo-tab-performers" class="njgo-roster-tab" aria-selected="true" aria-controls="njgo-panel-performers">Meet the NJGO Performers</button>
+    <button type="button" role="tab" id="njgo-tab-director" class="njgo-roster-tab" aria-selected="false" aria-controls="njgo-panel-director">Meet the NJGO Director</button>
+  </div>
+  <div id="njgo-panel-performers" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-performers">
+    <p class="njgo-roster-note">in no particular order, past and present</p>
+    <ul class="njgo-roster-grid">
     ${members
       .map((member) => `<li>${renderRosterMember(member)}</li>`)
       .join('\n    ')}
   </ul>
+  </div>
+  <div id="njgo-panel-director" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-director" hidden>
+    ${renderDirector(director)}
+  </div>
 </section>`;
 }
 
-function renderNjgo(overview, roster) {
+function renderNjgo(overview, roster, director) {
   const jsonLd = JSON.stringify(buildNjgoJsonLd(roster)).replaceAll('<', '\\u003c');
 
   return `<main class="page page--njgo">
   <div class="njgo-page">
     <script type="application/ld+json">${jsonLd}</script>
     ${renderOverview(overview)}
-    ${renderRoster(roster.members ?? [])}
+    ${renderRoster(roster.members ?? [], director)}
   </div>
 </main>`;
 }
@@ -152,9 +181,10 @@ function setNjgoHead(page) {
 
 const overview = yaml.load(readFileSync(overviewPath, 'utf8'));
 const roster = yaml.load(readFileSync(rosterPath, 'utf8'));
+const director = yaml.load(readFileSync(directorPath, 'utf8'));
 const template = readFileSync(distIndex, 'utf8');
 const root = '<div id="root"></div>';
-const njgoHtml = renderNjgo(overview, roster);
+const njgoHtml = renderNjgo(overview, roster, director);
 
 if (!template.includes(root)) {
   console.error('prerender: expected #root in dist/index.html');

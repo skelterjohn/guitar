@@ -34,6 +34,9 @@ events:
       location: Carnegie Hall, NY
       image: njgo-at-carnegie-hall-2025-06-30.jpeg
       map_link: https://maps.app.goo.gl/dF96Ls5KT1DgRwx87
+      links:
+        - name: All 2026 repertoire
+          url: https://www.youtube.com/watch?v=gnOVKuNfFKA
     - name: USGO and NJGO
       date: '2025-06-23T23:30:00Z'
       image: usgo-and-njgo-2025-06-23.jpeg
@@ -49,12 +52,22 @@ events:
       image: long-island-guitar-festival-2025-05-04.jpeg
       location: Setauket, NY
       map_link: https://maps.app.goo.gl/XHJeHoeYiUrY4hh96
+      links:
+        - name: Everything Leads to Something Else / Olga Amelkina-Vera
+          url: https://www.youtube.com/watch?v=Q9uMjVbK_nY
+        - name: Intermezzo / Olga Amelkina-Vera
+          url: https://www.youtube.com/watch?v=9Iah-bGYeKI
+        - name: Finn's River / Olga Amelkina-Vera
+          url: https://www.youtube.com/watch?v=2YtnYCN7J3g
   '2024':
     - name: NJGO at Carnegie Hall
       date: '2024-07-01T23:00:00Z'
       location: Carnegie Hall, NY
       image: njgo-carnegie-hall-2024-07-01.jpeg
       map_link: https://maps.app.goo.gl/dF96Ls5KT1DgRwx87
+      links:
+        - name: 2024 repertoire mixed medley
+          url: https://www.youtube.com/watch?v=DVlK0M8pIWE
     - name: Kean GuitarFest
       date: '2024-06-15T20:00:00Z'
       location: Enlow Hall in Union, NJ
@@ -75,22 +88,48 @@ events:
       image: long-island-guitar-festival-2024-04-28.jpeg
       location: Setauket, NY
       map_link: https://maps.app.goo.gl/XHJeHoeYiUrY4hh96
+      links:
+        - name: Mbira / William Kanengiser
+          url: https://www.youtube.com/watch?v=oMXBnA_65lY
+        - name: Catwalk / Andrew York
+          url: https://www.youtube.com/watch?v=IBT3Kma0PG0
+        - name: Spin / Andrew York
+          url: https://www.youtube.com/watch?v=IBT3Kma0PG0
+        - name: Autumnal / Matthew Halper
+          url: https://www.youtube.com/watch?v=EzaY4oZB8Ig
   '2023':
     - name: Kean GuitarFest
       date: '2023-06-17T20:00:00Z'
       image: guitarfest-at-enlow-hall-2023-06-17.png
       location: Enlow Hall in Union, NJ
       map_link: https://maps.app.goo.gl/uP7bpRVeU77os3Ry9
+      links:
+        - name: Concierto de Los Angeles / Shingo Fujii
+          url: https://www.youtube.com/watch?v=LRieNAOXlG0&t=9s
+        - name: Momento Mori / Matthew Halper
+          url: https://www.youtube.com/watch?v=C_M75qQAl50&pp=0gcJCT8LAYcqIYzv
+        - name: Pulsar / Vincent Lindsey-Clark
+          url: https://www.youtube.com/watch?v=M1FTTLrmFRQ
     - name: NJCU GuitarFest
       date: '2023-05-13T21:00:00Z'
       location: NJCU in Jersey City, NJ
       image: guitarfest-at-njcu-2023-05-13.jpeg
       map_link: https://maps.app.goo.gl/SqHpXHHAX72UMCEQ8
+      links:
+        - name: Grises y Soles / Máximo Diego Pujol
+          url: https://www.youtube.com/watch?v=kTMWN4FEViE
+        - name: Band of Hope / Mark Houghton
+          url: https://www.youtube.com/watch?v=H_DulnPpNM4
+        - name: Venti da Sud / Giorgio Tortora
+          url: https://www.youtube.com/watch?v=BGbdSOQWJlI
     - name: Long Island Guitar Festival
       date: '2023-04-30T15:00:00Z'
       image: long-island-guitar-festival-2023-04-30.jpeg
       location: Setauket, NY
       map_link: https://maps.app.goo.gl/XHJeHoeYiUrY4hh96
+      links:
+        - name: Pulsar / Vincent Lindsey-Clark
+          url: https://www.youtube.com/watch?v=9Iah-bGYeKI
   '2022':
     - name: >-
         United States Guitar Orchestra Concert, featuring the NJMEA Honors Guitar Ensemble and the New Jersey Guitar

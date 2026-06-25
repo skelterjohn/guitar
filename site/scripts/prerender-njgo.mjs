@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildNjgoJsonLd } from '../src/njgoJsonLd.js';
+import { eventTitle } from '../src/utils/eventLocation.js';
 import { eventDateTimeAttr, formatEventDate } from '../src/utils/formatEventDate.js';
 import { njgoDescription, njgoPageTitle, njgoUrl } from '../src/seo.js';
 
@@ -124,25 +125,23 @@ function renderDirector(director) {
 </article>`;
 }
 
-function eventTitle(event) {
-  if (event.name && event.location) {
-    return `${event.name} @ ${event.location}`;
-  }
-  return event.name || event.location || '';
-}
-
 function renderEvents(events) {
   const items = Array.isArray(events) ? events : [];
   if (items.length === 0) {
     return '';
   }
 
-  return `<ul class="njgo-events">${items
+  const sorted = [...items].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  return `<ul class="njgo-events">${sorted
     .map((event) => {
       const formattedDate = formatEventDate(event.date);
       const dateTimeAttr = eventDateTimeAttr(event.date);
       const date = formattedDate && dateTimeAttr
         ? `<p class="njgo-event-date"><time datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time></p>`
+        : '';
+      const address = event.address
+        ? `<p class="njgo-event-address">${escapeHtml(event.address)}</p>`
         : '';
       const links = Array.isArray(event.links)
         ? `<ul class="njgo-event-links">${event.links
@@ -153,10 +152,24 @@ function renderEvents(events) {
             .join('')}</ul>`
         : '';
 
-      return `<li><article class="njgo-event">
-  <h2 class="njgo-event-name">${escapeHtml(eventTitle(event))}</h2>
-  ${date}
-  ${links}
+      const image = event.image
+        ? `<div class="njgo-roster-photo-frame">
+      <img class="njgo-roster-photo" src="/events/${escapeHtml(event.image)}" alt="" loading="lazy" />
+    </div>`
+        : '';
+
+      const articleClass = event.image
+        ? 'njgo-event njgo-roster-card njgo-event--has-image'
+        : 'njgo-event njgo-roster-card';
+
+      return `<li><article class="${articleClass}">
+  ${image}
+  <div class="njgo-roster-card-body">
+    <h2 class="njgo-event-name">${escapeHtml(eventTitle(event))}</h2>
+    ${date}
+    ${address}
+    ${links}
+  </div>
 </article></li>`;
     })
     .join('')}</ul>`;

@@ -605,8 +605,10 @@ body {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--njgo-gap);
+  min-width: 0;
 }
 
 .njgo-events > li {
@@ -614,10 +616,28 @@ body {
 }
 
 .njgo-event {
-  padding: 0.85rem 1.15rem 1rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-light);
-  border-radius: 4px;
+  overflow: hidden;
+}
+
+.njgo-event--has-image {
+  display: grid;
+  grid-template-columns: min(var(--njgo-col-min), 40%) 1fr;
+  column-gap: 1.25rem;
+  align-items: start;
+}
+
+.njgo-event--has-image .njgo-roster-photo-frame {
+  border-radius: 3px;
+}
+
+@container njgo (max-width: 42rem) {
+  .njgo-event--has-image {
+    grid-template-columns: 1fr;
+  }
+
+  .njgo-event--has-image .njgo-roster-photo-frame {
+    max-width: min(var(--njgo-col-min), 100%);
+  }
 }
 
 .njgo-event-name {
@@ -627,7 +647,8 @@ body {
   color: var(--color-text-heading);
 }
 
-.njgo-event-date {
+.njgo-event-date,
+.njgo-event-address {
   margin: 0 0 0.35rem;
   font-size: 0.95rem;
   color: var(--color-text-muted);

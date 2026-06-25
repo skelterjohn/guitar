@@ -2,7 +2,7 @@ import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
-import { splitEventLocation } from '../src/utils/eventLocation.js';
+import { normalizeMapLink, splitEventLocation } from '../src/utils/eventLocation.js';
 import { flattenEvents, groupEventsByYear } from '../src/utils/eventYears.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -41,6 +41,7 @@ function parseArticles(html) {
     const addrMatch = chunk.match(
       /eventlist-meta-address[^>]*>\s*([\s\S]*?)\s*(?:<a[^>]*eventlist-meta-address-maplink|<\/li>)/,
     );
+    const mapLinkMatch = chunk.match(/eventlist-meta-address-maplink[^>]*href="([^"]+)"/);
     const imageMatch = chunk.match(
       /data-image="(https:\/\/images\.squarespace-cdn\.com[^"]+)"/,
     ) ?? chunk.match(
@@ -59,6 +60,7 @@ function parseArticles(html) {
       name: decodeHtml(titleMatch[1].trim()),
       date,
       location,
+      map_link: mapLinkMatch?.[1],
       imageUrl: imageMatch?.[1],
     });
   }
@@ -83,12 +85,16 @@ function mergeEventRecords(existing, sourced) {
       ...existing,
       imageUrl: sourced?.imageUrl ?? existing.imageUrl,
       image: existing.image,
+      map_link: existing.map_link ?? sourced?.map_link,
     };
   }
 
   const merged = { ...sourced, ...existing };
   if (!existing?.location && sourced?.location) {
     merged.location = sourced.location;
+  }
+  if (!existing?.map_link && sourced?.map_link) {
+    merged.map_link = sourced.map_link;
   }
   if (existing?.date) {
     merged.date = existing.date;
@@ -100,9 +106,16 @@ function mergeEventRecords(existing, sourced) {
 }
 
 function normalizeEventFields(event) {
-  const { location, address } = splitEventLocation(event.name, event.location);
-  const normalized = { ...event, location, address };
-  if (!normalized.address) delete normalized.address;
+  const { location, map_link: extractedMapLink } = splitEventLocation(
+    event.name,
+    event.location,
+  );
+  const mapLink = normalizeMapLink(
+    event.map_link ?? event.address ?? extractedMapLink,
+  );
+  const normalized = { ...event, location, map_link: mapLink };
+  delete normalized.address;
+  if (!normalized.map_link) delete normalized.map_link;
   if (!normalized.location) delete normalized.location;
   return normalized;
 }

@@ -1,6 +1,6 @@
 import ExternalLinkIcon from './ExternalLinkIcon.jsx';
 import NjgoEventPhoto from './NjgoEventPhoto.jsx';
-import { eventTitle } from '../utils/eventLocation.js';
+import { eventTitle, normalizeMapLink } from '../utils/eventLocation.js';
 import { eventDateTimeAttr, formatEventDate } from '../utils/formatEventDate.js';
 
 const NJGO_LOGO = '/njgo/logo_black.png';
@@ -8,6 +8,7 @@ const NJGO_LOGO = '/njgo/logo_black.png';
 function EventCard({ event }) {
   const formattedDate = formatEventDate(event.date);
   const dateTimeAttr = eventDateTimeAttr(event.date);
+  const mapUrl = normalizeMapLink(event.map_link ?? event.address);
 
   return (
     <article
@@ -20,13 +21,28 @@ function EventCard({ event }) {
       {event.image && <NjgoEventPhoto src={event.image} />}
       <div className="njgo-roster-card-body">
         <h2 className="njgo-event-name">{eventTitle(event)}</h2>
-        {formattedDate && dateTimeAttr && (
-          <p className="njgo-event-date">
-            <time dateTime={dateTimeAttr}>{formattedDate}</time>
+        {(mapUrl || (formattedDate && dateTimeAttr)) && (
+          <p className="njgo-event-meta">
+            {mapUrl && (
+              <a
+                className="njgo-overview-link njgo-event-map-link"
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open in Google Maps"
+              >
+                <span className="njgo-overview-link-label">
+                  <span className="njgo-event-map-label">map</span>
+                  <ExternalLinkIcon />
+                </span>
+              </a>
+            )}
+            {formattedDate && dateTimeAttr && (
+              <time className="njgo-event-date" dateTime={dateTimeAttr}>
+                {formattedDate}
+              </time>
+            )}
           </p>
-        )}
-        {event.address && (
-          <p className="njgo-event-address">{event.address}</p>
         )}
         {Array.isArray(event.links) && event.links.length > 0 && (
           <ul className="njgo-event-links">

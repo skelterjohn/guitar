@@ -739,11 +739,47 @@ body {
   color: var(--color-text-heading);
 }
 
-.njgo-event-date,
-.njgo-event-address {
+.njgo-event-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
   margin: 0 0 0.35rem;
   font-size: 0.95rem;
   color: var(--color-text-muted);
+}
+
+.njgo-event-meta .njgo-event-map-link {
+  width: auto;
+  min-height: 0;
+  padding: 0.3rem 0.4rem;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.njgo-event-map-link .njgo-overview-link-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.njgo-event-map-link .njgo-event-map-label {
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.njgo-event-map-link .external-link-icon {
+  flex-shrink: 0;
+}
+
+.njgo-event-map-link:hover {
+  color: var(--color-link-text);
+}
+
+.njgo-event-date {
+  margin: 0;
 }
 
 .njgo-event-links {

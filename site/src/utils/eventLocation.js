@@ -67,19 +67,38 @@ function venueFromEventName(name) {
   return '';
 }
 
+export function googleMapsSearchUrl(query) {
+  const value = normalizeWhitespace(query);
+  if (!value) {
+    return '';
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(value)}`;
+}
+
+export function normalizeMapLink(mapLink) {
+  const value = normalizeWhitespace(mapLink);
+  if (!value) {
+    return '';
+  }
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+  return googleMapsSearchUrl(value);
+}
+
 export function splitEventLocation(name, location) {
   const rawLocation = normalizeWhitespace(location);
   if (!rawLocation) {
-    return { location: '', address: '' };
+    return { location: '', map_link: '' };
   }
 
   if (!looksLikeStreetAddress(rawLocation)) {
-    return { location: rawLocation, address: '' };
+    return { location: rawLocation, map_link: '' };
   }
 
   return {
     location: venueFromEventName(name),
-    address: rawLocation,
+    map_link: rawLocation,
   };
 }
 

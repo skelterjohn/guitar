@@ -4,16 +4,20 @@ events:
     - name: Boston GuitarFest
       date: 2026-06-20T16:00:00.000Z
       location: First Lutheran Church in Boston, MA
+      map_link: https://maps.app.goo.gl/VvySrkNigzWD24av9
     - name: Kean GuitarFest
       date: 2026-06-13T23:00:00.000Z
       location: Enlow Hall in Union, NJ
+      map_link: https://maps.app.goo.gl/uP7bpRVeU77os3Ry9
     - name: Long Island Guitar Festival
       date: 2026-05-03T15:00:00.000Z
       location: Setauket, NY
+      map_link: https://maps.app.goo.gl/XHJeHoeYiUrY4hh96
       image: long-island-guitar-festival-2026-05-03.jpeg
     - name: WPU GuitarFest
       date: 2026-04-25T18:00:00.000Z
       location: Shea Center for Performing Arts in Wayne, NJ
+      map_link: https://maps.app.goo.gl/Jszy2ND8UGNgtsqy7
       links:
         - name: Concertino / Jay Bartlema
           url: https://www.youtube.com/watch?v=Bs2aYRMXfuQ
@@ -25,126 +29,75 @@ events:
           url: https://www.youtube.com/watch?v=WfI563oPDn4
       image: wpu-guitarfest-2026-04-25.png
   '2025':
-    - name: Guitar Duo – Mak & Mateusz with the NJGO
-      date: '2025-12-05T00:30:00Z'
-      image: guitar-duo-mak-mateusz-with-the-njgo-2025-12-05.jpeg
-      address: 950 Broad Street, Newark NJ , USA
     - name: NJGO at Carnegie Hall
       date: '2025-06-30T23:00:00Z'
-      location: Carnegie Hall
+      location: Carnegie Hall, NY
       image: njgo-at-carnegie-hall-2025-06-30.jpeg
-      address: 57th Street, New York, NY
-    - name: NY Guitar Seminar
-      date: '2025-06-27T17:30:00Z'
-      image: ny-guitar-seminar-2025-06-27.jpeg
-      address: 695 Park Avenue, New York, NY, 10065, United States
+      map_link: https://maps.app.goo.gl/dF96Ls5KT1DgRwx87
     - name: USGO and NJGO
       date: '2025-06-23T23:30:00Z'
       image: usgo-and-njgo-2025-06-23.jpeg
-      address: 715 W. 179 Street, New York, NY, USA
-    - name: GuitarFest at Enlow Hall Kean University
+      location: Holyrood Episcopal Church, NY
+      map_link: https://maps.app.goo.gl/8ocYV7YQpDo4RaYQ9
+    - name: Kean GuitarFest
       date: '2025-06-14T18:00:00Z'
-      location: Enlow Hall Kean University
+      location: Enlow Hall in Union, NJ
       image: guitarfest-at-enlow-hall-kean-university-2025-06-14.jpeg
-      address: 215 North Ave, Hillside, NJ
-    - name: New York City Guitar Orchestra Guitar in Bloom Spring Concert
-      date: '2025-05-09T23:30:00Z'
-      image: new-york-city-guitar-orchestra-guitar-in-bloom-spring-concert-2025-05-09.jpeg
-      address: 2 West 64th Street, New York, NY, 10023, United States
+      map_link: https://maps.app.goo.gl/uP7bpRVeU77os3Ry9
     - name: Long Island Guitar Festival
       date: '2025-05-04T16:00:00Z'
       image: long-island-guitar-festival-2025-05-04.jpeg
-      address: 5 Caroline Avenue, Setauket- East Setauket, NY, 11733, United States
+      location: Setauket, NY
+      map_link: https://maps.app.goo.gl/XHJeHoeYiUrY4hh96
   '2024':
-    - name: Marko Topchii at Arts High School
-      date: '2024-09-11T16:00:00Z'
-      location: Arts High School
-      image: marko-topchii-at-arts-high-school-2024-09-11.jpeg
-      address: 550 Doctor Martin Luther King Junior Boulevard, Newark, NJ, 07102, United States
-    - name: NJGO@ Carnegie Hall
+    - name: NJGO at Carnegie Hall
       date: '2024-07-01T23:00:00Z'
-      location: Carnegie Hall
+      location: Carnegie Hall, NY
       image: njgo-carnegie-hall-2024-07-01.jpeg
-      address: 881 7th Avenue, New York, NY, 10019, United States
-    - name: Kean University GuitarFest
+      map_link: https://maps.app.goo.gl/dF96Ls5KT1DgRwx87
+    - name: Kean GuitarFest
       date: '2024-06-15T20:00:00Z'
-      location: Kean University
+      location: Enlow Hall in Union, NJ
       image: kean-university-guitarfest-2024-06-15.jpeg
-      address: 1000 Morris Avenue, Union NJ, USA
-    - name: Arts HS Spring Concert
-      date: '2024-06-03T23:00:00Z'
-      image: arts-hs-spring-concert-2024-06-03.jpeg
-    - name: Andrew York
+      map_link: https://maps.app.goo.gl/uP7bpRVeU77os3Ry9
+    - name: Andrew York Fest
       date: '2024-05-07T23:00:00Z'
       image: andrew-york-2024-05-07.jpeg
-      address: 2039 John F. Kennedy Boulevard, Jersey City, NJ, 07305, United States
+      location: Margaret Williams Theater in Jersey City, NJ
+      map_link: https://maps.app.goo.gl/GKbw9JooDEcnwGjy9
     - name: WPU GuitarFest
       date: '2024-05-04T15:00:00Z'
       image: wpu-guitarfest-2024-05-04.jpeg
-      address: 300 Pompton Road, Wayne, NJ, 07470, United States
+      location: Shea Center for Performing Arts in Wayne, NJ
+      map_link: https://maps.app.goo.gl/Jszy2ND8UGNgtsqy7
     - name: Long Island Guitar Festival
       date: '2024-04-28T15:00:00Z'
       image: long-island-guitar-festival-2024-04-28.jpeg
-      address: 5 Caroline Road, Setauket NY, USA
-    - name: Tremolo Music Studio Spring Recital
-      date: '2024-04-27T22:00:00Z'
-      image: tremolo-music-studio-spring-recital-2024-04-27.jpeg
-      address: 345 Clifton Avenue, Clifton, NJ, 07011, United States
-    - name: Berta Rojas
-      date: '2024-04-25T16:30:00Z'
-      image: berta-rojas-2024-04-25.png
-    - name: CBS "Class Act" features Arts High School
-      date: '2024-02-16T10:00:00Z'
-      image: cbs-class-act-features-arts-high-school-2024-02-16.jpeg
-    - name: OCPS All-County Guitar Festival
-      date: '2024-02-03T00:00:00Z'
-      image: ocps-all-county-guitar-festival-2024-02-03.jpeg
+      location: Setauket, NY
+      map_link: https://maps.app.goo.gl/XHJeHoeYiUrY4hh96
   '2023':
-    - name: GuitarFest at Enlow Hall
+    - name: Kean GuitarFest
       date: '2023-06-17T20:00:00Z'
-      location: Enlow Hall
       image: guitarfest-at-enlow-hall-2023-06-17.png
-      address: 215 North Avenue, Hillside, NJ, 07205, United States
-    - name: GuitarFest at NJCU
+      location: Enlow Hall in Union, NJ
+      map_link: https://maps.app.goo.gl/uP7bpRVeU77os3Ry9
+    - name: NJCU GuitarFest
       date: '2023-05-13T21:00:00Z'
-      location: NJCU
+      location: NJCU in Jersey City, NJ
       image: guitarfest-at-njcu-2023-05-13.jpeg
-      address: 2039 John F. Kennedy Boulevard, Jersey City, NJ, 07305, United States
+      map_link: https://maps.app.goo.gl/SqHpXHHAX72UMCEQ8
     - name: Long Island Guitar Festival
       date: '2023-04-30T15:00:00Z'
       image: long-island-guitar-festival-2023-04-30.jpeg
-      address: 5 Caroline Avenue, Setauket, NY 11733, United States
-    - name: AHS Guitar Ensemble @ American Dream Stage
-      date: '2023-04-15T18:00:00Z'
-      location: American Dream Stage
-      image: ahs-guitar-ensemble-american-dream-stage-2023-04-15.png
-      address: 1 American Dream Way, East Rutherford, NJ, 07073, United States
-    - name: Tremolo Music Studio Winter Recital
-      date: '2023-02-20T23:00:00Z'
-      image: tremolo-music-studio-winter-recital-2023-02-20.jpeg
-      address: 345 Clifton Avenue, Clifton, NJ, USA
+      location: Setauket, NY
+      map_link: https://maps.app.goo.gl/XHJeHoeYiUrY4hh96
   '2022':
-    - name: AHS Winter Concert
-      date: '2022-12-15T23:55:00Z'
-      image: ahs-winter-concert-2022-12-15.jpeg
-      address: 550 Doctor Martin Luther King Junior Boulevard, Newark, NJ, 07102, United States
-    - name: 'AHSGQ: Department of Education Performance'
-      date: '2022-10-06T14:05:00Z'
-      location: Department of Education
-      image: ahsgq-department-of-education-performance-2022-10-06.jpeg
-      address: 400 Maryland Avenue Southwest, Washington, DC, 20024, United States
     - name: >-
         United States Guitar Orchestra Concert, featuring the NJMEA Honors Guitar Ensemble and the New Jersey Guitar
         Orchestra
       date: '2022-07-07T21:00:00Z'
       image: >-
         united-states-guitar-orchestra-concert-featuring-the-njmea-honors-guitar-ensemble-and-the-new-jersey-guitar-orchestra-2022-07-07.jpeg
-      address: 129 West 67th Street, New York, NY, 10023, United States
     - name: Guitarfest 2022
       date: '2022-06-05T17:00:00Z'
       image: guitarfest-2022-2022-06-05.jpeg
-      address: 1000 Morris Avenue, Union, NJ, 07083, United States
-    - name: Tremolo Music Studio Spring Recital
-      date: '2022-05-18T22:00:00Z'
-      image: tremolo-music-studio-spring-recital-2022-05-18.jpeg
-      address: 345 Clifton Avenue, Clifton, NJ, 07011, United States

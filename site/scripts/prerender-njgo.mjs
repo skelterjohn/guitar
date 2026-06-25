@@ -3,7 +3,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildNjgoJsonLd } from '../src/njgoJsonLd.js';
-import { eventTitle } from '../src/utils/eventLocation.js';
+import { externalLinkIconHtml } from '../src/components/externalLinkIcon.js';
+import { eventTitle, normalizeMapLink } from '../src/utils/eventLocation.js';
 import { eventDateTimeAttr, formatEventDate } from '../src/utils/formatEventDate.js';
 import { eventYearsFromData } from '../src/utils/eventYears.js';
 import { njgoDescription, njgoPageTitle, njgoUrl } from '../src/seo.js';
@@ -129,11 +130,15 @@ function renderDirector(director) {
 function renderEventCard(event) {
   const formattedDate = formatEventDate(event.date);
   const dateTimeAttr = eventDateTimeAttr(event.date);
-  const date = formattedDate && dateTimeAttr
-    ? `<p class="njgo-event-date"><time datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time></p>`
+  const mapUrl = normalizeMapLink(event.map_link ?? event.address);
+  const mapLink = mapUrl
+    ? `<a class="njgo-overview-link njgo-event-map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open in Google Maps"><span class="njgo-overview-link-label"><span class="njgo-event-map-label">map</span>${externalLinkIconHtml()}</span></a>`
     : '';
-  const address = event.address
-    ? `<p class="njgo-event-address">${escapeHtml(event.address)}</p>`
+  const date = formattedDate && dateTimeAttr
+    ? `<time class="njgo-event-date" datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time>`
+    : '';
+  const meta = mapLink || date
+    ? `<p class="njgo-event-meta">${mapLink}${date}</p>`
     : '';
   const links = Array.isArray(event.links)
     ? `<ul class="njgo-event-links">${event.links
@@ -158,8 +163,7 @@ function renderEventCard(event) {
   ${image}
   <div class="njgo-roster-card-body">
     <h2 class="njgo-event-name">${escapeHtml(eventTitle(event))}</h2>
-    ${date}
-    ${address}
+    ${meta}
     ${links}
   </div>
 </article>`;

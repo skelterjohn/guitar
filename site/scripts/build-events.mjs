@@ -3,6 +3,7 @@ import { dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { splitEventLocation } from '../src/utils/eventLocation.js';
+import { flattenEvents, groupEventsByYear } from '../src/utils/eventYears.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const eventsYamlPath = join(__dirname, '../src/data/events.yaml');
@@ -125,13 +126,25 @@ async function downloadImage(url, outputPath) {
   writeFileSync(outputPath, buffer);
 }
 
-function toYaml(events) {
-  const header = '# Events sourced from https://jaysonmartinez.org/events\n';
-  return `${header}${yaml.dump({ events }, { lineWidth: 120, noRefs: true })}`;
+function toYaml(eventsByYear) {
+  const header = '# Events sourced from https://jaysonmartinez.org/events\nevents:\n';
+  const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
+  const sections = years.map((year) => {
+    const block = yaml.dump(
+      { [String(year)]: eventsByYear[year] },
+      { lineWidth: 120, noRefs: true, sortKeys: false },
+    );
+    return block
+      .trimEnd()
+      .split('\n')
+      .map((line) => `  ${line}`)
+      .join('\n');
+  });
+  return `${header}${sections.join('\n')}\n`;
 }
 
 const existing = yaml.load(readFileSync(eventsYamlPath, 'utf8'));
-const existingEvents = Array.isArray(existing?.events) ? existing.events : [];
+const existingEvents = flattenEvents(existing?.events);
 const existingByKey = new Map(existingEvents.map((event) => [eventDayKey(event), event]));
 
 const html = await (await fetch(eventsUrl)).text();
@@ -180,6 +193,6 @@ const normalizedEvents = allEvents.map((event) => {
   return normalizeEventFields(event);
 });
 
-writeFileSync(eventsYamlPath, toYaml(normalizedEvents));
+writeFileSync(eventsYamlPath, toYaml(groupEventsByYear(normalizedEvents)));
 console.log(`Wrote ${normalizedEvents.length} events to ${eventsYamlPath}`);
 console.log(`Downloaded images to ${imagesDir}`);

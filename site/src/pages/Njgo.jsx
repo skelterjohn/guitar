@@ -22,7 +22,7 @@ export default function Njgo() {
         <NjgoRoster
           members={roster.members}
           director={director}
-          events={events.events}
+          eventYears={events.eventYears}
         />
       </div>
       <NjgoFooter />

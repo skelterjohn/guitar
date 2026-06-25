@@ -5,6 +5,7 @@ import yaml from 'js-yaml';
 import { buildNjgoJsonLd } from '../src/njgoJsonLd.js';
 import { eventTitle } from '../src/utils/eventLocation.js';
 import { eventDateTimeAttr, formatEventDate } from '../src/utils/formatEventDate.js';
+import { eventYearsFromData } from '../src/utils/eventYears.js';
 import { njgoDescription, njgoPageTitle, njgoUrl } from '../src/seo.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -125,44 +126,35 @@ function renderDirector(director) {
 </article>`;
 }
 
-function renderEvents(events) {
-  const items = Array.isArray(events) ? events : [];
-  if (items.length === 0) {
-    return '';
-  }
+function renderEventCard(event) {
+  const formattedDate = formatEventDate(event.date);
+  const dateTimeAttr = eventDateTimeAttr(event.date);
+  const date = formattedDate && dateTimeAttr
+    ? `<p class="njgo-event-date"><time datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time></p>`
+    : '';
+  const address = event.address
+    ? `<p class="njgo-event-address">${escapeHtml(event.address)}</p>`
+    : '';
+  const links = Array.isArray(event.links)
+    ? `<ul class="njgo-event-links">${event.links
+        .map(
+          (link) =>
+            `<li><a class="njgo-overview-link" href="${escapeHtml(link.url)}" rel="noopener noreferrer"><span class="njgo-overview-link-label">${escapeHtml(link.name)}</span></a></li>`,
+        )
+        .join('')}</ul>`
+    : '';
 
-  const sorted = [...items].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  return `<ul class="njgo-events">${sorted
-    .map((event) => {
-      const formattedDate = formatEventDate(event.date);
-      const dateTimeAttr = eventDateTimeAttr(event.date);
-      const date = formattedDate && dateTimeAttr
-        ? `<p class="njgo-event-date"><time datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time></p>`
-        : '';
-      const address = event.address
-        ? `<p class="njgo-event-address">${escapeHtml(event.address)}</p>`
-        : '';
-      const links = Array.isArray(event.links)
-        ? `<ul class="njgo-event-links">${event.links
-            .map(
-              (link) =>
-                `<li><a class="njgo-overview-link" href="${escapeHtml(link.url)}" rel="noopener noreferrer"><span class="njgo-overview-link-label">${escapeHtml(link.name)}</span></a></li>`,
-            )
-            .join('')}</ul>`
-        : '';
-
-      const image = event.image
-        ? `<div class="njgo-roster-photo-frame">
+  const image = event.image
+    ? `<div class="njgo-roster-photo-frame">
       <img class="njgo-roster-photo" src="/events/${escapeHtml(event.image)}" alt="" loading="lazy" />
     </div>`
-        : '';
+    : '';
 
-      const articleClass = event.image
-        ? 'njgo-event njgo-roster-card njgo-event--has-image'
-        : 'njgo-event njgo-roster-card';
+  const articleClass = event.image
+    ? 'njgo-event njgo-roster-card njgo-event--has-image'
+    : 'njgo-event njgo-roster-card';
 
-      return `<li><article class="${articleClass}">
+  return `<article class="${articleClass}">
   ${image}
   <div class="njgo-roster-card-body">
     <h2 class="njgo-event-name">${escapeHtml(eventTitle(event))}</h2>
@@ -170,7 +162,37 @@ function renderEvents(events) {
     ${address}
     ${links}
   </div>
-</article></li>`;
+</article>`;
+}
+
+function renderEvents(eventsData) {
+  const years = eventYearsFromData(eventsData);
+  if (years.length === 0) {
+    return '';
+  }
+
+  return `<ul class="njgo-events">${years
+    .map(({ year, events }) => {
+      const items = Array.isArray(events) ? events : [];
+      if (items.length === 0) {
+        return '';
+      }
+
+      return `<li class="njgo-events-year">
+  <ul class="njgo-events-year-list">${items
+    .map((event) => `<li>${renderEventCard(event)}</li>`)
+    .join('')}</ul>
+  <div class="njgo-events-year-divider" aria-hidden="true">
+    <span class="njgo-events-year-divider-line"></span>
+    <span class="njgo-events-year-divider-mark">
+      <span class="njgo-events-year-divider-logo-wrap">
+        <img class="njgo-events-year-divider-logo" src="/njgo/logo_black.png" alt="" loading="lazy" decoding="async" />
+      </span>
+      <span class="njgo-events-year-divider-label">${year}</span>
+    </span>
+    <span class="njgo-events-year-divider-line"></span>
+  </div>
+</li>`;
     })
     .join('')}</ul>`;
 }

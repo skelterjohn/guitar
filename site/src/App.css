@@ -615,6 +615,77 @@ body {
   min-width: 0;
 }
 
+.njgo-events-year {
+  display: flex;
+  flex-direction: column;
+  gap: var(--njgo-gap);
+  min-width: 0;
+}
+
+.njgo-events-year-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--njgo-gap);
+  min-width: 0;
+}
+
+.njgo-events-year-list > li {
+  min-width: 0;
+}
+
+.njgo-events-year-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.15rem 0;
+  color: var(--color-text-muted);
+}
+
+.njgo-events-year-divider-mark {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.njgo-events-year-divider-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.3rem;
+  height: 3rem;
+  margin-right: 0.75rem;
+  overflow: hidden;
+}
+
+.njgo-events-year-divider-logo {
+  display: block;
+  height: 2.3rem;
+  width: auto;
+  max-width: none;
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  flex-shrink: 0;
+}
+
+.njgo-events-year-divider-line {
+  flex: 1;
+  min-width: 0.5rem;
+  border-top: 1px solid var(--color-border-light);
+  opacity: 0.55;
+}
+
+.njgo-events-year-divider-label {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .njgo-event {
   overflow: hidden;
 }
@@ -634,7 +705,7 @@ body {
   -webkit-touch-callout: none;
 }
 
-.njgo-events > li:has(.njgo-event-photo-frame--expanded) {
+.njgo-events-year-list > li:has(.njgo-event-photo-frame--expanded) {
   position: relative;
   z-index: 2;
 }

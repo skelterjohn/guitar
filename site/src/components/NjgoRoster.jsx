@@ -123,7 +123,7 @@ function NjgoRosterCard({ member }) {
   );
 }
 
-export default function NjgoRoster({ members, director, events }) {
+export default function NjgoRoster({ members, director, eventYears }) {
   const [activeTab, setActiveTab] = useState('director');
   const shuffledMembers = useMemo(() => shuffleMembers(members), [members]);
 
@@ -184,7 +184,7 @@ export default function NjgoRoster({ members, director, events }) {
         aria-labelledby="njgo-tab-concerts"
         hidden={activeTab !== 'concerts'}
       >
-        <NjgoEvents events={events} />
+        <NjgoEvents eventYears={eventYears} />
       </div>
     </section>
   );

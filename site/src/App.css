@@ -518,7 +518,7 @@ body {
 .njgo-roster-tablist {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.25rem 1rem;
   margin: 0 0 1rem;
   padding: 0;
@@ -697,7 +697,8 @@ body {
 
 @media (min-width: 641px) {
   .njgo-director,
-  .njgo-event {
+  .njgo-event,
+  .njgo-roster-tablist {
     margin-inline: 15rem;
   }
 }

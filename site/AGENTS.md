@@ -55,3 +55,9 @@ After deploying to `https://njgo.org`:
 `/rep` is private: `robots.txt` disallows it, nginx sends `X-Robots-Tag: noindex`, and repertoire pages set `noindex` in meta.
 
 `robots.txt`, `sitemap.xml`, and `njgo-sitemap.xml` are generated at build time (`scripts/generate-sitemap.mjs`).
+
+## Catalog PDF bucket (`skelterjohnguitar-pdf`)
+
+**Current:** `allUsers` has **Storage Legacy Object Reader** (direct read by exact object URL only). **Storage Legacy Bucket Reader** was removed so the bucket cannot be listed anonymously. “Secret” scores rely on unguessable object prefixes (e.g. `pub/…` vs other prefixes), not real auth.
+
+**TODO:** Lock this down properly one day — remove public object read, make the bucket private, and have the site nginx proxy authenticate to GCS as `skelterjohnguitar-site@…` (e.g. nginx njs + metadata-server token on `/pdf/`). Update dev (`vite.config.js` `/pdf` proxy) accordingly. Grant `skelterjohnguitar-site` **Storage Object Viewer** on `skelterjohnguitar-pdf` only.

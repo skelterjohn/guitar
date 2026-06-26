@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 import { buildNjgoJsonLd } from '../src/njgoJsonLd.js';
 import { externalLinkIconHtml } from '../src/components/externalLinkIcon.js';
+import { eventGoogleCalendarUrl } from '../src/utils/eventCalendar.js';
 import { eventTitle, normalizeMapLink } from '../src/utils/eventLocation.js';
 import { eventDateTimeAttr, formatEventDate } from '../src/utils/formatEventDate.js';
 import { eventYearsFromData } from '../src/utils/eventYears.js';
@@ -128,18 +129,28 @@ function renderDirector(director) {
 </article>`;
 }
 
+function renderEventCalendarLink(event) {
+  const calendarUrl = eventGoogleCalendarUrl(event);
+  if (!calendarUrl) {
+    return '';
+  }
+
+  return `<a class="njgo-overview-link njgo-event-action-link" href="${escapeHtml(calendarUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Add to Google Calendar"><span class="njgo-overview-link-label"><span class="njgo-event-action-label">calendar</span>${externalLinkIconHtml()}</span></a>`;
+}
+
 function renderEventCard(event) {
   const formattedDate = formatEventDate(event.date);
   const dateTimeAttr = eventDateTimeAttr(event.date);
   const mapUrl = normalizeMapLink(event.map_link ?? event.address);
   const mapLink = mapUrl
-    ? `<a class="njgo-overview-link njgo-event-map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open in Google Maps"><span class="njgo-overview-link-label"><span class="njgo-event-map-label">map</span>${externalLinkIconHtml()}</span></a>`
+    ? `<a class="njgo-overview-link njgo-event-action-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open in Google Maps"><span class="njgo-overview-link-label"><span class="njgo-event-action-label">map</span>${externalLinkIconHtml()}</span></a>`
     : '';
+  const calendarLink = eventGoogleCalendarUrl(event) ? renderEventCalendarLink(event) : '';
   const date = formattedDate && dateTimeAttr
     ? `<time class="njgo-event-date" datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time>`
     : '';
-  const meta = mapLink || date
-    ? `<p class="njgo-event-meta">${mapLink}${date}</p>`
+  const meta = mapLink || calendarLink || date
+    ? `<p class="njgo-event-meta">${mapLink}${calendarLink}${date}</p>`
     : '';
   const links = Array.isArray(event.links)
     ? `<ul class="njgo-event-links">${event.links

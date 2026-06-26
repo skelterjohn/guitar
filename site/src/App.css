@@ -761,7 +761,7 @@ body {
   color: var(--color-text-muted);
 }
 
-.njgo-event-meta .njgo-event-map-link {
+.njgo-event-meta .njgo-event-action-link {
   width: auto;
   min-height: 0;
   padding: 0.3rem 0.4rem;
@@ -772,22 +772,22 @@ body {
   justify-content: center;
 }
 
-.njgo-event-map-link .njgo-overview-link-label {
+.njgo-event-action-link .njgo-overview-link-label {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
 }
 
-.njgo-event-map-link .njgo-event-map-label {
+.njgo-event-action-link .njgo-event-action-label {
   flex-shrink: 0;
   line-height: 1;
 }
 
-.njgo-event-map-link .external-link-icon {
+.njgo-event-action-link .external-link-icon {
   flex-shrink: 0;
 }
 
-.njgo-event-map-link:hover {
+.njgo-event-action-link:hover {
   color: var(--color-link-text);
 }
 

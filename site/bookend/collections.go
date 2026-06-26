@@ -2,15 +2,17 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"path/filepath"
 	"sort"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	firebase "firebase.google.com/go/v4"
 	"cloud.google.com/go/firestore"
@@ -19,7 +21,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const partPDFField = "pdf"
+const (
+	collectionNameField = "name"
+	partPDFField        = "pdf"
+)
 
 type collectionStore interface {
 	ListUserCollection(ctx context.Context, email string) (userCollection, error)
@@ -58,12 +63,20 @@ func newFirestoreCollectionStore(ctx context.Context, fbApp *firebase.App) (*fir
 	return &firestoreCollectionStore{client: client}, nil
 }
 
-func (s *firestoreCollectionStore) partRef(email, book, piece, part string) *firestore.DocumentRef {
+func (s *firestoreCollectionStore) bookRef(email, book string) *firestore.DocumentRef {
 	email = collectionEmail(email)
 	return s.client.Collection("users").Doc(email).
-		Collection("books").Doc(book).
-		Collection("piece").Doc(piece).
-		Collection("parts").Doc(part)
+		Collection("books").Doc(collectionDocID(book))
+}
+
+func (s *firestoreCollectionStore) pieceRef(email, book, piece string) *firestore.DocumentRef {
+	return s.bookRef(email, book).
+		Collection("piece").Doc(collectionDocID(piece))
+}
+
+func (s *firestoreCollectionStore) partRef(email, book, piece, part string) *firestore.DocumentRef {
+	return s.pieceRef(email, book, piece).
+		Collection("parts").Doc(collectionDocID(part))
 }
 
 func (s *firestoreCollectionStore) GetPartPDF(ctx context.Context, email, book, piece, part string) (string, error) {
@@ -78,9 +91,22 @@ func (s *firestoreCollectionStore) GetPartPDF(ctx context.Context, email, book, 
 }
 
 func (s *firestoreCollectionStore) SetPartPDF(ctx context.Context, email, book, piece, part, pdf string) error {
-	_, err := s.partRef(email, book, piece, part).Set(ctx, map[string]any{
+	bookRef := s.bookRef(email, book)
+	pieceRef := bookRef.Collection("piece").Doc(collectionDocID(piece))
+	partRef := pieceRef.Collection("parts").Doc(collectionDocID(part))
+
+	batch := s.client.Batch()
+	batch.Set(bookRef, map[string]any{
+		collectionNameField: book,
+	}, firestore.MergeAll)
+	batch.Set(pieceRef, map[string]any{
+		collectionNameField: piece,
+	}, firestore.MergeAll)
+	batch.Set(partRef, map[string]any{
+		collectionNameField: part,
 		partPDFField: pdf,
-	})
+	}, firestore.MergeAll)
+	_, err := batch.Commit(ctx)
 	return err
 }
 
@@ -103,7 +129,7 @@ func (s *firestoreCollectionStore) ListUserCollection(ctx context.Context, email
 			return userCollection{}, err
 		}
 		books = append(books, collectionBook{
-			Name:   bookDoc.Ref.ID,
+			Name:   collectionDisplayName(bookDoc),
 			Pieces: pieces,
 		})
 	}
@@ -134,7 +160,7 @@ func (s *firestoreCollectionStore) listCollectionPieces(ctx context.Context, boo
 			return nil, err
 		}
 		pieces = append(pieces, collectionPiece{
-			Name:  pieceDoc.Ref.ID,
+			Name:  collectionDisplayName(pieceDoc),
 			Parts: parts,
 		})
 	}
@@ -168,7 +194,7 @@ func (s *firestoreCollectionStore) listCollectionParts(ctx context.Context, piec
 			return nil, err
 		}
 		parts = append(parts, collectionPart{
-			Name: partDoc.Ref.ID,
+			Name: collectionDisplayName(partDoc),
 			PDF:  pdf,
 		})
 	}
@@ -210,26 +236,75 @@ func pdfFromSnapshot(snap *firestore.DocumentSnapshot) (string, error) {
 	return pdf, nil
 }
 
+func collectionDisplayName(snap *firestore.DocumentSnapshot) string {
+	name, _ := snap.Data()[collectionNameField].(string)
+	name = strings.TrimSpace(name)
+	if name != "" {
+		return name
+	}
+	return snap.Ref.ID
+}
+
 func collectionEmail(email string) string {
 	return strings.ToLower(strings.TrimSpace(email))
 }
 
+func collectionDocID(name string) string {
+	name = strings.TrimSpace(name)
+	sum := sha256.Sum256([]byte(name))
+	return fmt.Sprintf("%s-%x", collectionSlug(name), sum[:6])
+}
+
+func collectionSlug(name string) string {
+	var b strings.Builder
+	lastDash := false
+	for _, r := range strings.ToLower(name) {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
+			if b.Len() < 72 {
+				b.WriteRune(r)
+			}
+			lastDash = false
+			continue
+		}
+		if !lastDash && b.Len() > 0 && b.Len() < 72 {
+			b.WriteByte('-')
+			lastDash = true
+		}
+	}
+	slug := strings.Trim(b.String(), "-")
+	if slug == "" {
+		return "item"
+	}
+	return slug
+}
+
+// validateCollectionSegment checks that a book/piece/part name is a usable
+// collection display name. It will be stored in the document's "name" field;
+// the Firestore document ID is derived separately by collectionDocID.
 func validateCollectionSegment(name, label string) error {
 	name = strings.TrimSpace(name)
 	if name == "" {
 		return errors.New("missing " + label)
 	}
-	if name != filepath.Base(name) {
+	if len(name) > 1500 {
+		return errors.New(label + " is too long")
+	}
+	if name == "." || name == ".." {
 		return errors.New("invalid " + label)
 	}
-	if strings.Contains(name, "..") {
+	if strings.HasPrefix(name, "__") && strings.HasSuffix(name, "__") {
+		return errors.New("invalid " + label)
+	}
+	if strings.ContainsAny(name, "/\\") {
+		return errors.New("invalid " + label)
+	}
+	if !utf8.ValidString(name) {
 		return errors.New("invalid " + label)
 	}
 	for _, r := range name {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '-' || r == '_' || r == '.' || r == ' ' {
-			continue
+		if r == '\uFFFD' || (unicode.IsControl(r) && r != '\t') {
+			return errors.New("invalid " + label)
 		}
-		return errors.New("invalid " + label)
 	}
 	return nil
 }

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import BookAuthGate from '../components/BookAuthGate.jsx';
-import { listBookPdfs, uploadBookPdf } from '../bookendClient.js';
+import { fetchUserCollection, listBookPdfs, setCollectionPartPdf, uploadBookPdf } from '../bookendClient.js';
 import { auth } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { bookDescription, bookHeading, bookTitle, bookUrl, bookViewPath } from '../seo.js';
@@ -13,14 +13,155 @@ function isPdfFile(file) {
   return file.name.toLowerCase().endsWith('.pdf');
 }
 
+/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
+function collectionsForPdf(collection, pdfFilename) {
+  const entries = [];
+  for (const book of collection.books) {
+    for (const piece of book.pieces) {
+      for (const part of piece.parts) {
+        if (part.pdf === pdfFilename) {
+          entries.push({ book: book.name, piece: piece.name, part: part.name });
+        }
+      }
+    }
+  }
+  return entries;
+}
+
+function BookScoreItem({ user, filename, collection, onCollectionChange }) {
+  const [book, setBook] = useState('');
+  const [piece, setPiece] = useState('');
+  const [part, setPart] = useState('');
+  const [adding, setAdding] = useState(false);
+  const [itemError, setItemError] = useState('');
+
+  const memberships = collectionsForPdf(collection, filename);
+
+  const handleAdd = async () => {
+    const bookName = book.trim();
+    const pieceName = piece.trim();
+    const partName = part.trim();
+    if (!bookName || !pieceName || !partName) {
+      setItemError('Fill in book, piece, and part.');
+      return;
+    }
+
+    const duplicate = memberships.some(
+      (entry) =>
+        entry.book === bookName && entry.piece === pieceName && entry.part === partName,
+    );
+    if (duplicate) {
+      setItemError('Already in collection.');
+      return;
+    }
+
+    setAdding(true);
+    setItemError('');
+    try {
+      await setCollectionPartPdf(
+        user,
+        { book: bookName, piece: pieceName, part: partName },
+        filename,
+      );
+      setBook('');
+      setPiece('');
+      setPart('');
+      await onCollectionChange();
+    } catch (addError) {
+      setItemError(addError.message);
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    void handleAdd();
+  };
+
+  return (
+    <li className="book-score-item">
+      <Link className="book-file-open" to={bookViewPath(filename)}>
+        {filename}
+      </Link>
+
+      <div className="book-score-collections">
+        {memberships.length > 0 && (
+          <ul className="book-score-memberships">
+            {memberships.map((entry) => (
+              <li key={`${entry.book}/${entry.piece}/${entry.part}`}>
+                {entry.book} / {entry.piece} / {entry.part}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <form className="book-score-add" onSubmit={handleSubmit}>
+          <input
+            className="book-score-field"
+            type="text"
+            placeholder="book"
+            value={book}
+            onChange={(event) => setBook(event.target.value)}
+            disabled={adding}
+            aria-label={`Book for ${filename}`}
+          />
+          <input
+            className="book-score-field"
+            type="text"
+            placeholder="piece"
+            value={piece}
+            onChange={(event) => setPiece(event.target.value)}
+            disabled={adding}
+            aria-label={`Piece for ${filename}`}
+          />
+          <input
+            className="book-score-field"
+            type="text"
+            placeholder="part"
+            value={part}
+            onChange={(event) => setPart(event.target.value)}
+            disabled={adding}
+            aria-label={`Part for ${filename}`}
+          />
+          <button
+            className="book-score-add-btn"
+            type="submit"
+            disabled={adding}
+            aria-label={`Add ${filename} to collection`}
+          >
+            +
+          </button>
+        </form>
+        {itemError && (
+          <p className="book-score-error" role="alert">
+            {itemError}
+          </p>
+        )}
+      </div>
+    </li>
+  );
+}
+
 function BookLibrary({ user }) {
   const [filenames, setFilenames] = useState([]);
+  const [collection, setCollection] = useState({ books: [] });
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
+
+  const refreshCollection = useCallback(async () => {
+    try {
+      const nextCollection = await fetchUserCollection(user);
+      setCollection(nextCollection);
+    } catch (collectionError) {
+      console.error('Could not load collections:', collectionError);
+      setCollection({ books: [] });
+    }
+  }, [user]);
 
   const refreshList = useCallback(async () => {
     setError('');
@@ -38,7 +179,8 @@ function BookLibrary({ user }) {
 
   useEffect(() => {
     refreshList();
-  }, [refreshList]);
+    refreshCollection();
+  }, [refreshList, refreshCollection]);
 
   const uploadFile = useCallback(
     async (file) => {
@@ -145,11 +287,13 @@ function BookLibrary({ user }) {
         ) : (
           <ul className="book-file-list">
             {filenames.map((filename) => (
-              <li key={filename} className="book-file-item">
-                <Link className="book-file-open" to={bookViewPath(filename)}>
-                  {filename}
-                </Link>
-              </li>
+              <BookScoreItem
+                key={filename}
+                user={user}
+                filename={filename}
+                collection={collection}
+                onCollectionChange={refreshCollection}
+              />
             ))}
           </ul>
         )}

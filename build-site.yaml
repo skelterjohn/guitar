@@ -11,7 +11,9 @@
 #   _REGION        — e.g. us-east4
 #   _AR_REPO       — e.g. us-east4-docker.pkg.dev/PROJECT/guitar
 #   _SERVICE       — Cloud Run service name, e.g. guitar-site
+#   _BOOKEND_SERVICE — Cloud Run service name for book API, e.g. guitar-bookend
 #   _PDF_BUCKET    — GCS bucket name (without gs://)
+#   _BOOK_BUCKET   — GCS bucket for user PDF uploads (without gs://)
 #   _PDF_BASE_URL  — same-origin PDF path proxied to GCS, e.g. /pdf
 #
 # Example:
@@ -22,8 +24,11 @@ substitutions:
   _REGION: us-east4
   _AR_REPO: us-east4-docker.pkg.dev/skelterjohnguitar/guitar
   _SERVICE: guitar-site
+  _BOOKEND_SERVICE: guitar-bookend
   _PDF_BUCKET: skelterjohnguitar-pdf
+  _BOOK_BUCKET: skelterjohnguitar-book
   _PDF_BASE_URL: /pdf
+  _FIREBASE_PROJECT_ID: skelterjohnguitar
 
 steps:
   - name: gcr.io/cloud-builders/gsutil
@@ -70,8 +75,36 @@ steps:
       - --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com
       - --port=8080
 
+  - name: gcr.io/cloud-builders/docker
+    dir: site/bookend
+    args:
+      - build
+      - --tag=${_AR_REPO}/bookend:v$SHORT_SHA
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_AR_REPO}/bookend:v$SHORT_SHA
+
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - -q
+      - run
+      - deploy
+      - ${_BOOKEND_SERVICE}
+      - --image=${_AR_REPO}/bookend:v$SHORT_SHA
+      - --platform=managed
+      - --region=${_REGION}
+      - --allow-unauthenticated
+      - --revision-suffix=v$SHORT_SHA
+      - --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com
+      - --port=8080
+      - --set-env-vars=FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID},BOOK_BUCKET=${_BOOK_BUCKET}
+
 images:
   - ${_AR_REPO}/site:v$SHORT_SHA
+  - ${_AR_REPO}/bookend:v$SHORT_SHA
 
 options:
   logging: CLOUD_LOGGING_ONLY

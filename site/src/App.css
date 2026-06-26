@@ -1656,17 +1656,40 @@ body {
   border-color: #1e3a8a;
 }
 
-.book-user-email {
+.book-user-bar {
   position: fixed;
   top: 1rem;
   right: 1rem;
   z-index: 10;
-  max-width: min(100vw - 2rem, 20rem);
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  max-width: min(100vw - 2rem, 24rem);
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+}
+
+.book-sign-out {
+  flex-shrink: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--color-link-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.book-sign-out:hover {
+  color: #1e3a8a;
+}
+
+.book-user-email {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: system-ui, sans-serif;
-  font-size: 0.85rem;
   color: var(--color-text-muted);
 }
 

@@ -203,6 +203,14 @@ body {
   margin-bottom: 2.5rem;
 }
 
+.book-page > .catalog-section:first-of-type {
+  margin-top: 2.5rem;
+}
+
+.book-catalog-loading {
+  margin-top: 2.5rem;
+}
+
 .catalog-section h2 {
   margin: 0 0 1rem;
   font-size: 1.15rem;

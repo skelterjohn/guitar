@@ -1,11 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import BookAuthGate from '../components/BookAuthGate.jsx';
+import Catalog from '../components/Catalog.jsx';
+import TableOfContents from '../components/TableOfContents.jsx';
 import { fetchUserCollection, listBookPdfs, setCollectionPartPdf, uploadBookPdf } from '../bookendClient.js';
 import { auth } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { bookDescription, bookHeading, bookTitle, bookUrl, bookViewPath } from '../seo.js';
+import { bookDescription, bookHeading, bookPath, bookTitle, bookUrl, bookViewPath } from '../seo.js';
+import { userCollectionToSections } from '../utils/collectionCatalog.js';
 
 function isPdfFile(file) {
   if (!file) return false;
@@ -248,6 +251,7 @@ function BookScoreItem({ user, filename, collection, onCollectionChange }) {
 function BookLibrary({ user }) {
   const [filenames, setFilenames] = useState([]);
   const [collection, setCollection] = useState({ books: [] });
+  const [collectionLoaded, setCollectionLoaded] = useState(false);
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -262,8 +266,15 @@ function BookLibrary({ user }) {
     } catch (collectionError) {
       console.error('Could not load collections:', collectionError);
       setCollection({ books: [] });
+    } finally {
+      setCollectionLoaded(true);
     }
   }, [user]);
+
+  const collectionSections = useMemo(
+    () => userCollectionToSections(collection),
+    [collection],
+  );
 
   const refreshList = useCallback(async () => {
     setError('');
@@ -336,13 +347,17 @@ function BookLibrary({ user }) {
   };
 
   return (
-    <main className="page book-page">
-      <header className="page-header">
-        <h1>{bookHeading}</h1>
-        <p>{bookDescription}</p>
-      </header>
+    <>
+      {collectionLoaded && collectionSections.length > 0 && (
+        <TableOfContents sections={collectionSections} />
+      )}
+      <main className="page book-page">
+        <header className="page-header">
+          <h1>{bookHeading}</h1>
+          <p>{bookDescription}</p>
+        </header>
 
-      <details className="book-library">
+        <details className="book-library">
         <summary className="book-library-summary">all scores</summary>
 
         <button
@@ -400,7 +415,18 @@ function BookLibrary({ user }) {
           </ul>
         )}
       </details>
-    </main>
+
+        {!collectionLoaded ? (
+          <p className="book-empty book-catalog-loading">loading catalog…</p>
+        ) : collectionSections.length > 0 ? (
+          <Catalog
+            sections={collectionSections}
+            viewState={{ from: bookPath }}
+            viewPrefix={bookPath}
+          />
+        ) : null}
+      </main>
+    </>
   );
 }
 

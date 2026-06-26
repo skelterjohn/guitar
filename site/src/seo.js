@@ -35,6 +35,9 @@ export function pageTitle(name) {
 }
 
 export function viewPath(file, context = 'catalog') {
+  if (context === 'book') {
+    return bookViewPath(file);
+  }
   const base = context === 'rep' ? repPath : catalogPath;
   return `${base}/view/${encodeURIComponent(viewRouteFilename(file))}`;
 }

@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
 import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
-import { catalogPath, repPath, viewPath } from '../seo.js';
+import { bookPath, catalogPath, repPath, viewPath } from '../seo.js';
+
+function viewContextForPrefix(viewPrefix) {
+  if (viewPrefix === repPath) return 'rep';
+  if (viewPrefix === bookPath) return 'book';
+  return 'catalog';
+}
 
 export default function PdfLinkList({
   pdfs,
@@ -9,7 +15,7 @@ export default function PdfLinkList({
   viewPrefix = catalogPath,
 }) {
   const linkState = { ...viewState, explicitPdf: true };
-  const viewContext = viewPrefix === repPath ? 'rep' : 'catalog';
+  const viewContext = viewContextForPrefix(viewPrefix);
 
   return (
     <div className="pdf-links">

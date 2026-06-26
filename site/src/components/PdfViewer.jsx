@@ -52,6 +52,11 @@ function loadStatusMessage(phase) {
 export default function PdfViewer({
   filename,
   pdfHash,
+  pdfUrl: pdfUrlOverride,
+  loadPdfBytes,
+  downloadHref,
+  downloadName: downloadNameOverride,
+  onDownload,
   pdfs = [],
   pieceKey = null,
   sectionPieces = [],
@@ -60,8 +65,9 @@ export default function PdfViewer({
   backLabel = 'Catalog',
   viewState,
 }) {
-  const url = pdfUrl(filename, pdfHash);
-  const downloadName = viewRouteFilename(filename);
+  const url = pdfUrlOverride ?? pdfUrl(filename, pdfHash);
+  const downloadLink = downloadHref === undefined ? url : downloadHref;
+  const downloadName = downloadNameOverride ?? viewRouteFilename(filename);
   const viewContext = backTo === repPath ? 'rep' : 'catalog';
   const currentLabel = findPdfByFile(pdfs, filename)?.label;
 
@@ -115,6 +121,7 @@ export default function PdfViewer({
   const [annotationHelpOpen, setAnnotationHelpOpen] = useState(false);
   const [printSheets, setPrintSheets] = useState(null);
   const [printBusy, setPrintBusy] = useState(false);
+  const [downloadBusy, setDownloadBusy] = useState(false);
 
   const pdfZoomRef = useRef(1);
   const pendingZoomScrollRef = useRef(null);
@@ -273,6 +280,7 @@ export default function PdfViewer({
           onPhase: (phase) => {
             if (!cancelled) setLoadPhase(phase);
           },
+          loadBytes: loadPdfBytes,
         });
         if (cancelled) return;
 
@@ -299,7 +307,7 @@ export default function PdfViewer({
       pdfDocRef.current = null;
       releasePdfDocument(url);
     };
-  }, [url]);
+  }, [url, loadPdfBytes]);
 
   const persistPageAnnotations = (pages, color = annotationColorRef.current) => {
     const storagePages = Object.fromEntries(
@@ -442,6 +450,20 @@ export default function PdfViewer({
       console.error('Print failed:', err);
       setPrintSheets(null);
       setPrintBusy(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!onDownload || downloadBusy) return;
+
+    setDownloadBusy(true);
+    try {
+      await onDownload();
+    } catch (err) {
+      console.error('Download failed:', err);
+      setErrorMessage(err.message ?? 'Download failed');
+    } finally {
+      setDownloadBusy(false);
     }
   };
 
@@ -1189,14 +1211,29 @@ export default function PdfViewer({
               >
                 <PrintIcon />
               </button>
-              <a
-                href={url}
-                download={downloadName}
-                className="viewer-download-link"
-                aria-label="Download"
-              >
-                <DownloadIcon />
-              </a>
+              {onDownload ? (
+                <button
+                  type="button"
+                  className="viewer-download-link"
+                  onClick={() => void handleDownload()}
+                  disabled={downloadBusy}
+                  aria-label={downloadBusy ? 'Downloading' : 'Download'}
+                  aria-busy={downloadBusy || undefined}
+                >
+                  <DownloadIcon />
+                </button>
+              ) : (
+                downloadLink && (
+                  <a
+                    href={downloadLink}
+                    download={downloadName}
+                    className="viewer-download-link"
+                    aria-label="Download"
+                  >
+                    <DownloadIcon />
+                  </a>
+                )
+              )}
             </div>
           </div>
         </header>

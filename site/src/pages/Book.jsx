@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import BookAuthGate from '../components/BookAuthGate.jsx';
-import { fetchBookPdf, listBookPdfs, uploadBookPdf } from '../bookendClient.js';
+import { listBookPdfs, uploadBookPdf } from '../bookendClient.js';
 import { auth } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { bookDescription, bookHeading, bookTitle, bookUrl } from '../seo.js';
+import { bookDescription, bookHeading, bookTitle, bookUrl, bookViewPath } from '../seo.js';
 
 function BookLibrary({ user }) {
   const [filenames, setFilenames] = useState([]);
@@ -61,22 +62,6 @@ function BookLibrary({ user }) {
     }
   };
 
-  const handleOpen = async (filename) => {
-    setError('');
-    setStatus('');
-    setBusy(true);
-    try {
-      const blob = await fetchBookPdf(user, filename);
-      const objectUrl = URL.createObjectURL(blob);
-      window.open(objectUrl, '_blank', 'noopener');
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
-    } catch (openError) {
-      setError(openError.message);
-    } finally {
-      setBusy(false);
-    }
-  };
-
   return (
     <main className="page book-page">
       <header className="page-header">
@@ -112,14 +97,9 @@ function BookLibrary({ user }) {
           <ul className="book-file-list">
             {filenames.map((filename) => (
               <li key={filename} className="book-file-item">
-                <button
-                  type="button"
-                  className="book-file-open"
-                  onClick={() => handleOpen(filename)}
-                  disabled={busy}
-                >
+                <Link className="book-file-open" to={bookViewPath(filename)}>
                   {filename}
-                </button>
+                </Link>
               </li>
             ))}
           </ul>

@@ -4,6 +4,7 @@ import Landing from './pages/Landing.jsx';
 import Njgo from './pages/Njgo.jsx';
 import Book from './pages/Book.jsx';
 import Rep from './pages/Rep.jsx';
+import ViewBookPdf from './pages/ViewBookPdf.jsx';
 import ViewPdf from './pages/ViewPdf.jsx';
 import StylusDiagnostics from './pages/StylusDiagnostics.jsx';
 import { catalogPath, njgoPath } from './seo.js';
@@ -28,6 +29,7 @@ export default function App() {
         <Route path={catalogPath} element={<Home />} />
         <Route path={`${catalogPath}/view/:filename`} element={<ViewPdf />} />
         <Route path="/book" element={<Book />} />
+        <Route path="/book/view/:filename" element={<ViewBookPdf />} />
         <Route path="/rep" element={<Rep />} />
         <Route path="/rep/view/:filename" element={<ViewPdf />} />
         <Route path="/view/:filename" element={<LegacyViewRedirect />} />

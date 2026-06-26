@@ -38,6 +38,10 @@ export function viewPath(file, context = 'catalog') {
   return `${base}/view/${encodeURIComponent(viewRouteFilename(file))}`;
 }
 
+export function bookViewPath(filename) {
+  return `${bookPath}/view/${encodeURIComponent(filename)}`;
+}
+
 export function viewPageUrl(file) {
   return `${siteOrigin}${viewPath(file)}`;
 }

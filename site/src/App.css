@@ -1436,6 +1436,11 @@ body {
   text-decoration: none;
 }
 
+.viewer-download-link:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .viewer-print-sheets {
   display: none;
 }
@@ -1855,6 +1860,10 @@ body {
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 0.15em;
+}
+
+a.book-file-open {
+  display: block;
 }
 
 .book-file-open:disabled {

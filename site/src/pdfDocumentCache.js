@@ -35,7 +35,7 @@ function parsedCacheStats() {
 }
 
 export async function acquirePdfDocument(url, options = {}) {
-  const { onPhase } = options;
+  const { onPhase, loadBytes } = options;
   const resolved = resolvePdfUrl(url);
   const cached = docCache.get(resolved);
   if (cached) {
@@ -45,7 +45,9 @@ export async function acquirePdfDocument(url, options = {}) {
     return cached.doc;
   }
 
-  const data = await fetchPdfBytes(url, { onPhase });
+  const data = loadBytes
+    ? await loadBytes(onPhase)
+    : await fetchPdfBytes(url, { onPhase });
   const byteLength = data.byteLength;
   onPhase?.('loading');
   const loadingTask = pdfjs.getDocument({ data });

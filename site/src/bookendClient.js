@@ -72,3 +72,21 @@ export async function fetchBookPdf(user, filename) {
   }
   return res.blob();
 }
+
+export async function downloadBookPdf(user, filename) {
+  const blob = await fetchBookPdf(user, filename);
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = filename;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+}
+
+export async function fetchBookPdfBytes(user, filename, onPhase) {
+  onPhase?.('downloading');
+  const blob = await fetchBookPdf(user, filename);
+  onPhase?.('loading');
+  const buffer = await blob.arrayBuffer();
+  return new Uint8Array(buffer);
+}

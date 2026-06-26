@@ -36,7 +36,7 @@ import {
 import { PEN_COLOR } from '../utils/stylusInput.js';
 import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { buildPrintSheets } from '../utils/printPdf.js';
-import { catalogPath, repPath, viewPath } from '../seo.js';
+import { bookPath, catalogPath, repPath, viewPath } from '../seo.js';
 
 function loadStatusMessage(phase) {
   switch (phase) {
@@ -51,6 +51,7 @@ function loadStatusMessage(phase) {
 
 export default function PdfViewer({
   filename,
+  currentFile: currentFileOverride,
   pdfHash,
   pdfUrl: pdfUrlOverride,
   loadPdfBytes,
@@ -65,11 +66,12 @@ export default function PdfViewer({
   backLabel = 'Catalog',
   viewState,
 }) {
+  const currentFile = currentFileOverride ?? filename;
   const url = pdfUrlOverride ?? pdfUrl(filename, pdfHash);
   const downloadLink = downloadHref === undefined ? url : downloadHref;
   const downloadName = downloadNameOverride ?? viewRouteFilename(filename);
-  const viewContext = backTo === repPath ? 'rep' : 'catalog';
-  const currentLabel = findPdfByFile(pdfs, filename)?.label;
+  const viewContext = backTo === repPath ? 'rep' : backTo === bookPath ? 'book' : 'catalog';
+  const currentLabel = findPdfByFile(pdfs, currentFile)?.label;
 
   useEffect(() => {
     if (pieceKey && currentLabel) {
@@ -1186,7 +1188,7 @@ export default function PdfViewer({
               {pdfs.length > 0 && (
                 <PdfLinkList
                   pdfs={pdfs}
-                  currentFile={filename}
+                  currentFile={currentFile}
                   viewState={viewState}
                   viewPrefix={backTo}
                 />

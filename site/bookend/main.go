@@ -42,10 +42,16 @@ func main() {
 		log.Fatalf("storage init: %v", err)
 	}
 
+	collections, err := newFirestoreCollectionStore(ctx, fbApp)
+	if err != nil {
+		log.Fatalf("firestore init: %v", err)
+	}
+
 	srv := &server{
-		auth:   authClient,
-		bucket: bookBucket,
-		store:  store,
+		auth:        authClient,
+		bucket:      bookBucket,
+		store:       store,
+		collections: collections,
 	}
 
 	r := chi.NewRouter()
@@ -76,6 +82,9 @@ func main() {
 		r.Get("/book/{email}", srv.handleListBook)
 		r.Get("/book/{email}/{filename}", srv.handleGetBook)
 		r.Post("/book/{email}/{filename}", srv.handlePostBook)
+
+		r.Get("/users/{email}/books/{book}/piece/{piece}/parts/{part}", srv.handleGetCollectionPart)
+		r.Post("/users/{email}/books/{book}/piece/{piece}/parts/{part}", srv.handlePostCollectionPart)
 	})
 
 	addr := fmt.Sprintf("0.0.0.0:%s", port)

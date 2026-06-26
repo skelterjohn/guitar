@@ -140,7 +140,7 @@ steps:
       - --region=${_REGION}
       - --allow-unauthenticated
       - --revision-suffix=v$SHORT_SHA
-      - --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com
+      - --service-account=bookend@skelterjohnguitar.iam.gserviceaccount.com
       - --port=8080
       - --set-env-vars=FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID},BOOK_BUCKET=${_BOOK_BUCKET}
 

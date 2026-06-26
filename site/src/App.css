@@ -1836,10 +1836,37 @@ body {
   color: #b91c1c;
 }
 
-.book-library h2 {
+.book-library {
+  margin-top: 1.5rem;
+}
+
+.book-library-summary {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-text-heading);
+  cursor: pointer;
+  list-style: none;
+}
+
+.book-library-summary::-webkit-details-marker {
+  display: none;
+}
+
+.book-library-summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.4rem;
+  transition: transform 0.15s ease;
+}
+
+.book-library[open] .book-library-summary::before {
+  transform: rotate(90deg);
+}
+
+.book-library .book-dropzone,
+.book-library .book-empty,
+.book-library .book-file-list {
+  margin-top: 0.75rem;
 }
 
 .book-empty {

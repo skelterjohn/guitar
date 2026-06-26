@@ -98,45 +98,46 @@ function BookLibrary({ user }) {
         <p>{bookDescription}</p>
       </header>
 
-      <button
-        type="button"
-        className={`book-dropzone${dragActive ? ' is-drag-active' : ''}${busy ? ' is-busy' : ''}`}
-        onClick={openFilePicker}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragEnter={handleDragOver}
-        onDragLeave={handleDragLeave}
-        disabled={busy}
-        aria-label="Upload a PDF by clicking or dragging a file here"
-      >
-        <span className="book-dropzone-icon" aria-hidden="true">+</span>
-        <span className="book-dropzone-primary">
-          {busy ? 'Uploading…' : 'Drag a PDF here'}
-        </span>
-        <span className="book-dropzone-secondary">or click to choose a file</span>
-      </button>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="application/pdf,.pdf"
-        onChange={handleInputChange}
-        disabled={busy}
-        hidden
-      />
+      <details className="book-library">
+        <summary className="book-library-summary">all scores</summary>
 
-      {error && (
-        <p className="book-status book-status-error" role="alert">
-          {error}
-        </p>
-      )}
-      {status && (
-        <p className="book-status" role="status">
-          {status}
-        </p>
-      )}
+        <button
+          type="button"
+          className={`book-dropzone${dragActive ? ' is-drag-active' : ''}${busy ? ' is-busy' : ''}`}
+          onClick={openFilePicker}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragOver}
+          onDragLeave={handleDragLeave}
+          disabled={busy}
+          aria-label="Upload a PDF by clicking or dragging a file here"
+        >
+          <span className="book-dropzone-icon" aria-hidden="true">+</span>
+          <span className="book-dropzone-primary">
+            {busy ? 'Uploading…' : 'Drag a PDF here'}
+          </span>
+          <span className="book-dropzone-secondary">or click to choose a file</span>
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf,.pdf"
+          onChange={handleInputChange}
+          disabled={busy}
+          hidden
+        />
 
-      <section className="book-library" aria-labelledby="book-library-heading">
-        <h2 id="book-library-heading">your pdfs</h2>
+        {error && (
+          <p className="book-status book-status-error" role="alert">
+            {error}
+          </p>
+        )}
+        {status && (
+          <p className="book-status" role="status">
+            {status}
+          </p>
+        )}
+
         {loading ? (
           <p className="book-empty">Loading…</p>
         ) : filenames.length === 0 ? (
@@ -152,7 +153,7 @@ function BookLibrary({ user }) {
             ))}
           </ul>
         )}
-      </section>
+      </details>
     </main>
   );
 }

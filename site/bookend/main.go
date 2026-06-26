@@ -52,7 +52,7 @@ func main() {
 	r.Use(cors.Handler(cors.Options{
 		AllowOriginFunc: func(_ *http.Request, origin string) bool {
 			switch origin {
-			case "http://localhost:5173", "http://127.0.0.1:5173", "https://guitar.skelterjohn.me":
+			case "http://localhost:5173", "http://127.0.0.1:5173", "https://guitar.skelterjohn.me", "https://bluebridge.skelterjohn.me":
 				return true
 			default:
 				return strings.HasSuffix(origin, ".run.app")

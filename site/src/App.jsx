@@ -8,7 +8,7 @@ import ViewBookPdf from './pages/ViewBookPdf.jsx';
 import ViewPdf from './pages/ViewPdf.jsx';
 import StylusDiagnostics from './pages/StylusDiagnostics.jsx';
 import { catalogPath, njgoPath } from './seo.js';
-import { isNjgoDomain } from './utils/siteDomain.js';
+import { isBluebridgeDomain, isNjgoDomain } from './utils/siteDomain.js';
 
 function LegacyViewRedirect() {
   const { filename } = useParams();
@@ -17,6 +17,7 @@ function LegacyViewRedirect() {
 
 function RootPage() {
   if (isNjgoDomain()) return <Njgo />;
+  if (isBluebridgeDomain()) return <Navigate to="/book" replace />;
   return <Landing />;
 }
 

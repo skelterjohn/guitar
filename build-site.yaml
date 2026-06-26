@@ -12,9 +12,13 @@
 #   _AR_REPO       — e.g. us-east4-docker.pkg.dev/PROJECT/guitar
 #   _SERVICE       — Cloud Run service name, e.g. guitar-site
 #   _BOOKEND_SERVICE — Cloud Run service name for book API, e.g. guitar-bookend
+#   _BOOKEND_ORIGIN  — Cloud Run origin for book API, e.g. https://guitar-bookend-PROJECT_NUMBER.us-east4.run.app
 #   _PDF_BUCKET    — GCS bucket name (without gs://)
 #   _BOOK_BUCKET   — GCS bucket for user PDF uploads (without gs://)
 #   _PDF_BASE_URL  — same-origin PDF path proxied to GCS, e.g. /pdf
+#
+# Firebase web config (public, domain-restricted) is baked into the static
+# bundle at build time via _FIREBASE_* substitutions below.
 #
 # Example:
 #   gcloud builds submit --config=build-site.yaml \
@@ -25,10 +29,16 @@ substitutions:
   _AR_REPO: us-east4-docker.pkg.dev/skelterjohnguitar/guitar
   _SERVICE: guitar-site
   _BOOKEND_SERVICE: guitar-bookend
+  _BOOKEND_ORIGIN: https://guitar-bookend-634515039958.us-east4.run.app
   _PDF_BUCKET: skelterjohnguitar-pdf
   _BOOK_BUCKET: skelterjohnguitar-book
   _PDF_BASE_URL: /pdf
   _FIREBASE_PROJECT_ID: skelterjohnguitar
+  _FIREBASE_API_KEY: AIzaSyDjXhfqk2xP6EYeG7t71ZkzcFFGwtMAv5U
+  _FIREBASE_AUTH_DOMAIN: skelterjohnguitar.firebaseapp.com
+  _FIREBASE_STORAGE_BUCKET: skelterjohnguitar.firebasestorage.app
+  _FIREBASE_MESSAGING_SENDER_ID: "634515039958"
+  _FIREBASE_APP_ID: 1:634515039958:web:891fa09cdf4cba2c0e0b77
 
 steps:
   # --- PDF sync (independent; runs concurrently) ---
@@ -61,6 +71,18 @@ steps:
       - build
       - --build-arg
       - VITE_PDF_BASE_URL=${_PDF_BASE_URL}
+      - --build-arg
+      - VITE_FIREBASE_API_KEY=${_FIREBASE_API_KEY}
+      - --build-arg
+      - VITE_FIREBASE_AUTH_DOMAIN=${_FIREBASE_AUTH_DOMAIN}
+      - --build-arg
+      - VITE_FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID}
+      - --build-arg
+      - VITE_FIREBASE_STORAGE_BUCKET=${_FIREBASE_STORAGE_BUCKET}
+      - --build-arg
+      - VITE_FIREBASE_MESSAGING_SENDER_ID=${_FIREBASE_MESSAGING_SENDER_ID}
+      - --build-arg
+      - VITE_FIREBASE_APP_ID=${_FIREBASE_APP_ID}
       - --tag=${_AR_REPO}/site:v$SHORT_SHA
       - .
 
@@ -86,6 +108,7 @@ steps:
       - --revision-suffix=v$SHORT_SHA
       - --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com
       - --port=8080
+      - --set-env-vars=BOOKEND_ORIGIN=${_BOOKEND_ORIGIN}
 
   # --- Backend pipeline (runs concurrently with frontend) ---
   - name: gcr.io/cloud-builders/docker

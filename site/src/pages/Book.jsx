@@ -28,6 +28,83 @@ function collectionsForPdf(collection, pdfFilename) {
   return entries;
 }
 
+function uniqueSorted(names) {
+  return [...new Set(names.filter(Boolean))].sort((a, b) => a.localeCompare(b));
+}
+
+/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
+function findCollectionBook(collection, bookName) {
+  const trimmed = bookName.trim();
+  if (!trimmed) return null;
+  return (
+    collection.books.find((book) => book.name === trimmed)
+    ?? collection.books.find((book) => book.name.toLowerCase() === trimmed.toLowerCase())
+  );
+}
+
+/** @param {{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }} book */
+function findCollectionPiece(book, pieceName) {
+  const trimmed = pieceName.trim();
+  if (!trimmed) return null;
+  return (
+    book.pieces.find((piece) => piece.name === trimmed)
+    ?? book.pieces.find((piece) => piece.name.toLowerCase() === trimmed.toLowerCase())
+  );
+}
+
+/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
+function collectionBookNames(collection) {
+  return uniqueSorted(collection.books.map((book) => book.name));
+}
+
+/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
+function collectionPieceNames(collection, bookName) {
+  const book = findCollectionBook(collection, bookName);
+  if (book) {
+    return uniqueSorted(book.pieces.map((piece) => piece.name));
+  }
+  const names = [];
+  for (const entry of collection.books) {
+    for (const piece of entry.pieces) {
+      names.push(piece.name);
+    }
+  }
+  return uniqueSorted(names);
+}
+
+/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
+function collectionPartNames(collection, bookName, pieceName) {
+  const book = findCollectionBook(collection, bookName);
+  if (!book) {
+    const names = [];
+    for (const entry of collection.books) {
+      for (const piece of entry.pieces) {
+        for (const part of piece.parts) {
+          names.push(part.name);
+        }
+      }
+    }
+    return uniqueSorted(names);
+  }
+
+  const piece = findCollectionPiece(book, pieceName);
+  if (piece) {
+    return uniqueSorted(piece.parts.map((part) => part.name));
+  }
+
+  const names = [];
+  for (const entry of book.pieces) {
+    for (const part of entry.parts) {
+      names.push(part.name);
+    }
+  }
+  return uniqueSorted(names);
+}
+
+function collectionFieldId(filename) {
+  return encodeURIComponent(filename).replace(/%/g, '_');
+}
+
 function BookScoreItem({ user, filename, collection, onCollectionChange }) {
   const [book, setBook] = useState('');
   const [piece, setPiece] = useState('');
@@ -36,6 +113,10 @@ function BookScoreItem({ user, filename, collection, onCollectionChange }) {
   const [itemError, setItemError] = useState('');
 
   const memberships = collectionsForPdf(collection, filename);
+  const fieldId = collectionFieldId(filename);
+  const bookOptions = collectionBookNames(collection);
+  const pieceOptions = collectionPieceNames(collection, book);
+  const partOptions = collectionPartNames(collection, book, piece);
 
   const handleAdd = async () => {
     const bookName = book.trim();
@@ -104,8 +185,15 @@ function BookScoreItem({ user, filename, collection, onCollectionChange }) {
             value={book}
             onChange={(event) => setBook(event.target.value)}
             disabled={adding}
+            autoComplete="off"
+            list={`book-options-${fieldId}`}
             aria-label={`Book for ${filename}`}
           />
+          <datalist id={`book-options-${fieldId}`}>
+            {bookOptions.map((name) => (
+              <option key={name} value={name} />
+            ))}
+          </datalist>
           <input
             className="book-score-field"
             type="text"
@@ -113,8 +201,15 @@ function BookScoreItem({ user, filename, collection, onCollectionChange }) {
             value={piece}
             onChange={(event) => setPiece(event.target.value)}
             disabled={adding}
+            autoComplete="off"
+            list={`piece-options-${fieldId}`}
             aria-label={`Piece for ${filename}`}
           />
+          <datalist id={`piece-options-${fieldId}`}>
+            {pieceOptions.map((name) => (
+              <option key={name} value={name} />
+            ))}
+          </datalist>
           <input
             className="book-score-field"
             type="text"
@@ -122,8 +217,15 @@ function BookScoreItem({ user, filename, collection, onCollectionChange }) {
             value={part}
             onChange={(event) => setPart(event.target.value)}
             disabled={adding}
+            autoComplete="off"
+            list={`part-options-${fieldId}`}
             aria-label={`Part for ${filename}`}
           />
+          <datalist id={`part-options-${fieldId}`}>
+            {partOptions.map((name) => (
+              <option key={name} value={name} />
+            ))}
+          </datalist>
           <button
             className="book-score-add-btn"
             type="submit"

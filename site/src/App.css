@@ -752,6 +752,16 @@ body {
   color: var(--color-text-heading);
 }
 
+.njgo-event-actions {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.35rem;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 0 0.5rem;
+}
+
 .njgo-event-meta {
   display: flex;
   align-items: center;
@@ -761,12 +771,12 @@ body {
   color: var(--color-text-muted);
 }
 
-.njgo-event-meta .njgo-event-action-link {
-  width: auto;
+.njgo-event-actions .njgo-event-action-link {
+  width: 100%;
+  min-width: 0;
   min-height: 0;
   padding: 0.3rem 0.4rem;
   box-sizing: border-box;
-  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;

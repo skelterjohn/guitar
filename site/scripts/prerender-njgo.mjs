@@ -146,11 +146,11 @@ function renderEventCard(event) {
     ? `<a class="njgo-overview-link njgo-event-action-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open in Google Maps"><span class="njgo-overview-link-label"><span class="njgo-event-action-label">map</span>${externalLinkIconHtml()}</span></a>`
     : '';
   const calendarLink = eventGoogleCalendarUrl(event) ? renderEventCalendarLink(event) : '';
-  const date = formattedDate && dateTimeAttr
-    ? `<time class="njgo-event-date" datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time>`
+  const actions = mapLink || calendarLink
+    ? `<div class="njgo-event-actions">${mapLink}${calendarLink}</div>`
     : '';
-  const meta = mapLink || calendarLink || date
-    ? `<p class="njgo-event-meta">${mapLink}${calendarLink}${date}</p>`
+  const meta = formattedDate && dateTimeAttr
+    ? `<p class="njgo-event-meta"><time class="njgo-event-date" datetime="${escapeHtml(dateTimeAttr)}">${escapeHtml(formattedDate)}</time></p>`
     : '';
   const links = Array.isArray(event.links)
     ? `<ul class="njgo-event-links">${event.links
@@ -174,6 +174,7 @@ function renderEventCard(event) {
   return `<article class="${articleClass}">
   ${image}
   <div class="njgo-roster-card-body">
+    ${actions}
     <h2 class="njgo-event-name">${escapeHtml(eventTitle(event))}</h2>
     ${meta}
     ${links}

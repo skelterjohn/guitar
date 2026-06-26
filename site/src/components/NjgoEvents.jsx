@@ -22,9 +22,8 @@ function EventCard({ event }) {
     >
       {event.image && <NjgoEventPhoto src={event.image} />}
       <div className="njgo-roster-card-body">
-        <h2 className="njgo-event-name">{eventTitle(event)}</h2>
-        {(mapUrl || calendarUrl || (formattedDate && dateTimeAttr)) && (
-          <p className="njgo-event-meta">
+        {(mapUrl || calendarUrl) && (
+          <div className="njgo-event-actions">
             {mapUrl && (
               <a
                 className="njgo-overview-link njgo-event-action-link"
@@ -53,11 +52,14 @@ function EventCard({ event }) {
                 </span>
               </a>
             )}
-            {formattedDate && dateTimeAttr && (
-              <time className="njgo-event-date" dateTime={dateTimeAttr}>
-                {formattedDate}
-              </time>
-            )}
+          </div>
+        )}
+        <h2 className="njgo-event-name">{eventTitle(event)}</h2>
+        {formattedDate && dateTimeAttr && (
+          <p className="njgo-event-meta">
+            <time className="njgo-event-date" dateTime={dateTimeAttr}>
+              {formattedDate}
+            </time>
           </p>
         )}
         {Array.isArray(event.links) && event.links.length > 0 && (

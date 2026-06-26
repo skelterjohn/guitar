@@ -1,4 +1,5 @@
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { bookHeading } from '../seo.js';
 import { auth, isFirebaseConfigured } from '../firebase.js';
 import BookSignInModal from './BookSignInModal.jsx';
 
@@ -9,7 +10,7 @@ function BookAuthGateInner({ children }) {
     return (
       <main className="page book-page">
         <header className="page-header">
-          <h1>book</h1>
+          <h1>{bookHeading}</h1>
           <p>Loading…</p>
         </header>
       </main>
@@ -20,7 +21,7 @@ function BookAuthGateInner({ children }) {
     return (
       <main className="page book-page">
         <header className="page-header">
-          <h1>book</h1>
+          <h1>{bookHeading}</h1>
           <p className="book-auth-config-error">{authError.message}</p>
         </header>
       </main>
@@ -40,7 +41,7 @@ export default function BookAuthGate({ children }) {
     return (
       <main className="page book-page">
         <header className="page-header">
-          <h1>book</h1>
+          <h1>{bookHeading}</h1>
           <p className="book-auth-config-error">
             Firebase is not configured. Add VITE_FIREBASE_* variables to your environment.
           </p>

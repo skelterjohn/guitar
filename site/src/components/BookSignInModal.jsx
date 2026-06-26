@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { bookDescription, bookHeading } from '../seo.js';
 import { auth } from '../firebase.js';
 
 export default function BookSignInModal() {
@@ -33,8 +34,8 @@ export default function BookSignInModal() {
         aria-modal="true"
         aria-labelledby="book-auth-title"
       >
-        <h2 id="book-auth-title">Sign in</h2>
-        <p className="book-auth-lead">Sign in to upload and view your PDFs.</p>
+        <h2 id="book-auth-title">Sign in to {bookHeading}</h2>
+        <p className="book-auth-lead">{bookDescription}</p>
         <p
           className="book-auth-error"
           role={error ? 'alert' : undefined}

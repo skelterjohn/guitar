@@ -4,7 +4,7 @@ import BookAuthGate from '../components/BookAuthGate.jsx';
 import PdfViewer from '../components/PdfViewer.jsx';
 import { downloadBookPdf, fetchBookPdfBytes } from '../bookendClient.js';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { bookPath, bookViewPath, pageTitle } from '../seo.js';
+import { bookBackLabel, bookPath, bookTitle, bookViewPath, pageTitle } from '../seo.js';
 
 function bookAnnotationKey(email, filename) {
   return `book/${email.toLowerCase()}/${filename}`;
@@ -37,7 +37,7 @@ function ViewBookPdfInner({ user }) {
 
   usePageMeta({
     title: pageTitle(decoded),
-    description: `${decoded} — book`,
+    description: `${decoded} — ${bookTitle}`,
     url: `${window.location.origin}${bookViewPath(decoded)}`,
     noindex: true,
   });
@@ -50,7 +50,7 @@ function ViewBookPdfInner({ user }) {
       downloadName={decoded}
       onDownload={handleDownload}
       backTo={bookPath}
-      backLabel="book"
+      backLabel={bookBackLabel}
     />
   );
 }

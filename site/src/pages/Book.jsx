@@ -7,12 +7,19 @@ import { auth } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { bookDescription, bookHeading, bookTitle, bookUrl, bookViewPath } from '../seo.js';
 
+function isPdfFile(file) {
+  if (!file) return false;
+  if (file.type === 'application/pdf') return true;
+  return file.name.toLowerCase().endsWith('.pdf');
+}
+
 function BookLibrary({ user }) {
   const [filenames, setFilenames] = useState([]);
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
   const refreshList = useCallback(async () => {
@@ -33,33 +40,55 @@ function BookLibrary({ user }) {
     refreshList();
   }, [refreshList]);
 
-  const handleUpload = async (event) => {
+  const uploadFile = useCallback(
+    async (file) => {
+      setError('');
+      setStatus('');
+
+      if (!file) return;
+      if (!isPdfFile(file)) {
+        setError(`"${file.name}" is not a PDF.`);
+        return;
+      }
+
+      setBusy(true);
+      try {
+        await uploadBookPdf(user, file.name, file);
+        await refreshList();
+        setStatus(`Uploaded ${file.name}.`);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      } catch (uploadError) {
+        setError(uploadError.message);
+      } finally {
+        setBusy(false);
+      }
+    },
+    [user, refreshList],
+  );
+
+  const handleInputChange = (event) => {
+    void uploadFile(event.target.files?.[0]);
+  };
+
+  const handleDrop = (event) => {
     event.preventDefault();
-    setError('');
-    setStatus('');
+    setDragActive(false);
+    if (busy) return;
+    void uploadFile(event.dataTransfer.files?.[0]);
+  };
 
-    const file = fileInputRef.current?.files?.[0];
-    if (!file) {
-      setError('Choose a PDF to upload.');
-      return;
-    }
-    const filename = file.name;
-    if (!filename.toLowerCase().endsWith('.pdf')) {
-      setError('File must be a .pdf.');
-      return;
-    }
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    if (!busy) setDragActive(true);
+  };
 
-    setBusy(true);
-    try {
-      await uploadBookPdf(user, filename, file);
-      await refreshList();
-      setStatus(`Uploaded ${filename}.`);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    } catch (uploadError) {
-      setError(uploadError.message);
-    } finally {
-      setBusy(false);
-    }
+  const handleDragLeave = (event) => {
+    event.preventDefault();
+    setDragActive(false);
+  };
+
+  const openFilePicker = () => {
+    if (!busy) fileInputRef.current?.click();
   };
 
   return (
@@ -69,12 +98,31 @@ function BookLibrary({ user }) {
         <p>{bookDescription}</p>
       </header>
 
-      <form className="book-upload" onSubmit={handleUpload}>
-        <input ref={fileInputRef} type="file" accept="application/pdf,.pdf" disabled={busy} />
-        <button type="submit" disabled={busy}>
-          {busy ? 'Working…' : 'Upload PDF'}
-        </button>
-      </form>
+      <button
+        type="button"
+        className={`book-dropzone${dragActive ? ' is-drag-active' : ''}${busy ? ' is-busy' : ''}`}
+        onClick={openFilePicker}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragOver}
+        onDragLeave={handleDragLeave}
+        disabled={busy}
+        aria-label="Upload a PDF by clicking or dragging a file here"
+      >
+        <span className="book-dropzone-icon" aria-hidden="true">+</span>
+        <span className="book-dropzone-primary">
+          {busy ? 'Uploading…' : 'Drag a PDF here'}
+        </span>
+        <span className="book-dropzone-secondary">or click to choose a file</span>
+      </button>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf,.pdf"
+        onChange={handleInputChange}
+        disabled={busy}
+        hidden
+      />
 
       {error && (
         <p className="book-status book-status-error" role="alert">

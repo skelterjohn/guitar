@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { defaultDescription, siteOrigin, siteTitle } from './src/seo.js';
 
 const gcsPdfOrigin = 'https://storage.googleapis.com/skelterjohnguitar-pdf';
+const bookendDevOrigin = process.env.BOOKEND_DEV_ORIGIN ?? 'http://localhost:8081';
 
 function devPwaQuiet() {
   const stubManifest = JSON.stringify({
@@ -99,6 +100,19 @@ export default defineConfig({
         target: gcsPdfOrigin,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/pdf/, ''),
+      },
+      '/bookend': {
+        target: bookendDevOrigin,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/bookend/, ''),
+        configure: (proxy) => {
+          proxy.on('proxyReq', (_proxyReq, req) => {
+            console.log(`[bookend proxy] ${req.method} ${req.url} -> ${bookendDevOrigin}`);
+          });
+          proxy.on('error', (err, req) => {
+            console.error(`[bookend proxy] error for ${req.method} ${req.url}:`, err.message);
+          });
+        },
       },
     },
   },

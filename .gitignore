@@ -1,6 +1,7 @@
 **/*~
 site/node_modules/
 site/dist/
+site/bookend/bookend.exe
 site/src/data/pdf-hashes.json
 site/public/sitemap.xml
 site/public/njgo-sitemap.xml

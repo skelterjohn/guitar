@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /rep
+Disallow: /book
 
 Sitemap: https://guitar.skelterjohn.me/sitemap.xml
 Sitemap: https://njgo.org/njgo-sitemap.xml

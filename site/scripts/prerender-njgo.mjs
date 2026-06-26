@@ -245,6 +245,10 @@ function renderNjgoTabScript() {
 </script>`;
 }
 
+function panelHidden(tabId) {
+  return tabId === NJGO_DEFAULT_TAB ? '' : ' hidden';
+}
+
 function renderRoster(members, director, events) {
   const tabLinks = NJGO_TABS.map(
     (tab) =>
@@ -255,10 +259,10 @@ function renderRoster(members, director, events) {
   <div class="njgo-roster-tablist" role="tablist" aria-label="NJGO">
     ${tabLinks}
   </div>
-  <div id="njgo-panel-director" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-director"${NJGO_DEFAULT_TAB === 'director' ? '' : ' hidden'}>
+  <div id="njgo-panel-director" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-director"${panelHidden('director')}>
     ${renderDirector(director)}
   </div>
-  <div id="njgo-panel-roster" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-roster" hidden>
+  <div id="njgo-panel-roster" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-roster"${panelHidden('roster')}>
     <p class="njgo-roster-note">in no particular order, past and present</p>
     <ul class="njgo-roster-grid">
     ${members
@@ -266,7 +270,7 @@ function renderRoster(members, director, events) {
       .join('\n    ')}
   </ul>
   </div>
-  <div id="njgo-panel-events" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-events" hidden>
+  <div id="njgo-panel-events" role="tabpanel" class="njgo-roster-panel" aria-labelledby="njgo-tab-events"${panelHidden('events')}>
     ${renderEvents(events)}
   </div>
   ${renderNjgoTabScript()}

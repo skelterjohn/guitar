@@ -31,7 +31,10 @@ substitutions:
   _FIREBASE_PROJECT_ID: skelterjohnguitar
 
 steps:
+  # --- PDF sync (independent; runs concurrently) ---
   - name: gcr.io/cloud-builders/gsutil
+    id: sync-pdfs
+    waitFor: ['-']
     entrypoint: bash
     args:
       - -c
@@ -41,13 +44,18 @@ steps:
         cp pdf/*.pdf "$$staging/"
         gsutil -m rsync -r -d "$$staging/" "gs://${_PDF_BUCKET}/pub/"
 
+  # --- Frontend pipeline (runs concurrently with backend) ---
   - name: node:22-alpine
+    id: site-assets
+    waitFor: ['-']
     entrypoint: sh
     args:
       - -c
       - cd site && npm ci && ENRICH_HASHES=1 npm run enrich && npm run validate
 
   - name: gcr.io/cloud-builders/docker
+    id: site-build
+    waitFor: ['site-assets']
     dir: site
     args:
       - build
@@ -57,11 +65,15 @@ steps:
       - .
 
   - name: gcr.io/cloud-builders/docker
+    id: site-push
+    waitFor: ['site-build']
     args:
       - push
       - ${_AR_REPO}/site:v$SHORT_SHA
 
   - name: gcr.io/cloud-builders/gcloud
+    id: site-deploy
+    waitFor: ['site-push']
     args:
       - -q
       - run
@@ -75,7 +87,10 @@ steps:
       - --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com
       - --port=8080
 
+  # --- Backend pipeline (runs concurrently with frontend) ---
   - name: gcr.io/cloud-builders/docker
+    id: bookend-build
+    waitFor: ['-']
     dir: site/bookend
     args:
       - build
@@ -83,11 +98,15 @@ steps:
       - .
 
   - name: gcr.io/cloud-builders/docker
+    id: bookend-push
+    waitFor: ['bookend-build']
     args:
       - push
       - ${_AR_REPO}/bookend:v$SHORT_SHA
 
   - name: gcr.io/cloud-builders/gcloud
+    id: bookend-deploy
+    waitFor: ['bookend-push']
     args:
       - -q
       - run

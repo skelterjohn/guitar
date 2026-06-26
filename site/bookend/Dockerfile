@@ -5,12 +5,12 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 go test ./...
-RUN CGO_ENABLED=0 go install .
+RUN CGO_ENABLED=0 go build -o /app/bookend .
 
 # Production stage
 FROM cgr.dev/chainguard/static:latest
 WORKDIR /app
-COPY --from=builder /go/bin/bookend .
+COPY --from=builder /app/bookend .
 
 EXPOSE 8080
 ENV PORT=8080

@@ -1656,6 +1656,97 @@ body {
   border-color: #1e3a8a;
 }
 
+.book-user-email {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  max-width: min(100vw - 2rem, 20rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.book-auth-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 45%);
+}
+
+.book-auth-modal {
+  width: min(100%, 22rem);
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 20%);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+}
+
+.book-auth-modal h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-heading);
+}
+
+.book-auth-lead {
+  margin: 0.5rem 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.book-auth-error {
+  margin: 0 0 0.75rem;
+  min-height: 1.2rem;
+  font-size: 0.8125rem;
+  line-height: 1.2rem;
+  color: #b91c1c;
+}
+
+.book-auth-actions {
+  display: flex;
+  justify-content: stretch;
+}
+
+.book-auth-submit {
+  width: 100%;
+  padding: 0.5rem 0.875rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #fff;
+  background: var(--color-link-text);
+  border: 1px solid var(--color-link-text);
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.book-auth-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.book-auth-submit:not(:disabled):hover {
+  background: #1e3a8a;
+  border-color: #1e3a8a;
+}
+
+.book-auth-config-error {
+  color: #b91c1c;
+}
+
 .viewer-content {
   position: relative;
   flex: 1;

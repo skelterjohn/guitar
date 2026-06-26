@@ -54,6 +54,7 @@ writeFileSync(
   `User-agent: *
 Allow: /
 Disallow: /rep
+Disallow: /book
 
 Sitemap: ${siteOrigin}/sitemap.xml
 Sitemap: ${njgoOrigin}/njgo-sitemap.xml

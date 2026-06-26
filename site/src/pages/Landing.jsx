@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta.js';
 import {
+  bookDescription,
+  bookHeading,
+  bookPath,
   catalogPath,
   defaultDescription,
   siteHeading,
@@ -27,6 +30,10 @@ export default function Landing() {
           <span className="landing-link-desc">
             original compositions, arrangements, and transcriptions
           </span>
+        </Link>
+        <Link className="landing-link" to={bookPath}>
+          <span className="landing-link-title">{bookHeading}</span>
+          <span className="landing-link-desc">{bookDescription}</span>
         </Link>
       </nav>
     </main>

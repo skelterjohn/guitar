@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { siteHeading } from '../src/seo.js';
+import { bookDescription, bookHeading, siteHeading } from '../src/seo.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distIndex = join(__dirname, '../dist/index.html');
@@ -24,6 +24,10 @@ function renderLanding() {
     <a class="landing-link" href="/catalog">
       <span class="landing-link-title">catalog</span>
       <span class="landing-link-desc">original compositions, arrangements, and transcriptions</span>
+    </a>
+    <a class="landing-link" href="/book">
+      <span class="landing-link-title">${escapeHtml(bookHeading)}</span>
+      <span class="landing-link-desc">${escapeHtml(bookDescription)}</span>
     </a>
   </nav>
 </main>`;

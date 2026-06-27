@@ -2076,17 +2076,6 @@ body {
   font-size: 0.85rem;
 }
 
-.book-status {
-  margin: 0 0 1rem;
-  font-family: system-ui, sans-serif;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
-.book-status-error {
-  color: #b91c1c;
-}
-
 .toast {
   position: fixed;
   top: 1.25rem;
@@ -2104,6 +2093,12 @@ body {
   box-shadow: 0 8px 24px rgb(15 23 42 / 18%);
   transform: translateX(-50%);
   pointer-events: none;
+}
+
+.toast-error {
+  color: #b91c1c;
+  border-color: #fca5a5;
+  background: #fef2f2;
 }
 
 .book-tabs {

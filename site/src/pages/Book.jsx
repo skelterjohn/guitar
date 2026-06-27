@@ -622,8 +622,7 @@ function BookLibrary({ user }) {
   const [bookFiles, setBookFiles] = useState([]);
   const [library, setLibrary] = useState({ pieces: [], books: [] });
   const [libraryLoaded, setLibraryLoaded] = useState(false);
-  const [toast, setToast] = useState('');
-  const [error, setError] = useState('');
+  const [toast, setToast] = useState(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dragActive, setDragActive] = useState(false);
@@ -633,6 +632,9 @@ function BookLibrary({ user }) {
   const [sortField, setSortField] = useState('filename');
   const [sortDirection, setSortDirection] = useState('asc');
   const fileInputRef = useRef(null);
+
+  const showToast = useCallback((message) => setToast({ message, tone: 'info' }), []);
+  const showError = useCallback((message) => setToast({ message, tone: 'error' }), []);
 
   const refreshLibrary = useCallback(async () => {
     try {
@@ -669,18 +671,17 @@ function BookLibrary({ user }) {
   );
 
   const refreshList = useCallback(async () => {
-    setError('');
     setLoading(true);
     try {
       const files = await listBookPdfs(user);
       setBookFiles(files);
     } catch (listError) {
-      setError(listError.message);
+      showError(listError.message);
       setBookFiles([]);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, showError]);
 
   useEffect(() => {
     refreshList();
@@ -689,11 +690,9 @@ function BookLibrary({ user }) {
 
   const uploadFile = useCallback(
     async (file) => {
-      setError('');
-
       if (!file) return;
       if (!isPdfFile(file) && !isZipFile(file)) {
-        setError(`"${file.name}" is not a PDF or zip file.`);
+        showError(`"${file.name}" is not a PDF or zip file.`);
         return;
       }
 
@@ -702,7 +701,7 @@ function BookLibrary({ user }) {
         if (isZipFile(file)) {
           const uploaded = await uploadBookZip(user, file);
           await refreshList();
-          setToast(
+          showToast(
             uploaded.length === 1
               ? `Uploaded 1 PDF from ${file.name}.`
               : `Uploaded ${uploaded.length} PDFs from ${file.name}.`,
@@ -710,16 +709,16 @@ function BookLibrary({ user }) {
         } else {
           await uploadBookPdf(user, file.name, file);
           await refreshList();
-          setToast(`Uploaded ${file.name}.`);
+          showToast(`Uploaded ${file.name}.`);
         }
         if (fileInputRef.current) fileInputRef.current.value = '';
       } catch (uploadError) {
-        setError(uploadError.message);
+        showError(uploadError.message);
       } finally {
         setBusy(false);
       }
     },
-    [user, refreshList],
+    [user, refreshList, showToast, showError],
   );
 
   const handleInputChange = (event) => {
@@ -755,26 +754,26 @@ function BookLibrary({ user }) {
     async (pieceKey) => {
       await deletePiece(user, pieceKey);
       await refreshLibrary();
-      setToast(`Deleted ${pieceKey}.`);
+      showToast(`Deleted ${pieceKey}.`);
     },
-    [user, refreshLibrary],
+    [user, refreshLibrary, showToast],
   );
 
   const handleBookDelete = useCallback(
     async (bookKey) => {
       await deleteBook(user, bookKey);
       await refreshLibrary();
-      setToast(`Deleted ${bookKey}.`);
+      showToast(`Deleted ${bookKey}.`);
     },
-    [user, refreshLibrary],
+    [user, refreshLibrary, showToast],
   );
 
   const handlePdfDeleted = useCallback(
     async (filename) => {
       await refreshList();
-      setToast(`Deleted ${filename}.`);
+      showToast(`Deleted ${filename}.`);
     },
-    [refreshList],
+    [refreshList, showToast],
   );
 
   const openFilePicker = () => {
@@ -783,19 +782,18 @@ function BookLibrary({ user }) {
 
   const handleExportZip = useCallback(async () => {
     setExportingZip(true);
-    setError('');
     try {
       await downloadBookPdfZip(user);
     } catch (zipError) {
-      setError(zipError.message);
+      showError(zipError.message);
     } finally {
       setExportingZip(false);
     }
-  }, [user]);
+  }, [user, showError]);
 
   return (
     <>
-      <Toast message={toast} onDismiss={() => setToast('')} />
+      <Toast message={toast?.message} tone={toast?.tone} onDismiss={() => setToast(null)} />
       {libraryLoaded && filteredSections.length > 0 && (
         <TableOfContents sections={filteredSections} />
       )}
@@ -922,12 +920,6 @@ function BookLibrary({ user }) {
                   </button>
                 ))}
               </div>
-            )}
-
-            {error && (
-              <p className="book-status book-status-error" role="alert">
-                {error}
-              </p>
             )}
 
             {loading ? (

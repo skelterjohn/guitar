@@ -16,6 +16,19 @@ import (
 )
 
 var errZipNoPdfs = errors.New("zip contains no valid pdf files")
+var errZipConflicts = errors.New("zip contains pdfs that already exist")
+
+type zipConflictError struct {
+	Conflicts []string
+}
+
+func (e *zipConflictError) Error() string {
+	return fmt.Sprintf("%s: %s", errZipConflicts.Error(), strings.Join(e.Conflicts, ", "))
+}
+
+func (e *zipConflictError) Unwrap() error {
+	return errZipConflicts
+}
 
 func bookZipFilename(email string) string {
 	return fmt.Sprintf("bluebridge-%s-export.zip", strings.ToLower(strings.TrimSpace(email)))
@@ -159,6 +172,17 @@ func ingestBookZip(ctx context.Context, store objectStore, email string, zipData
 		return nil, err
 	}
 
+	var conflicts []string
+	for filename := range incoming {
+		if _, exists := usage.Files[filename]; exists {
+			conflicts = append(conflicts, filename)
+		}
+	}
+	if len(conflicts) > 0 {
+		sort.Strings(conflicts)
+		return nil, &zipConflictError{Conflicts: conflicts}
+	}
+
 	incomingSizes := make(map[string]int64, len(incoming))
 	for filename, data := range incoming {
 		incomingSizes[filename] = int64(len(data))
@@ -218,6 +242,15 @@ func (s *server) handlePostBookZip(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, errZipNoPdfs) {
 			writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+			return
+		}
+		var conflictErr *zipConflictError
+		if errors.As(err, &conflictErr) {
+			log.Printf("zip upload conflicts email=%q conflicts=%v", pathEmail, conflictErr.Conflicts)
+			writeJSON(w, http.StatusConflict, map[string]any{
+				"error":     conflictErr.Error(),
+				"conflicts": conflictErr.Conflicts,
+			})
 			return
 		}
 		if errors.Is(err, errStorageQuotaExceeded) {

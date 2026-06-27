@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-export default function Toast({ message, onDismiss, durationMs = 4000 }) {
+export default function Toast({ message, tone = 'info', onDismiss, durationMs = 4000 }) {
   useEffect(() => {
     if (!message) return undefined;
 
@@ -14,8 +14,14 @@ export default function Toast({ message, onDismiss, durationMs = 4000 }) {
 
   if (!message) return null;
 
+  const isError = tone === 'error';
+
   return createPortal(
-    <div className="toast" role="status" aria-live="polite">
+    <div
+      className={`toast${isError ? ' toast-error' : ''}`}
+      role={isError ? 'alert' : 'status'}
+      aria-live={isError ? 'assertive' : 'polite'}
+    >
       {message}
     </div>,
     document.body,

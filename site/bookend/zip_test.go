@@ -214,6 +214,40 @@ func TestIngestBookZipNoPdfs(t *testing.T) {
 	}
 }
 
+func TestIngestBookZipConflicts(t *testing.T) {
+	email := "user@example.com"
+	store := &fakeObjectStore{
+		objects: map[string][]byte{
+			bookObjectKey(email, "existing.pdf"): []byte("%PDF-existing"),
+		},
+	}
+	zipData := buildTestZip(map[string][]byte{
+		"existing.pdf": []byte("%PDF-new"),
+		"new.pdf":      []byte("%PDF-new"),
+	})
+
+	files, err := ingestBookZip(context.Background(), store, email, zipData)
+	if !errors.Is(err, errZipConflicts) {
+		t.Fatalf("expected errZipConflicts, got %v", err)
+	}
+	var conflictErr *zipConflictError
+	if !errors.As(err, &conflictErr) {
+		t.Fatalf("expected *zipConflictError, got %T", err)
+	}
+	if len(conflictErr.Conflicts) != 1 || conflictErr.Conflicts[0] != "existing.pdf" {
+		t.Fatalf("conflicts = %v, want [existing.pdf]", conflictErr.Conflicts)
+	}
+	if len(files) != 0 {
+		t.Fatalf("files = %v, want none written", files)
+	}
+	if _, ok := store.objects[bookObjectKey(email, "new.pdf")]; ok {
+		t.Fatal("new.pdf should not have been written")
+	}
+	if got := string(store.objects[bookObjectKey(email, "existing.pdf")]); got != "%PDF-existing" {
+		t.Fatalf("existing.pdf = %q, want original content preserved", got)
+	}
+}
+
 func TestCheckStorageQuota(t *testing.T) {
 	usage := fileUsage{
 		Total: (1 << 30) - 100,

@@ -511,6 +511,7 @@ function BookLibrary({ user }) {
             sections={collectionSections}
             viewState={{ from: bookPath }}
             viewPrefix={bookPath}
+            availableFiles={filenames}
             onPieceSave={handlePieceSave}
             onBookSave={handleBookSave}
           />

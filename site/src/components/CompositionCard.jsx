@@ -10,6 +10,7 @@ export default function CompositionCard({
   viewState,
   viewPrefix,
   onPieceSave,
+  availableFiles,
 }) {
   const paragraphs = piece.description?.split('\n\n').filter(Boolean) ?? [];
   const links = piece.links ?? [];
@@ -133,7 +134,12 @@ export default function CompositionCard({
           ))}
         </div>
       )}
-      <PdfLinkList pdfs={piece.pdfs} viewState={viewState} viewPrefix={viewPrefix} />
+      <PdfLinkList
+        pdfs={piece.pdfs}
+        viewState={viewState}
+        viewPrefix={viewPrefix}
+        availableFiles={availableFiles}
+      />
       {links.length > 0 && (
         <div className="external-links">
           {links.map((link) => (

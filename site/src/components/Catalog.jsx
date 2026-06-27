@@ -88,7 +88,7 @@ function BookSectionHeading({ title, onBookSave }) {
   );
 }
 
-export default function Catalog({ sections, viewState, viewPrefix, onPieceSave, onBookSave }) {
+export default function Catalog({ sections, viewState, viewPrefix, onPieceSave, onBookSave, availableFiles }) {
   return (
     <>
       {sections.map((section) => (
@@ -104,6 +104,7 @@ export default function Catalog({ sections, viewState, viewPrefix, onPieceSave, 
               piece={piece}
               viewState={viewState}
               viewPrefix={viewPrefix}
+              availableFiles={availableFiles}
               onPieceSave={
                 onPieceSave
                   ? (updates) => onPieceSave(section.title, piece.title, updates)

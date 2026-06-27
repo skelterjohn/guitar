@@ -13,23 +13,49 @@ export default function PdfLinkList({
   currentFile,
   viewState,
   viewPrefix = catalogPath,
+  availableFiles,
 }) {
   const linkState = { ...viewState, explicitPdf: true };
   const viewContext = viewContextForPrefix(viewPrefix);
 
+  const isMissing = (file) => {
+    if (!availableFiles) return false;
+    return !availableFiles.some((available) => pdfFilesMatch(available, file));
+  };
+
   return (
     <div className="pdf-links">
-      {pdfs.map((pdf) => (
-        <Link
-          key={pdf.file}
-          className={`pdf-link${pdfFilesMatch(pdf.file, currentFile) ? ' pdf-link-active' : ''}`}
-          to={viewPath(pdf.file, viewContext)}
-          state={linkState}
-          aria-current={pdf.file === currentFile ? 'page' : undefined}
-        >
-          {pdf.label}
-        </Link>
-      ))}
+      {pdfs.map((pdf) => {
+        const missing = isMissing(pdf.file);
+        const classes = ['pdf-link'];
+        if (pdfFilesMatch(pdf.file, currentFile)) classes.push('pdf-link-active');
+        if (missing) classes.push('pdf-link-missing');
+
+        if (missing) {
+          return (
+            <span
+              key={pdf.file}
+              className={classes.join(' ')}
+              aria-disabled="true"
+              title={`${pdf.file} is missing`}
+            >
+              {pdf.label}
+            </span>
+          );
+        }
+
+        return (
+          <Link
+            key={pdf.file}
+            className={classes.join(' ')}
+            to={viewPath(pdf.file, viewContext)}
+            state={linkState}
+            aria-current={pdf.file === currentFile ? 'page' : undefined}
+          >
+            {pdf.label}
+          </Link>
+        );
+      })}
     </div>
   );
 }

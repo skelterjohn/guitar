@@ -1184,6 +1184,25 @@ body {
   border-color: var(--color-link-text);
 }
 
+.pdf-link-missing {
+  color: #b91c1c;
+  background: rgb(185 28 28 / 8%);
+  border-color: rgb(185 28 28 / 45%);
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.pdf-link-missing:hover {
+  background: rgb(185 28 28 / 8%);
+}
+
+.pdf-link-active.pdf-link-missing,
+.pdf-link-active.pdf-link-missing:hover {
+  color: #fff;
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
 .external-link {
   display: inline-flex;
   align-items: center;

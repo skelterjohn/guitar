@@ -418,6 +418,7 @@ function BookLibrary({ user }) {
   const [dragActive, setDragActive] = useState(false);
   const [exportingZip, setExportingZip] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('catalog');
   const fileInputRef = useRef(null);
 
   const refreshLibrary = useCallback(async () => {
@@ -596,96 +597,131 @@ function BookLibrary({ user }) {
           <p>{bookDescription}</p>
         </header>
 
-        <details className="book-library">
-        <summary className="book-library-summary">
-          <span className="book-library-summary-label">all scores</span>
-          {filenames.length > 0 && (
+        <div className="book-tabs">
+          <div className="book-tablist" role="tablist" aria-label="Library views">
             <button
               type="button"
-              className="book-export-zip"
-              disabled={exportingZip}
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                void handleExportZip();
-              }}
+              role="tab"
+              id="book-tab-catalog"
+              aria-selected={activeTab === 'catalog'}
+              aria-controls="book-panel-catalog"
+              className={`book-tab${activeTab === 'catalog' ? ' is-active' : ''}`}
+              onClick={() => setActiveTab('catalog')}
             >
-              {exportingZip ? 'exporting…' : 'export zip'}
+              catalog
             </button>
-          )}
-        </summary>
+            <button
+              type="button"
+              role="tab"
+              id="book-tab-scores"
+              aria-selected={activeTab === 'scores'}
+              aria-controls="book-panel-scores"
+              className={`book-tab${activeTab === 'scores' ? ' is-active' : ''}`}
+              onClick={() => setActiveTab('scores')}
+            >
+              all scores
+            </button>
+            {activeTab === 'scores' && filenames.length > 0 && (
+              <button
+                type="button"
+                className="book-export-zip book-tab-action"
+                disabled={exportingZip}
+                onClick={() => void handleExportZip()}
+              >
+                {exportingZip ? 'exporting…' : 'export zip'}
+              </button>
+            )}
+          </div>
+        </div>
 
-        <button
-          type="button"
-          className={`book-dropzone${dragActive ? ' is-drag-active' : ''}${busy ? ' is-busy' : ''}`}
-          onClick={openFilePicker}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragEnter={handleDragOver}
-          onDragLeave={handleDragLeave}
-          disabled={busy}
-          aria-label="Upload a PDF or zip file by clicking or dragging a file here"
-        >
-          <span className="book-dropzone-icon" aria-hidden="true">+</span>
-          <span className="book-dropzone-primary">
-            {busy ? 'Uploading…' : 'Drag a PDF or ZIP (of PDFs) here'}
-          </span>
-          <span className="book-dropzone-secondary">or click to choose a file</span>
-        </button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/pdf,.pdf,application/zip,.zip"
-          onChange={handleInputChange}
-          disabled={busy}
-          hidden
-        />
+        {activeTab === 'scores' ? (
+          <section
+            id="book-panel-scores"
+            role="tabpanel"
+            aria-labelledby="book-tab-scores"
+            className="book-tabpanel"
+          >
+            <button
+              type="button"
+              className={`book-dropzone${dragActive ? ' is-drag-active' : ''}${busy ? ' is-busy' : ''}`}
+              onClick={openFilePicker}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragOver}
+              onDragLeave={handleDragLeave}
+              disabled={busy}
+              aria-label="Upload a PDF or zip file by clicking or dragging a file here"
+            >
+              <span className="book-dropzone-icon" aria-hidden="true">+</span>
+              <span className="book-dropzone-primary">
+                {busy ? 'Uploading…' : 'Drag a PDF or ZIP (of PDFs) here'}
+              </span>
+              <span className="book-dropzone-secondary">or click to choose a file</span>
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf,.pdf,application/zip,.zip"
+              onChange={handleInputChange}
+              disabled={busy}
+              hidden
+            />
 
-        {error && (
-          <p className="book-status book-status-error" role="alert">
-            {error}
-          </p>
-        )}
+            {error && (
+              <p className="book-status book-status-error" role="alert">
+                {error}
+              </p>
+            )}
 
-        {loading ? (
-          <p className="book-empty">Loading…</p>
-        ) : filenames.length === 0 ? (
-          <p className="book-empty">No PDFs uploaded yet.</p>
-        ) : filteredFilenames.length === 0 ? (
-          <p className="book-empty">No matches.</p>
+            {loading ? (
+              <p className="book-empty">Loading…</p>
+            ) : filenames.length === 0 ? (
+              <p className="book-empty">No PDFs uploaded yet.</p>
+            ) : filteredFilenames.length === 0 ? (
+              <p className="book-empty">No matches.</p>
+            ) : (
+              <ul className="book-file-list">
+                {filteredFilenames.map((filename) => (
+                  <BookScoreItem
+                    key={filename}
+                    user={user}
+                    filename={filename}
+                    library={library}
+                    onLibraryChange={refreshLibrary}
+                    onPdfDeleted={handlePdfDeleted}
+                  />
+                ))}
+              </ul>
+            )}
+          </section>
         ) : (
-          <ul className="book-file-list">
-            {filteredFilenames.map((filename) => (
-              <BookScoreItem
-                key={filename}
-                user={user}
-                filename={filename}
-                library={library}
-                onLibraryChange={refreshLibrary}
-                onPdfDeleted={handlePdfDeleted}
-              />
-            ))}
-          </ul>
+          <section
+            id="book-panel-catalog"
+            role="tabpanel"
+            aria-labelledby="book-tab-catalog"
+            className="book-tabpanel"
+          >
+            {!libraryLoaded ? (
+              <p className="book-empty book-catalog-loading">loading catalog…</p>
+            ) : collectionSections.length > 0 ? (
+              filteredSections.length > 0 ? (
+                <Catalog
+                  sections={filteredSections}
+                  viewState={{ from: bookPath() }}
+                  viewPrefix={bookPath()}
+                  availableFiles={filenames}
+                  onPieceDelete={handlePieceDelete}
+                  onBookSave={handleBookSave}
+                  onBookDelete={handleBookDelete}
+                />
+              ) : (
+                <p className="book-empty">No matches.</p>
+              )
+            ) : (
+              <p className="book-empty">No catalog entries yet.</p>
+            )}
+          </section>
         )}
-      </details>
-
-        {!libraryLoaded ? (
-          <p className="book-empty book-catalog-loading">loading catalog…</p>
-        ) : collectionSections.length > 0 ? (
-          filteredSections.length > 0 ? (
-          <Catalog
-            sections={filteredSections}
-            viewState={{ from: bookPath() }}
-            viewPrefix={bookPath()}
-            availableFiles={filenames}
-            onPieceDelete={handlePieceDelete}
-            onBookSave={handleBookSave}
-            onBookDelete={handleBookDelete}
-          />
-          ) : (
-            <p className="book-empty">No matches.</p>
-          )
-        ) : null}
       </main>
     </>
   );

@@ -26,6 +26,12 @@ function collectionPartEndpoint(email, { book, piece, part }) {
   return `${base}/v1/users/${enc(email)}/books/${enc(book)}/piece/${enc(piece)}/parts/${enc(part)}`;
 }
 
+function collectionPieceEndpoint(email, { book, piece }) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  const enc = encodeURIComponent;
+  return `${base}/v1/users/${enc(email)}/books/${enc(book)}/piece/${enc(piece)}`;
+}
+
 function userCollectionEndpoint(email) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   return `${base}/v1/users/${encodeURIComponent(email)}`;
@@ -103,7 +109,7 @@ export async function fetchBookPdfBytes(user, filename, onPhase) {
 
 /** @typedef {{ book: string, piece: string, part: string }} CollectionPartPath */
 /** @typedef {{ name: string, pdf: string }} CollectionPart */
-/** @typedef {{ name: string, parts: CollectionPart[] }} CollectionPiece */
+/** @typedef {{ name: string, composer?: string, parts: CollectionPart[] }} CollectionPiece */
 /** @typedef {{ name: string, pieces: CollectionPiece[] }} CollectionBook */
 /** @typedef {{ books: CollectionBook[] }} UserCollection */
 
@@ -114,6 +120,7 @@ function normalizeUserCollection(data) {
       name: typeof book?.name === 'string' ? book.name : '',
       pieces: (Array.isArray(book?.pieces) ? book.pieces : []).map((piece) => ({
         name: typeof piece?.name === 'string' ? piece.name : '',
+        composer: typeof piece?.composer === 'string' ? piece.composer : '',
         parts: (Array.isArray(piece?.parts) ? piece.parts : []).map((part) => ({
           name: typeof part?.name === 'string' ? part.name : '',
           pdf: typeof part?.pdf === 'string' ? part.pdf : '',
@@ -173,4 +180,28 @@ export async function setCollectionPartPdf(user, { book, piece, part }, pdf) {
   }
   const data = await res.json();
   return typeof data.pdf === 'string' ? data.pdf : pdf;
+}
+
+/**
+ * Update a collection piece's display name and composer.
+ * @param {{ book: string, piece: string }} path
+ * @param {{ name: string, composer?: string }} updates
+ * @returns {Promise<{ name: string, composer: string }>}
+ */
+export async function updateCollectionPiece(user, { book, piece }, { name, composer = '' }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(collectionPieceEndpoint(email, { book, piece }), {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, composer }),
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not save piece (${res.status}).`));
+  }
+  const data = await res.json();
+  return {
+    name: typeof data.name === 'string' ? data.name : name,
+    composer: typeof data.composer === 'string' ? data.composer : composer,
+  };
 }

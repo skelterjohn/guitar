@@ -36,10 +36,14 @@ export function userCollectionToSections(collection) {
               file: part.pdf,
             }));
           if (pdfs.length === 0) return null;
-          return {
+          const entry = {
             title: piece.name,
             pdfs,
           };
+          if (piece.composer) {
+            entry.composer = piece.composer;
+          }
+          return entry;
         })
         .filter(Boolean);
 

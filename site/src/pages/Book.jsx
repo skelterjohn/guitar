@@ -4,7 +4,7 @@ import { signOut } from 'firebase/auth';
 import BookAuthGate from '../components/BookAuthGate.jsx';
 import Catalog from '../components/Catalog.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
-import { fetchUserCollection, listBookPdfs, setCollectionPartPdf, uploadBookPdf } from '../bookendClient.js';
+import { fetchUserCollection, listBookPdfs, setCollectionPartPdf, updateCollectionPiece, uploadBookPdf } from '../bookendClient.js';
 import { auth } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { bookDescription, bookHeading, bookPath, bookTitle, bookUrl, bookViewPath } from '../seo.js';
@@ -342,6 +342,14 @@ function BookLibrary({ user }) {
     setDragActive(false);
   };
 
+  const handlePieceSave = useCallback(
+    async (bookName, pieceName, { name, composer }) => {
+      await updateCollectionPiece(user, { book: bookName, piece: pieceName }, { name, composer });
+      await refreshCollection();
+    },
+    [user, refreshCollection],
+  );
+
   const openFilePicker = () => {
     if (!busy) fileInputRef.current?.click();
   };
@@ -423,6 +431,7 @@ function BookLibrary({ user }) {
             sections={collectionSections}
             viewState={{ from: bookPath }}
             viewPrefix={bookPath}
+            onPieceSave={handlePieceSave}
           />
         ) : null}
       </main>

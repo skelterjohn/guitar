@@ -86,6 +86,7 @@ func main() {
 		r.Get("/users/{email}", srv.handleGetUserCollection)
 		r.Get("/users/{email}/books/{book}/piece/{piece}/parts/{part}", srv.handleGetCollectionPart)
 		r.Post("/users/{email}/books/{book}/piece/{piece}/parts/{part}", srv.handlePostCollectionPart)
+		r.Post("/users/{email}/books/{book}/piece/{piece}", srv.handlePostCollectionPiece)
 	})
 
 	addr := fmt.Sprintf("0.0.0.0:%s", port)

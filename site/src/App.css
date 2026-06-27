@@ -229,10 +229,94 @@ body {
 }
 
 .composition-card h3 {
-  margin: 0 0 0.65rem;
+  margin: 0;
   font-size: 1.05rem;
   font-weight: normal;
   color: var(--color-text-heading);
+}
+
+.composition-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.composition-card-edit-form {
+  width: 100%;
+}
+
+.composition-card-heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.composition-card-edit {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.composition-card-edit:hover:not(:disabled) {
+  color: var(--color-text-heading);
+  background: var(--color-surface);
+}
+
+.composition-card-edit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.composition-title-input,
+.composition-composer-input {
+  display: block;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+}
+
+.composition-title-input {
+  margin-bottom: 0.4rem;
+  font-size: 1.05rem;
+  color: var(--color-text-heading);
+}
+
+.composition-composer-input {
+  font-size: 0.9rem;
+}
+
+.composition-title-input:disabled,
+.composition-composer-input:disabled {
+  opacity: 0.6;
+}
+
+.composition-card-error {
+  margin: 0 0 0.65rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: #b91c1c;
+}
+
+.composition-composer {
+  margin: 0.35rem 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
 }
 
 .composition-description {

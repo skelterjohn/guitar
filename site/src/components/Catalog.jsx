@@ -1,7 +1,7 @@
 import CompositionCard from './CompositionCard.jsx';
 import { pieceId } from '../utils/pieceId.js';
 
-export default function Catalog({ sections, viewState, viewPrefix }) {
+export default function Catalog({ sections, viewState, viewPrefix, onPieceSave }) {
   return (
     <>
       {sections.map((section) => (
@@ -14,6 +14,11 @@ export default function Catalog({ sections, viewState, viewPrefix }) {
               piece={piece}
               viewState={viewState}
               viewPrefix={viewPrefix}
+              onPieceSave={
+                onPieceSave
+                  ? (updates) => onPieceSave(section.title, piece.title, updates)
+                  : undefined
+              }
             />
           ))}
         </section>

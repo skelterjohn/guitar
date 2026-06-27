@@ -22,14 +22,16 @@ import (
 )
 
 const (
-	collectionNameField = "name"
-	partPDFField        = "pdf"
+	collectionNameField   = "name"
+	pieceComposerField    = "composer"
+	partPDFField          = "pdf"
 )
 
 type collectionStore interface {
 	ListUserCollection(ctx context.Context, email string) (userCollection, error)
 	GetPartPDF(ctx context.Context, email, book, piece, part string) (string, error)
 	SetPartPDF(ctx context.Context, email, book, piece, part, pdf string) error
+	SetPiece(ctx context.Context, email, book, piece, name, composer string) error
 }
 
 type collectionPart struct {
@@ -38,8 +40,9 @@ type collectionPart struct {
 }
 
 type collectionPiece struct {
-	Name  string           `json:"name"`
-	Parts []collectionPart `json:"parts"`
+	Name     string           `json:"name"`
+	Composer string           `json:"composer,omitempty"`
+	Parts    []collectionPart `json:"parts"`
 }
 
 type collectionBook struct {
@@ -74,13 +77,61 @@ func (s *firestoreCollectionStore) pieceRef(email, book, piece string) *firestor
 		Collection("piece").Doc(collectionDocID(piece))
 }
 
-func (s *firestoreCollectionStore) partRef(email, book, piece, part string) *firestore.DocumentRef {
-	return s.pieceRef(email, book, piece).
-		Collection("parts").Doc(collectionDocID(part))
+func (s *firestoreCollectionStore) resolvePieceRef(ctx context.Context, email, book, piece string) (*firestore.DocumentRef, error) {
+	piece = strings.TrimSpace(piece)
+	if piece == "" {
+		return nil, errors.New("missing piece")
+	}
+
+	bookRef := s.bookRef(email, book)
+	direct := bookRef.Collection("piece").Doc(collectionDocID(piece))
+	snap, err := direct.Get(ctx)
+	if err == nil {
+		if strings.EqualFold(collectionDisplayName(snap), piece) {
+			return direct, nil
+		}
+	} else if status.Code(err) != codes.NotFound {
+		return nil, err
+	}
+
+	iter := bookRef.Collection("piece").Where(collectionNameField, "==", piece).Limit(1).Documents(ctx)
+	defer iter.Stop()
+
+	doc, err := iter.Next()
+	if errors.Is(err, iterator.Done) {
+		return nil, errNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	return doc.Ref, nil
+}
+
+func (s *firestoreCollectionStore) pieceRefForWrite(ctx context.Context, email, book, piece string) (*firestore.DocumentRef, error) {
+	ref, err := s.resolvePieceRef(ctx, email, book, piece)
+	if err == nil {
+		return ref, nil
+	}
+	if errors.Is(err, errNotFound) {
+		return s.pieceRef(email, book, piece), nil
+	}
+	return nil, err
+}
+
+func (s *firestoreCollectionStore) partRef(ctx context.Context, email, book, piece, part string) (*firestore.DocumentRef, error) {
+	pieceRef, err := s.pieceRefForWrite(ctx, email, book, piece)
+	if err != nil {
+		return nil, err
+	}
+	return pieceRef.Collection("parts").Doc(collectionDocID(part)), nil
 }
 
 func (s *firestoreCollectionStore) GetPartPDF(ctx context.Context, email, book, piece, part string) (string, error) {
-	snap, err := s.partRef(email, book, piece, part).Get(ctx)
+	partRef, err := s.partRef(ctx, email, book, piece, part)
+	if err != nil {
+		return "", err
+	}
+	snap, err := partRef.Get(ctx)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
 			return "", errNotFound
@@ -92,7 +143,10 @@ func (s *firestoreCollectionStore) GetPartPDF(ctx context.Context, email, book, 
 
 func (s *firestoreCollectionStore) SetPartPDF(ctx context.Context, email, book, piece, part, pdf string) error {
 	bookRef := s.bookRef(email, book)
-	pieceRef := bookRef.Collection("piece").Doc(collectionDocID(piece))
+	pieceRef, err := s.pieceRefForWrite(ctx, email, book, piece)
+	if err != nil {
+		return err
+	}
 	partRef := pieceRef.Collection("parts").Doc(collectionDocID(part))
 
 	batch := s.client.Batch()
@@ -106,7 +160,25 @@ func (s *firestoreCollectionStore) SetPartPDF(ctx context.Context, email, book, 
 		collectionNameField: part,
 		partPDFField: pdf,
 	}, firestore.MergeAll)
-	_, err := batch.Commit(ctx)
+	_, err = batch.Commit(ctx)
+	return err
+}
+
+func (s *firestoreCollectionStore) SetPiece(ctx context.Context, email, book, piece, name, composer string) error {
+	pieceRef, err := s.resolvePieceRef(ctx, email, book, piece)
+	if err != nil {
+		return err
+	}
+
+	batch := s.client.Batch()
+	batch.Set(s.bookRef(email, book), map[string]any{
+		collectionNameField: book,
+	}, firestore.MergeAll)
+	batch.Set(pieceRef, map[string]any{
+		collectionNameField: name,
+		pieceComposerField:  composer,
+	}, firestore.MergeAll)
+	_, err = batch.Commit(ctx)
 	return err
 }
 
@@ -160,8 +232,9 @@ func (s *firestoreCollectionStore) listCollectionPieces(ctx context.Context, boo
 			return nil, err
 		}
 		pieces = append(pieces, collectionPiece{
-			Name:  collectionDisplayName(pieceDoc),
-			Parts: parts,
+			Name:     collectionDisplayName(pieceDoc),
+			Composer: composerFromSnapshot(pieceDoc),
+			Parts:    parts,
 		})
 	}
 
@@ -245,6 +318,11 @@ func collectionDisplayName(snap *firestore.DocumentSnapshot) string {
 	return snap.Ref.ID
 }
 
+func composerFromSnapshot(snap *firestore.DocumentSnapshot) string {
+	composer, _ := snap.Data()[pieceComposerField].(string)
+	return strings.TrimSpace(composer)
+}
+
 func collectionEmail(email string) string {
 	return strings.ToLower(strings.TrimSpace(email))
 }
@@ -309,8 +387,32 @@ func validateCollectionSegment(name, label string) error {
 	return nil
 }
 
+func validateComposer(composer string) error {
+	composer = strings.TrimSpace(composer)
+	if composer == "" {
+		return nil
+	}
+	if len(composer) > 500 {
+		return errors.New("composer is too long")
+	}
+	if !utf8.ValidString(composer) {
+		return errors.New("invalid composer")
+	}
+	for _, r := range composer {
+		if r == '\uFFFD' || (unicode.IsControl(r) && r != '\t') {
+			return errors.New("invalid composer")
+		}
+	}
+	return nil
+}
+
 type partPDFRequest struct {
 	PDF string `json:"pdf"`
+}
+
+type pieceUpdateRequest struct {
+	Name     string `json:"name"`
+	Composer string `json:"composer"`
 }
 
 func (s *server) handleGetUserCollection(w http.ResponseWriter, r *http.Request) {
@@ -425,4 +527,62 @@ func (s *server) handlePostCollectionPart(w http.ResponseWriter, r *http.Request
 
 	log.Printf("collection set email=%q book=%q piece=%q part=%q pdf=%q", pathEmail, book, piece, part, pdf)
 	writeJSON(w, http.StatusCreated, map[string]string{"pdf": pdf})
+}
+
+func (s *server) handlePostCollectionPiece(w http.ResponseWriter, r *http.Request) {
+	pathEmail := bookParam(r, "email")
+	book := bookParam(r, "book")
+	piece := bookParam(r, "piece")
+
+	if err := validateBookEmail(pathEmail); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(book, "book"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(piece, "piece"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if !s.requirePathEmail(w, r, pathEmail) {
+		return
+	}
+
+	body := http.MaxBytesReader(w, r.Body, 4096)
+	defer body.Close()
+
+	var req pieceUpdateRequest
+	if err := json.NewDecoder(body).Decode(&req); err != nil && !errors.Is(err, io.EOF) {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid json body"})
+		return
+	}
+	name := strings.TrimSpace(req.Name)
+	if name == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "missing name"})
+		return
+	}
+	if err := validateCollectionSegment(name, "piece"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	composer := strings.TrimSpace(req.Composer)
+	if err := validateComposer(composer); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+
+	if err := s.collections.SetPiece(r.Context(), pathEmail, book, piece, name, composer); err != nil {
+		if errors.Is(err, errNotFound) {
+			writeJSON(w, http.StatusNotFound, map[string]string{"error": "piece not found"})
+			return
+		}
+		log.Printf("collection piece update failed email=%q book=%q piece=%q name=%q composer=%q err=%v", pathEmail, book, piece, name, composer, err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not save piece"})
+		return
+	}
+
+	log.Printf("collection piece update email=%q book=%q piece=%q name=%q composer=%q", pathEmail, book, piece, name, composer)
+	writeJSON(w, http.StatusOK, map[string]string{"name": name, "composer": composer})
 }

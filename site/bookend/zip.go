@@ -93,7 +93,7 @@ func (s *server) handleZipBook(w http.ResponseWriter, r *http.Request) {
 
 func ingestBookZip(ctx context.Context, store objectStore, email string, zipData []byte) ([]string, error) {
 	reader, err := zip.NewReader(bytes.NewReader(zipData), int64(len(zipData)))
-	if err != nil {
+	if err != nil && !errors.Is(err, zip.ErrInsecurePath) {
 		return nil, fmt.Errorf("invalid zip: %w", err)
 	}
 	if len(reader.File) > maxBookZipEntries {

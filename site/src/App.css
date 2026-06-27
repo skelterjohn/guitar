@@ -2188,6 +2188,23 @@ body {
   gap: 0.75rem;
 }
 
+.book-score-title {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.book-file-uploaded {
+  margin-left: auto;
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
 .book-score-header-actions {
   display: flex;
   gap: 0.5rem;

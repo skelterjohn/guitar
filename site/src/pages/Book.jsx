@@ -68,7 +68,18 @@ function pdfCardSearchText(filename, library) {
   return joinSearchFields(filename, piece?.name, piece?.composer, piece?.part, ...books);
 }
 
-function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted }) {
+function formatUploadedAt(iso) {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
+}
+
+function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, onPdfDeleted }) {
   const linkedPiece = pieceForPdf(library, filename);
   const cardRef = useRef(null);
   const pieceFormRef = useRef(null);
@@ -253,9 +264,16 @@ function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted 
   return (
     <li ref={cardRef} className="book-score-item">
       <div className="book-score-header">
-        <Link className="book-file-open" to={bookViewPath(filename)}>
-          {filename}
-        </Link>
+        <div className="book-score-title">
+          <Link className="book-file-open" to={bookViewPath(filename)}>
+            {filename}
+          </Link>
+          {modifiedAt && (
+            <time className="book-file-uploaded" dateTime={modifiedAt}>
+              {formatUploadedAt(modifiedAt)}
+            </time>
+          )}
+        </div>
         {editing ? (
           <button
             className="book-score-delete"
@@ -408,7 +426,7 @@ function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted 
 }
 
 function BookLibrary({ user }) {
-  const [filenames, setFilenames] = useState([]);
+  const [bookFiles, setBookFiles] = useState([]);
   const [library, setLibrary] = useState({ pieces: [], books: [] });
   const [libraryLoaded, setLibraryLoaded] = useState(false);
   const [toast, setToast] = useState('');
@@ -438,10 +456,12 @@ function BookLibrary({ user }) {
     [library],
   );
 
-  const filteredFilenames = useMemo(() => {
-    if (!searchQuery.trim()) return filenames;
-    return filenames.filter((filename) => fuzzyMatch(pdfCardSearchText(filename, library), searchQuery));
-  }, [filenames, library, searchQuery]);
+  const filenames = useMemo(() => bookFiles.map((file) => file.name), [bookFiles]);
+
+  const filteredBookFiles = useMemo(() => {
+    if (!searchQuery.trim()) return bookFiles;
+    return bookFiles.filter((file) => fuzzyMatch(pdfCardSearchText(file.name, library), searchQuery));
+  }, [bookFiles, library, searchQuery]);
 
   const filteredSections = useMemo(
     () => filterCatalogSections(collectionSections, searchQuery),
@@ -453,10 +473,10 @@ function BookLibrary({ user }) {
     setLoading(true);
     try {
       const files = await listBookPdfs(user);
-      setFilenames(files);
+      setBookFiles(files);
     } catch (listError) {
       setError(listError.message);
-      setFilenames([]);
+      setBookFiles([]);
     } finally {
       setLoading(false);
     }
@@ -677,15 +697,16 @@ function BookLibrary({ user }) {
               <p className="book-empty">Loading…</p>
             ) : filenames.length === 0 ? (
               <p className="book-empty">No PDFs uploaded yet.</p>
-            ) : filteredFilenames.length === 0 ? (
+            ) : filteredBookFiles.length === 0 ? (
               <p className="book-empty">No matches.</p>
             ) : (
               <ul className="book-file-list">
-                {filteredFilenames.map((filename) => (
+                {filteredBookFiles.map((file) => (
                   <BookScoreItem
-                    key={filename}
+                    key={file.name}
                     user={user}
-                    filename={filename}
+                    filename={file.name}
+                    modifiedAt={file.modifiedAt}
                     library={library}
                     onLibraryChange={refreshLibrary}
                     onPdfDeleted={handlePdfDeleted}

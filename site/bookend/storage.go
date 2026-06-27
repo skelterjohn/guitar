@@ -7,6 +7,7 @@ import (
 	"io"
 	"sort"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/iterator"
@@ -25,8 +26,13 @@ type fileUsage struct {
 	Files map[string]int64
 }
 
+type bookFile struct {
+	Name       string    `json:"name"`
+	ModifiedAt time.Time `json:"modifiedAt"`
+}
+
 type objectStore interface {
-	List(ctx context.Context, email string) ([]string, error)
+	List(ctx context.Context, email string) ([]bookFile, error)
 	Usage(ctx context.Context, email string) (fileUsage, error)
 	Read(ctx context.Context, objectKey string) (io.ReadCloser, error)
 	Write(ctx context.Context, objectKey string, r io.Reader, contentType string) error
@@ -67,11 +73,11 @@ func newGCSStore(ctx context.Context, bucket string) (*gcsStore, error) {
 	return &gcsStore{client: client, bucket: bucket}, nil
 }
 
-func (s *gcsStore) List(ctx context.Context, email string) ([]string, error) {
+func (s *gcsStore) List(ctx context.Context, email string) ([]bookFile, error) {
 	prefix := bookObjectPrefix(email)
 	it := s.client.Bucket(s.bucket).Objects(ctx, &storage.Query{Prefix: prefix})
 
-	var files []string
+	var files []bookFile
 	for {
 		attrs, err := it.Next()
 		if errors.Is(err, iterator.Done) {
@@ -87,9 +93,14 @@ func (s *gcsStore) List(ctx context.Context, email string) ([]string, error) {
 		if err := validateBookFilename(name); err != nil {
 			continue
 		}
-		files = append(files, name)
+		files = append(files, bookFile{
+			Name:       name,
+			ModifiedAt: attrs.Updated,
+		})
 	}
-	sort.Strings(files)
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].Name < files[j].Name
+	})
 	return files, nil
 }
 

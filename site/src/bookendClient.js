@@ -88,7 +88,19 @@ export async function listBookPdfs(user) {
     throw new Error(await errorMessage(res, `Could not list PDFs (${res.status}).`));
   }
   const data = await res.json();
-  return Array.isArray(data.files) ? data.files : [];
+  if (!Array.isArray(data.files)) return [];
+
+  return data.files
+    .map((file) => {
+      if (typeof file === 'string') {
+        return { name: file, modifiedAt: '' };
+      }
+      return {
+        name: typeof file?.name === 'string' ? file.name : '',
+        modifiedAt: typeof file?.modifiedAt === 'string' ? file.modifiedAt : '',
+      };
+    })
+    .filter((file) => file.name);
 }
 
 export async function uploadBookPdf(user, filename, file) {

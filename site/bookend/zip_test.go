@@ -6,17 +6,19 @@ import (
 	"context"
 	"errors"
 	"io"
+	"sort"
 	"strings"
 	"testing"
+	"time"
 )
 
 type fakeObjectStore struct {
 	objects map[string][]byte
 }
 
-func (f *fakeObjectStore) List(ctx context.Context, email string) ([]string, error) {
+func (f *fakeObjectStore) List(ctx context.Context, email string) ([]bookFile, error) {
 	prefix := bookObjectPrefix(email)
-	var files []string
+	var files []bookFile
 	for key := range f.objects {
 		if !strings.HasPrefix(key, prefix) {
 			continue
@@ -25,8 +27,14 @@ func (f *fakeObjectStore) List(ctx context.Context, email string) ([]string, err
 		if name == "" || strings.Contains(name, "/") {
 			continue
 		}
-		files = append(files, name)
+		files = append(files, bookFile{
+			Name:       name,
+			ModifiedAt: time.Unix(0, 0).UTC(),
+		})
 	}
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].Name < files[j].Name
+	})
 	return files, nil
 }
 

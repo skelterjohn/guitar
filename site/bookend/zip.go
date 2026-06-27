@@ -30,15 +30,15 @@ func writeBookZip(w io.Writer, ctx context.Context, store objectStore, email str
 	zw := zip.NewWriter(w)
 	written := 0
 
-	for _, filename := range files {
-		reader, err := store.Read(ctx, bookObjectKey(email, filename))
+	for _, file := range files {
+		reader, err := store.Read(ctx, bookObjectKey(email, file.Name))
 		if err != nil {
 			_ = zw.Close()
-			return written, fmt.Errorf("read %q: %w", filename, err)
+			return written, fmt.Errorf("read %q: %w", file.Name, err)
 		}
 
 		header := &zip.FileHeader{
-			Name:   filename,
+			Name:   file.Name,
 			Method: zip.Store,
 		}
 		header.SetModTime(time.Now().UTC())
@@ -53,11 +53,11 @@ func writeBookZip(w io.Writer, ctx context.Context, store objectStore, email str
 		if _, err := io.Copy(writer, reader); err != nil {
 			_ = reader.Close()
 			_ = zw.Close()
-			return written, fmt.Errorf("write %q: %w", filename, err)
+			return written, fmt.Errorf("write %q: %w", file.Name, err)
 		}
 		if err := reader.Close(); err != nil {
 			_ = zw.Close()
-			return written, fmt.Errorf("close %q: %w", filename, err)
+			return written, fmt.Errorf("close %q: %w", file.Name, err)
 		}
 		written++
 	}

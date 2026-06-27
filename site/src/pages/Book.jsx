@@ -411,7 +411,6 @@ function BookLibrary({ user }) {
   const [filenames, setFilenames] = useState([]);
   const [library, setLibrary] = useState({ pieces: [], books: [] });
   const [libraryLoaded, setLibraryLoaded] = useState(false);
-  const [status, setStatus] = useState('');
   const [toast, setToast] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -470,7 +469,6 @@ function BookLibrary({ user }) {
   const uploadFile = useCallback(
     async (file) => {
       setError('');
-      setStatus('');
 
       if (!file) return;
       if (!isPdfFile(file) && !isZipFile(file)) {
@@ -483,7 +481,7 @@ function BookLibrary({ user }) {
         if (isZipFile(file)) {
           const uploaded = await uploadBookZip(user, file);
           await refreshList();
-          setStatus(
+          setToast(
             uploaded.length === 1
               ? `Uploaded 1 PDF from ${file.name}.`
               : `Uploaded ${uploaded.length} PDFs from ${file.name}.`,
@@ -491,7 +489,7 @@ function BookLibrary({ user }) {
         } else {
           await uploadBookPdf(user, file.name, file);
           await refreshList();
-          setStatus(`Uploaded ${file.name}.`);
+          setToast(`Uploaded ${file.name}.`);
         }
         if (fileInputRef.current) fileInputRef.current.value = '';
       } catch (uploadError) {
@@ -646,11 +644,6 @@ function BookLibrary({ user }) {
         {error && (
           <p className="book-status book-status-error" role="alert">
             {error}
-          </p>
-        )}
-        {status && (
-          <p className="book-status" role="status">
-            {status}
           </p>
         )}
 

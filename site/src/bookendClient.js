@@ -10,9 +10,18 @@ async function authHeaders(user) {
   return { Authorization: `Bearer ${token}` };
 }
 
+function bookZipDownloadName(email) {
+  return `bluebridge-${email.trim().toLowerCase()}-export.zip`;
+}
+
 function bookListEndpoint(email) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   return `${base}/v1/book/${encodeURIComponent(email)}`;
+}
+
+function bookZipEndpoint(email) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  return `${base}/v1/book/${encodeURIComponent(email)}/zip`;
 }
 
 function bookEndpoint(email, filename) {
@@ -123,6 +132,22 @@ export async function downloadBookPdf(user, filename) {
   const link = document.createElement('a');
   link.href = objectUrl;
   link.download = filename;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+}
+
+export async function downloadBookPdfZip(user) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(bookZipEndpoint(email), { headers });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Export failed (${res.status}).`));
+  }
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = bookZipDownloadName(email);
   link.click();
   setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
 }

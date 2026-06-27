@@ -212,6 +212,34 @@ body {
   border-radius: 0.25rem;
 }
 
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.book-export-zip {
+  flex-shrink: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-link-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.book-export-zip:hover:not(:disabled) {
+  color: #1e3a8a;
+}
+
+.book-export-zip:disabled {
+  opacity: 0.45;
+  cursor: progress;
+}
+
 .book-search::placeholder {
   color: var(--color-text-muted);
 }
@@ -2078,11 +2106,21 @@ body {
 }
 
 .book-library-summary {
+  display: flex;
+  align-items: center;
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-text-heading);
   cursor: pointer;
   list-style: none;
+}
+
+.book-library-summary-label {
+  flex: 0 0 auto;
+}
+
+.book-library-summary .book-export-zip {
+  margin-left: auto;
 }
 
 .book-library-summary::-webkit-details-marker {

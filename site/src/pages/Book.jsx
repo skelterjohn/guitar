@@ -13,6 +13,7 @@ import {
   deleteBook,
   deleteBookPdf,
   deletePiece,
+  downloadBookPdfZip,
   fetchUserLibrary,
   listBookPdfs,
   removePieceFromBook,
@@ -409,6 +410,7 @@ function BookLibrary({ user }) {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dragActive, setDragActive] = useState(false);
+  const [exportingZip, setExportingZip] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const fileInputRef = useRef(null);
 
@@ -543,6 +545,18 @@ function BookLibrary({ user }) {
     if (!busy) fileInputRef.current?.click();
   };
 
+  const handleExportZip = useCallback(async () => {
+    setExportingZip(true);
+    setError('');
+    try {
+      await downloadBookPdfZip(user);
+    } catch (zipError) {
+      setError(zipError.message);
+    } finally {
+      setExportingZip(false);
+    }
+  }, [user]);
+
   return (
     <>
       <Toast message={toast} onDismiss={() => setToast('')} />
@@ -553,20 +567,38 @@ function BookLibrary({ user }) {
         <header className="page-header">
           <div className="page-header-top">
             <h1>{bookHeading}</h1>
-            <input
-              className="book-search"
-              type="search"
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="search"
-              aria-label="Search scores"
-            />
+            <div className="page-header-actions">
+              <input
+                className="book-search"
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="search"
+                aria-label="Search scores"
+              />
+            </div>
           </div>
           <p>{bookDescription}</p>
         </header>
 
         <details className="book-library">
-        <summary className="book-library-summary">all scores</summary>
+        <summary className="book-library-summary">
+          <span className="book-library-summary-label">all scores</span>
+          {filenames.length > 0 && (
+            <button
+              type="button"
+              className="book-export-zip"
+              disabled={exportingZip}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                void handleExportZip();
+              }}
+            >
+              {exportingZip ? 'exporting…' : 'export zip'}
+            </button>
+          )}
+        </summary>
 
         <button
           type="button"

@@ -20,6 +20,7 @@ import {
   updateBook,
   updatePiece,
   uploadBookPdf,
+  uploadBookZip,
 } from '../bookendClient.js';
 import { auth } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
@@ -32,6 +33,12 @@ function isPdfFile(file) {
   if (!file) return false;
   if (file.type === 'application/pdf') return true;
   return file.name.toLowerCase().endsWith('.pdf');
+}
+
+function isZipFile(file) {
+  if (!file) return false;
+  if (file.type === 'application/zip' || file.type === 'application/x-zip-compressed') return true;
+  return file.name.toLowerCase().endsWith('.zip');
 }
 
 /** @param {{ pieces: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string }>, books: Array<{ name: string, pieces: Array<{ id: string }> }> }} library */
@@ -466,16 +473,26 @@ function BookLibrary({ user }) {
       setStatus('');
 
       if (!file) return;
-      if (!isPdfFile(file)) {
-        setError(`"${file.name}" is not a PDF.`);
+      if (!isPdfFile(file) && !isZipFile(file)) {
+        setError(`"${file.name}" is not a PDF or zip file.`);
         return;
       }
 
       setBusy(true);
       try {
-        await uploadBookPdf(user, file.name, file);
-        await refreshList();
-        setStatus(`Uploaded ${file.name}.`);
+        if (isZipFile(file)) {
+          const uploaded = await uploadBookZip(user, file);
+          await refreshList();
+          setStatus(
+            uploaded.length === 1
+              ? `Uploaded 1 PDF from ${file.name}.`
+              : `Uploaded ${uploaded.length} PDFs from ${file.name}.`,
+          );
+        } else {
+          await uploadBookPdf(user, file.name, file);
+          await refreshList();
+          setStatus(`Uploaded ${file.name}.`);
+        }
         if (fileInputRef.current) fileInputRef.current.value = '';
       } catch (uploadError) {
         setError(uploadError.message);
@@ -609,18 +626,18 @@ function BookLibrary({ user }) {
           onDragEnter={handleDragOver}
           onDragLeave={handleDragLeave}
           disabled={busy}
-          aria-label="Upload a PDF by clicking or dragging a file here"
+          aria-label="Upload a PDF or zip file by clicking or dragging a file here"
         >
           <span className="book-dropzone-icon" aria-hidden="true">+</span>
           <span className="book-dropzone-primary">
-            {busy ? 'Uploading…' : 'Drag a PDF here'}
+            {busy ? 'Uploading…' : 'Drag a PDF or ZIP (of PDFs) here'}
           </span>
           <span className="book-dropzone-secondary">or click to choose a file</span>
         </button>
         <input
           ref={fileInputRef}
           type="file"
-          accept="application/pdf,.pdf"
+          accept="application/pdf,.pdf,application/zip,.zip"
           onChange={handleInputChange}
           disabled={busy}
           hidden

@@ -13,6 +13,9 @@ import (
 )
 
 const maxBookPDFBytes = 50 << 20 // 50 MiB
+const maxBookZipBytes = 50 << 20 // 50 MiB compressed upload
+const maxBookZipEntries = 500
+const maxBookZipUncompressedBytes = 200 << 20 // 200 MiB total extracted
 
 type objectStore interface {
 	List(ctx context.Context, email string) ([]string, error)

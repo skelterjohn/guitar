@@ -81,6 +81,7 @@ func main() {
 		r.Get("/whoami", srv.handleWhoami)
 		r.Get("/book/{email}", srv.handleListBook)
 		r.Get("/book/{email}/zip", srv.handleZipBook)
+		r.Post("/book/{email}/zip", srv.handlePostBookZip)
 		r.Get("/book/{email}/{filename}", srv.handleGetBook)
 		r.Post("/book/{email}/{filename}", srv.handlePostBook)
 		r.Delete("/book/{email}/{filename}", srv.handleDeleteBook)

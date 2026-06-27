@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"strings"
 	"testing"
@@ -127,5 +128,62 @@ func TestWriteBookZipEmpty(t *testing.T) {
 	}
 	if len(reader.File) != 0 {
 		t.Fatalf("zip entries = %d, want 0", len(reader.File))
+	}
+}
+
+func buildTestZip(entries map[string][]byte) []byte {
+	var buf bytes.Buffer
+	zw := zip.NewWriter(&buf)
+	for name, data := range entries {
+		w, err := zw.Create(name)
+		if err != nil {
+			panic(err)
+		}
+		if _, err := w.Write(data); err != nil {
+			panic(err)
+		}
+	}
+	if err := zw.Close(); err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+}
+
+func TestIngestBookZip(t *testing.T) {
+	email := "user@example.com"
+	store := &fakeObjectStore{objects: map[string][]byte{}}
+	zipData := buildTestZip(map[string][]byte{
+		"nested/first.pdf":        []byte("%PDF-first"),
+		"../../unsafe/second.pdf": []byte("%PDF-second"),
+		"readme.txt":              []byte("not a pdf"),
+	})
+
+	files, err := ingestBookZip(context.Background(), store, email, zipData)
+	if err != nil {
+		t.Fatalf("ingestBookZip: %v", err)
+	}
+	if len(files) != 2 {
+		t.Fatalf("files = %v, want 2 pdfs", files)
+	}
+
+	first := store.objects[bookObjectKey(email, "first.pdf")]
+	if string(first) != "%PDF-first" {
+		t.Fatalf("first.pdf = %q", first)
+	}
+	second := store.objects[bookObjectKey(email, "second.pdf")]
+	if string(second) != "%PDF-second" {
+		t.Fatalf("second.pdf = %q", second)
+	}
+}
+
+func TestIngestBookZipNoPdfs(t *testing.T) {
+	store := &fakeObjectStore{objects: map[string][]byte{}}
+	zipData := buildTestZip(map[string][]byte{
+		"readme.txt": []byte("hello"),
+	})
+
+	_, err := ingestBookZip(context.Background(), store, "user@example.com", zipData)
+	if !errors.Is(err, errZipNoPdfs) {
+		t.Fatalf("expected errZipNoPdfs, got %v", err)
 	}
 }

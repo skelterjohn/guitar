@@ -104,6 +104,21 @@ export async function uploadBookPdf(user, filename, file) {
   }
 }
 
+export async function uploadBookZip(user, file) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(bookZipEndpoint(email), {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/zip' },
+    body: file,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Zip upload failed (${res.status}).`));
+  }
+  const data = await res.json();
+  return Array.isArray(data.files) ? data.files : [];
+}
+
 export async function deleteBookPdf(user, filename) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);

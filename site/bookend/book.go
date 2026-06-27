@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io"
@@ -175,19 +176,38 @@ func (s *server) handlePostBook(w http.ResponseWriter, r *http.Request) {
 	body := http.MaxBytesReader(w, r.Body, maxBookPDFBytes)
 	defer body.Close()
 
-	if err := s.store.Write(r.Context(), bookObjectKey(pathEmail, filename), body, contentType); err != nil {
+	data, err := io.ReadAll(body)
+	if err != nil {
 		var maxBytesErr *http.MaxBytesError
 		if errors.As(err, &maxBytesErr) {
 			log.Printf("pdf upload too large email=%q filename=%q limit=%d", pathEmail, filename, maxBytesErr.Limit)
 			writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": "pdf too large"})
 			return
 		}
+		log.Printf("pdf upload read failed email=%q filename=%q err=%v", pathEmail, filename, err)
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "could not read pdf"})
+		return
+	}
+
+	usage, err := s.store.Usage(r.Context(), pathEmail)
+	if err != nil {
+		log.Printf("pdf upload usage failed email=%q err=%v", pathEmail, err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not check storage usage"})
+		return
+	}
+	if err := checkStorageQuota(usage, map[string]int64{filename: int64(len(data))}); err != nil {
+		log.Printf("pdf upload quota exceeded email=%q filename=%q used=%d incoming=%d", pathEmail, filename, usage.Total, len(data))
+		writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": err.Error()})
+		return
+	}
+
+	if err := s.store.Write(r.Context(), bookObjectKey(pathEmail, filename), bytes.NewReader(data), contentType); err != nil {
 		log.Printf("pdf upload failed email=%q filename=%q err=%v", pathEmail, filename, err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not store pdf"})
 		return
 	}
 
-	log.Printf("pdf upload email=%q filename=%q contentType=%q contentLength=%d", pathEmail, filename, contentType, r.ContentLength)
+	log.Printf("pdf upload email=%q filename=%q contentType=%q bytes=%d used=%d", pathEmail, filename, contentType, len(data), projectedStorageUsage(usage, map[string]int64{filename: int64(len(data))}))
 	w.WriteHeader(http.StatusCreated)
 }
 

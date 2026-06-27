@@ -30,6 +30,24 @@ func (f *fakeObjectStore) List(ctx context.Context, email string) ([]string, err
 	return files, nil
 }
 
+func (f *fakeObjectStore) Usage(ctx context.Context, email string) (fileUsage, error) {
+	prefix := bookObjectPrefix(email)
+	usage := fileUsage{Files: map[string]int64{}}
+	for key, data := range f.objects {
+		if !strings.HasPrefix(key, prefix) {
+			continue
+		}
+		name := strings.TrimPrefix(key, prefix)
+		if name == "" || strings.Contains(name, "/") {
+			continue
+		}
+		size := int64(len(data))
+		usage.Files[name] = size
+		usage.Total += size
+	}
+	return usage, nil
+}
+
 func (f *fakeObjectStore) Read(ctx context.Context, objectKey string) (io.ReadCloser, error) {
 	data, ok := f.objects[objectKey]
 	if !ok {
@@ -185,5 +203,26 @@ func TestIngestBookZipNoPdfs(t *testing.T) {
 	_, err := ingestBookZip(context.Background(), store, "user@example.com", zipData)
 	if !errors.Is(err, errZipNoPdfs) {
 		t.Fatalf("expected errZipNoPdfs, got %v", err)
+	}
+}
+
+func TestCheckStorageQuota(t *testing.T) {
+	usage := fileUsage{
+		Total: (1 << 30) - 100,
+		Files: map[string]int64{
+			"existing.pdf": (1 << 30) - 100,
+		},
+	}
+
+	if err := checkStorageQuota(usage, map[string]int64{"new.pdf": 101}); err == nil {
+		t.Fatal("expected quota error when upload exceeds 1 GB")
+	}
+
+	if err := checkStorageQuota(usage, map[string]int64{"existing.pdf": 50}); err != nil {
+		t.Fatalf("overwrite should free space before counting new size: %v", err)
+	}
+
+	if err := checkStorageQuota(usage, map[string]int64{"new.pdf": 100}); err != nil {
+		t.Fatalf("expected room for 100 bytes: %v", err)
 	}
 }

@@ -102,6 +102,7 @@ func ingestBookZip(ctx context.Context, store objectStore, email string, zipData
 
 	var uploaded []string
 	var totalUncompressed int64
+	incoming := map[string][]byte{}
 
 	for _, file := range reader.File {
 		if file.FileInfo().IsDir() {
@@ -146,15 +147,31 @@ func ingestBookZip(ctx context.Context, store objectStore, email string, zipData
 			}
 		}
 
+		incoming[filename] = data
+	}
+
+	if len(incoming) == 0 {
+		return nil, errZipNoPdfs
+	}
+
+	usage, err := store.Usage(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+
+	incomingSizes := make(map[string]int64, len(incoming))
+	for filename, data := range incoming {
+		incomingSizes[filename] = int64(len(data))
+	}
+	if err := checkStorageQuota(usage, incomingSizes); err != nil {
+		return nil, err
+	}
+
+	for filename, data := range incoming {
 		if err := store.Write(ctx, bookObjectKey(email, filename), bytes.NewReader(data), "application/pdf"); err != nil {
 			return uploaded, fmt.Errorf("store %q: %w", filename, err)
 		}
-
 		uploaded = append(uploaded, filename)
-	}
-
-	if len(uploaded) == 0 {
-		return nil, errZipNoPdfs
 	}
 
 	sort.Strings(uploaded)
@@ -201,6 +218,11 @@ func (s *server) handlePostBookZip(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, errZipNoPdfs) {
 			writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+			return
+		}
+		if errors.Is(err, errStorageQuotaExceeded) {
+			log.Printf("zip upload quota exceeded email=%q", pathEmail)
+			writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": err.Error()})
 			return
 		}
 		log.Printf("zip ingest failed email=%q err=%v", pathEmail, err)

@@ -16,12 +16,39 @@ const maxBookPDFBytes = 50 << 20 // 50 MiB
 const maxBookZipBytes = 50 << 20 // 50 MiB compressed upload
 const maxBookZipEntries = 500
 const maxBookZipUncompressedBytes = 200 << 20 // 200 MiB total extracted
+const maxBookStorageBytes = 1 << 30           // 1 GiB per user
+
+var errStorageQuotaExceeded = errors.New("storage quota exceeded (1 GB limit)")
+
+type fileUsage struct {
+	Total int64
+	Files map[string]int64
+}
 
 type objectStore interface {
 	List(ctx context.Context, email string) ([]string, error)
+	Usage(ctx context.Context, email string) (fileUsage, error)
 	Read(ctx context.Context, objectKey string) (io.ReadCloser, error)
 	Write(ctx context.Context, objectKey string, r io.Reader, contentType string) error
 	Delete(ctx context.Context, objectKey string) error
+}
+
+func projectedStorageUsage(usage fileUsage, incoming map[string]int64) int64 {
+	projected := usage.Total
+	for filename, size := range incoming {
+		if old, ok := usage.Files[filename]; ok {
+			projected -= old
+		}
+		projected += size
+	}
+	return projected
+}
+
+func checkStorageQuota(usage fileUsage, incoming map[string]int64) error {
+	if projectedStorageUsage(usage, incoming) > maxBookStorageBytes {
+		return errStorageQuotaExceeded
+	}
+	return nil
 }
 
 type gcsStore struct {
@@ -64,6 +91,32 @@ func (s *gcsStore) List(ctx context.Context, email string) ([]string, error) {
 	}
 	sort.Strings(files)
 	return files, nil
+}
+
+func (s *gcsStore) Usage(ctx context.Context, email string) (fileUsage, error) {
+	prefix := bookObjectPrefix(email)
+	it := s.client.Bucket(s.bucket).Objects(ctx, &storage.Query{Prefix: prefix})
+
+	usage := fileUsage{Files: map[string]int64{}}
+	for {
+		attrs, err := it.Next()
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+		if err != nil {
+			return fileUsage{}, err
+		}
+		name := strings.TrimPrefix(attrs.Name, prefix)
+		if name == "" || strings.Contains(name, "/") {
+			continue
+		}
+		if err := validateBookFilename(name); err != nil {
+			continue
+		}
+		usage.Files[name] = attrs.Size
+		usage.Total += attrs.Size
+	}
+	return usage, nil
 }
 
 func (s *gcsStore) Read(ctx context.Context, objectKey string) (io.ReadCloser, error) {

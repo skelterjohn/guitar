@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -54,10 +55,19 @@ func validateBookFilename(filename string) error {
 	if filename == "" {
 		return errors.New("missing filename")
 	}
+	if len(filename) > 1024 {
+		return errors.New("filename is too long")
+	}
 	if filename != filepath.Base(filename) {
 		return errors.New("invalid filename")
 	}
+	if strings.ContainsAny(filename, "/\\") {
+		return errors.New("invalid filename")
+	}
 	if strings.Contains(filename, "..") {
+		return errors.New("invalid filename")
+	}
+	if !utf8.ValidString(filename) {
 		return errors.New("invalid filename")
 	}
 	ext := strings.ToLower(filepath.Ext(filename))
@@ -69,10 +79,9 @@ func validateBookFilename(filename string) error {
 		return errors.New("invalid filename")
 	}
 	for _, r := range base {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '-' || r == '_' || r == '.' || r == ' ' {
-			continue
+		if r == '\uFFFD' || unicode.IsControl(r) {
+			return errors.New("invalid filename")
 		}
-		return errors.New("invalid filename")
 	}
 	return nil
 }

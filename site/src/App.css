@@ -239,7 +239,9 @@ body {
   flex: 1;
   min-width: 0;
   padding: 0.35rem 0.5rem;
-  font-size: 1.1rem;
+  font-family: inherit;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
   color: var(--color-text-heading);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -345,7 +347,6 @@ body {
   display: block;
   width: 100%;
   padding: 0.35rem 0.5rem;
-  font-family: system-ui, sans-serif;
   font-size: 0.95rem;
   color: var(--color-text);
   background: var(--color-bg);
@@ -355,11 +356,13 @@ body {
 
 .composition-title-input {
   margin-bottom: 0.4rem;
+  font-family: inherit;
   font-size: 1.05rem;
   color: var(--color-text-heading);
 }
 
 .composition-composer-input {
+  font-family: system-ui, sans-serif;
   font-size: 0.9rem;
 }
 

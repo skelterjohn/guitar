@@ -5,14 +5,20 @@ import (
 )
 
 func TestValidateBookFilename(t *testing.T) {
-	valid := []string{"score.pdf", "my-piece_v2.pdf", "Recital 2026.pdf"}
+	valid := []string{
+		"score.pdf",
+		"my-piece_v2.pdf",
+		"Recital 2026.pdf",
+		"Dorian's Garden (5.24.1).pdf",
+		"Étude & Fugue, No. 2.pdf",
+	}
 	for _, name := range valid {
 		if err := validateBookFilename(name); err != nil {
 			t.Fatalf("%q: expected valid, got %v", name, err)
 		}
 	}
 
-	invalid := []string{"", "score", "score.txt", "../score.pdf", "dir/score.pdf", ".pdf"}
+	invalid := []string{"", "score", "score.txt", "../score.pdf", "dir/score.pdf", "dir\\score.pdf", ".pdf"}
 	for _, name := range invalid {
 		if err := validateBookFilename(name); err == nil {
 			t.Fatalf("%q: expected invalid", name)

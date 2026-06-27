@@ -469,6 +469,9 @@ export default function PdfViewer({
         doc,
         pageCount,
         pageRastersRef.current,
+        navBounds.restricted
+          ? { pageStart: navBounds.min, pageEnd: navBounds.max }
+          : null,
       );
 
       flushSync(() => {

@@ -50,11 +50,14 @@ async function drawAnnotationLayers(ctx, pageLayers, width, height) {
 /**
  * Render each PDF page at print resolution and composite annotation layers on top.
  * Returns JPEG data URLs sized for the physical page dimensions at PRINT_DPI.
+ * @param {{ pageStart?: number, pageEnd?: number } | null} pageRange
  */
-export async function buildPrintSheets(pdfDoc, pageCount, pageAnnotations) {
+export async function buildPrintSheets(pdfDoc, pageCount, pageAnnotations, pageRange = null) {
   const sheets = [];
+  const start = pageRange?.pageStart ?? 1;
+  const end = pageRange?.pageEnd ?? pageCount;
 
-  for (let pageNumber = 1; pageNumber <= pageCount; pageNumber += 1) {
+  for (let pageNumber = start; pageNumber <= end; pageNumber += 1) {
     const { canvas, width, height } = await renderPdfPage(pdfDoc, pageNumber);
     const pageLayers = normalizePageEntry(pageAnnotations[String(pageNumber)]);
     await drawAnnotationLayers(canvas.getContext('2d'), pageLayers, width, height);

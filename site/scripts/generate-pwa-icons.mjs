@@ -3,6 +3,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import {
+  bluebridgeOrigin,
+  bluebridgeThemeColor,
+  bookDescription,
+  bookTitle,
   njgoOrigin,
   njgoThemeColor,
   repDescription,
@@ -13,6 +17,7 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, '../public');
 const svg = readFileSync(join(publicDir, 'favicon.svg'));
+const bluebridgeSvg = readFileSync(join(publicDir, 'bluebridge.svg'));
 const njgoLogo = join(publicDir, 'njgo/logo_orange.png');
 
 const guitarTargets = [
@@ -99,3 +104,56 @@ writeFileSync(
   `${JSON.stringify(njgoManifest, null, 2)}\n`,
 );
 console.log('pwa-icons → public/njgo-manifest.webmanifest');
+
+const bluebridgeTargets = [
+  { file: 'bluebridge-favicon.png', size: 32 },
+  { file: 'bluebridge-pwa-192x192.png', size: 192 },
+  { file: 'bluebridge-pwa-512x512.png', size: 512 },
+  { file: 'bluebridge-apple-touch-icon.png', size: 180 },
+];
+
+for (const { file, size } of bluebridgeTargets) {
+  await sharp(bluebridgeSvg, { density: 384 })
+    .resize(size, size)
+    .flatten({ background: '#ffffff' })
+    .png()
+    .toFile(join(publicDir, file));
+  console.log(`pwa-icons → public/${file}`);
+}
+
+const bluebridgeManifest = {
+  id: bluebridgeOrigin,
+  name: bookTitle,
+  short_name: bookTitle,
+  description: bookDescription,
+  theme_color: bluebridgeThemeColor,
+  background_color: bluebridgeThemeColor,
+  display: 'standalone',
+  start_url: '/',
+  scope: '/',
+  lang: 'en',
+  icons: [
+    {
+      src: 'bluebridge-pwa-192x192.png',
+      sizes: '192x192',
+      type: 'image/png',
+    },
+    {
+      src: 'bluebridge-pwa-512x512.png',
+      sizes: '512x512',
+      type: 'image/png',
+    },
+    {
+      src: 'bluebridge-pwa-512x512.png',
+      sizes: '512x512',
+      type: 'image/png',
+      purpose: 'maskable',
+    },
+  ],
+};
+
+writeFileSync(
+  join(publicDir, 'bluebridge-manifest.webmanifest'),
+  `${JSON.stringify(bluebridgeManifest, null, 2)}\n`,
+);
+console.log('pwa-icons → public/bluebridge-manifest.webmanifest');

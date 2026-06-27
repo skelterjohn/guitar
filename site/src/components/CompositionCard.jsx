@@ -63,6 +63,20 @@ export default function CompositionCard({
     void handleSave();
   };
 
+  const cancelEditing = () => {
+    setEditing(false);
+    setTitle(piece.title);
+    setComposer(piece.composer ?? '');
+    setError('');
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      cancelEditing();
+    }
+  };
+
   const handleToggle = () => {
     startEditing();
   };
@@ -70,7 +84,7 @@ export default function CompositionCard({
   return (
     <article id={id} className="composition-card">
       {editing ? (
-        <form className="composition-card-header composition-card-edit-form" onSubmit={handleSubmit}>
+        <form className="composition-card-header composition-card-edit-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
           <div className="composition-card-heading">
             <input
               className="composition-title-input"

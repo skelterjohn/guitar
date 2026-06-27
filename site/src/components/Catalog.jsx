@@ -37,6 +37,15 @@ function BookSectionHeading({ title, onBookSave }) {
     void handleSave();
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setEditing(false);
+      setName(title);
+      setError('');
+    }
+  };
+
   if (!onBookSave) {
     return <h2>{title}</h2>;
   }
@@ -44,7 +53,7 @@ function BookSectionHeading({ title, onBookSave }) {
   return (
     <div className="catalog-section-heading">
       {editing ? (
-        <form className="catalog-section-edit-form" onSubmit={handleSubmit}>
+        <form className="catalog-section-edit-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
           <input
             className="catalog-section-input"
             type="text"

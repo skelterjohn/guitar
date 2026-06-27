@@ -5,7 +5,6 @@ import BookAuthGate from '../components/BookAuthGate.jsx';
 import BookDeletePdfModal from '../components/BookDeletePdfModal.jsx';
 import Catalog from '../components/Catalog.jsx';
 import PencilIcon from '../components/PencilIcon.jsx';
-import SaveIcon from '../components/SaveIcon.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import Toast from '../components/Toast.jsx';
 import {
@@ -26,6 +25,7 @@ import usePageMeta from '../hooks/usePageMeta.js';
 import { bookDescription, bookHeading, bookPath, bookTitle, bookUrl, bookViewPath } from '../seo.js';
 import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
 import { userCollectionToSections } from '../utils/collectionCatalog.js';
+import { filterCatalogSections, fuzzyMatch, joinSearchFields } from '../utils/fuzzySearch.js';
 
 function isPdfFile(file) {
   if (!file) return false;
@@ -52,6 +52,12 @@ function uniqueSorted(names) {
 
 function collectionFieldId(filename) {
   return encodeURIComponent(filename).replace(/%/g, '_');
+}
+
+function pdfCardSearchText(filename, library) {
+  const piece = pieceForPdf(library, filename);
+  const books = booksForPiece(library, piece);
+  return joinSearchFields(filename, piece?.name, piece?.composer, piece?.part, ...books);
 }
 
 function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted }) {
@@ -114,7 +120,7 @@ function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted 
       const target = event.target;
       if (!(target instanceof Element)) return;
       if (target.closest(`#${pieceFormId} input`)) return;
-      if (cardRef.current?.contains(target) && target.closest('.book-score-header-actions')) return;
+      if (cardRef.current?.contains(target) && target.closest('.book-score-delete')) return;
       cancelEditing();
     };
 
@@ -242,26 +248,15 @@ function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted 
           {filename}
         </Link>
         {editing ? (
-          <div className="book-score-header-actions">
-            <button
-              className="book-score-delete"
-              type="button"
-              onClick={openDeleteModal}
-              disabled={busy || deleting}
-              aria-label={`Delete ${filename}`}
-            >
-              delete
-            </button>
-            <button
-              className="book-score-edit"
-              type="submit"
-              form={pieceFormId}
-              disabled={busy || deleting}
-              aria-label={`Save piece info for ${filename}`}
-            >
-              <SaveIcon />
-            </button>
-          </div>
+          <button
+            className="book-score-delete"
+            type="button"
+            onClick={openDeleteModal}
+            disabled={busy || deleting}
+            aria-label={`Delete ${filename}`}
+          >
+            delete
+          </button>
         ) : (
           <button
             className="book-score-edit"
@@ -409,6 +404,7 @@ function BookLibrary({ user }) {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dragActive, setDragActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const fileInputRef = useRef(null);
 
   const refreshLibrary = useCallback(async () => {
@@ -426,6 +422,16 @@ function BookLibrary({ user }) {
   const collectionSections = useMemo(
     () => userCollectionToSections(library),
     [library],
+  );
+
+  const filteredFilenames = useMemo(() => {
+    if (!searchQuery.trim()) return filenames;
+    return filenames.filter((filename) => fuzzyMatch(pdfCardSearchText(filename, library), searchQuery));
+  }, [filenames, library, searchQuery]);
+
+  const filteredSections = useMemo(
+    () => filterCatalogSections(collectionSections, searchQuery),
+    [collectionSections, searchQuery],
   );
 
   const refreshList = useCallback(async () => {
@@ -535,12 +541,22 @@ function BookLibrary({ user }) {
   return (
     <>
       <Toast message={toast} onDismiss={() => setToast('')} />
-      {libraryLoaded && collectionSections.length > 0 && (
-        <TableOfContents sections={collectionSections} />
+      {libraryLoaded && filteredSections.length > 0 && (
+        <TableOfContents sections={filteredSections} />
       )}
       <main className="page book-page">
         <header className="page-header">
-          <h1>{bookHeading}</h1>
+          <div className="page-header-top">
+            <h1>{bookHeading}</h1>
+            <input
+              className="book-search"
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="search"
+              aria-label="Search scores"
+            />
+          </div>
           <p>{bookDescription}</p>
         </header>
 
@@ -588,9 +604,11 @@ function BookLibrary({ user }) {
           <p className="book-empty">Loading…</p>
         ) : filenames.length === 0 ? (
           <p className="book-empty">No PDFs uploaded yet.</p>
+        ) : filteredFilenames.length === 0 ? (
+          <p className="book-empty">No matches.</p>
         ) : (
           <ul className="book-file-list">
-            {filenames.map((filename) => (
+            {filteredFilenames.map((filename) => (
               <BookScoreItem
                 key={filename}
                 user={user}
@@ -607,8 +625,9 @@ function BookLibrary({ user }) {
         {!libraryLoaded ? (
           <p className="book-empty book-catalog-loading">loading catalog…</p>
         ) : collectionSections.length > 0 ? (
+          filteredSections.length > 0 ? (
           <Catalog
-            sections={collectionSections}
+            sections={filteredSections}
             viewState={{ from: bookPath }}
             viewPrefix={bookPath}
             availableFiles={filenames}
@@ -616,6 +635,9 @@ function BookLibrary({ user }) {
             onBookSave={handleBookSave}
             onBookDelete={handleBookDelete}
           />
+          ) : (
+            <p className="book-empty">No matches.</p>
+          )
         ) : null}
       </main>
     </>

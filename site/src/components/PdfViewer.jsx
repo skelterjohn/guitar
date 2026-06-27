@@ -36,7 +36,7 @@ import {
 import { PEN_COLOR } from '../utils/stylusInput.js';
 import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { buildPrintSheets } from '../utils/printPdf.js';
-import { bookPath, catalogPath, repPath, viewPath } from '../seo.js';
+import { catalogPath, isBookPath, repPath, viewPath } from '../seo.js';
 
 function loadStatusMessage(phase) {
   switch (phase) {
@@ -70,7 +70,7 @@ export default function PdfViewer({
   const url = pdfUrlOverride ?? pdfUrl(filename, pdfHash);
   const downloadLink = downloadHref === undefined ? url : downloadHref;
   const downloadName = downloadNameOverride ?? viewRouteFilename(filename);
-  const viewContext = backTo === repPath ? 'rep' : backTo === bookPath ? 'book' : 'catalog';
+  const viewContext = backTo === repPath ? 'rep' : isBookPath(backTo) ? 'book' : 'catalog';
   const currentLabel = findPdfByFile(pdfs, currentFile)?.label;
 
   useEffect(() => {

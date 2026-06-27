@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
-import { bookPath, catalogPath, repPath, viewPath } from '../seo.js';
+import { catalogPath, isBookPath, repPath, viewPath } from '../seo.js';
 
 function viewContextForPrefix(viewPrefix) {
   if (viewPrefix === repPath) return 'rep';
-  if (viewPrefix === bookPath) return 'book';
+  if (isBookPath(viewPrefix)) return 'book';
   return 'catalog';
 }
 

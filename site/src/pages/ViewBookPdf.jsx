@@ -105,9 +105,9 @@ function ViewBookPdfInner({ user }) {
       pieceKey={pieceKey}
       sectionPieces={sectionPiecesForNav(section, piece)}
       sectionTitle={section?.title ?? null}
-      backTo={bookPath}
+      backTo={bookPath()}
       backLabel={bookBackLabel}
-      viewState={{ from: bookPath }}
+      viewState={{ from: bookPath() }}
     />
   );
 }

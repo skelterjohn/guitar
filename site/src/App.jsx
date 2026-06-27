@@ -15,9 +15,25 @@ function LegacyViewRedirect() {
   return <Navigate to={`${catalogPath}/view/${filename}`} replace />;
 }
 
+function ViewRoute() {
+  if (isBluebridgeDomain()) return <ViewBookPdf />;
+  return <LegacyViewRedirect />;
+}
+
+function BookRoute() {
+  if (isBluebridgeDomain()) return <Navigate to="/" replace />;
+  return <Book />;
+}
+
+function BookViewRoute() {
+  const { filename } = useParams();
+  if (isBluebridgeDomain()) return <Navigate to={`/view/${filename}`} replace />;
+  return <ViewBookPdf />;
+}
+
 function RootPage() {
   if (isNjgoDomain()) return <Njgo />;
-  if (isBluebridgeDomain()) return <Navigate to="/book" replace />;
+  if (isBluebridgeDomain()) return <Book />;
   return <Landing />;
 }
 
@@ -29,11 +45,11 @@ export default function App() {
         <Route path={njgoPath} element={<Njgo />} />
         <Route path={catalogPath} element={<Home />} />
         <Route path={`${catalogPath}/view/:filename`} element={<ViewPdf />} />
-        <Route path="/book" element={<Book />} />
-        <Route path="/book/view/:filename" element={<ViewBookPdf />} />
+        <Route path="/book" element={<BookRoute />} />
+        <Route path="/book/view/:filename" element={<BookViewRoute />} />
         <Route path="/rep" element={<Rep />} />
         <Route path="/rep/view/:filename" element={<ViewPdf />} />
-        <Route path="/view/:filename" element={<LegacyViewRedirect />} />
+        <Route path="/view/:filename" element={<ViewRoute />} />
         <Route path="/dev/stylus" element={<StylusDiagnostics />} />
       </Routes>
     </div>

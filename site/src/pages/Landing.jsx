@@ -31,7 +31,7 @@ export default function Landing() {
             original compositions, arrangements, and transcriptions
           </span>
         </Link>
-        <Link className="landing-link" to={bookPath}>
+        <Link className="landing-link" to={bookPath()}>
           <span className="landing-link-title">{bookHeading}</span>
           <span className="landing-link-desc">{bookDescription}</span>
         </Link>

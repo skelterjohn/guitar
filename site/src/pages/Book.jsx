@@ -633,8 +633,8 @@ function BookLibrary({ user }) {
           filteredSections.length > 0 ? (
           <Catalog
             sections={filteredSections}
-            viewState={{ from: bookPath }}
-            viewPrefix={bookPath}
+            viewState={{ from: bookPath() }}
+            viewPrefix={bookPath()}
             availableFiles={filenames}
             onPieceDelete={handlePieceDelete}
             onBookSave={handleBookSave}
@@ -653,7 +653,7 @@ export default function Book() {
   usePageMeta({
     title: bookTitle,
     description: bookDescription,
-    url: bookUrl,
+    url: bookUrl(),
     noindex: true,
   });
 

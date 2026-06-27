@@ -4,14 +4,16 @@ import PencilIcon from './PencilIcon.jsx';
 import SaveIcon from './SaveIcon.jsx';
 import { pieceId } from '../utils/pieceId.js';
 
-function BookSectionHeading({ title, onBookSave }) {
-  const [editing, setEditing] = useState(false);
+function BookSectionHeading({ sectionId, title, onBookSave, editing, onStartEdit, onEndEdit }) {
   const [name, setName] = useState(title);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!editing) setName(title);
+    if (!editing) {
+      setName(title);
+      setError('');
+    }
   }, [title, editing]);
 
   const handleSave = async () => {
@@ -24,7 +26,7 @@ function BookSectionHeading({ title, onBookSave }) {
     setError('');
     try {
       await onBookSave(nextName);
-      setEditing(false);
+      onEndEdit();
     } catch (saveError) {
       setError(saveError.message);
     } finally {
@@ -40,9 +42,9 @@ function BookSectionHeading({ title, onBookSave }) {
   const handleKeyDown = (event) => {
     if (event.key === 'Escape') {
       event.preventDefault();
-      setEditing(false);
       setName(title);
       setError('');
+      onEndEdit();
     }
   };
 
@@ -80,7 +82,7 @@ function BookSectionHeading({ title, onBookSave }) {
             onClick={() => {
               setName(title);
               setError('');
-              setEditing(true);
+              onStartEdit();
             }}
             aria-label="Edit book"
           >
@@ -98,15 +100,23 @@ function BookSectionHeading({ title, onBookSave }) {
 }
 
 export default function Catalog({ sections, viewState, viewPrefix, onPieceSave, onBookSave, availableFiles }) {
+  const [activeEditId, setActiveEditId] = useState(null);
+
   return (
     <>
       {sections.map((section) => (
         <section key={section.id} className="catalog-section">
           <BookSectionHeading
+            sectionId={section.id}
             title={section.title}
+            editing={activeEditId === `book:${section.id}`}
+            onStartEdit={() => setActiveEditId(`book:${section.id}`)}
+            onEndEdit={() => setActiveEditId(null)}
             onBookSave={onBookSave ? (name) => onBookSave(section.title, name) : undefined}
           />
-          {section.pieces.map((piece) => (
+          {section.pieces.map((piece) => {
+            const pieceEditId = `piece:${pieceId(section.id, piece.title)}`;
+            return (
             <CompositionCard
               key={piece.title}
               id={pieceId(section.id, piece.title)}
@@ -114,13 +124,17 @@ export default function Catalog({ sections, viewState, viewPrefix, onPieceSave, 
               viewState={viewState}
               viewPrefix={viewPrefix}
               availableFiles={availableFiles}
+              editing={activeEditId === pieceEditId}
+              onStartEdit={() => setActiveEditId(pieceEditId)}
+              onEndEdit={() => setActiveEditId(null)}
               onPieceSave={
                 onPieceSave
                   ? (updates) => onPieceSave(section.title, piece.title, updates)
                   : undefined
               }
             />
-          ))}
+            );
+          })}
         </section>
       ))}
     </>

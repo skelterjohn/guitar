@@ -11,10 +11,12 @@ export default function CompositionCard({
   viewPrefix,
   onPieceSave,
   availableFiles,
+  editing = false,
+  onStartEdit,
+  onEndEdit,
 }) {
   const paragraphs = piece.description?.split('\n\n').filter(Boolean) ?? [];
   const links = piece.links ?? [];
-  const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(piece.title);
   const [composer, setComposer] = useState(piece.composer ?? '');
   const [busy, setBusy] = useState(false);
@@ -24,6 +26,7 @@ export default function CompositionCard({
     if (!editing) {
       setTitle(piece.title);
       setComposer(piece.composer ?? '');
+      setError('');
     }
   }, [piece.title, piece.composer, editing]);
 
@@ -31,7 +34,7 @@ export default function CompositionCard({
     setTitle(piece.title);
     setComposer(piece.composer ?? '');
     setError('');
-    setEditing(true);
+    onStartEdit?.();
   };
 
   const handleSave = async () => {
@@ -50,7 +53,7 @@ export default function CompositionCard({
         name: nextTitle,
         composer: composer.trim(),
       });
-      setEditing(false);
+      onEndEdit?.();
     } catch (saveError) {
       setError(saveError.message);
     } finally {
@@ -64,10 +67,10 @@ export default function CompositionCard({
   };
 
   const cancelEditing = () => {
-    setEditing(false);
     setTitle(piece.title);
     setComposer(piece.composer ?? '');
     setError('');
+    onEndEdit?.();
   };
 
   const handleKeyDown = (event) => {

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BookAuthGate from '../components/BookAuthGate.jsx';
 import PdfViewer from '../components/PdfViewer.jsx';
-import { downloadBookPdf, fetchBookPdfBytes, fetchUserCollection } from '../bookendClient.js';
+import { downloadBookPdf, fetchBookPdfBytes, fetchUserLibrary } from '../bookendClient.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { bookBackLabel, bookPath, bookTitle, bookViewPath, pageTitle } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
@@ -50,9 +50,9 @@ function ViewBookPdfInner({ user }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetchUserCollection(user)
-      .then((collection) => {
-        if (!cancelled) setSections(userCollectionToSections(collection));
+    fetchUserLibrary(user)
+      .then((library) => {
+        if (!cancelled) setSections(userCollectionToSections(library));
       })
       .catch((error) => {
         console.error('Could not load collections:', error);

@@ -187,7 +187,7 @@ export default function CompositionCard({
         open={deleteOpen}
         title="Delete piece?"
         itemName={piece.title}
-        lead="and all of its parts will be permanently removed. This cannot be undone."
+        lead="will be permanently removed from your library and all books. This cannot be undone."
         busy={deleteBusy}
         error={deleteError}
         onCancel={() => {

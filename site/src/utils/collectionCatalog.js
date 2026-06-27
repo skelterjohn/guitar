@@ -6,12 +6,10 @@ function slugify(value) {
 }
 
 /**
- * Map a bookend user collection into catalog.yaml-shaped sections.
- * books -> sections, pieces -> pieces, parts -> pdfs with labels.
- *
- * @param {{ books?: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection
+ * Map a user library into catalog.yaml-shaped sections.
+ * @param {{ pieces?: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string }>, books?: Array<{ id: string, name: string, pieces: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string }> }> }} library
  */
-export function userCollectionToSections(collection) {
+export function userCollectionToSections(library) {
   const usedIds = new Set();
 
   const uniqueSectionId = (name) => {
@@ -25,33 +23,33 @@ export function userCollectionToSections(collection) {
     return id;
   };
 
-  return (collection?.books ?? [])
+  return (library?.books ?? [])
     .map((book) => {
       const pieces = (book.pieces ?? [])
+        .filter((piece) => piece.pdf)
         .map((piece) => {
-          const pdfs = (piece.parts ?? [])
-            .filter((part) => part.pdf)
-            .map((part) => ({
-              label: part.name,
-              file: part.pdf,
-            }));
-          if (pdfs.length === 0) return null;
           const entry = {
+            pieceKey: piece.name,
             title: piece.name,
-            pdfs,
+            part: piece.part ?? '',
+            pdf: piece.pdf,
+            pdfs: [{
+              label: piece.part || 'score',
+              file: piece.pdf,
+            }],
           };
           if (piece.composer) {
             entry.composer = piece.composer;
           }
           return entry;
-        })
-        .filter(Boolean);
+        });
 
       if (pieces.length === 0) return null;
 
       return {
         id: uniqueSectionId(book.name),
         title: book.name,
+        bookKey: book.name,
         pieces,
       };
     })

@@ -2117,6 +2117,63 @@ body {
   gap: 0.75rem;
 }
 
+.book-score-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.book-score-edit {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.book-score-edit:hover:not(:disabled) {
+  color: var(--color-text-heading);
+  background: var(--color-surface);
+}
+
+.book-score-edit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.book-score-meta {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.book-score-meta-row {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: 0.5rem;
+  align-items: baseline;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+}
+
+.book-score-meta dt {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.book-score-meta dd {
+  margin: 0;
+  color: var(--color-text);
+}
+
 .book-score-delete {
   flex: 0 0 auto;
   padding: 0.15rem 0.4rem;
@@ -2357,16 +2414,49 @@ body {
 }
 
 .book-score-memberships li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   font-family: system-ui, sans-serif;
   font-size: 0.85rem;
   color: var(--color-text);
 }
 
+.book-score-remove-book {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.book-score-remove-book:hover:not(:disabled) {
+  color: #b91c1c;
+  border-color: rgb(185 28 28 / 45%);
+}
+
+.book-score-remove-book:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.book-score-piece-form,
 .book-score-add {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
+}
+
+.book-score-field-book {
+  flex: 1 1 8rem;
 }
 
 .book-score-field {

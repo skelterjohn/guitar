@@ -4,22 +4,27 @@ import { signOut } from 'firebase/auth';
 import BookAuthGate from '../components/BookAuthGate.jsx';
 import BookDeletePdfModal from '../components/BookDeletePdfModal.jsx';
 import Catalog from '../components/Catalog.jsx';
+import PencilIcon from '../components/PencilIcon.jsx';
+import SaveIcon from '../components/SaveIcon.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import Toast from '../components/Toast.jsx';
 import {
-  deleteCollectionBook,
-  deleteCollectionPiece,
+  addPieceToBook,
+  createPiece,
+  deleteBook,
   deleteBookPdf,
-  fetchUserCollection,
+  deletePiece,
+  fetchUserLibrary,
   listBookPdfs,
-  setCollectionPartPdf,
-  updateCollectionBook,
-  updateCollectionPiece,
+  removePieceFromBook,
+  updateBook,
+  updatePiece,
   uploadBookPdf,
 } from '../bookendClient.js';
 import { auth } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { bookDescription, bookHeading, bookPath, bookTitle, bookUrl, bookViewPath } from '../seo.js';
+import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
 import { userCollectionToSections } from '../utils/collectionCatalog.js';
 
 function isPdfFile(file) {
@@ -28,144 +33,155 @@ function isPdfFile(file) {
   return file.name.toLowerCase().endsWith('.pdf');
 }
 
-/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
-function collectionsForPdf(collection, pdfFilename) {
-  const entries = [];
-  for (const book of collection.books) {
-    for (const piece of book.pieces) {
-      for (const part of piece.parts) {
-        if (part.pdf === pdfFilename) {
-          entries.push({ book: book.name, piece: piece.name, part: part.name });
-        }
-      }
-    }
-  }
-  return entries;
+/** @param {{ pieces: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string }>, books: Array<{ name: string, pieces: Array<{ id: string }> }> }} library */
+function pieceForPdf(library, pdfFilename) {
+  return library.pieces.find((piece) => pdfFilesMatch(piece.pdf, pdfFilename)) ?? null;
+}
+
+/** @param {{ books: Array<{ name: string, pieces: Array<{ id: string }> }> }} library */
+function booksForPiece(library, piece) {
+  if (!piece) return [];
+  return library.books
+    .filter((book) => book.pieces.some((entry) => entry.id === piece.id))
+    .map((book) => book.name);
 }
 
 function uniqueSorted(names) {
   return [...new Set(names.filter(Boolean))].sort((a, b) => a.localeCompare(b));
 }
 
-/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
-function findCollectionBook(collection, bookName) {
-  const trimmed = bookName.trim();
-  if (!trimmed) return null;
-  return (
-    collection.books.find((book) => book.name === trimmed)
-    ?? collection.books.find((book) => book.name.toLowerCase() === trimmed.toLowerCase())
-  );
-}
-
-/** @param {{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }} book */
-function findCollectionPiece(book, pieceName) {
-  const trimmed = pieceName.trim();
-  if (!trimmed) return null;
-  return (
-    book.pieces.find((piece) => piece.name === trimmed)
-    ?? book.pieces.find((piece) => piece.name.toLowerCase() === trimmed.toLowerCase())
-  );
-}
-
-/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
-function collectionBookNames(collection) {
-  return uniqueSorted(collection.books.map((book) => book.name));
-}
-
-/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
-function collectionPieceNames(collection, bookName) {
-  const book = findCollectionBook(collection, bookName);
-  if (book) {
-    return uniqueSorted(book.pieces.map((piece) => piece.name));
-  }
-  const names = [];
-  for (const entry of collection.books) {
-    for (const piece of entry.pieces) {
-      names.push(piece.name);
-    }
-  }
-  return uniqueSorted(names);
-}
-
-/** @param {{ books: Array<{ name: string, pieces: Array<{ name: string, parts: Array<{ name: string, pdf: string }> }> }> }} collection */
-function collectionPartNames(collection, bookName, pieceName) {
-  const book = findCollectionBook(collection, bookName);
-  if (!book) {
-    const names = [];
-    for (const entry of collection.books) {
-      for (const piece of entry.pieces) {
-        for (const part of piece.parts) {
-          names.push(part.name);
-        }
-      }
-    }
-    return uniqueSorted(names);
-  }
-
-  const piece = findCollectionPiece(book, pieceName);
-  if (piece) {
-    return uniqueSorted(piece.parts.map((part) => part.name));
-  }
-
-  const names = [];
-  for (const entry of book.pieces) {
-    for (const part of entry.parts) {
-      names.push(part.name);
-    }
-  }
-  return uniqueSorted(names);
-}
-
 function collectionFieldId(filename) {
   return encodeURIComponent(filename).replace(/%/g, '_');
 }
 
-function BookScoreItem({ user, filename, collection, onCollectionChange, onPdfDeleted }) {
+function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted }) {
+  const linkedPiece = pieceForPdf(library, filename);
+  const cardRef = useRef(null);
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(linkedPiece?.name ?? '');
+  const [composer, setComposer] = useState(linkedPiece?.composer ?? '');
+  const [part, setPart] = useState(linkedPiece?.part ?? '');
   const [book, setBook] = useState('');
-  const [piece, setPiece] = useState('');
-  const [part, setPart] = useState('');
+  const [saving, setSaving] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [removingBook, setRemovingBook] = useState('');
   const [itemError, setItemError] = useState('');
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
-  const memberships = collectionsForPdf(collection, filename);
+  const memberships = booksForPiece(library, linkedPiece);
   const fieldId = collectionFieldId(filename);
-  const bookOptions = collectionBookNames(collection);
-  const pieceOptions = collectionPieceNames(collection, book);
-  const partOptions = collectionPartNames(collection, book, piece);
+  const pieceFormId = `book-score-piece-form-${fieldId}`;
+  const bookOptions = uniqueSorted(library.books.map((entry) => entry.name));
 
-  const handleAdd = async () => {
-    const bookName = book.trim();
-    const pieceName = piece.trim();
-    const partName = part.trim();
-    if (!bookName || !pieceName || !partName) {
-      setItemError('Fill in book, piece, and part.');
+  useEffect(() => {
+    if (!editing) {
+      setName(linkedPiece?.name ?? '');
+      setComposer(linkedPiece?.composer ?? '');
+      setPart(linkedPiece?.part ?? '');
+    }
+  }, [linkedPiece?.name, linkedPiece?.composer, linkedPiece?.part, linkedPiece?.id, editing]);
+
+  const startEditing = () => {
+    setName(linkedPiece?.name ?? '');
+    setComposer(linkedPiece?.composer ?? '');
+    setPart(linkedPiece?.part ?? '');
+    setItemError('');
+    setEditing(true);
+  };
+
+  const cancelEditing = useCallback(() => {
+    setEditing(false);
+    setName(linkedPiece?.name ?? '');
+    setComposer(linkedPiece?.composer ?? '');
+    setPart(linkedPiece?.part ?? '');
+    setItemError('');
+  }, [linkedPiece?.name, linkedPiece?.composer, linkedPiece?.part]);
+
+  useEffect(() => {
+    if (!editing) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key !== 'Escape') return;
+      if (deleteOpen) return;
+      event.preventDefault();
+      cancelEditing();
+    };
+
+    const handlePointerDown = (event) => {
+      if (deleteOpen || saving) return;
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest(`#${pieceFormId} input`)) return;
+      if (cardRef.current?.contains(target) && target.closest('.book-score-header-actions')) return;
+      cancelEditing();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('pointerdown', handlePointerDown, true);
+    };
+  }, [editing, deleteOpen, saving, cancelEditing, pieceFormId]);
+
+  const handleSavePiece = async () => {
+    const pieceName = name.trim();
+    if (!pieceName) {
+      setItemError('Piece name is required.');
       return;
     }
 
-    const duplicate = memberships.some(
-      (entry) =>
-        entry.book === bookName && entry.piece === pieceName && entry.part === partName,
-    );
-    if (duplicate) {
-      setItemError('Already in collection.');
+    setSaving(true);
+    setItemError('');
+    try {
+      const payload = {
+        name: pieceName,
+        composer: composer.trim(),
+        part: part.trim(),
+        pdf: filename,
+      };
+      if (linkedPiece) {
+        await updatePiece(user, linkedPiece.name, payload);
+      } else {
+        await createPiece(user, payload);
+      }
+      await onLibraryChange();
+      setEditing(false);
+    } catch (saveError) {
+      setItemError(saveError.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveSubmit = (event) => {
+    event.preventDefault();
+    void handleSavePiece();
+  };
+
+  const handleAddToBook = async () => {
+    const bookName = book.trim();
+    if (!bookName) {
+      setItemError('Enter a book name.');
+      return;
+    }
+    if (!linkedPiece) {
+      setItemError('Save piece info first.');
+      return;
+    }
+    if (memberships.includes(bookName)) {
+      setItemError('Already in that book.');
       return;
     }
 
     setAdding(true);
     setItemError('');
     try {
-      await setCollectionPartPdf(
-        user,
-        { book: bookName, piece: pieceName, part: partName },
-        filename,
-      );
+      await addPieceToBook(user, { book: bookName, piece: linkedPiece.name });
       setBook('');
-      setPiece('');
-      setPart('');
-      await onCollectionChange();
+      await onLibraryChange();
     } catch (addError) {
       setItemError(addError.message);
     } finally {
@@ -173,9 +189,23 @@ function BookScoreItem({ user, filename, collection, onCollectionChange, onPdfDe
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleAddSubmit = (event) => {
     event.preventDefault();
-    void handleAdd();
+    void handleAddToBook();
+  };
+
+  const handleRemoveFromBook = async (bookName) => {
+    if (!linkedPiece) return;
+    setRemovingBook(bookName);
+    setItemError('');
+    try {
+      await removePieceFromBook(user, { book: bookName, piece: linkedPiece.name });
+      await onLibraryChange();
+    } catch (removeError) {
+      setItemError(removeError.message);
+    } finally {
+      setRemovingBook('');
+    }
   };
 
   const openDeleteModal = () => {
@@ -203,27 +233,52 @@ function BookScoreItem({ user, filename, collection, onCollectionChange, onPdfDe
     }
   };
 
+  const busy = saving || adding || Boolean(removingBook);
+
   return (
-    <li className="book-score-item">
+    <li ref={cardRef} className="book-score-item">
       <div className="book-score-header">
         <Link className="book-file-open" to={bookViewPath(filename)}>
           {filename}
         </Link>
-        <button
-          className="book-score-delete"
-          type="button"
-          onClick={openDeleteModal}
-          disabled={adding || deleting}
-          aria-label={`Delete ${filename}`}
-        >
-          delete
-        </button>
+        {editing ? (
+          <div className="book-score-header-actions">
+            <button
+              className="book-score-delete"
+              type="button"
+              onClick={openDeleteModal}
+              disabled={busy || deleting}
+              aria-label={`Delete ${filename}`}
+            >
+              delete
+            </button>
+            <button
+              className="book-score-edit"
+              type="submit"
+              form={pieceFormId}
+              disabled={busy || deleting}
+              aria-label={`Save piece info for ${filename}`}
+            >
+              <SaveIcon />
+            </button>
+          </div>
+        ) : (
+          <button
+            className="book-score-edit"
+            type="button"
+            onClick={startEditing}
+            disabled={busy || deleting}
+            aria-label={`Edit ${filename}`}
+          >
+            <PencilIcon />
+          </button>
+        )}
       </div>
 
       <BookDeletePdfModal
         open={deleteOpen}
         filename={filename}
-        membershipCount={memberships.length}
+        membershipCount={linkedPiece ? memberships.length : 0}
         busy={deleting}
         error={deleteError}
         onCancel={closeDeleteModal}
@@ -233,70 +288,103 @@ function BookScoreItem({ user, filename, collection, onCollectionChange, onPdfDe
       />
 
       <div className="book-score-collections">
+        {editing ? (
+          <form
+            id={pieceFormId}
+            className="book-score-piece-form"
+            onSubmit={handleSaveSubmit}
+          >
+            <input
+              className="book-score-field"
+              type="text"
+              placeholder="piece"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              disabled={busy}
+              autoComplete="off"
+              aria-label={`Piece name for ${filename}`}
+            />
+            <input
+              className="book-score-field"
+              type="text"
+              placeholder="composer"
+              value={composer}
+              onChange={(event) => setComposer(event.target.value)}
+              disabled={busy}
+              autoComplete="off"
+              aria-label={`Composer for ${filename}`}
+            />
+            <input
+              className="book-score-field"
+              type="text"
+              placeholder="part"
+              value={part}
+              onChange={(event) => setPart(event.target.value)}
+              disabled={busy}
+              autoComplete="off"
+              aria-label={`Part for ${filename}`}
+            />
+          </form>
+        ) : (
+          <dl className="book-score-meta">
+            <div className="book-score-meta-row">
+              <dt>piece</dt>
+              <dd>{linkedPiece?.name || '—'}</dd>
+            </div>
+            <div className="book-score-meta-row">
+              <dt>composer</dt>
+              <dd>{linkedPiece?.composer || '—'}</dd>
+            </div>
+            <div className="book-score-meta-row">
+              <dt>part</dt>
+              <dd>{linkedPiece?.part || '—'}</dd>
+            </div>
+          </dl>
+        )}
+
         {memberships.length > 0 && (
           <ul className="book-score-memberships">
-            {memberships.map((entry) => (
-              <li key={`${entry.book}/${entry.piece}/${entry.part}`}>
-                {entry.book} / {entry.piece} / {entry.part}
+            {memberships.map((bookName) => (
+              <li key={bookName}>
+                <span>{bookName}</span>
+                <button
+                  type="button"
+                  className="book-score-remove-book"
+                  onClick={() => {
+                    void handleRemoveFromBook(bookName);
+                  }}
+                  disabled={busy}
+                  aria-label={`Remove from ${bookName}`}
+                >
+                  ×
+                </button>
               </li>
             ))}
           </ul>
         )}
 
-        <form className="book-score-add" onSubmit={handleSubmit}>
+        <form className="book-score-add" onSubmit={handleAddSubmit}>
           <input
-            className="book-score-field"
+            className="book-score-field book-score-field-book"
             type="text"
-            placeholder="book"
+            placeholder="add to book"
             value={book}
             onChange={(event) => setBook(event.target.value)}
-            disabled={adding}
+            disabled={busy || !linkedPiece}
             autoComplete="off"
             list={`book-options-${fieldId}`}
             aria-label={`Book for ${filename}`}
           />
           <datalist id={`book-options-${fieldId}`}>
-            {bookOptions.map((name) => (
-              <option key={name} value={name} />
-            ))}
-          </datalist>
-          <input
-            className="book-score-field"
-            type="text"
-            placeholder="piece"
-            value={piece}
-            onChange={(event) => setPiece(event.target.value)}
-            disabled={adding}
-            autoComplete="off"
-            list={`piece-options-${fieldId}`}
-            aria-label={`Piece for ${filename}`}
-          />
-          <datalist id={`piece-options-${fieldId}`}>
-            {pieceOptions.map((name) => (
-              <option key={name} value={name} />
-            ))}
-          </datalist>
-          <input
-            className="book-score-field"
-            type="text"
-            placeholder="part"
-            value={part}
-            onChange={(event) => setPart(event.target.value)}
-            disabled={adding}
-            autoComplete="off"
-            list={`part-options-${fieldId}`}
-            aria-label={`Part for ${filename}`}
-          />
-          <datalist id={`part-options-${fieldId}`}>
-            {partOptions.map((name) => (
-              <option key={name} value={name} />
+            {bookOptions.map((bookName) => (
+              <option key={bookName} value={bookName} />
             ))}
           </datalist>
           <button
             className="book-score-add-btn"
             type="submit"
-            disabled={adding}
-            aria-label={`Add ${filename} to collection`}
+            disabled={busy || !linkedPiece}
+            aria-label={`Add ${filename} to book`}
           >
             +
           </button>
@@ -313,8 +401,8 @@ function BookScoreItem({ user, filename, collection, onCollectionChange, onPdfDe
 
 function BookLibrary({ user }) {
   const [filenames, setFilenames] = useState([]);
-  const [collection, setCollection] = useState({ books: [] });
-  const [collectionLoaded, setCollectionLoaded] = useState(false);
+  const [library, setLibrary] = useState({ pieces: [], books: [] });
+  const [libraryLoaded, setLibraryLoaded] = useState(false);
   const [status, setStatus] = useState('');
   const [toast, setToast] = useState('');
   const [error, setError] = useState('');
@@ -323,21 +411,21 @@ function BookLibrary({ user }) {
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
 
-  const refreshCollection = useCallback(async () => {
+  const refreshLibrary = useCallback(async () => {
     try {
-      const nextCollection = await fetchUserCollection(user);
-      setCollection(nextCollection);
-    } catch (collectionError) {
-      console.error('Could not load collections:', collectionError);
-      setCollection({ books: [] });
+      const nextLibrary = await fetchUserLibrary(user);
+      setLibrary(nextLibrary);
+    } catch (libraryError) {
+      console.error('Could not load library:', libraryError);
+      setLibrary({ pieces: [], books: [] });
     } finally {
-      setCollectionLoaded(true);
+      setLibraryLoaded(true);
     }
   }, [user]);
 
   const collectionSections = useMemo(
-    () => userCollectionToSections(collection),
-    [collection],
+    () => userCollectionToSections(library),
+    [library],
   );
 
   const refreshList = useCallback(async () => {
@@ -356,8 +444,8 @@ function BookLibrary({ user }) {
 
   useEffect(() => {
     refreshList();
-    refreshCollection();
-  }, [refreshList, refreshCollection]);
+    refreshLibrary();
+  }, [refreshList, refreshLibrary]);
 
   const uploadFile = useCallback(
     async (file) => {
@@ -406,38 +494,30 @@ function BookLibrary({ user }) {
     setDragActive(false);
   };
 
-  const handlePieceSave = useCallback(
-    async (bookName, pieceName, { name, composer }) => {
-      await updateCollectionPiece(user, { book: bookName, piece: pieceName }, { name, composer });
-      await refreshCollection();
-    },
-    [user, refreshCollection],
-  );
-
   const handleBookSave = useCallback(
-    async (bookName, name) => {
-      await updateCollectionBook(user, { book: bookName }, { name });
-      await refreshCollection();
+    async (bookKey, name) => {
+      await updateBook(user, bookKey, { name });
+      await refreshLibrary();
     },
-    [user, refreshCollection],
+    [user, refreshLibrary],
   );
 
   const handlePieceDelete = useCallback(
-    async (bookName, pieceName) => {
-      await deleteCollectionPiece(user, { book: bookName, piece: pieceName });
-      await refreshCollection();
-      setToast(`Deleted ${pieceName}.`);
+    async (pieceKey) => {
+      await deletePiece(user, pieceKey);
+      await refreshLibrary();
+      setToast(`Deleted ${pieceKey}.`);
     },
-    [user, refreshCollection],
+    [user, refreshLibrary],
   );
 
   const handleBookDelete = useCallback(
-    async (bookName) => {
-      await deleteCollectionBook(user, { book: bookName });
-      await refreshCollection();
-      setToast(`Deleted ${bookName}.`);
+    async (bookKey) => {
+      await deleteBook(user, bookKey);
+      await refreshLibrary();
+      setToast(`Deleted ${bookKey}.`);
     },
-    [user, refreshCollection],
+    [user, refreshLibrary],
   );
 
   const handlePdfDeleted = useCallback(
@@ -455,7 +535,7 @@ function BookLibrary({ user }) {
   return (
     <>
       <Toast message={toast} onDismiss={() => setToast('')} />
-      {collectionLoaded && collectionSections.length > 0 && (
+      {libraryLoaded && collectionSections.length > 0 && (
         <TableOfContents sections={collectionSections} />
       )}
       <main className="page book-page">
@@ -515,8 +595,8 @@ function BookLibrary({ user }) {
                 key={filename}
                 user={user}
                 filename={filename}
-                collection={collection}
-                onCollectionChange={refreshCollection}
+                library={library}
+                onLibraryChange={refreshLibrary}
                 onPdfDeleted={handlePdfDeleted}
               />
             ))}
@@ -524,7 +604,7 @@ function BookLibrary({ user }) {
         )}
       </details>
 
-        {!collectionLoaded ? (
+        {!libraryLoaded ? (
           <p className="book-empty book-catalog-loading">loading catalog…</p>
         ) : collectionSections.length > 0 ? (
           <Catalog
@@ -532,7 +612,6 @@ function BookLibrary({ user }) {
             viewState={{ from: bookPath }}
             viewPrefix={bookPath}
             availableFiles={filenames}
-            onPieceSave={handlePieceSave}
             onPieceDelete={handlePieceDelete}
             onBookSave={handleBookSave}
             onBookDelete={handleBookDelete}

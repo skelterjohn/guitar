@@ -20,25 +20,35 @@ function bookEndpoint(email, filename) {
   return `${base}/v1/book/${encodeURIComponent(email)}/${encodeURIComponent(filename)}`;
 }
 
-function collectionPartEndpoint(email, { book, piece, part }) {
-  const base = bookendBaseUrl.replace(/\/$/, '');
-  const enc = encodeURIComponent;
-  return `${base}/v1/users/${enc(email)}/books/${enc(book)}/piece/${enc(piece)}/parts/${enc(part)}`;
-}
-
-function collectionPieceEndpoint(email, { book, piece }) {
-  const base = bookendBaseUrl.replace(/\/$/, '');
-  const enc = encodeURIComponent;
-  return `${base}/v1/users/${enc(email)}/books/${enc(book)}/piece/${enc(piece)}`;
-}
-
-function collectionBookEndpoint(email, { book }) {
+function libraryBookEndpoint(email, book) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   const enc = encodeURIComponent;
   return `${base}/v1/users/${enc(email)}/books/${enc(book)}`;
 }
 
-function userCollectionEndpoint(email) {
+function libraryBooksEndpoint(email) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  return `${base}/v1/users/${encodeURIComponent(email)}/books`;
+}
+
+function libraryPieceEndpoint(email, piece) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  const enc = encodeURIComponent;
+  return `${base}/v1/users/${enc(email)}/pieces/${enc(piece)}`;
+}
+
+function libraryPiecesEndpoint(email) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  return `${base}/v1/users/${encodeURIComponent(email)}/pieces`;
+}
+
+function libraryBookPieceEndpoint(email, { book, piece }) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  const enc = encodeURIComponent;
+  return `${base}/v1/users/${enc(email)}/books/${enc(book)}/pieces/${enc(piece)}`;
+}
+
+function userLibraryEndpoint(email) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   return `${base}/v1/users/${encodeURIComponent(email)}`;
 }
@@ -125,91 +135,116 @@ export async function fetchBookPdfBytes(user, filename, onPhase) {
   return new Uint8Array(buffer);
 }
 
-/** @typedef {{ book: string, piece: string, part: string }} CollectionPartPath */
-/** @typedef {{ name: string, pdf: string }} CollectionPart */
-/** @typedef {{ name: string, composer?: string, parts: CollectionPart[] }} CollectionPiece */
-/** @typedef {{ name: string, pieces: CollectionPiece[] }} CollectionBook */
-/** @typedef {{ books: CollectionBook[] }} UserCollection */
+/** @typedef {{ id: string, name: string, composer?: string, part?: string, pdf: string }} LibraryPiece */
+/** @typedef {{ id: string, name: string, pieces: LibraryPiece[] }} LibraryBook */
+/** @typedef {{ pieces: LibraryPiece[], books: LibraryBook[] }} UserLibrary */
 
-function normalizeUserCollection(data) {
+function normalizePiece(piece) {
+  return {
+    id: typeof piece?.id === 'string' ? piece.id : '',
+    name: typeof piece?.name === 'string' ? piece.name : '',
+    composer: typeof piece?.composer === 'string' ? piece.composer : '',
+    part: typeof piece?.part === 'string' ? piece.part : '',
+    pdf: typeof piece?.pdf === 'string' ? piece.pdf : '',
+  };
+}
+
+function normalizeUserLibrary(data) {
+  const pieces = Array.isArray(data?.pieces) ? data.pieces : [];
   const books = Array.isArray(data?.books) ? data.books : [];
   return {
+    pieces: pieces.map(normalizePiece),
     books: books.map((book) => ({
+      id: typeof book?.id === 'string' ? book.id : '',
       name: typeof book?.name === 'string' ? book.name : '',
-      pieces: (Array.isArray(book?.pieces) ? book.pieces : []).map((piece) => ({
-        name: typeof piece?.name === 'string' ? piece.name : '',
-        composer: typeof piece?.composer === 'string' ? piece.composer : '',
-        parts: (Array.isArray(piece?.parts) ? piece.parts : []).map((part) => ({
-          name: typeof part?.name === 'string' ? part.name : '',
-          pdf: typeof part?.pdf === 'string' ? part.pdf : '',
-        })),
-      })),
+      pieces: (Array.isArray(book?.pieces) ? book.pieces : []).map(normalizePiece),
     })),
   };
 }
 
 /**
- * Fetch the user's full music collection tree.
- * @returns {Promise<UserCollection>}
+ * Fetch the user's pieces and books.
+ * @returns {Promise<UserLibrary>}
  */
-export async function fetchUserCollection(user) {
+export async function fetchUserLibrary(user) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
-  const res = await fetch(userCollectionEndpoint(email), { headers });
+  const res = await fetch(userLibraryEndpoint(email), { headers });
   if (!res.ok) {
-    throw new Error(await errorMessage(res, `Could not load collection (${res.status}).`));
+    throw new Error(await errorMessage(res, `Could not load library (${res.status}).`));
   }
   const data = await res.json();
-  return normalizeUserCollection(data);
+  return normalizeUserLibrary(data);
 }
 
-/**
- * Fetch the PDF filename stored for a collection part.
- * @param {CollectionPartPath} path
- * @returns {Promise<string>}
- */
-export async function getCollectionPartPdf(user, { book, piece, part }) {
-  const email = requireUserEmail(user);
-  const headers = await authHeaders(user);
-  const res = await fetch(collectionPartEndpoint(email, { book, piece, part }), { headers });
-  if (!res.ok) {
-    throw new Error(await errorMessage(res, `Could not load collection part (${res.status}).`));
-  }
-  const data = await res.json();
-  return typeof data.pdf === 'string' ? data.pdf : '';
-}
+/** @deprecated use fetchUserLibrary */
+export const fetchUserCollection = fetchUserLibrary;
 
-/**
- * Store a PDF filename for a collection part.
- * @param {CollectionPartPath} path
- * @param {string} pdf
- * @returns {Promise<string>}
- */
-export async function setCollectionPartPdf(user, { book, piece, part }, pdf) {
+export async function createPiece(user, { name, composer = '', part = '', pdf }) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
-  const res = await fetch(collectionPartEndpoint(email, { book, piece, part }), {
+  const res = await fetch(libraryPiecesEndpoint(email), {
     method: 'POST',
     headers: { ...headers, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pdf }),
+    body: JSON.stringify({ name, composer, part, pdf }),
   });
   if (!res.ok) {
-    throw new Error(await errorMessage(res, `Could not save collection part (${res.status}).`));
+    throw new Error(await errorMessage(res, `Could not create piece (${res.status}).`));
   }
   const data = await res.json();
-  return typeof data.pdf === 'string' ? data.pdf : pdf;
+  return normalizePiece(data);
 }
 
-/**
- * Update a collection book's display name.
- * @param {{ book: string }} path
- * @param {{ name: string }} updates
- * @returns {Promise<string>}
- */
-export async function updateCollectionBook(user, { book }, { name }) {
+export async function updatePiece(user, pieceKey, { name, composer = '', part = '', pdf }) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
-  const res = await fetch(collectionBookEndpoint(email, { book }), {
+  const res = await fetch(libraryPieceEndpoint(email, pieceKey), {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, composer, part, pdf }),
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not save piece (${res.status}).`));
+  }
+  const data = await res.json();
+  return normalizePiece(data);
+}
+
+export async function deletePiece(user, pieceKey) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(libraryPieceEndpoint(email, pieceKey), {
+    method: 'DELETE',
+    headers,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not delete piece (${res.status}).`));
+  }
+}
+
+export async function createBook(user, { name }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(libraryBooksEndpoint(email), {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not create book (${res.status}).`));
+  }
+  const data = await res.json();
+  return {
+    id: typeof data?.id === 'string' ? data.id : '',
+    name: typeof data?.name === 'string' ? data.name : name,
+    pieces: [],
+  };
+}
+
+export async function updateBook(user, bookKey, { name }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(libraryBookEndpoint(email, bookKey), {
     method: 'POST',
     headers: { ...headers, 'Content-Type': 'application/json' },
     body: JSON.stringify({ name }),
@@ -221,10 +256,10 @@ export async function updateCollectionBook(user, { book }, { name }) {
   return typeof data.name === 'string' ? data.name : name;
 }
 
-export async function deleteCollectionBook(user, { book }) {
+export async function deleteBook(user, bookKey) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
-  const res = await fetch(collectionBookEndpoint(email, { book }), {
+  const res = await fetch(libraryBookEndpoint(email, bookKey), {
     method: 'DELETE',
     headers,
   });
@@ -233,38 +268,26 @@ export async function deleteCollectionBook(user, { book }) {
   }
 }
 
-/**
- * Update a collection piece's display name and composer.
- * @param {{ book: string, piece: string }} path
- * @param {{ name: string, composer?: string }} updates
- * @returns {Promise<{ name: string, composer: string }>}
- */
-export async function updateCollectionPiece(user, { book, piece }, { name, composer = '' }) {
+export async function addPieceToBook(user, { book, piece }) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
-  const res = await fetch(collectionPieceEndpoint(email, { book, piece }), {
+  const res = await fetch(libraryBookPieceEndpoint(email, { book, piece }), {
     method: 'POST',
-    headers: { ...headers, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, composer }),
+    headers,
   });
   if (!res.ok) {
-    throw new Error(await errorMessage(res, `Could not save piece (${res.status}).`));
+    throw new Error(await errorMessage(res, `Could not add piece to book (${res.status}).`));
   }
-  const data = await res.json();
-  return {
-    name: typeof data.name === 'string' ? data.name : name,
-    composer: typeof data.composer === 'string' ? data.composer : composer,
-  };
 }
 
-export async function deleteCollectionPiece(user, { book, piece }) {
+export async function removePieceFromBook(user, { book, piece }) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
-  const res = await fetch(collectionPieceEndpoint(email, { book, piece }), {
+  const res = await fetch(libraryBookPieceEndpoint(email, { book, piece }), {
     method: 'DELETE',
     headers,
   });
   if (!res.ok) {
-    throw new Error(await errorMessage(res, `Could not delete piece (${res.status}).`));
+    throw new Error(await errorMessage(res, `Could not remove piece from book (${res.status}).`));
   }
 }

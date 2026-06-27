@@ -144,7 +144,7 @@ function BookSectionHeading({
         open={deleteOpen}
         title="Delete book?"
         itemName={title}
-        lead="and all of its pieces will be permanently removed. This cannot be undone."
+        lead="will be permanently removed. Pieces in your library are not deleted."
         busy={deleteBusy}
         error={deleteError}
         onCancel={() => {
@@ -164,7 +164,6 @@ export default function Catalog({
   sections,
   viewState,
   viewPrefix,
-  onPieceSave,
   onPieceDelete,
   onBookSave,
   onBookDelete,
@@ -181,12 +180,10 @@ export default function Catalog({
             editing={activeEditId === `book:${section.id}`}
             onStartEdit={() => setActiveEditId(`book:${section.id}`)}
             onEndEdit={() => setActiveEditId(null)}
-            onBookSave={onBookSave ? (name) => onBookSave(section.title, name) : undefined}
-            onBookDelete={onBookDelete ? () => onBookDelete(section.title) : undefined}
+            onBookSave={onBookSave ? (name) => onBookSave(section.bookKey ?? section.title, name) : undefined}
+            onBookDelete={onBookDelete ? () => onBookDelete(section.bookKey ?? section.title) : undefined}
           />
-          {section.pieces.map((piece) => {
-            const pieceEditId = `piece:${pieceId(section.id, piece.title)}`;
-            return (
+          {section.pieces.map((piece) => (
             <CompositionCard
               key={piece.title}
               id={pieceId(section.id, piece.title)}
@@ -194,22 +191,13 @@ export default function Catalog({
               viewState={viewState}
               viewPrefix={viewPrefix}
               availableFiles={availableFiles}
-              editing={activeEditId === pieceEditId}
-              onStartEdit={() => setActiveEditId(pieceEditId)}
-              onEndEdit={() => setActiveEditId(null)}
-              onPieceSave={
-                onPieceSave
-                  ? (updates) => onPieceSave(section.title, piece.title, updates)
-                  : undefined
-              }
               onPieceDelete={
                 onPieceDelete
-                  ? () => onPieceDelete(section.title, piece.title)
+                  ? () => onPieceDelete(piece.pieceKey ?? piece.title)
                   : undefined
               }
             />
-            );
-          })}
+          ))}
         </section>
       ))}
     </>

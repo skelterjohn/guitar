@@ -82,6 +82,7 @@ func main() {
 		r.Get("/book/{email}", srv.handleListBook)
 		r.Get("/book/{email}/{filename}", srv.handleGetBook)
 		r.Post("/book/{email}/{filename}", srv.handlePostBook)
+		r.Delete("/book/{email}/{filename}", srv.handleDeleteBook)
 
 		r.Get("/users/{email}", srv.handleGetUserCollection)
 		r.Get("/users/{email}/books/{book}/piece/{piece}/parts/{part}", srv.handleGetCollectionPart)

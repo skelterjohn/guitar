@@ -1994,6 +1994,25 @@ body {
   color: #b91c1c;
 }
 
+.toast {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  z-index: 60;
+  max-width: min(24rem, calc(100vw - 2rem));
+  padding: 0.625rem 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 18%);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
 .book-library {
   margin-top: 1.5rem;
 }
@@ -2051,6 +2070,136 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 0.375rem;
   background: var(--color-surface);
+}
+
+.book-score-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.book-score-delete {
+  flex: 0 0 auto;
+  padding: 0.15rem 0.4rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  color: #b91c1c;
+  background: transparent;
+  border: 1px solid rgb(185 28 28 / 35%);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.book-score-delete:hover:not(:disabled) {
+  background: rgb(185 28 28 / 8%);
+}
+
+.book-score-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.book-delete-pdf-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 45%);
+}
+
+.book-delete-pdf-modal {
+  width: min(100%, 24rem);
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 20%);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+}
+
+.book-delete-pdf-modal h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-heading);
+}
+
+.book-delete-pdf-lead {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.book-delete-pdf-filename {
+  font-weight: 600;
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.book-delete-pdf-warning {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #b45309;
+}
+
+.book-delete-pdf-error {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: #b91c1c;
+}
+
+.book-delete-pdf-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.book-delete-pdf-cancel,
+.book-delete-pdf-confirm {
+  padding: 0.5rem 0.875rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.book-delete-pdf-cancel {
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
+.book-delete-pdf-cancel:hover:not(:disabled) {
+  background: var(--color-surface);
+}
+
+.book-delete-pdf-confirm {
+  color: #fff;
+  background: #b91c1c;
+  border: 1px solid #b91c1c;
+}
+
+.book-delete-pdf-confirm:hover:not(:disabled) {
+  background: #991b1b;
+  border-color: #991b1b;
+}
+
+.book-delete-pdf-cancel:disabled,
+.book-delete-pdf-confirm:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .book-score-collections {

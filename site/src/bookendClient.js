@@ -85,6 +85,18 @@ export async function uploadBookPdf(user, filename, file) {
   }
 }
 
+export async function deleteBookPdf(user, filename) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(bookEndpoint(email, filename), {
+    method: 'DELETE',
+    headers,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Delete failed (${res.status}).`));
+  }
+}
+
 export async function fetchBookPdf(user, filename) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);

@@ -18,6 +18,7 @@ type objectStore interface {
 	List(ctx context.Context, email string) ([]string, error)
 	Read(ctx context.Context, objectKey string) (io.ReadCloser, error)
 	Write(ctx context.Context, objectKey string, r io.Reader, contentType string) error
+	Delete(ctx context.Context, objectKey string) error
 }
 
 type gcsStore struct {
@@ -83,6 +84,17 @@ func (s *gcsStore) Write(ctx context.Context, objectKey string, r io.Reader, con
 		return err
 	}
 	return writer.Close()
+}
+
+func (s *gcsStore) Delete(ctx context.Context, objectKey string) error {
+	obj := s.client.Bucket(s.bucket).Object(objectKey)
+	if err := obj.Delete(ctx); err != nil {
+		if errors.Is(err, storage.ErrObjectNotExist) {
+			return errNotFound
+		}
+		return err
+	}
+	return nil
 }
 
 func bookObjectPrefix(email string) string {

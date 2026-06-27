@@ -2,9 +2,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import BookAuthGate from '../components/BookAuthGate.jsx';
+import BookDeletePdfModal from '../components/BookDeletePdfModal.jsx';
 import Catalog from '../components/Catalog.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
-import { fetchUserCollection, listBookPdfs, setCollectionPartPdf, updateCollectionBook, updateCollectionPiece, uploadBookPdf } from '../bookendClient.js';
+import Toast from '../components/Toast.jsx';
+import {
+  deleteBookPdf,
+  fetchUserCollection,
+  listBookPdfs,
+  setCollectionPartPdf,
+  updateCollectionBook,
+  updateCollectionPiece,
+  uploadBookPdf,
+} from '../bookendClient.js';
 import { auth } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { bookDescription, bookHeading, bookPath, bookTitle, bookUrl, bookViewPath } from '../seo.js';
@@ -108,12 +118,15 @@ function collectionFieldId(filename) {
   return encodeURIComponent(filename).replace(/%/g, '_');
 }
 
-function BookScoreItem({ user, filename, collection, onCollectionChange }) {
+function BookScoreItem({ user, filename, collection, onCollectionChange, onPdfDeleted }) {
   const [book, setBook] = useState('');
   const [piece, setPiece] = useState('');
   const [part, setPart] = useState('');
   const [adding, setAdding] = useState(false);
   const [itemError, setItemError] = useState('');
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   const memberships = collectionsForPdf(collection, filename);
   const fieldId = collectionFieldId(filename);
@@ -163,11 +176,59 @@ function BookScoreItem({ user, filename, collection, onCollectionChange }) {
     void handleAdd();
   };
 
+  const openDeleteModal = () => {
+    setDeleteError('');
+    setDeleteOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    if (deleting) return;
+    setDeleteOpen(false);
+    setDeleteError('');
+  };
+
+  const handleDeleteConfirm = async () => {
+    setDeleting(true);
+    setDeleteError('');
+    try {
+      await deleteBookPdf(user, filename);
+      setDeleteOpen(false);
+      await onPdfDeleted(filename);
+    } catch (deleteErr) {
+      setDeleteError(deleteErr.message);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <li className="book-score-item">
-      <Link className="book-file-open" to={bookViewPath(filename)}>
-        {filename}
-      </Link>
+      <div className="book-score-header">
+        <Link className="book-file-open" to={bookViewPath(filename)}>
+          {filename}
+        </Link>
+        <button
+          className="book-score-delete"
+          type="button"
+          onClick={openDeleteModal}
+          disabled={adding || deleting}
+          aria-label={`Delete ${filename}`}
+        >
+          delete
+        </button>
+      </div>
+
+      <BookDeletePdfModal
+        open={deleteOpen}
+        filename={filename}
+        membershipCount={memberships.length}
+        busy={deleting}
+        error={deleteError}
+        onCancel={closeDeleteModal}
+        onConfirm={() => {
+          void handleDeleteConfirm();
+        }}
+      />
 
       <div className="book-score-collections">
         {memberships.length > 0 && (
@@ -253,6 +314,7 @@ function BookLibrary({ user }) {
   const [collection, setCollection] = useState({ books: [] });
   const [collectionLoaded, setCollectionLoaded] = useState(false);
   const [status, setStatus] = useState('');
+  const [toast, setToast] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -358,12 +420,21 @@ function BookLibrary({ user }) {
     [user, refreshCollection],
   );
 
+  const handlePdfDeleted = useCallback(
+    async (filename) => {
+      await refreshList();
+      setToast(`Deleted ${filename}.`);
+    },
+    [refreshList],
+  );
+
   const openFilePicker = () => {
     if (!busy) fileInputRef.current?.click();
   };
 
   return (
     <>
+      <Toast message={toast} onDismiss={() => setToast('')} />
       {collectionLoaded && collectionSections.length > 0 && (
         <TableOfContents sections={collectionSections} />
       )}
@@ -426,6 +497,7 @@ function BookLibrary({ user }) {
                 filename={filename}
                 collection={collection}
                 onCollectionChange={refreshCollection}
+                onPdfDeleted={handlePdfDeleted}
               />
             ))}
           </ul>

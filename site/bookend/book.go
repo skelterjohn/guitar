@@ -190,3 +190,34 @@ func (s *server) handlePostBook(w http.ResponseWriter, r *http.Request) {
 	log.Printf("pdf upload email=%q filename=%q contentType=%q contentLength=%d", pathEmail, filename, contentType, r.ContentLength)
 	w.WriteHeader(http.StatusCreated)
 }
+
+func (s *server) handleDeleteBook(w http.ResponseWriter, r *http.Request) {
+	pathEmail := bookParam(r, "email")
+	filename := bookParam(r, "filename")
+
+	if err := validateBookEmail(pathEmail); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateBookFilename(filename); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if !s.requirePathEmail(w, r, pathEmail) {
+		return
+	}
+
+	if err := s.store.Delete(r.Context(), bookObjectKey(pathEmail, filename)); err != nil {
+		if errors.Is(err, errNotFound) {
+			log.Printf("pdf delete not found email=%q filename=%q", pathEmail, filename)
+			writeJSON(w, http.StatusNotFound, map[string]string{"error": "pdf not found"})
+			return
+		}
+		log.Printf("pdf delete failed email=%q filename=%q err=%v", pathEmail, filename, err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not delete pdf"})
+		return
+	}
+
+	log.Printf("pdf delete email=%q filename=%q", pathEmail, filename)
+	w.WriteHeader(http.StatusNoContent)
+}

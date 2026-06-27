@@ -7,7 +7,7 @@ import usePageMeta from '../hooks/usePageMeta.js';
 import { bookBackLabel, bookPath, bookTitle, bookViewPath, pageTitle, parseBookViewPageRange } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
 import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
-import { userCollectionToSections } from '../utils/collectionCatalog.js';
+import { userCollectionToSections, piecePdfs } from '../utils/collectionCatalog.js';
 
 function bookAnnotationKey(email, filename) {
   return `book/${email.toLowerCase()}/${filename}`;
@@ -51,17 +51,23 @@ function ViewBookPdfInner({ user }) {
     () => parseBookViewPageRange(searchParams.toString()),
     [searchParams],
   );
+  const [library, setLibrary] = useState({ pieces: [], books: [] });
   const [sections, setSections] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
     fetchUserLibrary(user)
-      .then((library) => {
-        if (!cancelled) setSections(userCollectionToSections(library));
+      .then((nextLibrary) => {
+        if (cancelled) return;
+        setLibrary(nextLibrary);
+        setSections(userCollectionToSections(nextLibrary));
       })
       .catch((error) => {
         console.error('Could not load collections:', error);
-        if (!cancelled) setSections([]);
+        if (!cancelled) {
+          setLibrary({ pieces: [], books: [] });
+          setSections([]);
+        }
       });
     return () => {
       cancelled = true;
@@ -72,7 +78,19 @@ function ViewBookPdfInner({ user }) {
     () => findPdfInSections(sections, decoded) ?? { section: null, piece: null },
     [sections, decoded],
   );
-  const pieceKey = section && piece ? pieceId(section.id, piece.title) : null;
+  const libraryPiece = useMemo(
+    () => library.pieces.find((entry) => pdfFilesMatch(entry.pdf, decoded)) ?? null,
+    [library.pieces, decoded],
+  );
+  const viewerPdfs = useMemo(() => {
+    if (piece?.pdfs?.length) return piece.pdfs;
+    return piecePdfs(libraryPiece);
+  }, [piece, libraryPiece]);
+  const pieceKey = useMemo(() => {
+    if (section && piece) return pieceId(section.id, piece.title);
+    if (libraryPiece?.name) return libraryPiece.name;
+    return null;
+  }, [section, piece, libraryPiece]);
 
   const annotationKey = useMemo(
     () => bookAnnotationKey(user.email, decoded),
@@ -106,7 +124,7 @@ function ViewBookPdfInner({ user }) {
       loadPdfBytes={loadPdfBytes}
       downloadName={decoded}
       onDownload={handleDownload}
-      pdfs={piece?.pdfs ?? []}
+      pdfs={viewerPdfs}
       pieceKey={pieceKey}
       sectionPieces={sectionPiecesForNav(section, piece)}
       sectionTitle={section?.title ?? null}

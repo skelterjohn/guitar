@@ -6,6 +6,32 @@ function slugify(value) {
 }
 
 /**
+ * Build viewer/catalog pdf links for a library piece, including subparts.
+ * @param {{ part?: string, pdf: string, subparts?: Array<{ part: string, pageStart: number, pageEnd: number }> }} piece
+ */
+export function piecePdfs(piece) {
+  if (!piece?.pdf) return [];
+
+  const pdfs = [
+    {
+      label: piece.part?.trim() || 'score',
+      file: piece.pdf,
+    },
+  ];
+
+  for (const subpart of piece.subparts ?? []) {
+    pdfs.push({
+      label: subpart.part,
+      file: piece.pdf,
+      pageStart: subpart.pageStart,
+      pageEnd: subpart.pageEnd,
+    });
+  }
+
+  return pdfs;
+}
+
+/**
  * Map a user library into catalog.yaml-shaped sections.
  * @param {{ pieces?: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string }>, books?: Array<{ id: string, name: string, pieces: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string }> }> }} library
  */
@@ -28,27 +54,11 @@ export function userCollectionToSections(library) {
       const pieces = (book.pieces ?? [])
         .filter((piece) => piece.pdf)
         .map((piece) => {
-          const pdfs = [
-            {
-              label: piece.part?.trim() || 'score',
-              file: piece.pdf,
-            },
-          ];
-
-          for (const subpart of piece.subparts ?? []) {
-            pdfs.push({
-              label: subpart.part,
-              file: piece.pdf,
-              pageStart: subpart.pageStart,
-              pageEnd: subpart.pageEnd,
-            });
-          }
-
           const entry = {
             pieceKey: piece.name,
             title: piece.name,
             pdf: piece.pdf,
-            pdfs,
+            pdfs: piecePdfs(piece),
           };
           if (piece.composer) {
             entry.composer = piece.composer;

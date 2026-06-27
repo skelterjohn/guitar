@@ -1224,6 +1224,8 @@ export default function PdfViewer({
                 <PdfLinkList
                   pdfs={pdfs}
                   currentFile={currentFile}
+                  pageStart={pageStart}
+                  pageEnd={pageEnd}
                   viewState={viewState}
                   viewPrefix={backTo}
                 />

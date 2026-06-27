@@ -18,12 +18,29 @@ function viewContextForPrefix(viewPrefix) {
   return 'catalog';
 }
 
+function pdfLinkIsActive(pdf, currentFile, pageStart, pageEnd) {
+  if (!pdfFilesMatch(pdf.file, currentFile)) return false;
+
+  const linkStart = pdf.pageStart ?? null;
+  const linkEnd = pdf.pageEnd ?? linkStart;
+  const activeStart = pageStart ?? null;
+  const activeEnd = pageEnd ?? pageStart;
+
+  if (linkStart != null) {
+    return linkStart === activeStart && linkEnd === activeEnd;
+  }
+
+  return activeStart == null;
+}
+
 export default function PdfLinkList({
   pdfs,
   currentFile,
   viewState,
   viewPrefix = catalogPath,
   availableFiles,
+  pageStart = null,
+  pageEnd = null,
 }) {
   const linkState = { ...viewState, explicitPdf: true };
   const viewContext = viewContextForPrefix(viewPrefix);
@@ -37,8 +54,9 @@ export default function PdfLinkList({
     <div className="pdf-links">
       {pdfs.map((pdf) => {
         const missing = isMissing(pdf.file);
+        const active = pdfLinkIsActive(pdf, currentFile, pageStart, pageEnd);
         const classes = ['pdf-link'];
-        if (pdfFilesMatch(pdf.file, currentFile)) classes.push('pdf-link-active');
+        if (active) classes.push('pdf-link-active');
         if (missing) classes.push('pdf-link-missing');
         const linkKey = `${pdf.file}:${pdf.label}:${pdf.pageStart ?? ''}:${pdf.pageEnd ?? ''}`;
 
@@ -61,7 +79,7 @@ export default function PdfLinkList({
             className={classes.join(' ')}
             to={viewLinkForPdf(pdf, viewContext)}
             state={linkState}
-            aria-current={pdf.file === currentFile ? 'page' : undefined}
+            aria-current={active ? 'page' : undefined}
           >
             {pdf.label}
           </Link>

@@ -1226,6 +1226,42 @@ body {
   gap: 0.5rem;
 }
 
+.viewer-part-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.viewer-new-part-btn {
+  padding: 0.2rem 0.45rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-link-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-link-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.viewer-new-part-btn:hover:not(:disabled) {
+  background: var(--color-link-bg);
+}
+
+.viewer-new-part-btn.is-active {
+  color: var(--color-text);
+  background: var(--color-link-bg);
+  border-color: var(--color-link-text);
+}
+
+.viewer-new-part-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .external-links {
   display: flex;
   flex-wrap: wrap;
@@ -2397,6 +2433,13 @@ body {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 0.25rem;
+}
+
+.book-new-subpart-fixed-pages {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
 }
 
 .book-score-piece-form .book-score-add-subpart {

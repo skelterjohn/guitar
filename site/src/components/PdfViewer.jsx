@@ -14,6 +14,7 @@ import {
 import AnnotationHelpModal from './AnnotationHelpModal.jsx';
 import AnnotationOverlay from './AnnotationOverlay.jsx';
 import AnnotationMenu from './AnnotationMenu.jsx';
+import BookNewSubpartModal from './BookNewSubpartModal.jsx';
 import ChevronIcon from './ChevronIcon.jsx';
 import DownloadIcon from './DownloadIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
@@ -67,6 +68,8 @@ export default function PdfViewer({
   viewState,
   pageStart = null,
   pageEnd = null,
+  bookPieceName = null,
+  onCreateSubpart = null,
 }) {
   const currentFile = currentFileOverride ?? filename;
   const url = pdfUrlOverride ?? pdfUrl(filename, pdfHash);
@@ -139,6 +142,13 @@ export default function PdfViewer({
   const [printSheets, setPrintSheets] = useState(null);
   const [printBusy, setPrintBusy] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
+  const [newPartStart, setNewPartStart] = useState(null);
+  const [subpartModalOpen, setSubpartModalOpen] = useState(false);
+  const [pendingSubpartRange, setPendingSubpartRange] = useState(null);
+  const [subpartBusy, setSubpartBusy] = useState(false);
+  const [subpartError, setSubpartError] = useState('');
+
+  const canCreateSubpart = viewContext === 'book' && bookPieceName && onCreateSubpart;
 
   const pdfZoomRef = useRef(1);
   const pendingZoomScrollRef = useRef(null);
@@ -280,6 +290,10 @@ export default function PdfViewer({
     setGlyphDragPreview(null);
     setGlyphDropRequest(null);
     setStorageWarning('');
+    setNewPartStart(null);
+    setSubpartModalOpen(false);
+    setPendingSubpartRange(null);
+    setSubpartError('');
     lastPenTapRef.current = null;
     saveAnnotationsRef.current?.cancel();
     scrollToTopPendingRef.current = true;
@@ -1204,11 +1218,67 @@ export default function PdfViewer({
     observer.observe(start);
     if (end) observer.observe(end);
     observer.observe(nav);
-    const pdfLinks = start.querySelector('.pdf-links');
-    if (pdfLinks) observer.observe(pdfLinks);
+    const partNav = start.querySelector('.viewer-part-nav');
+    if (partNav) observer.observe(partNav);
 
     return () => observer.disconnect();
-  }, [headerHidden, status, pageCount, displayReady, pdfs, filename]);
+  }, [headerHidden, status, pageCount, displayReady, pdfs, filename, canCreateSubpart]);
+
+  const resetNewPart = useCallback(() => {
+    setNewPartStart(null);
+    setSubpartModalOpen(false);
+    setPendingSubpartRange(null);
+    setSubpartError('');
+  }, []);
+
+  useEffect(() => {
+    if (!canCreateSubpart) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key !== 'Escape' || newPartStart == null || subpartBusy) return;
+      event.preventDefault();
+      resetNewPart();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [canCreateSubpart, newPartStart, subpartBusy, resetNewPart]);
+
+  const handleNewPartButton = () => {
+    if (newPartStart == null) {
+      setNewPartStart(currentPage);
+      return;
+    }
+
+    setPendingSubpartRange({
+      pageStart: Math.min(newPartStart, currentPage),
+      pageEnd: Math.max(newPartStart, currentPage),
+    });
+    setSubpartError('');
+    setSubpartModalOpen(true);
+  };
+
+  const handleSubpartModalCancel = () => {
+    if (subpartBusy) return;
+    setSubpartModalOpen(false);
+    setPendingSubpartRange(null);
+    setSubpartError('');
+  };
+
+  const handleSubpartConfirm = async ({ part, pageStart: rangeStart, pageEnd: rangeEnd }) => {
+    if (!onCreateSubpart) return;
+
+    setSubpartBusy(true);
+    setSubpartError('');
+    try {
+      await onCreateSubpart({ part, pageStart: rangeStart, pageEnd: rangeEnd });
+      resetNewPart();
+    } catch (createError) {
+      setSubpartError(createError.message);
+    } finally {
+      setSubpartBusy(false);
+    }
+  };
 
   const showLoading =
     status === 'loading' || (status === 'ready' && !displayReady);
@@ -1220,15 +1290,30 @@ export default function PdfViewer({
           <div className="viewer-toolbar" ref={toolbarRef}>
             <div className="viewer-toolbar-start" ref={toolbarStartRef}>
               <Link to={backTo}>&larr; {backLabel}</Link>
-              {pdfs.length > 0 && (
-                <PdfLinkList
-                  pdfs={pdfs}
-                  currentFile={currentFile}
-                  pageStart={pageStart}
-                  pageEnd={pageEnd}
-                  viewState={viewState}
-                  viewPrefix={backTo}
-                />
+              {(pdfs.length > 0 || canCreateSubpart) && (
+                <div className="viewer-part-nav">
+                  {pdfs.length > 0 && (
+                    <PdfLinkList
+                      pdfs={pdfs}
+                      currentFile={currentFile}
+                      pageStart={pageStart}
+                      pageEnd={pageEnd}
+                      viewState={viewState}
+                      viewPrefix={backTo}
+                    />
+                  )}
+                  {canCreateSubpart && (
+                    <button
+                      type="button"
+                      className={`viewer-new-part-btn${newPartStart != null ? ' is-active' : ''}`}
+                      onClick={handleNewPartButton}
+                      disabled={subpartBusy || status !== 'ready'}
+                      aria-pressed={newPartStart != null}
+                    >
+                      {newPartStart == null ? 'begin new part' : 'conclude new part'}
+                    </button>
+                  )}
+                </div>
               )}
             </div>
             <div className="viewer-toolbar-end" ref={toolbarEndRef}>
@@ -1528,6 +1613,20 @@ export default function PdfViewer({
         open={annotationHelpOpen}
         onClose={() => setAnnotationHelpOpen(false)}
       />
+      {canCreateSubpart && (
+        <BookNewSubpartModal
+          open={subpartModalOpen}
+          filename={currentFile}
+          busy={subpartBusy}
+          error={subpartError}
+          pageStart={pendingSubpartRange?.pageStart ?? null}
+          pageEnd={pendingSubpartRange?.pageEnd ?? null}
+          onCancel={handleSubpartModalCancel}
+          onConfirm={(payload) => {
+            void handleSubpartConfirm(payload);
+          }}
+        />
+      )}
       {printSheets && (
         <div className="viewer-print-sheets" aria-hidden="true">
           {printSheets.map((sheet, index) => (

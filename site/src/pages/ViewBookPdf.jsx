@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import BookAuthGate from '../components/BookAuthGate.jsx';
 import PdfViewer from '../components/PdfViewer.jsx';
-import { downloadBookPdf, fetchBookPdfBytes, fetchUserLibrary } from '../bookendClient.js';
+import { createSubpart, downloadBookPdf, fetchBookPdfBytes, fetchUserLibrary } from '../bookendClient.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { bookBackLabel, bookPath, bookTitle, bookViewPath, pageTitle, parseBookViewPageRange } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
@@ -109,6 +109,19 @@ function ViewBookPdfInner({ user }) {
     [user, decoded],
   );
 
+  const handleCreateSubpart = useCallback(
+    async ({ part, pageStart, pageEnd }) => {
+      if (!libraryPiece?.name) {
+        throw new Error('Save piece info first.');
+      }
+      await createSubpart(user, libraryPiece.name, { part, pageStart, pageEnd });
+      const nextLibrary = await fetchUserLibrary(user);
+      setLibrary(nextLibrary);
+      setSections(userCollectionToSections(nextLibrary));
+    },
+    [user, libraryPiece?.name],
+  );
+
   usePageMeta({
     title: pageTitle(decoded),
     description: `${decoded} — ${bookTitle}`,
@@ -130,6 +143,8 @@ function ViewBookPdfInner({ user }) {
       sectionTitle={section?.title ?? null}
       pageStart={pageRange?.pageStart ?? null}
       pageEnd={pageRange?.pageEnd ?? null}
+      bookPieceName={libraryPiece?.name ?? null}
+      onCreateSubpart={libraryPiece?.name ? handleCreateSubpart : null}
       backTo={bookPath()}
       backLabel={bookBackLabel}
       viewState={{ from: bookPath() }}

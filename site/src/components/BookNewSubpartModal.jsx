@@ -26,11 +26,20 @@ export default function BookNewSubpartModal({
   filename,
   busy = false,
   error = '',
+  pageStart: fixedPageStart = null,
+  pageEnd: fixedPageEnd = null,
   onCancel,
   onConfirm,
 }) {
   const [part, setPart] = useState('');
   const [pages, setPages] = useState('');
+  const fixedRange = fixedPageStart != null && fixedPageEnd != null;
+
+  const formatFixedPages = () => {
+    if (!fixedRange) return '';
+    if (fixedPageEnd === fixedPageStart) return `p. ${fixedPageStart}`;
+    return `pp. ${fixedPageStart}–${fixedPageEnd}`;
+  };
 
   useEffect(() => {
     if (!open) return undefined;
@@ -60,13 +69,22 @@ export default function BookNewSubpartModal({
     const partLabel = part.trim();
     if (!partLabel) return;
 
-    const parsed = parsePageRange(pages);
-    if (!parsed) return;
+    let pageStart;
+    let pageEnd;
+    if (fixedRange) {
+      pageStart = fixedPageStart;
+      pageEnd = fixedPageEnd;
+    } else {
+      const parsed = parsePageRange(pages);
+      if (!parsed) return;
+      pageStart = parsed.pageStart;
+      pageEnd = parsed.pageEnd;
+    }
 
     onConfirm({
       part: partLabel,
-      pageStart: parsed.pageStart,
-      pageEnd: parsed.pageEnd,
+      pageStart,
+      pageEnd,
     });
   };
 
@@ -102,17 +120,23 @@ export default function BookNewSubpartModal({
               placeholder="guitar 1"
             />
           </label>
-          <label className="book-new-subpart-field">
-            <span>pages</span>
-            <input
-              type="text"
-              value={pages}
-              onChange={(event) => setPages(event.target.value)}
-              disabled={busy}
-              autoComplete="off"
-              placeholder="3 or 3-5"
-            />
-          </label>
+          {fixedRange ? (
+            <p className="book-new-subpart-fixed-pages">
+              pages <strong>{formatFixedPages()}</strong>
+            </p>
+          ) : (
+            <label className="book-new-subpart-field">
+              <span>pages</span>
+              <input
+                type="text"
+                value={pages}
+                onChange={(event) => setPages(event.target.value)}
+                disabled={busy}
+                autoComplete="off"
+                placeholder="3 or 3-5"
+              />
+            </label>
+          )}
           {error && (
             <p className="book-delete-pdf-error" role="alert">
               {error}
@@ -130,7 +154,7 @@ export default function BookNewSubpartModal({
             <button
               className="book-delete-pdf-confirm"
               type="submit"
-              disabled={busy || !part.trim() || !parsePageRange(pages)}
+              disabled={busy || !part.trim() || (!fixedRange && !parsePageRange(pages))}
             >
               {busy ? 'Saving…' : 'Add part'}
             </button>

@@ -68,6 +68,15 @@ function pdfCardSearchText(filename, library) {
   return joinSearchFields(filename, piece?.name, piece?.composer, piece?.part, ...books);
 }
 
+/** @param {{ books: Array<{ name: string, pieces: Array<{ id: string }> }>, pieces: Array<{ id: string, name?: string, composer?: string, part?: string, pdf: string }> }} library */
+function isFileLabeled(library, filename) {
+  const piece = pieceForPdf(library, filename);
+  if (piece?.name?.trim()) return true;
+  if (piece?.composer?.trim()) return true;
+  if (piece?.part?.trim()) return true;
+  return booksForPiece(library, piece).length > 0;
+}
+
 function formatUploadedAt(iso) {
   if (!iso) return '';
   const date = new Date(iso);
@@ -77,6 +86,56 @@ function formatUploadedAt(iso) {
     month: 'short',
     day: 'numeric',
   }).format(date);
+}
+
+const SCORE_SORT_FIELDS = [
+  { id: 'filename', label: 'filename' },
+  { id: 'piece', label: 'piece' },
+  { id: 'composer', label: 'composer' },
+  { id: 'upload', label: 'upload' },
+  { id: 'book', label: 'book' },
+  { id: 'labeled', label: 'labeled' },
+];
+
+/** @param {{ name: string, modifiedAt?: string }} file */
+function scoreSortValue(file, library, field) {
+  const piece = pieceForPdf(library, file.name);
+  switch (field) {
+    case 'piece':
+      return piece?.name ?? '';
+    case 'composer':
+      return piece?.composer ?? '';
+    case 'upload':
+      return file.modifiedAt ?? '';
+    case 'book':
+      return booksForPiece(library, piece).join(', ');
+    default:
+      return file.name;
+  }
+}
+
+/** @param {Array<{ name: string, modifiedAt?: string }>} files */
+function sortBookFiles(files, library, field, direction) {
+  const multiplier = direction === 'asc' ? 1 : -1;
+  return [...files].sort((a, b) => {
+    if (field === 'labeled') {
+      const aLabeled = isFileLabeled(library, a.name) ? 1 : 0;
+      const bLabeled = isFileLabeled(library, b.name) ? 1 : 0;
+      if (aLabeled !== bLabeled) return (aLabeled - bLabeled) * multiplier;
+    } else if (field === 'upload') {
+      const aTime = Date.parse(a.modifiedAt ?? '') || 0;
+      const bTime = Date.parse(b.modifiedAt ?? '') || 0;
+      if (aTime !== bTime) return (aTime - bTime) * multiplier;
+    } else {
+      const cmp = scoreSortValue(a, library, field).localeCompare(
+        scoreSortValue(b, library, field),
+        undefined,
+        { sensitivity: 'base' },
+      );
+      if (cmp !== 0) return cmp * multiplier;
+    }
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+  });
 }
 
 function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, onPdfDeleted }) {
@@ -437,6 +496,8 @@ function BookLibrary({ user }) {
   const [exportingZip, setExportingZip] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('catalog');
+  const [sortField, setSortField] = useState('filename');
+  const [sortDirection, setSortDirection] = useState('asc');
   const fileInputRef = useRef(null);
 
   const refreshLibrary = useCallback(async () => {
@@ -462,6 +523,11 @@ function BookLibrary({ user }) {
     if (!searchQuery.trim()) return bookFiles;
     return bookFiles.filter((file) => fuzzyMatch(pdfCardSearchText(file.name, library), searchQuery));
   }, [bookFiles, library, searchQuery]);
+
+  const sortedBookFiles = useMemo(
+    () => sortBookFiles(filteredBookFiles, library, sortField, sortDirection),
+    [filteredBookFiles, library, sortField, sortDirection],
+  );
 
   const filteredSections = useMemo(
     () => filterCatalogSections(collectionSections, searchQuery),
@@ -687,6 +753,43 @@ function BookLibrary({ user }) {
               hidden
             />
 
+            {!loading && filenames.length > 0 && (
+              <div className="book-sort" role="group" aria-label="Sort scores">
+                <span className="book-sort-direction" role="group" aria-label="Sort direction">
+                  <button
+                    type="button"
+                    className={`book-sort-btn${sortDirection === 'asc' ? ' is-active' : ''}`}
+                    aria-pressed={sortDirection === 'asc'}
+                    aria-label="Ascending"
+                    onClick={() => setSortDirection('asc')}
+                  >
+                    <span aria-hidden="true">▲</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`book-sort-btn${sortDirection === 'desc' ? ' is-active' : ''}`}
+                    aria-pressed={sortDirection === 'desc'}
+                    aria-label="Descending"
+                    onClick={() => setSortDirection('desc')}
+                  >
+                    <span aria-hidden="true">▼</span>
+                  </button>
+                </span>
+                <span className="book-sort-label">sort by</span>
+                {SCORE_SORT_FIELDS.map((field) => (
+                  <button
+                    key={field.id}
+                    type="button"
+                    className={`book-sort-btn${sortField === field.id ? ' is-active' : ''}`}
+                    aria-pressed={sortField === field.id}
+                    onClick={() => setSortField(field.id)}
+                  >
+                    {field.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {error && (
               <p className="book-status book-status-error" role="alert">
                 {error}
@@ -701,7 +804,7 @@ function BookLibrary({ user }) {
               <p className="book-empty">No matches.</p>
             ) : (
               <ul className="book-file-list">
-                {filteredBookFiles.map((file) => (
+                {sortedBookFiles.map((file) => (
                   <BookScoreItem
                     key={file.name}
                     user={user}

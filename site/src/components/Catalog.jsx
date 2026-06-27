@@ -1,18 +1,32 @@
 import { useEffect, useState } from 'react';
 import CompositionCard from './CompositionCard.jsx';
+import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
+import DeleteIcon from './DeleteIcon.jsx';
 import PencilIcon from './PencilIcon.jsx';
 import SaveIcon from './SaveIcon.jsx';
 import { pieceId } from '../utils/pieceId.js';
 
-function BookSectionHeading({ sectionId, title, onBookSave, editing, onStartEdit, onEndEdit }) {
+function BookSectionHeading({
+  title,
+  onBookSave,
+  onBookDelete,
+  editing,
+  onStartEdit,
+  onEndEdit,
+}) {
   const [name, setName] = useState(title);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     if (!editing) {
       setName(title);
       setError('');
+      setDeleteOpen(false);
+      setDeleteError('');
     }
   }, [title, editing]);
 
@@ -48,6 +62,21 @@ function BookSectionHeading({ sectionId, title, onBookSave, editing, onStartEdit
     }
   };
 
+  const handleDeleteConfirm = async () => {
+    if (!onBookDelete) return;
+    setDeleteBusy(true);
+    setDeleteError('');
+    try {
+      await onBookDelete();
+      setDeleteOpen(false);
+      onEndEdit();
+    } catch (deleteErr) {
+      setDeleteError(deleteErr.message);
+    } finally {
+      setDeleteBusy(false);
+    }
+  };
+
   if (!onBookSave) {
     return <h2>{title}</h2>;
   }
@@ -61,17 +90,33 @@ function BookSectionHeading({ sectionId, title, onBookSave, editing, onStartEdit
             type="text"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            disabled={busy}
+            disabled={busy || deleteBusy}
             aria-label="Book name"
           />
-          <button
-            type="submit"
-            className="catalog-section-edit"
-            disabled={busy}
-            aria-label="Save book"
-          >
-            <SaveIcon />
-          </button>
+          <div className="catalog-section-edit-actions">
+            {onBookDelete && (
+              <button
+                type="button"
+                className="catalog-section-edit catalog-section-edit-delete"
+                onClick={() => {
+                  setDeleteError('');
+                  setDeleteOpen(true);
+                }}
+                disabled={busy || deleteBusy}
+                aria-label="Delete book"
+              >
+                <DeleteIcon />
+              </button>
+            )}
+            <button
+              type="submit"
+              className="catalog-section-edit"
+              disabled={busy || deleteBusy}
+              aria-label="Save book"
+            >
+              <SaveIcon />
+            </button>
+          </div>
         </form>
       ) : (
         <div className="catalog-section-heading-row">
@@ -95,11 +140,36 @@ function BookSectionHeading({ sectionId, title, onBookSave, editing, onStartEdit
           {error}
         </p>
       )}
+      <ConfirmDeleteModal
+        open={deleteOpen}
+        title="Delete book?"
+        itemName={title}
+        lead="and all of its pieces will be permanently removed. This cannot be undone."
+        busy={deleteBusy}
+        error={deleteError}
+        onCancel={() => {
+          if (deleteBusy) return;
+          setDeleteOpen(false);
+          setDeleteError('');
+        }}
+        onConfirm={() => {
+          void handleDeleteConfirm();
+        }}
+      />
     </div>
   );
 }
 
-export default function Catalog({ sections, viewState, viewPrefix, onPieceSave, onBookSave, availableFiles }) {
+export default function Catalog({
+  sections,
+  viewState,
+  viewPrefix,
+  onPieceSave,
+  onPieceDelete,
+  onBookSave,
+  onBookDelete,
+  availableFiles,
+}) {
   const [activeEditId, setActiveEditId] = useState(null);
 
   return (
@@ -107,12 +177,12 @@ export default function Catalog({ sections, viewState, viewPrefix, onPieceSave, 
       {sections.map((section) => (
         <section key={section.id} className="catalog-section">
           <BookSectionHeading
-            sectionId={section.id}
             title={section.title}
             editing={activeEditId === `book:${section.id}`}
             onStartEdit={() => setActiveEditId(`book:${section.id}`)}
             onEndEdit={() => setActiveEditId(null)}
             onBookSave={onBookSave ? (name) => onBookSave(section.title, name) : undefined}
+            onBookDelete={onBookDelete ? () => onBookDelete(section.title) : undefined}
           />
           {section.pieces.map((piece) => {
             const pieceEditId = `piece:${pieceId(section.id, piece.title)}`;
@@ -130,6 +200,11 @@ export default function Catalog({ sections, viewState, viewPrefix, onPieceSave, 
               onPieceSave={
                 onPieceSave
                   ? (updates) => onPieceSave(section.title, piece.title, updates)
+                  : undefined
+              }
+              onPieceDelete={
+                onPieceDelete
+                  ? () => onPieceDelete(section.title, piece.title)
                   : undefined
               }
             />

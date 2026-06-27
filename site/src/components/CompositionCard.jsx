@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
+import DeleteIcon from './DeleteIcon.jsx';
 import ExternalLinkIcon from './ExternalLinkIcon.jsx';
 import PencilIcon from './PencilIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
@@ -10,6 +12,7 @@ export default function CompositionCard({
   viewState,
   viewPrefix,
   onPieceSave,
+  onPieceDelete,
   availableFiles,
   editing = false,
   onStartEdit,
@@ -21,12 +24,17 @@ export default function CompositionCard({
   const [composer, setComposer] = useState(piece.composer ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     if (!editing) {
       setTitle(piece.title);
       setComposer(piece.composer ?? '');
       setError('');
+      setDeleteOpen(false);
+      setDeleteError('');
     }
   }, [piece.title, piece.composer, editing]);
 
@@ -84,6 +92,21 @@ export default function CompositionCard({
     startEditing();
   };
 
+  const handleDeleteConfirm = async () => {
+    if (!onPieceDelete) return;
+    setDeleteBusy(true);
+    setDeleteError('');
+    try {
+      await onPieceDelete();
+      setDeleteOpen(false);
+      onEndEdit?.();
+    } catch (deleteErr) {
+      setDeleteError(deleteErr.message);
+    } finally {
+      setDeleteBusy(false);
+    }
+  };
+
   return (
     <article id={id} className="composition-card">
       {editing ? (
@@ -108,14 +131,30 @@ export default function CompositionCard({
             />
           </div>
           {onPieceSave && (
-            <button
-              type="submit"
-              className="composition-card-edit"
-              disabled={busy}
-              aria-label="Save piece"
-            >
-              <SaveIcon />
-            </button>
+            <div className="composition-card-edit-actions">
+              {onPieceDelete && (
+                <button
+                  type="button"
+                  className="composition-card-edit composition-card-edit-delete"
+                  onClick={() => {
+                    setDeleteError('');
+                    setDeleteOpen(true);
+                  }}
+                  disabled={busy || deleteBusy}
+                  aria-label="Delete piece"
+                >
+                  <DeleteIcon />
+                </button>
+              )}
+              <button
+                type="submit"
+                className="composition-card-edit"
+                disabled={busy || deleteBusy}
+                aria-label="Save piece"
+              >
+                <SaveIcon />
+              </button>
+            </div>
           )}
         </form>
       ) : (
@@ -144,6 +183,22 @@ export default function CompositionCard({
           {error}
         </p>
       )}
+      <ConfirmDeleteModal
+        open={deleteOpen}
+        title="Delete piece?"
+        itemName={piece.title}
+        lead="and all of its parts will be permanently removed. This cannot be undone."
+        busy={deleteBusy}
+        error={deleteError}
+        onCancel={() => {
+          if (deleteBusy) return;
+          setDeleteOpen(false);
+          setDeleteError('');
+        }}
+        onConfirm={() => {
+          void handleDeleteConfirm();
+        }}
+      />
       {paragraphs.length > 0 && (
         <div className="composition-description">
           {paragraphs.map((paragraph) => (

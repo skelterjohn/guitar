@@ -221,6 +221,18 @@ export async function updateCollectionBook(user, { book }, { name }) {
   return typeof data.name === 'string' ? data.name : name;
 }
 
+export async function deleteCollectionBook(user, { book }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(collectionBookEndpoint(email, { book }), {
+    method: 'DELETE',
+    headers,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not delete book (${res.status}).`));
+  }
+}
+
 /**
  * Update a collection piece's display name and composer.
  * @param {{ book: string, piece: string }} path
@@ -243,4 +255,16 @@ export async function updateCollectionPiece(user, { book, piece }, { name, compo
     name: typeof data.name === 'string' ? data.name : name,
     composer: typeof data.composer === 'string' ? data.composer : composer,
   };
+}
+
+export async function deleteCollectionPiece(user, { book, piece }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(collectionPieceEndpoint(email, { book, piece }), {
+    method: 'DELETE',
+    headers,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not delete piece (${res.status}).`));
+  }
 }

@@ -7,6 +7,8 @@ import Catalog from '../components/Catalog.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import Toast from '../components/Toast.jsx';
 import {
+  deleteCollectionBook,
+  deleteCollectionPiece,
   deleteBookPdf,
   fetchUserCollection,
   listBookPdfs,
@@ -420,6 +422,24 @@ function BookLibrary({ user }) {
     [user, refreshCollection],
   );
 
+  const handlePieceDelete = useCallback(
+    async (bookName, pieceName) => {
+      await deleteCollectionPiece(user, { book: bookName, piece: pieceName });
+      await refreshCollection();
+      setToast(`Deleted ${pieceName}.`);
+    },
+    [user, refreshCollection],
+  );
+
+  const handleBookDelete = useCallback(
+    async (bookName) => {
+      await deleteCollectionBook(user, { book: bookName });
+      await refreshCollection();
+      setToast(`Deleted ${bookName}.`);
+    },
+    [user, refreshCollection],
+  );
+
   const handlePdfDeleted = useCallback(
     async (filename) => {
       await refreshList();
@@ -513,7 +533,9 @@ function BookLibrary({ user }) {
             viewPrefix={bookPath}
             availableFiles={filenames}
             onPieceSave={handlePieceSave}
+            onPieceDelete={handlePieceDelete}
             onBookSave={handleBookSave}
+            onBookDelete={handleBookDelete}
           />
         ) : null}
       </main>

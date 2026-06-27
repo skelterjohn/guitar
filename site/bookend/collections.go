@@ -33,6 +33,8 @@ type collectionStore interface {
 	SetPartPDF(ctx context.Context, email, book, piece, part, pdf string) error
 	SetPiece(ctx context.Context, email, book, piece, name, composer string) error
 	SetBook(ctx context.Context, email, book, name string) error
+	DeletePiece(ctx context.Context, email, book, piece string) error
+	DeleteBook(ctx context.Context, email, book string) error
 }
 
 type collectionPart struct {
@@ -244,6 +246,77 @@ func (s *firestoreCollectionStore) SetBook(ctx context.Context, email, book, nam
 	_, err = bookRef.Set(ctx, map[string]any{
 		collectionNameField: name,
 	}, firestore.MergeAll)
+	return err
+}
+
+func (s *firestoreCollectionStore) deleteDocuments(ctx context.Context, col *firestore.CollectionRef) error {
+	iter := col.Documents(ctx)
+	defer iter.Stop()
+
+	batch := s.client.Batch()
+	count := 0
+	for {
+		doc, err := iter.Next()
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		batch.Delete(doc.Ref)
+		count++
+		if count >= 400 {
+			if _, err := batch.Commit(ctx); err != nil {
+				return err
+			}
+			batch = s.client.Batch()
+			count = 0
+		}
+	}
+	if count > 0 {
+		_, err := batch.Commit(ctx)
+		return err
+	}
+	return nil
+}
+
+func (s *firestoreCollectionStore) DeletePiece(ctx context.Context, email, book, piece string) error {
+	pieceRef, err := s.resolvePieceRef(ctx, email, book, piece)
+	if err != nil {
+		return err
+	}
+	if err := s.deleteDocuments(ctx, pieceRef.Collection("parts")); err != nil {
+		return err
+	}
+	_, err = pieceRef.Delete(ctx)
+	return err
+}
+
+func (s *firestoreCollectionStore) DeleteBook(ctx context.Context, email, book string) error {
+	bookRef, err := s.resolveBookRef(ctx, email, book)
+	if err != nil {
+		return err
+	}
+
+	piecesIter := bookRef.Collection("piece").Documents(ctx)
+	defer piecesIter.Stop()
+	for {
+		pieceDoc, err := piecesIter.Next()
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		if err := s.deleteDocuments(ctx, pieceDoc.Ref.Collection("parts")); err != nil {
+			return err
+		}
+		if _, err := pieceDoc.Ref.Delete(ctx); err != nil {
+			return err
+		}
+	}
+
+	_, err = bookRef.Delete(ctx)
 	return err
 }
 
@@ -702,4 +775,69 @@ func (s *server) handlePostCollectionBook(w http.ResponseWriter, r *http.Request
 
 	log.Printf("collection book update email=%q book=%q name=%q", pathEmail, book, name)
 	writeJSON(w, http.StatusOK, map[string]string{"name": name})
+}
+
+func (s *server) handleDeleteCollectionPiece(w http.ResponseWriter, r *http.Request) {
+	pathEmail := bookParam(r, "email")
+	book := bookParam(r, "book")
+	piece := bookParam(r, "piece")
+
+	if err := validateBookEmail(pathEmail); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(book, "book"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(piece, "piece"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if !s.requirePathEmail(w, r, pathEmail) {
+		return
+	}
+
+	if err := s.collections.DeletePiece(r.Context(), pathEmail, book, piece); err != nil {
+		if errors.Is(err, errNotFound) {
+			writeJSON(w, http.StatusNotFound, map[string]string{"error": "piece not found"})
+			return
+		}
+		log.Printf("collection piece delete failed email=%q book=%q piece=%q err=%v", pathEmail, book, piece, err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not delete piece"})
+		return
+	}
+
+	log.Printf("collection piece delete email=%q book=%q piece=%q", pathEmail, book, piece)
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *server) handleDeleteCollectionBook(w http.ResponseWriter, r *http.Request) {
+	pathEmail := bookParam(r, "email")
+	book := bookParam(r, "book")
+
+	if err := validateBookEmail(pathEmail); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(book, "book"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if !s.requirePathEmail(w, r, pathEmail) {
+		return
+	}
+
+	if err := s.collections.DeleteBook(r.Context(), pathEmail, book); err != nil {
+		if errors.Is(err, errNotFound) {
+			writeJSON(w, http.StatusNotFound, map[string]string{"error": "book not found"})
+			return
+		}
+		log.Printf("collection book delete failed email=%q book=%q err=%v", pathEmail, book, err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not delete book"})
+		return
+	}
+
+	log.Printf("collection book delete email=%q book=%q", pathEmail, book)
+	w.WriteHeader(http.StatusNoContent)
 }

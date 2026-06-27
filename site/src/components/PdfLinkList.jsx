@@ -1,6 +1,16 @@
 import { Link } from 'react-router-dom';
 import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
-import { catalogPath, isBookPath, repPath, viewPath } from '../seo.js';
+import { bookViewPath, catalogPath, isBookPath, repPath, viewPath } from '../seo.js';
+
+function viewLinkForPdf(pdf, viewContext) {
+  if (viewContext === 'book' && pdf.pageStart) {
+    return bookViewPath(pdf.file, {
+      pageStart: pdf.pageStart,
+      pageEnd: pdf.pageEnd ?? pdf.pageStart,
+    });
+  }
+  return viewPath(pdf.file, viewContext);
+}
 
 function viewContextForPrefix(viewPrefix) {
   if (viewPrefix === repPath) return 'rep';
@@ -48,7 +58,7 @@ export default function PdfLinkList({
           <Link
             key={pdf.file}
             className={classes.join(' ')}
-            to={viewPath(pdf.file, viewContext)}
+            to={viewLinkForPdf(pdf, viewContext)}
             state={linkState}
             aria-current={pdf.file === currentFile ? 'page' : undefined}
           >

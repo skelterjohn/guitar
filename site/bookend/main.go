@@ -90,6 +90,8 @@ func main() {
 		r.Post("/users/{email}/pieces", srv.handleCreatePiece)
 		r.Post("/users/{email}/pieces/{piece}", srv.handleUpdatePiece)
 		r.Delete("/users/{email}/pieces/{piece}", srv.handleDeletePiece)
+		r.Post("/users/{email}/pieces/{piece}/subparts", srv.handleCreateSubpart)
+		r.Delete("/users/{email}/pieces/{piece}/subparts/{subpart}", srv.handleDeleteSubpart)
 		r.Post("/users/{email}/books", srv.handleCreateBook)
 		r.Post("/users/{email}/books/{book}", srv.handleUpdateBook)
 		r.Delete("/users/{email}/books/{book}", srv.handleDeleteLibraryBook)

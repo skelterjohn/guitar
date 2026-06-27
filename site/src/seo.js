@@ -59,10 +59,46 @@ export function viewPath(file, context = 'catalog') {
   return `${base}/view/${encodeURIComponent(viewRouteFilename(file))}`;
 }
 
-export function bookViewPath(filename) {
+export function bookViewPath(filename, { pageStart, pageEnd } = {}) {
   const base = bookPath();
   const encoded = encodeURIComponent(filename);
-  return base === '/' ? `/view/${encoded}` : `${base}/view/${encoded}`;
+  const path = base === '/' ? `/view/${encoded}` : `${base}/view/${encoded}`;
+  const start = Number(pageStart);
+  if (!Number.isFinite(start) || start < 1) return path;
+  const endRaw = pageEnd ?? start;
+  const end = Number(endRaw);
+  const safeEnd = Number.isFinite(end) && end >= start ? end : start;
+  const pages = safeEnd === start ? String(start) : `${start}-${safeEnd}`;
+  return `${path}?pages=${pages}`;
+}
+
+export function parseBookViewPageRange(search) {
+  const query = typeof search === 'string' ? search.trim() : '';
+  const params = new URLSearchParams(query.startsWith('?') ? query.slice(1) : query);
+  const pages = params.get('pages')?.trim();
+  if (!pages) return null;
+
+  const rangeMatch = pages.match(/^(\d+)\s*-\s*(\d+)$/);
+  if (rangeMatch) {
+    const pageStart = Number.parseInt(rangeMatch[1], 10);
+    const pageEnd = Number.parseInt(rangeMatch[2], 10);
+    if (!Number.isFinite(pageStart) || pageStart < 1) return null;
+    if (!Number.isFinite(pageEnd) || pageEnd < pageStart) return null;
+    return { pageStart, pageEnd };
+  }
+
+  if (!/^\d+$/.test(pages)) return null;
+  const page = Number.parseInt(pages, 10);
+  if (!Number.isFinite(page) || page < 1) return null;
+  return { pageStart: page, pageEnd: page };
+}
+
+export function bookViewNavBounds(pageCount, pageRange) {
+  if (!pageCount) return { min: 1, max: 1, restricted: false };
+  if (!pageRange) return { min: 1, max: pageCount, restricted: false };
+  const min = Math.min(Math.max(pageRange.pageStart, 1), pageCount);
+  const max = Math.min(Math.max(pageRange.pageEnd, min), pageCount);
+  return { min, max, restricted: true };
 }
 
 export function viewPageUrl(file) {

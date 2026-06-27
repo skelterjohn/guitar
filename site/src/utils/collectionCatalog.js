@@ -28,21 +28,45 @@ export function userCollectionToSections(library) {
       const pieces = (book.pieces ?? [])
         .filter((piece) => piece.pdf)
         .map((piece) => {
-          const entry = {
-            pieceKey: piece.name,
-            title: piece.name,
-            part: piece.part ?? '',
-            pdf: piece.pdf,
-            pdfs: [{
-              label: piece.part || 'score',
-              file: piece.pdf,
-            }],
+          const entries = [];
+          const baseEntry = (partLabel, extra = {}) => {
+            const entry = {
+              pieceKey: extra.pieceKey ?? piece.name,
+              title: piece.name,
+              part: partLabel,
+              pdf: piece.pdf,
+              pdfs: [{
+                label: partLabel || 'score',
+                file: piece.pdf,
+                ...(extra.pageStart
+                  ? {
+                      pageStart: extra.pageStart,
+                      pageEnd: extra.pageEnd ?? extra.pageStart,
+                    }
+                  : {}),
+              }],
+              ...extra,
+            };
+            if (piece.composer) {
+              entry.composer = piece.composer;
+            }
+            return entry;
           };
-          if (piece.composer) {
-            entry.composer = piece.composer;
+
+          if (piece.pdf) {
+            entries.push(baseEntry(piece.part ?? ''));
           }
-          return entry;
-        });
+          for (const subpart of piece.subparts ?? []) {
+            entries.push(baseEntry(subpart.part, {
+              pieceKey: `${piece.name}::${subpart.id}`,
+              pageStart: subpart.pageStart,
+              pageEnd: subpart.pageEnd,
+            }));
+          }
+          return entries;
+        })
+        .flat()
+        .filter((entry) => entry.pdf);
 
       if (pieces.length === 0) return null;
 

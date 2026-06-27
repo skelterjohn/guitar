@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import BookAuthGate from '../components/BookAuthGate.jsx';
 import PdfViewer from '../components/PdfViewer.jsx';
 import { downloadBookPdf, fetchBookPdfBytes, fetchUserLibrary } from '../bookendClient.js';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { bookBackLabel, bookPath, bookTitle, bookViewPath, pageTitle } from '../seo.js';
+import { bookBackLabel, bookPath, bookTitle, bookViewPath, pageTitle, parseBookViewPageRange } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
 import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
 import { userCollectionToSections } from '../utils/collectionCatalog.js';
@@ -45,7 +45,12 @@ function sectionPiecesForNav(section, currentPiece) {
 
 function ViewBookPdfInner({ user }) {
   const { filename } = useParams();
+  const [searchParams] = useSearchParams();
   const decoded = decodeURIComponent(filename);
+  const pageRange = useMemo(
+    () => parseBookViewPageRange(searchParams.toString()),
+    [searchParams],
+  );
   const [sections, setSections] = useState([]);
 
   useEffect(() => {
@@ -89,7 +94,7 @@ function ViewBookPdfInner({ user }) {
   usePageMeta({
     title: pageTitle(decoded),
     description: `${decoded} — ${bookTitle}`,
-    url: `${window.location.origin}${bookViewPath(decoded)}`,
+    url: `${window.location.origin}${bookViewPath(decoded, pageRange ?? {})}`,
     noindex: true,
   });
 
@@ -105,6 +110,8 @@ function ViewBookPdfInner({ user }) {
       pieceKey={pieceKey}
       sectionPieces={sectionPiecesForNav(section, piece)}
       sectionTitle={section?.title ?? null}
+      pageStart={pageRange?.pageStart ?? null}
+      pageEnd={pageRange?.pageEnd ?? null}
       backTo={bookPath()}
       backLabel={bookBackLabel}
       viewState={{ from: bookPath() }}

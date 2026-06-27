@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { pdfUrl } from '../config.js';
@@ -36,7 +36,7 @@ import {
 import { PEN_COLOR } from '../utils/stylusInput.js';
 import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { buildPrintSheets } from '../utils/printPdf.js';
-import { catalogPath, isBookPath, repPath, viewPath } from '../seo.js';
+import { bookViewNavBounds, catalogPath, isBookPath, repPath, viewPath } from '../seo.js';
 
 function loadStatusMessage(phase) {
   switch (phase) {
@@ -65,6 +65,8 @@ export default function PdfViewer({
   backTo = catalogPath,
   backLabel = 'Catalog',
   viewState,
+  pageStart = null,
+  pageEnd = null,
 }) {
   const currentFile = currentFileOverride ?? filename;
   const url = pdfUrlOverride ?? pdfUrl(filename, pdfHash);
@@ -102,6 +104,19 @@ export default function PdfViewer({
   const [pageMediaSizes, setPageMediaSizes] = useState([]);
   const [pageBaseDisplaySizes, setPageBaseDisplaySizes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const pageRange = useMemo(() => {
+    if (pageStart == null && pageEnd == null) return null;
+    return {
+      pageStart: pageStart ?? 1,
+      pageEnd: pageEnd ?? pageStart ?? 1,
+    };
+  }, [pageStart, pageEnd]);
+  const navBounds = useMemo(
+    () => bookViewNavBounds(pageCount, pageRange),
+    [pageCount, pageRange],
+  );
+  const navBoundsRef = useRef(navBounds);
+  navBoundsRef.current = navBounds;
   const [status, setStatus] = useState('loading');
   const [loadPhase, setLoadPhase] = useState('loading');
   const [displayReady, setDisplayReady] = useState(false);
@@ -192,17 +207,17 @@ export default function PdfViewer({
     if (!scrollToTopPendingRef.current) return;
     scrollToTopPendingRef.current = false;
     resetPageScrollRef.current();
-    setCurrentPage(1);
+    setCurrentPage(navBoundsRef.current.min);
   };
 
   useLayoutEffect(() => {
     scrollToTopPendingRef.current = true;
-    setCurrentPage(1);
+    setCurrentPage(pageStart ?? 1);
     const container = containerRef.current;
     if (container) {
       container.scrollTop = 0;
     }
-  }, [url]);
+  }, [url, pageStart, pageEnd]);
 
   useLayoutEffect(() => {
     if (status !== 'ready') return;
@@ -240,7 +255,13 @@ export default function PdfViewer({
     }, 3000);
 
     return () => window.clearTimeout(timeout);
-  }, [status, pageCount, url]);
+  }, [status, pageCount, url, pageRange]);
+
+  useEffect(() => {
+    if (pageCount === 0) return;
+    const { min, max } = navBounds;
+    setCurrentPage((prev) => Math.min(Math.max(prev, min), max));
+  }, [navBounds, pageCount]);
 
   useLayoutEffect(() => {
     loadedUrlRef.current = null;
@@ -289,6 +310,8 @@ export default function PdfViewer({
         pdfDocRef.current = doc;
         loadedUrlRef.current = url;
         setPageCount(doc.numPages);
+        const bounds = bookViewNavBounds(doc.numPages, pageRange);
+        setCurrentPage(bounds.min);
         setStatus('ready');
         setLoadPhase('rendering');
       } catch (err) {
@@ -309,7 +332,7 @@ export default function PdfViewer({
       pdfDocRef.current = null;
       releasePdfDocument(url);
     };
-  }, [url, loadPdfBytes]);
+  }, [url, loadPdfBytes, pageRange]);
 
   const persistPageAnnotations = (pages, color = annotationColorRef.current) => {
     const storagePages = Object.fromEntries(
@@ -619,7 +642,12 @@ export default function PdfViewer({
       };
 
       const results = await Promise.all(
-        Array.from({ length: numPages }, (_, index) => renderOnePage(index + 1)),
+        Array.from({ length: numPages }, (_, index) => {
+          const pageNum = index + 1;
+          const bounds = bookViewNavBounds(numPages, pageRange);
+          if (pageNum < bounds.min || pageNum > bounds.max) return null;
+          return renderOnePage(pageNum);
+        }),
       );
       const renderedCount = results.filter(Boolean).length;
 
@@ -703,7 +731,13 @@ export default function PdfViewer({
       }
       renderTasksRef.current = [];
     };
-  }, [status, pageCount, url]);
+  }, [status, pageCount, url, pageRange]);
+
+  useEffect(() => {
+    if (pageCount === 0) return;
+    const { min, max } = navBounds;
+    setCurrentPage((prev) => Math.min(Math.max(prev, min), max));
+  }, [navBounds, pageCount]);
 
   useEffect(() => {
     if (status !== 'ready' || pageCount === 0) return;
@@ -712,7 +746,8 @@ export default function PdfViewer({
     if (!container) return;
 
     const goToPage = (pageNumber) => {
-      const next = Math.min(Math.max(pageNumber, 1), pageCount);
+      const { min, max } = navBoundsRef.current;
+      const next = Math.min(Math.max(pageNumber, min), max);
       scrollToTopPendingRef.current = false;
       resetPageScrollRef.current();
       setCurrentPage(next);
@@ -727,11 +762,11 @@ export default function PdfViewer({
     };
 
     const goToStart = () => {
-      goToPage(1);
+      goToPage(navBoundsRef.current.min);
     };
 
     const goToEnd = () => {
-      goToPage(pageCount);
+      goToPage(navBoundsRef.current.max);
     };
 
     navigationRef.current = { goToPrev, goToNext };
@@ -843,7 +878,7 @@ export default function PdfViewer({
         return;
       }
 
-      if (pageCount <= 1 || tapStartX == null || tapStartY == null) return;
+      if (navBounds.min >= navBounds.max || tapStartX == null || tapStartY == null) return;
       if (event.pointerType === 'pen') return;
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       if (isPinchingRef.current) return;
@@ -913,7 +948,7 @@ export default function PdfViewer({
       container.removeEventListener('contextmenu', onContextMenu, { capture: true });
       resizeObserver.disconnect();
     };
-  }, [status, pageCount, openAnnotationMenuAt]);
+  }, [status, pageCount, navBounds, openAnnotationMenuAt]);
 
   useEffect(() => {
     if (status !== 'ready') return undefined;
@@ -1037,7 +1072,7 @@ export default function PdfViewer({
         scrollToTopPendingRef.current ||
         annotationMenuRef.current ||
         glyphDragActiveRef.current ||
-        pageCount <= 1
+        navBounds.min >= navBounds.max
       ) {
         return;
       }
@@ -1107,7 +1142,7 @@ export default function PdfViewer({
       container.removeEventListener('touchcancel', onTouchEnd);
       container.removeEventListener('wheel', onWheel);
     };
-  }, [status, pageCount]);
+  }, [status, pageCount, navBounds]);
 
   useLayoutEffect(() => {
     if (status !== 'ready' || pageCount === 0) return;
@@ -1254,7 +1289,7 @@ export default function PdfViewer({
                 type="button"
                 className="viewer-page-arrow"
                 onClick={() => navigationRef.current.goToPrev()}
-                disabled={currentPage <= 1}
+                disabled={currentPage <= navBounds.min}
                 aria-label="Previous page"
               >
                 <ChevronIcon direction="left" />
@@ -1262,20 +1297,34 @@ export default function PdfViewer({
             )}
             <div
               className="viewer-page-indicator"
-              aria-label={`Page ${currentPage} of ${pageCount}`}
+              aria-label={
+                navBounds.restricted
+                  ? `Page ${currentPage - navBounds.min + 1} of ${
+                      navBounds.max - navBounds.min + 1
+                    } (pages ${navBounds.min}–${navBounds.max})`
+                  : `Page ${currentPage} of ${pageCount}`
+              }
             >
-              <span className="viewer-page-current">{currentPage}</span>
+              <span className="viewer-page-current">
+                {navBounds.restricted
+                  ? currentPage - navBounds.min + 1
+                  : currentPage}
+              </span>
               <span className="viewer-page-separator" aria-hidden="true">
                 /
               </span>
-              <span className="viewer-page-total">{pageCount}</span>
+              <span className="viewer-page-total">
+                {navBounds.restricted
+                  ? navBounds.max - navBounds.min + 1
+                  : pageCount}
+              </span>
             </div>
             {!headerHidden && (
               <button
                 type="button"
                 className="viewer-page-arrow"
                 onClick={() => navigationRef.current.goToNext()}
-                disabled={currentPage >= pageCount}
+                disabled={currentPage >= navBounds.max}
                 aria-label="Next page"
               >
                 <ChevronIcon direction="right" />
@@ -1322,6 +1371,9 @@ export default function PdfViewer({
           >
             {Array.from({ length: pageCount }, (_, index) => {
               const pageNumber = index + 1;
+              if (pageNumber < navBounds.min || pageNumber > navBounds.max) {
+                return null;
+              }
               const isCurrent = pageNumber === currentPage;
               const pageLayers = normalizePageEntry(
                 pageAnnotations[String(pageNumber)],

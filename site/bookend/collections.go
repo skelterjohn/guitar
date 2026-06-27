@@ -39,14 +39,17 @@ type collectionStore interface {
 	DeleteBook(ctx context.Context, email, bookKey string) error
 	AddPieceToBook(ctx context.Context, email, bookKey, pieceKey string) error
 	RemovePieceFromBook(ctx context.Context, email, bookKey, pieceKey string) error
+	CreateSubpart(ctx context.Context, email, pieceKey string, subpart userSubpart) (userSubpart, error)
+	DeleteSubpart(ctx context.Context, email, pieceKey, subpartKey string) error
 }
 
 type userPiece struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Composer string `json:"composer,omitempty"`
-	Part     string `json:"part,omitempty"`
-	PDF      string `json:"pdf"`
+	ID       string        `json:"id"`
+	Name     string        `json:"name"`
+	Composer string        `json:"composer,omitempty"`
+	Part     string        `json:"part,omitempty"`
+	PDF      string        `json:"pdf"`
+	Subparts []userSubpart `json:"subparts,omitempty"`
 }
 
 type userBook struct {
@@ -253,6 +256,14 @@ func (s *firestoreCollectionStore) listPieces(ctx context.Context, email string)
 		pieces = append(pieces, pieceFromSnapshot(doc))
 	}
 	sortPieces(pieces)
+	for i, piece := range pieces {
+		ref := s.piecesCollection(email).Doc(piece.ID)
+		subparts, err := s.listSubparts(ctx, ref)
+		if err != nil {
+			return nil, err
+		}
+		pieces[i].Subparts = subparts
+	}
 	if pieces == nil {
 		pieces = []userPiece{}
 	}
@@ -360,6 +371,9 @@ func (s *firestoreCollectionStore) DeletePiece(ctx context.Context, email, piece
 		return err
 	}
 	if err := s.removePieceFromAllBooks(ctx, email, ref.ID); err != nil {
+		return err
+	}
+	if err := s.deleteSubparts(ctx, ref); err != nil {
 		return err
 	}
 	_, err = ref.Delete(ctx)

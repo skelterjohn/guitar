@@ -46,6 +46,18 @@ function libraryPieceEndpoint(email, piece) {
   return `${base}/v1/users/${enc(email)}/pieces/${enc(piece)}`;
 }
 
+function librarySubpartsEndpoint(email, piece) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  const enc = encodeURIComponent;
+  return `${base}/v1/users/${enc(email)}/pieces/${enc(piece)}/subparts`;
+}
+
+function librarySubpartEndpoint(email, piece, subpart) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  const enc = encodeURIComponent;
+  return `${base}/v1/users/${enc(email)}/pieces/${enc(piece)}/subparts/${enc(subpart)}`;
+}
+
 function libraryPiecesEndpoint(email) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   return `${base}/v1/users/${encodeURIComponent(email)}/pieces`;
@@ -187,17 +199,29 @@ export async function fetchBookPdfBytes(user, filename, onPhase) {
   return new Uint8Array(buffer);
 }
 
-/** @typedef {{ id: string, name: string, composer?: string, part?: string, pdf: string }} LibraryPiece */
+/** @typedef {{ id: string, part: string, pageStart: number, pageEnd: number }} LibrarySubpart */
+/** @typedef {{ id: string, name: string, composer?: string, part?: string, pdf: string, subparts?: LibrarySubpart[] }} LibraryPiece */
 /** @typedef {{ id: string, name: string, pieces: LibraryPiece[] }} LibraryBook */
 /** @typedef {{ pieces: LibraryPiece[], books: LibraryBook[] }} UserLibrary */
 
+function normalizeSubpart(subpart) {
+  return {
+    id: typeof subpart?.id === 'string' ? subpart.id : '',
+    part: typeof subpart?.part === 'string' ? subpart.part : '',
+    pageStart: Number.isFinite(subpart?.pageStart) ? subpart.pageStart : 0,
+    pageEnd: Number.isFinite(subpart?.pageEnd) ? subpart.pageEnd : 0,
+  };
+}
+
 function normalizePiece(piece) {
+  const subparts = Array.isArray(piece?.subparts) ? piece.subparts : [];
   return {
     id: typeof piece?.id === 'string' ? piece.id : '',
     name: typeof piece?.name === 'string' ? piece.name : '',
     composer: typeof piece?.composer === 'string' ? piece.composer : '',
     part: typeof piece?.part === 'string' ? piece.part : '',
     pdf: typeof piece?.pdf === 'string' ? piece.pdf : '',
+    subparts: subparts.map(normalizeSubpart).filter((entry) => entry.id),
   };
 }
 
@@ -271,6 +295,33 @@ export async function deletePiece(user, pieceKey) {
   });
   if (!res.ok) {
     throw new Error(await errorMessage(res, `Could not delete piece (${res.status}).`));
+  }
+}
+
+export async function createSubpart(user, pieceKey, { part, pageStart, pageEnd }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(librarySubpartsEndpoint(email, pieceKey), {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ part, pageStart, pageEnd }),
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not create part (${res.status}).`));
+  }
+  const data = await res.json();
+  return normalizeSubpart(data);
+}
+
+export async function deleteSubpart(user, pieceKey, subpartKey) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(librarySubpartEndpoint(email, pieceKey, subpartKey), {
+    method: 'DELETE',
+    headers,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not delete part (${res.status}).`));
   }
 }
 

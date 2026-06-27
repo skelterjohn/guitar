@@ -47,11 +47,17 @@ func main() {
 		log.Fatalf("firestore init: %v", err)
 	}
 
+	annotations, err := newFirestoreAnnotationStore(ctx, fbApp)
+	if err != nil {
+		log.Fatalf("firestore annotations init: %v", err)
+	}
+
 	srv := &server{
 		auth:        authClient,
 		bucket:      bookBucket,
 		store:       store,
 		collections: collections,
+		annotations: annotations,
 	}
 
 	r := chi.NewRouter()
@@ -85,6 +91,9 @@ func main() {
 		r.Get("/book/{email}/{filename}", srv.handleGetBook)
 		r.Post("/book/{email}/{filename}", srv.handlePostBook)
 		r.Delete("/book/{email}/{filename}", srv.handleDeleteBook)
+		r.Get("/book/{email}/{filename}/annotations", srv.handleGetAnnotationRasters)
+		r.Post("/book/{email}/{filename}/annotations", srv.handleStoreAnnotationRasters)
+		r.Get("/book/{email}/{filename}/annotations/rasters/{raster}", srv.handleGetAnnotationRaster)
 
 		r.Get("/users/{email}", srv.handleGetUserLibrary)
 		r.Post("/users/{email}/pieces", srv.handleCreatePiece)

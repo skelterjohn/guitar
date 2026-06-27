@@ -109,6 +109,7 @@ func (s *gcsStore) Usage(ctx context.Context, email string) (fileUsage, error) {
 	it := s.client.Bucket(s.bucket).Objects(ctx, &storage.Query{Prefix: prefix})
 
 	usage := fileUsage{Files: map[string]int64{}}
+	rasterPrefix := annotationRasterPrefix(email)
 	for {
 		attrs, err := it.Next()
 		if errors.Is(err, iterator.Done) {
@@ -118,7 +119,19 @@ func (s *gcsStore) Usage(ctx context.Context, email string) (fileUsage, error) {
 			return fileUsage{}, err
 		}
 		name := strings.TrimPrefix(attrs.Name, prefix)
-		if name == "" || strings.Contains(name, "/") {
+		if name == "" {
+			continue
+		}
+		if strings.HasPrefix(attrs.Name, rasterPrefix) {
+			rasterName := strings.TrimPrefix(attrs.Name, rasterPrefix)
+			if err := validateAnnotationRasterName(rasterName); err != nil {
+				continue
+			}
+			usage.Files[rasterName] = attrs.Size
+			usage.Total += attrs.Size
+			continue
+		}
+		if strings.Contains(name, "/") {
 			continue
 		}
 		if err := validateBookFilename(name); err != nil {

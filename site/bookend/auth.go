@@ -19,6 +19,7 @@ type server struct {
 	bucket      string
 	store       objectStore
 	collections collectionStore
+	annotations annotationStore
 }
 
 func (s *server) requireAuth(next http.Handler) http.Handler {

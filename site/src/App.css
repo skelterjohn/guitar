@@ -2108,9 +2108,11 @@ body {
 .book-library-summary {
   display: flex;
   align-items: center;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--color-text-heading);
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--color-text-muted);
   cursor: pointer;
   list-style: none;
 }

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"sort"
 	"strings"
+	"time"
 	"unicode"
 	"unicode/utf8"
 
@@ -27,6 +28,7 @@ const (
 	fieldPart     = "part"
 	fieldPDF      = "pdf"
 	fieldPieceIDs = "pieceIds"
+	fieldPieceID  = "pieceId"
 )
 
 type collectionStore interface {
@@ -85,6 +87,10 @@ func (s *firestoreCollectionStore) piecesCollection(email string) *firestore.Col
 
 func (s *firestoreCollectionStore) booksCollection(email string) *firestore.CollectionRef {
 	return s.userRef(email).Collection("books")
+}
+
+func (s *firestoreCollectionStore) subpartsCollection(email string) *firestore.CollectionRef {
+	return s.userRef(email).Collection("subparts")
 }
 
 func (s *firestoreCollectionStore) pieceRef(email, piece string) *firestore.DocumentRef {
@@ -241,6 +247,7 @@ func stringField(data map[string]any, key, fallback string) string {
 }
 
 func (s *firestoreCollectionStore) listPieces(ctx context.Context, email string) ([]userPiece, error) {
+	queryStart := time.Now()
 	iter := s.piecesCollection(email).Documents(ctx)
 	defer iter.Stop()
 
@@ -255,32 +262,56 @@ func (s *firestoreCollectionStore) listPieces(ctx context.Context, email string)
 		}
 		pieces = append(pieces, pieceFromSnapshot(doc))
 	}
+	pieceQueryDuration := time.Since(queryStart)
 	sortPieces(pieces)
+
+	subpartsStart := time.Now()
+	subpartsByPiece, err := s.listAllSubparts(ctx, email)
+	if err != nil {
+		return nil, err
+	}
 	for i, piece := range pieces {
-		ref := s.piecesCollection(email).Doc(piece.ID)
-		subparts, err := s.listSubparts(ctx, ref)
-		if err != nil {
-			return nil, err
+		subparts := subpartsByPiece[piece.ID]
+		if subparts == nil {
+			subparts = []userSubpart{}
 		}
 		pieces[i].Subparts = subparts
 	}
+	log.Printf(
+		"library timing phase=listPieces email=%q pieces=%d pieceQuery=%s subpartQuery=%s subparts=%d",
+		email, len(pieces), pieceQueryDuration, time.Since(subpartsStart), countSubparts(subpartsByPiece),
+	)
+
 	if pieces == nil {
 		pieces = []userPiece{}
 	}
 	return pieces, nil
 }
 
+func countSubparts(byPiece map[string][]userSubpart) int {
+	n := 0
+	for _, subparts := range byPiece {
+		n += len(subparts)
+	}
+	return n
+}
+
 func (s *firestoreCollectionStore) ListUserLibrary(ctx context.Context, email string) (userLibrary, error) {
+	totalStart := time.Now()
+
+	piecesStart := time.Now()
 	pieces, err := s.listPieces(ctx, email)
 	if err != nil {
 		return userLibrary{}, err
 	}
+	piecesPhase := time.Since(piecesStart)
 
 	piecesByID := make(map[string]userPiece, len(pieces))
 	for _, piece := range pieces {
 		piecesByID[piece.ID] = piece
 	}
 
+	booksStart := time.Now()
 	iter := s.booksCollection(email).Documents(ctx)
 	defer iter.Stop()
 
@@ -295,10 +326,16 @@ func (s *firestoreCollectionStore) ListUserLibrary(ctx context.Context, email st
 		}
 		books = append(books, bookFromSnapshot(doc, piecesByID))
 	}
+	booksPhase := time.Since(booksStart)
 	sortBooks(books)
 	if books == nil {
 		books = []userBook{}
 	}
+
+	log.Printf(
+		"library timing phase=ListUserLibrary email=%q pieces=%d books=%d piecesPhase=%s booksPhase=%s total=%s",
+		email, len(pieces), len(books), piecesPhase, booksPhase, time.Since(totalStart),
+	)
 
 	return userLibrary{Pieces: pieces, Books: books}, nil
 }
@@ -373,7 +410,7 @@ func (s *firestoreCollectionStore) DeletePiece(ctx context.Context, email, piece
 	if err := s.removePieceFromAllBooks(ctx, email, ref.ID); err != nil {
 		return err
 	}
-	if err := s.deleteSubparts(ctx, ref); err != nil {
+	if err := s.deleteSubpartsForPiece(ctx, email, ref.ID); err != nil {
 		return err
 	}
 	_, err = ref.Delete(ctx)

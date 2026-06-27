@@ -18,6 +18,7 @@ import (
 const (
 	fieldPageStart = "pageStart"
 	fieldPageEnd   = "pageEnd"
+	fieldNestedSubpartsMigrated = "nestedSubpartsMigrated"
 	maxPDFPage     = 9999
 )
 
@@ -114,11 +115,21 @@ func sortSubparts(subparts []userSubpart) {
 	})
 }
 
-func (s *firestoreCollectionStore) listSubparts(ctx context.Context, pieceRef *firestore.DocumentRef) ([]userSubpart, error) {
-	iter := pieceRef.Collection("subparts").Documents(ctx)
+func subpartDocID(pieceID string, subpart userSubpart) string {
+	return collectionDocID(
+		pieceID + "-" + subpart.Part + "-" + strconv.Itoa(subpart.PageStart) + "-" + strconv.Itoa(subpart.PageEnd),
+	)
+}
+
+func (s *firestoreCollectionStore) listAllSubparts(ctx context.Context, email string) (map[string][]userSubpart, error) {
+	if err := s.migrateNestedSubparts(ctx, email); err != nil {
+		return nil, err
+	}
+
+	iter := s.subpartsCollection(email).Documents(ctx)
 	defer iter.Stop()
 
-	var subparts []userSubpart
+	byPiece := map[string][]userSubpart{}
 	for {
 		doc, err := iter.Next()
 		if errors.Is(err, iterator.Done) {
@@ -127,17 +138,21 @@ func (s *firestoreCollectionStore) listSubparts(ctx context.Context, pieceRef *f
 		if err != nil {
 			return nil, err
 		}
-		subparts = append(subparts, subpartFromSnapshot(doc))
+		pieceID := stringField(doc.Data(), fieldPieceID, "")
+		if pieceID == "" {
+			continue
+		}
+		byPiece[pieceID] = append(byPiece[pieceID], subpartFromSnapshot(doc))
 	}
-	sortSubparts(subparts)
-	if subparts == nil {
-		subparts = []userSubpart{}
+	for pieceID, subparts := range byPiece {
+		sortSubparts(subparts)
+		byPiece[pieceID] = subparts
 	}
-	return subparts, nil
+	return byPiece, nil
 }
 
-func (s *firestoreCollectionStore) deleteSubparts(ctx context.Context, pieceRef *firestore.DocumentRef) error {
-	iter := pieceRef.Collection("subparts").Documents(ctx)
+func (s *firestoreCollectionStore) deleteSubpartsForPiece(ctx context.Context, email, pieceID string) error {
+	iter := s.subpartsCollection(email).Where(fieldPieceID, "==", pieceID).Documents(ctx)
 	defer iter.Stop()
 
 	for {
@@ -154,16 +169,83 @@ func (s *firestoreCollectionStore) deleteSubparts(ctx context.Context, pieceRef 
 	}
 }
 
+func (s *firestoreCollectionStore) migrateNestedSubparts(ctx context.Context, email string) error {
+	userRef := s.userRef(email)
+	if snap, err := userRef.Get(ctx); err == nil {
+		if migrated, _ := snap.Data()[fieldNestedSubpartsMigrated].(bool); migrated {
+			return nil
+		}
+	} else if status.Code(err) != codes.NotFound {
+		return err
+	}
+
+	iter := s.piecesCollection(email).Documents(ctx)
+	defer iter.Stop()
+
+	migratedAny := false
+	for {
+		doc, err := iter.Next()
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		nested := doc.Ref.Collection("subparts").Documents(ctx)
+		for {
+			subDoc, err := nested.Next()
+			if errors.Is(err, iterator.Done) {
+				break
+			}
+			if err != nil {
+				nested.Stop()
+				return err
+			}
+
+			migratedAny = true
+			data := subDoc.Data()
+			subpart := userSubpart{
+				ID:        subDoc.Ref.ID,
+				Part:      stringField(data, fieldPart, ""),
+				PageStart: intField(data, fieldPageStart),
+				PageEnd:   intField(data, fieldPageEnd),
+			}
+			ref := s.subpartsCollection(email).Doc(subDoc.Ref.ID)
+			if _, err := ref.Set(ctx, map[string]any{
+				fieldPieceID:   doc.Ref.ID,
+				fieldPart:      subpart.Part,
+				fieldPageStart: subpart.PageStart,
+				fieldPageEnd:   subpart.PageEnd,
+			}); err != nil {
+				nested.Stop()
+				return err
+			}
+			if _, err := subDoc.Ref.Delete(ctx); err != nil {
+				nested.Stop()
+				return err
+			}
+			log.Printf("subpart migrated email=%q piece=%q subpart=%q", email, doc.Ref.ID, subpart.ID)
+		}
+		nested.Stop()
+	}
+
+	if migratedAny {
+		log.Printf("subpart migration complete email=%q", email)
+	}
+	_, err := userRef.Set(ctx, map[string]any{fieldNestedSubpartsMigrated: true}, firestore.MergeAll)
+	return err
+}
+
 func (s *firestoreCollectionStore) CreateSubpart(ctx context.Context, email, pieceKey string, subpart userSubpart) (userSubpart, error) {
 	pieceRef, err := s.resolvePieceRef(ctx, email, pieceKey)
 	if err != nil {
 		return userSubpart{}, err
 	}
 
-	ref := pieceRef.Collection("subparts").Doc(collectionDocID(
-		subpart.Part + "-" + strconv.Itoa(subpart.PageStart) + "-" + strconv.Itoa(subpart.PageEnd),
-	))
+	ref := s.subpartsCollection(email).Doc(subpartDocID(pieceRef.ID, subpart))
 	_, err = ref.Set(ctx, map[string]any{
+		fieldPieceID:   pieceRef.ID,
 		fieldPart:      subpart.Part,
 		fieldPageStart: subpart.PageStart,
 		fieldPageEnd:   subpart.PageEnd,
@@ -183,12 +265,16 @@ func (s *firestoreCollectionStore) DeleteSubpart(ctx context.Context, email, pie
 	if err != nil {
 		return err
 	}
-	ref := pieceRef.Collection("subparts").Doc(subpartKey)
-	if _, err := ref.Get(ctx); err != nil {
+	ref := s.subpartsCollection(email).Doc(subpartKey)
+	snap, err := ref.Get(ctx)
+	if err != nil {
 		if status.Code(err) == codes.NotFound {
 			return errNotFound
 		}
 		return err
+	}
+	if stringField(snap.Data(), fieldPieceID, "") != pieceRef.ID {
+		return errNotFound
 	}
 	_, err = ref.Delete(ctx)
 	return err

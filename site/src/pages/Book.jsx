@@ -63,6 +63,7 @@ function pdfCardSearchText(filename, library) {
 function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted }) {
   const linkedPiece = pieceForPdf(library, filename);
   const cardRef = useRef(null);
+  const pieceFormRef = useRef(null);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(linkedPiece?.name ?? '');
   const [composer, setComposer] = useState(linkedPiece?.composer ?? '');
@@ -118,9 +119,9 @@ function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted 
     const handlePointerDown = (event) => {
       if (deleteOpen || saving) return;
       const target = event.target;
-      if (!(target instanceof Element)) return;
-      if (target.closest(`#${pieceFormId} input`)) return;
-      if (cardRef.current?.contains(target) && target.closest('.book-score-delete')) return;
+      if (!(target instanceof Node)) return;
+      if (pieceFormRef.current?.contains(target)) return;
+      if (target instanceof Element && cardRef.current?.contains(target) && target.closest('.book-score-delete')) return;
       cancelEditing();
     };
 
@@ -130,7 +131,7 @@ function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted 
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('pointerdown', handlePointerDown, true);
     };
-  }, [editing, deleteOpen, saving, cancelEditing, pieceFormId]);
+  }, [editing, deleteOpen, saving, cancelEditing]);
 
   const handleSavePiece = async () => {
     const pieceName = name.trim();
@@ -285,6 +286,7 @@ function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted 
       <div className="book-score-collections">
         {editing ? (
           <form
+            ref={pieceFormRef}
             id={pieceFormId}
             className="book-score-piece-form"
             onSubmit={handleSaveSubmit}
@@ -319,6 +321,9 @@ function BookScoreItem({ user, filename, library, onLibraryChange, onPdfDeleted 
               autoComplete="off"
               aria-label={`Part for ${filename}`}
             />
+            <button type="submit" className="book-score-submit-hidden" tabIndex={-1} aria-hidden="true">
+              save
+            </button>
           </form>
         ) : (
           <dl className="book-score-meta">

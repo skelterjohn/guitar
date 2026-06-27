@@ -29,6 +29,10 @@ function renderLanding() {
       <span class="landing-link-title">${escapeHtml(bookHeading)}</span>
       <span class="landing-link-desc">${escapeHtml(bookDescription)}</span>
     </a>
+    <a class="landing-link" href="/njgo">
+      <span class="landing-link-title">njgo</span>
+      <span class="landing-link-desc">new jersey guitar orchestra</span>
+    </a>
   </nav>
 </main>`;
 }

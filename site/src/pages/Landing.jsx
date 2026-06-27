@@ -6,6 +6,7 @@ import {
   bookPath,
   catalogPath,
   defaultDescription,
+  njgoPath,
   siteHeading,
   siteOrigin,
   siteTitle,
@@ -34,6 +35,10 @@ export default function Landing() {
         <Link className="landing-link" to={bookPath()}>
           <span className="landing-link-title">{bookHeading}</span>
           <span className="landing-link-desc">{bookDescription}</span>
+        </Link>
+        <Link className="landing-link" to={njgoPath}>
+          <span className="landing-link-title">njgo</span>
+          <span className="landing-link-desc">new jersey guitar orchestra</span>
         </Link>
       </nav>
     </main>

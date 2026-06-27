@@ -32,6 +32,12 @@ function collectionPieceEndpoint(email, { book, piece }) {
   return `${base}/v1/users/${enc(email)}/books/${enc(book)}/piece/${enc(piece)}`;
 }
 
+function collectionBookEndpoint(email, { book }) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  const enc = encodeURIComponent;
+  return `${base}/v1/users/${enc(email)}/books/${enc(book)}`;
+}
+
 function userCollectionEndpoint(email) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   return `${base}/v1/users/${encodeURIComponent(email)}`;
@@ -180,6 +186,27 @@ export async function setCollectionPartPdf(user, { book, piece, part }, pdf) {
   }
   const data = await res.json();
   return typeof data.pdf === 'string' ? data.pdf : pdf;
+}
+
+/**
+ * Update a collection book's display name.
+ * @param {{ book: string }} path
+ * @param {{ name: string }} updates
+ * @returns {Promise<string>}
+ */
+export async function updateCollectionBook(user, { book }, { name }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(collectionBookEndpoint(email, { book }), {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not save book (${res.status}).`));
+  }
+  const data = await res.json();
+  return typeof data.name === 'string' ? data.name : name;
 }
 
 /**

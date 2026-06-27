@@ -219,6 +219,69 @@ body {
   color: var(--color-text-heading);
 }
 
+.catalog-section-heading {
+  margin-bottom: 1rem;
+}
+
+.catalog-section-heading-row,
+.catalog-section-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.catalog-section-heading-row h2,
+.catalog-section-edit-form .catalog-section-input {
+  margin: 0;
+}
+
+.catalog-section-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
+  font-size: 1.1rem;
+  color: var(--color-text-heading);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+}
+
+.catalog-section-input:disabled {
+  opacity: 0.6;
+}
+
+.catalog-section-edit {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.catalog-section-edit:hover:not(:disabled) {
+  color: var(--color-text-heading);
+  background: var(--color-surface);
+}
+
+.catalog-section-edit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.catalog-section-error {
+  margin: 0.35rem 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: #b91c1c;
+}
+
 .composition-card {
   scroll-margin-top: 1.5rem;
   background: var(--color-surface);

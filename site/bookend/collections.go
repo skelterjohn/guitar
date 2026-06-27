@@ -32,6 +32,7 @@ type collectionStore interface {
 	GetPartPDF(ctx context.Context, email, book, piece, part string) (string, error)
 	SetPartPDF(ctx context.Context, email, book, piece, part, pdf string) error
 	SetPiece(ctx context.Context, email, book, piece, name, composer string) error
+	SetBook(ctx context.Context, email, book, name string) error
 }
 
 type collectionPart struct {
@@ -66,10 +67,53 @@ func newFirestoreCollectionStore(ctx context.Context, fbApp *firebase.App) (*fir
 	return &firestoreCollectionStore{client: client}, nil
 }
 
+func (s *firestoreCollectionStore) booksCollection(email string) *firestore.CollectionRef {
+	return s.client.Collection("users").Doc(collectionEmail(email)).Collection("books")
+}
+
 func (s *firestoreCollectionStore) bookRef(email, book string) *firestore.DocumentRef {
-	email = collectionEmail(email)
-	return s.client.Collection("users").Doc(email).
-		Collection("books").Doc(collectionDocID(book))
+	return s.booksCollection(email).Doc(collectionDocID(book))
+}
+
+func (s *firestoreCollectionStore) resolveBookRef(ctx context.Context, email, book string) (*firestore.DocumentRef, error) {
+	book = strings.TrimSpace(book)
+	if book == "" {
+		return nil, errors.New("missing book")
+	}
+
+	booksCol := s.booksCollection(email)
+	direct := booksCol.Doc(collectionDocID(book))
+	snap, err := direct.Get(ctx)
+	if err == nil {
+		if strings.EqualFold(collectionDisplayName(snap), book) {
+			return direct, nil
+		}
+	} else if status.Code(err) != codes.NotFound {
+		return nil, err
+	}
+
+	iter := booksCol.Where(collectionNameField, "==", book).Limit(1).Documents(ctx)
+	defer iter.Stop()
+
+	doc, err := iter.Next()
+	if errors.Is(err, iterator.Done) {
+		return nil, errNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	return doc.Ref, nil
+}
+
+func (s *firestoreCollectionStore) bookRefForWrite(ctx context.Context, email, book string) (*firestore.DocumentRef, error) {
+	ref, err := s.resolveBookRef(ctx, email, book)
+	if err == nil {
+		return ref, nil
+	}
+	if errors.Is(err, errNotFound) {
+		return s.bookRef(email, book), nil
+	}
+	return nil, err
 }
 
 func (s *firestoreCollectionStore) pieceRef(email, book, piece string) *firestore.DocumentRef {
@@ -83,7 +127,10 @@ func (s *firestoreCollectionStore) resolvePieceRef(ctx context.Context, email, b
 		return nil, errors.New("missing piece")
 	}
 
-	bookRef := s.bookRef(email, book)
+	bookRef, err := s.bookRefForWrite(ctx, email, book)
+	if err != nil {
+		return nil, err
+	}
 	direct := bookRef.Collection("piece").Doc(collectionDocID(piece))
 	snap, err := direct.Get(ctx)
 	if err == nil {
@@ -142,7 +189,10 @@ func (s *firestoreCollectionStore) GetPartPDF(ctx context.Context, email, book, 
 }
 
 func (s *firestoreCollectionStore) SetPartPDF(ctx context.Context, email, book, piece, part, pdf string) error {
-	bookRef := s.bookRef(email, book)
+	bookRef, err := s.bookRefForWrite(ctx, email, book)
+	if err != nil {
+		return err
+	}
 	pieceRef, err := s.pieceRefForWrite(ctx, email, book, piece)
 	if err != nil {
 		return err
@@ -165,13 +215,17 @@ func (s *firestoreCollectionStore) SetPartPDF(ctx context.Context, email, book, 
 }
 
 func (s *firestoreCollectionStore) SetPiece(ctx context.Context, email, book, piece, name, composer string) error {
+	bookRef, err := s.bookRefForWrite(ctx, email, book)
+	if err != nil {
+		return err
+	}
 	pieceRef, err := s.resolvePieceRef(ctx, email, book, piece)
 	if err != nil {
 		return err
 	}
 
 	batch := s.client.Batch()
-	batch.Set(s.bookRef(email, book), map[string]any{
+	batch.Set(bookRef, map[string]any{
 		collectionNameField: book,
 	}, firestore.MergeAll)
 	batch.Set(pieceRef, map[string]any{
@@ -179,6 +233,17 @@ func (s *firestoreCollectionStore) SetPiece(ctx context.Context, email, book, pi
 		pieceComposerField:  composer,
 	}, firestore.MergeAll)
 	_, err = batch.Commit(ctx)
+	return err
+}
+
+func (s *firestoreCollectionStore) SetBook(ctx context.Context, email, book, name string) error {
+	bookRef, err := s.resolveBookRef(ctx, email, book)
+	if err != nil {
+		return err
+	}
+	_, err = bookRef.Set(ctx, map[string]any{
+		collectionNameField: name,
+	}, firestore.MergeAll)
 	return err
 }
 
@@ -415,6 +480,10 @@ type pieceUpdateRequest struct {
 	Composer string `json:"composer"`
 }
 
+type bookUpdateRequest struct {
+	Name string `json:"name"`
+}
+
 func (s *server) handleGetUserCollection(w http.ResponseWriter, r *http.Request) {
 	pathEmail := bookParam(r, "email")
 
@@ -585,4 +654,52 @@ func (s *server) handlePostCollectionPiece(w http.ResponseWriter, r *http.Reques
 
 	log.Printf("collection piece update email=%q book=%q piece=%q name=%q composer=%q", pathEmail, book, piece, name, composer)
 	writeJSON(w, http.StatusOK, map[string]string{"name": name, "composer": composer})
+}
+
+func (s *server) handlePostCollectionBook(w http.ResponseWriter, r *http.Request) {
+	pathEmail := bookParam(r, "email")
+	book := bookParam(r, "book")
+
+	if err := validateBookEmail(pathEmail); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(book, "book"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if !s.requirePathEmail(w, r, pathEmail) {
+		return
+	}
+
+	body := http.MaxBytesReader(w, r.Body, 4096)
+	defer body.Close()
+
+	var req bookUpdateRequest
+	if err := json.NewDecoder(body).Decode(&req); err != nil && !errors.Is(err, io.EOF) {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid json body"})
+		return
+	}
+	name := strings.TrimSpace(req.Name)
+	if name == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "missing name"})
+		return
+	}
+	if err := validateCollectionSegment(name, "book"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+
+	if err := s.collections.SetBook(r.Context(), pathEmail, book, name); err != nil {
+		if errors.Is(err, errNotFound) {
+			writeJSON(w, http.StatusNotFound, map[string]string{"error": "book not found"})
+			return
+		}
+		log.Printf("collection book update failed email=%q book=%q name=%q err=%v", pathEmail, book, name, err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not save book"})
+		return
+	}
+
+	log.Printf("collection book update email=%q book=%q name=%q", pathEmail, book, name)
+	writeJSON(w, http.StatusOK, map[string]string{"name": name})
 }

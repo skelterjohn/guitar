@@ -30,8 +30,26 @@ export const MENU_GLYPH_COLOR = '#f8fafc';
 /** Scale for glyphs/chords stamped onto the page (menu previews stay at 1×). */
 export const GLYPH_DROP_SIZE_SCALE = 1;
 
-const MUSIC_GLYPH_FONT = "'Segoe UI Symbol', 'Noto Music', 'Bravura Text', serif";
+const MUSIC_GLYPH_FONT = "'Noto Music', 'Segoe UI Symbol', 'Bravura Text', serif";
 const stampCache = new Map();
+
+let musicFontReady = null;
+
+/**
+ * Canvas `measureText`/`fillText` ignore web fonts that have not finished
+ * loading. Notes/rests use Unicode Musical Symbols that no default macOS font
+ * provides, so we ship Noto Music and must wait for it before stamping or it
+ * renders as tofu boxes.
+ */
+function ensureMusicFontLoaded() {
+  if (typeof document === 'undefined' || !document.fonts?.load) {
+    return Promise.resolve();
+  }
+  if (!musicFontReady) {
+    musicFontReady = document.fonts.load('16px "Noto Music"').catch(() => {});
+  }
+  return musicFontReady;
+}
 
 const CHORD_RASTER_SVG_STYLES = `<style><![CDATA[
 .annotation-chord-diagram-lines line {
@@ -230,6 +248,9 @@ export async function buildGlyphStamp(
       fontFamily = glyphDef.fontFamily ?? MUSIC_GLYPH_FONT;
       fontStyle = glyphDef.fontStyle;
       fontWeight = glyphDef.fontWeight;
+      if (fontFamily === MUSIC_GLYPH_FONT) {
+        await ensureMusicFontLoaded();
+      }
     }
 
     const measureCanvas = document.createElement('canvas');

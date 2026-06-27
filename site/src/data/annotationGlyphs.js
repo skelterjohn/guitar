@@ -161,7 +161,7 @@ export function isTextGlyph(typeOrGlyph) {
   return type === TEXT_GLYPH_ID;
 }
 
-export const NOTE_REST_GLYPH_SIZE_SCALE = 2;
+export const NOTE_REST_GLYPH_SIZE_SCALE = 1.6;
 
 export function isNoteRestGlyph(glyphId) {
   return (

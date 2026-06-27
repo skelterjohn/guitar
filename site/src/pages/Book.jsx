@@ -68,7 +68,18 @@ function collectionFieldId(filename) {
 function pdfCardSearchText(filename, library) {
   const piece = pieceForPdf(library, filename);
   const books = booksForPiece(library, piece);
-  return joinSearchFields(filename, piece?.name, piece?.composer, piece?.part, ...books);
+  const subpartFields = (piece?.subparts ?? []).flatMap((subpart) => [
+    subpart.part,
+    formatPageRange(subpart.pageStart, subpart.pageEnd),
+  ]);
+  return joinSearchFields(
+    filename,
+    piece?.name,
+    piece?.composer,
+    piece?.part,
+    ...books,
+    ...subpartFields,
+  );
 }
 
 /** @param {{ books: Array<{ name: string, pieces: Array<{ id: string }> }>, pieces: Array<{ id: string, name?: string, composer?: string, part?: string, pdf: string }> }} library */
@@ -98,82 +109,26 @@ function formatPageRange(pageStart, pageEnd) {
   return `pp. ${pageStart}–${pageEnd}`;
 }
 
-function buildScoreEntries(bookFiles, library) {
-  const entries = [];
-  for (const file of bookFiles) {
-    entries.push({ kind: 'pdf', file });
-    const piece = pieceForPdf(library, file.name);
-    for (const subpart of piece?.subparts ?? []) {
-      entries.push({ kind: 'subpart', file, piece, subpart });
-    }
-  }
-  return entries;
-}
-
-function scoreEntryKey(entry) {
-  if (entry.kind === 'subpart') {
-    return `${entry.file.name}::subpart::${entry.subpart.id}`;
-  }
-  return entry.file.name;
-}
-
-function scoreEntrySearchText(entry, library) {
-  if (entry.kind === 'subpart') {
-    return joinSearchFields(
-      entry.file.name,
-      entry.piece?.name,
-      entry.piece?.composer,
-      entry.subpart.part,
-      formatPageRange(entry.subpart.pageStart, entry.subpart.pageEnd),
-      ...booksForPiece(library, entry.piece),
-    );
-  }
-  return pdfCardSearchText(entry.file.name, library);
-}
-
-function scoreEntrySortValue(entry, library, field) {
-  if (entry.kind === 'subpart') {
-    switch (field) {
-      case 'piece':
-        return entry.piece?.name ?? '';
-      case 'composer':
-        return entry.piece?.composer ?? '';
-      case 'part':
-        return entry.subpart.part ?? '';
-      case 'upload':
-        return entry.file.modifiedAt ?? '';
-      case 'book':
-        return booksForPiece(library, entry.piece).join(', ');
-      case 'labeled':
-        return '1';
-      default:
-        return entry.file.name;
-    }
-  }
-  return scoreSortValue(entry.file, library, field);
-}
-
-/** @param {ReturnType<typeof buildScoreEntries>} entries */
-function sortScoreEntries(entries, library, field, direction) {
+function sortBookFiles(files, library, field, direction) {
   const multiplier = direction === 'asc' ? 1 : -1;
-  return [...entries].sort((a, b) => {
+  return [...files].sort((a, b) => {
     if (field === 'labeled') {
-      const aLabeled = a.kind === 'subpart' || isFileLabeled(library, a.file.name) ? 1 : 0;
-      const bLabeled = b.kind === 'subpart' || isFileLabeled(library, b.file.name) ? 1 : 0;
+      const aLabeled = isFileLabeled(library, a.name) ? 1 : 0;
+      const bLabeled = isFileLabeled(library, b.name) ? 1 : 0;
       if (aLabeled !== bLabeled) return (aLabeled - bLabeled) * multiplier;
     } else if (field === 'upload') {
-      const aTime = Date.parse(a.file.modifiedAt ?? '') || 0;
-      const bTime = Date.parse(b.file.modifiedAt ?? '') || 0;
+      const aTime = Date.parse(a.modifiedAt ?? '') || 0;
+      const bTime = Date.parse(b.modifiedAt ?? '') || 0;
       if (aTime !== bTime) return (aTime - bTime) * multiplier;
     } else {
-      const cmp = scoreEntrySortValue(a, library, field).localeCompare(
-        scoreEntrySortValue(b, library, field),
+      const cmp = scoreSortValue(a, library, field).localeCompare(
+        scoreSortValue(b, library, field),
         undefined,
         { sensitivity: 'base' },
       );
       if (cmp !== 0) return cmp * multiplier;
     }
-    return scoreEntryKey(a).localeCompare(scoreEntryKey(b), undefined, { sensitivity: 'base' });
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
   });
 }
 
@@ -205,91 +160,6 @@ function scoreSortValue(file, library, field) {
   }
 }
 
-function BookSubpartScoreItem({ user, filename, modifiedAt, piece, subpart, library, onLibraryChange }) {
-  const [deleting, setDeleting] = useState(false);
-  const [itemError, setItemError] = useState('');
-  const memberships = booksForPiece(library, piece);
-
-  const handleDelete = async () => {
-    setDeleting(true);
-    setItemError('');
-    try {
-      await deleteSubpart(user, piece.name, subpart.id);
-      await onLibraryChange();
-    } catch (deleteError) {
-      setItemError(deleteError.message);
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  return (
-    <li className="book-score-item book-score-item--subpart">
-      <div className="book-score-header">
-        <div className="book-score-title">
-          <span className="book-score-subpart-badge">sub-part</span>
-          <Link
-            className="book-file-open"
-            to={bookViewPath(filename, {
-              pageStart: subpart.pageStart,
-              pageEnd: subpart.pageEnd,
-            })}
-          >
-            {filename}
-          </Link>
-          {modifiedAt && (
-            <time className="book-file-uploaded" dateTime={modifiedAt}>
-              {formatUploadedAt(modifiedAt)}
-            </time>
-          )}
-        </div>
-        <button
-          className="book-score-delete"
-          type="button"
-          onClick={() => void handleDelete()}
-          disabled={deleting}
-          aria-label={`Delete sub-part ${subpart.part} for ${filename}`}
-        >
-          delete
-        </button>
-      </div>
-
-      <div className="book-score-collections">
-        <dl className="book-score-meta">
-          <div className="book-score-meta-row">
-            <dt>piece</dt>
-            <dd>{piece?.name || '—'}</dd>
-          </div>
-          <div className="book-score-meta-row">
-            <dt>part</dt>
-            <dd>{subpart.part || '—'}</dd>
-          </div>
-          <div className="book-score-meta-row">
-            <dt>pages</dt>
-            <dd>{formatPageRange(subpart.pageStart, subpart.pageEnd) || '—'}</dd>
-          </div>
-        </dl>
-
-        {memberships.length > 0 && (
-          <ul className="book-score-memberships">
-            {memberships.map((bookName) => (
-              <li key={bookName}>
-                <span>{bookName}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {itemError && (
-          <p className="book-score-error" role="alert">
-            {itemError}
-          </p>
-        )}
-      </div>
-    </li>
-  );
-}
-
 function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, onPdfDeleted }) {
   const linkedPiece = pieceForPdf(library, filename);
   const cardRef = useRef(null);
@@ -309,6 +179,7 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
   const [subpartOpen, setSubpartOpen] = useState(false);
   const [subpartBusy, setSubpartBusy] = useState(false);
   const [subpartError, setSubpartError] = useState('');
+  const [deletingSubpartId, setDeletingSubpartId] = useState('');
 
   const memberships = booksForPiece(library, linkedPiece);
   const fieldId = collectionFieldId(filename);
@@ -489,6 +360,21 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
     }
   };
 
+  const handleDeleteSubpart = async (subpart) => {
+    if (!linkedPiece) return;
+
+    setDeletingSubpartId(subpart.id);
+    setItemError('');
+    try {
+      await deleteSubpart(user, linkedPiece.name, subpart.id);
+      await onLibraryChange();
+    } catch (deleteError) {
+      setItemError(deleteError.message);
+    } finally {
+      setDeletingSubpartId('');
+    }
+  };
+
   const handleDeleteConfirm = async () => {
     setDeleting(true);
     setDeleteError('');
@@ -503,7 +389,7 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
     }
   };
 
-  const busy = saving || adding || Boolean(removingBook);
+  const busy = saving || adding || Boolean(removingBook) || Boolean(deletingSubpartId);
 
   return (
     <li ref={cardRef} className="book-score-item">
@@ -642,6 +528,36 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
                 </button>
               </dd>
             </div>
+            {(linkedPiece?.subparts ?? []).map((subpart) => (
+              <div key={subpart.id} className="book-score-meta-row book-score-meta-row--subpart">
+                <dt>subpart</dt>
+                <dd className="book-score-subpart-value">
+                  <Link
+                    className="book-score-subpart-label"
+                    to={bookViewPath(filename, {
+                      pageStart: subpart.pageStart,
+                      pageEnd: subpart.pageEnd,
+                    })}
+                  >
+                    {subpart.part || '—'}
+                  </Link>
+                  <span className="book-score-subpart-pages">
+                    {formatPageRange(subpart.pageStart, subpart.pageEnd)}
+                  </span>
+                  <button
+                    type="button"
+                    className="book-score-delete-subpart"
+                    onClick={() => {
+                      void handleDeleteSubpart(subpart);
+                    }}
+                    disabled={busy || deletingSubpartId === subpart.id}
+                    aria-label={`Delete sub-part ${subpart.part} for ${filename}`}
+                  >
+                    ×
+                  </button>
+                </dd>
+              </div>
+            ))}
           </dl>
         )}
 
@@ -737,19 +653,14 @@ function BookLibrary({ user }) {
 
   const filenames = useMemo(() => bookFiles.map((file) => file.name), [bookFiles]);
 
-  const scoreEntries = useMemo(
-    () => buildScoreEntries(bookFiles, library),
-    [bookFiles, library],
-  );
+  const filteredScoreFiles = useMemo(() => {
+    if (!searchQuery.trim()) return bookFiles;
+    return bookFiles.filter((file) => fuzzyMatch(pdfCardSearchText(file.name, library), searchQuery));
+  }, [bookFiles, library, searchQuery]);
 
-  const filteredScoreEntries = useMemo(() => {
-    if (!searchQuery.trim()) return scoreEntries;
-    return scoreEntries.filter((entry) => fuzzyMatch(scoreEntrySearchText(entry, library), searchQuery));
-  }, [scoreEntries, library, searchQuery]);
-
-  const sortedScoreEntries = useMemo(
-    () => sortScoreEntries(filteredScoreEntries, library, sortField, sortDirection),
-    [filteredScoreEntries, library, sortField, sortDirection],
+  const sortedScoreFiles = useMemo(
+    () => sortBookFiles(filteredScoreFiles, library, sortField, sortDirection),
+    [filteredScoreFiles, library, sortField, sortDirection],
   );
 
   const filteredSections = useMemo(
@@ -1023,34 +934,21 @@ function BookLibrary({ user }) {
               <p className="book-empty">Loading…</p>
             ) : filenames.length === 0 ? (
               <p className="book-empty">No PDFs uploaded yet.</p>
-            ) : filteredScoreEntries.length === 0 ? (
+            ) : filteredScoreFiles.length === 0 ? (
               <p className="book-empty">No matches.</p>
             ) : (
               <ul className="book-file-list">
-                {sortedScoreEntries.map((entry) =>
-                  entry.kind === 'subpart' ? (
-                    <BookSubpartScoreItem
-                      key={scoreEntryKey(entry)}
-                      user={user}
-                      filename={entry.file.name}
-                      modifiedAt={entry.file.modifiedAt}
-                      piece={entry.piece}
-                      subpart={entry.subpart}
-                      library={library}
-                      onLibraryChange={refreshLibrary}
-                    />
-                  ) : (
-                    <BookScoreItem
-                      key={scoreEntryKey(entry)}
-                      user={user}
-                      filename={entry.file.name}
-                      modifiedAt={entry.file.modifiedAt}
-                      library={library}
-                      onLibraryChange={refreshLibrary}
-                      onPdfDeleted={handlePdfDeleted}
-                    />
-                  ),
-                )}
+                {sortedScoreFiles.map((file) => (
+                  <BookScoreItem
+                    key={file.name}
+                    user={user}
+                    filename={file.name}
+                    modifiedAt={file.modifiedAt}
+                    library={library}
+                    onLibraryChange={refreshLibrary}
+                    onPdfDeleted={handlePdfDeleted}
+                  />
+                ))}
               </ul>
             )}
           </section>

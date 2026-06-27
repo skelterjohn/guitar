@@ -28,44 +28,33 @@ export function userCollectionToSections(library) {
       const pieces = (book.pieces ?? [])
         .filter((piece) => piece.pdf)
         .map((piece) => {
-          const entries = [];
-          const baseEntry = (partLabel, extra = {}) => {
-            const entry = {
-              pieceKey: extra.pieceKey ?? piece.name,
-              title: piece.name,
-              part: partLabel,
-              pdf: piece.pdf,
-              pdfs: [{
-                label: partLabel || 'score',
-                file: piece.pdf,
-                ...(extra.pageStart
-                  ? {
-                      pageStart: extra.pageStart,
-                      pageEnd: extra.pageEnd ?? extra.pageStart,
-                    }
-                  : {}),
-              }],
-              ...extra,
-            };
-            if (piece.composer) {
-              entry.composer = piece.composer;
-            }
-            return entry;
-          };
+          const pdfs = [
+            {
+              label: piece.part?.trim() || 'score',
+              file: piece.pdf,
+            },
+          ];
 
-          if (piece.pdf) {
-            entries.push(baseEntry(piece.part ?? ''));
-          }
           for (const subpart of piece.subparts ?? []) {
-            entries.push(baseEntry(subpart.part, {
-              pieceKey: `${piece.name}::${subpart.id}`,
+            pdfs.push({
+              label: subpart.part,
+              file: piece.pdf,
               pageStart: subpart.pageStart,
               pageEnd: subpart.pageEnd,
-            }));
+            });
           }
-          return entries;
+
+          const entry = {
+            pieceKey: piece.name,
+            title: piece.name,
+            pdf: piece.pdf,
+            pdfs,
+          };
+          if (piece.composer) {
+            entry.composer = piece.composer;
+          }
+          return entry;
         })
-        .flat()
         .filter((entry) => entry.pdf);
 
       if (pieces.length === 0) return null;

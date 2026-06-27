@@ -40,11 +40,12 @@ export default function PdfLinkList({
         const classes = ['pdf-link'];
         if (pdfFilesMatch(pdf.file, currentFile)) classes.push('pdf-link-active');
         if (missing) classes.push('pdf-link-missing');
+        const linkKey = `${pdf.file}:${pdf.label}:${pdf.pageStart ?? ''}:${pdf.pageEnd ?? ''}`;
 
         if (missing) {
           return (
             <span
-              key={pdf.file}
+              key={linkKey}
               className={classes.join(' ')}
               aria-disabled="true"
               title={`${pdf.file} is missing`}
@@ -56,7 +57,7 @@ export default function PdfLinkList({
 
         return (
           <Link
-            key={pdf.file}
+            key={linkKey}
             className={classes.join(' ')}
             to={viewLinkForPdf(pdf, viewContext)}
             state={linkState}

@@ -26,6 +26,8 @@ export default function BookNewSubpartModal({
   filename,
   busy = false,
   error = '',
+  flow = 'form',
+  initialPart = '',
   pageStart: fixedPageStart = null,
   pageEnd: fixedPageEnd = null,
   onCancel,
@@ -33,7 +35,8 @@ export default function BookNewSubpartModal({
 }) {
   const [part, setPart] = useState('');
   const [pages, setPages] = useState('');
-  const fixedRange = fixedPageStart != null && fixedPageEnd != null;
+  const viewerBegin = flow === 'viewer-begin';
+  const fixedRange = !viewerBegin && fixedPageStart != null && fixedPageEnd != null;
 
   const formatFixedPages = () => {
     if (!fixedRange) return '';
@@ -59,8 +62,10 @@ export default function BookNewSubpartModal({
     if (!open) {
       setPart('');
       setPages('');
+      return;
     }
-  }, [open]);
+    setPart(initialPart);
+  }, [open, initialPart]);
 
   if (!open) return null;
 
@@ -68,6 +73,11 @@ export default function BookNewSubpartModal({
     event.preventDefault();
     const partLabel = part.trim();
     if (!partLabel) return;
+
+    if (viewerBegin) {
+      onConfirm({ part: partLabel });
+      return;
+    }
 
     let pageStart;
     let pageEnd;
@@ -104,10 +114,17 @@ export default function BookNewSubpartModal({
         aria-labelledby="book-new-subpart-title"
       >
         <h2 id="book-new-subpart-title">New part</h2>
-        <p className="book-delete-pdf-lead">
-          Add another labeled part for{' '}
-          <strong className="book-delete-pdf-filename">{filename}</strong>.
-        </p>
+        {viewerBegin ? (
+          <p className="book-delete-pdf-lead">
+            Name the new part for{' '}
+            <strong className="book-delete-pdf-filename">{filename}</strong>.
+          </p>
+        ) : (
+          <p className="book-delete-pdf-lead">
+            Add another labeled part for{' '}
+            <strong className="book-delete-pdf-filename">{filename}</strong>.
+          </p>
+        )}
         <form className="book-new-subpart-form" onSubmit={handleSubmit}>
           <label className="book-new-subpart-field">
             <span>part</span>
@@ -120,11 +137,20 @@ export default function BookNewSubpartModal({
               placeholder="guitar 1"
             />
           </label>
+          {viewerBegin && (
+            <ul className="book-new-subpart-instructions">
+              <li>
+                Go to the last page of the part and click{' '}
+                <strong>{part.trim() || 'your part name'}</strong>.
+              </li>
+              <li>Hit <kbd>Escape</kbd> any time to cancel.</li>
+            </ul>
+          )}
           {fixedRange ? (
             <p className="book-new-subpart-fixed-pages">
               pages <strong>{formatFixedPages()}</strong>
             </p>
-          ) : (
+          ) : !viewerBegin ? (
             <label className="book-new-subpart-field">
               <span>pages</span>
               <input
@@ -136,7 +162,7 @@ export default function BookNewSubpartModal({
                 placeholder="3 or 3-5"
               />
             </label>
-          )}
+          ) : null}
           {error && (
             <p className="book-delete-pdf-error" role="alert">
               {error}
@@ -154,9 +180,9 @@ export default function BookNewSubpartModal({
             <button
               className="book-delete-pdf-confirm"
               type="submit"
-              disabled={busy || !part.trim() || (!fixedRange && !parsePageRange(pages))}
+              disabled={busy || !part.trim() || (!viewerBegin && !fixedRange && !parsePageRange(pages))}
             >
-              {busy ? 'Saving…' : 'Add part'}
+              {busy ? 'Saving…' : viewerBegin ? 'Begin' : 'Add part'}
             </button>
           </div>
         </form>

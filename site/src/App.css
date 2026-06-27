@@ -2442,6 +2442,29 @@ body {
   color: var(--color-text-muted);
 }
 
+.book-new-subpart-instructions {
+  margin: 0;
+  padding-left: 1.2rem;
+  list-style: disc;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.book-new-subpart-instructions li + li {
+  margin-top: 0.25rem;
+}
+
+.book-new-subpart-instructions kbd {
+  padding: 0.05rem 0.3rem;
+  font-family: inherit;
+  font-size: 0.8em;
+  border: 1px solid var(--color-border);
+  border-radius: 0.2rem;
+  background: var(--color-bg);
+}
+
 .book-score-piece-form .book-score-add-subpart {
   align-self: end;
 }

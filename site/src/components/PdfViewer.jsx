@@ -143,12 +143,13 @@ export default function PdfViewer({
   const [printBusy, setPrintBusy] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
   const [newPartStart, setNewPartStart] = useState(null);
+  const [newPartLabel, setNewPartLabel] = useState('');
   const [subpartModalOpen, setSubpartModalOpen] = useState(false);
-  const [pendingSubpartRange, setPendingSubpartRange] = useState(null);
   const [subpartBusy, setSubpartBusy] = useState(false);
   const [subpartError, setSubpartError] = useState('');
 
   const canCreateSubpart = viewContext === 'book' && bookPieceName && onCreateSubpart;
+  const showNewPartButton = canCreateSubpart && pageStart == null;
 
   const pdfZoomRef = useRef(1);
   const pendingZoomScrollRef = useRef(null);
@@ -291,8 +292,8 @@ export default function PdfViewer({
     setGlyphDropRequest(null);
     setStorageWarning('');
     setNewPartStart(null);
+    setNewPartLabel('');
     setSubpartModalOpen(false);
-    setPendingSubpartRange(null);
     setSubpartError('');
     lastPenTapRef.current = null;
     saveAnnotationsRef.current?.cancel();
@@ -1226,8 +1227,8 @@ export default function PdfViewer({
 
   const resetNewPart = useCallback(() => {
     setNewPartStart(null);
+    setNewPartLabel('');
     setSubpartModalOpen(false);
-    setPendingSubpartRange(null);
     setSubpartError('');
   }, []);
 
@@ -1235,33 +1236,41 @@ export default function PdfViewer({
     if (!canCreateSubpart) return undefined;
 
     const onKeyDown = (event) => {
-      if (event.key !== 'Escape' || newPartStart == null || subpartBusy) return;
+      if (event.key !== 'Escape' || subpartBusy) return;
+      if (newPartStart == null && !subpartModalOpen) return;
       event.preventDefault();
       resetNewPart();
     };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [canCreateSubpart, newPartStart, subpartBusy, resetNewPart]);
+  }, [canCreateSubpart, newPartStart, subpartModalOpen, subpartBusy, resetNewPart]);
+
+  useEffect(() => {
+    if (pageStart == null) return;
+    resetNewPart();
+  }, [pageStart, resetNewPart]);
 
   const handleNewPartButton = () => {
     if (newPartStart == null) {
       setNewPartStart(currentPage);
+      setSubpartError('');
+      setSubpartModalOpen(true);
       return;
     }
 
-    setPendingSubpartRange({
+    if (!newPartLabel) return;
+
+    void handleSubpartConfirm({
+      part: newPartLabel,
       pageStart: Math.min(newPartStart, currentPage),
       pageEnd: Math.max(newPartStart, currentPage),
     });
-    setSubpartError('');
-    setSubpartModalOpen(true);
   };
 
-  const handleSubpartModalCancel = () => {
-    if (subpartBusy) return;
+  const handleBeginSubpart = ({ part }) => {
+    setNewPartLabel(part);
     setSubpartModalOpen(false);
-    setPendingSubpartRange(null);
     setSubpartError('');
   };
 
@@ -1275,6 +1284,7 @@ export default function PdfViewer({
       resetNewPart();
     } catch (createError) {
       setSubpartError(createError.message);
+      setSubpartModalOpen(true);
     } finally {
       setSubpartBusy(false);
     }
@@ -1290,7 +1300,7 @@ export default function PdfViewer({
           <div className="viewer-toolbar" ref={toolbarRef}>
             <div className="viewer-toolbar-start" ref={toolbarStartRef}>
               <Link to={backTo}>&larr; {backLabel}</Link>
-              {(pdfs.length > 0 || canCreateSubpart) && (
+              {(pdfs.length > 0 || showNewPartButton) && (
                 <div className="viewer-part-nav">
                   {pdfs.length > 0 && (
                     <PdfLinkList
@@ -1302,15 +1312,19 @@ export default function PdfViewer({
                       viewPrefix={backTo}
                     />
                   )}
-                  {canCreateSubpart && (
+                  {showNewPartButton && (
                     <button
                       type="button"
                       className={`viewer-new-part-btn${newPartStart != null ? ' is-active' : ''}`}
                       onClick={handleNewPartButton}
-                      disabled={subpartBusy || status !== 'ready'}
+                      disabled={
+                        subpartBusy ||
+                        status !== 'ready' ||
+                        (newPartStart != null && !newPartLabel)
+                      }
                       aria-pressed={newPartStart != null}
                     >
-                      {newPartStart == null ? 'begin new part' : 'conclude new part'}
+                      {newPartStart == null ? 'new part' : newPartLabel}
                     </button>
                   )}
                 </div>
@@ -1615,16 +1629,16 @@ export default function PdfViewer({
       />
       {canCreateSubpart && (
         <BookNewSubpartModal
+          flow="viewer-begin"
           open={subpartModalOpen}
           filename={currentFile}
           busy={subpartBusy}
           error={subpartError}
-          pageStart={pendingSubpartRange?.pageStart ?? null}
-          pageEnd={pendingSubpartRange?.pageEnd ?? null}
-          onCancel={handleSubpartModalCancel}
-          onConfirm={(payload) => {
-            void handleSubpartConfirm(payload);
+          initialPart={newPartLabel}
+          onCancel={() => {
+            if (!subpartBusy) resetNewPart();
           }}
+          onConfirm={handleBeginSubpart}
         />
       )}
       {printSheets && (

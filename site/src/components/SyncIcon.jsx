@@ -12,10 +12,9 @@ export default function SyncIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M13 4.5A5.5 5.5 0 0 0 3.2 6" />
-      <path d="M3 2.5V6h3.5" />
-      <path d="M3 11.5A5.5 5.5 0 0 0 12.8 10" />
-      <path d="M13 13.5V10H9.5" />
+      <path d="M2.75 2.5h8.25L13.5 5v8.25a.75.75 0 0 1-.75.75H3.25a.75.75 0 0 1-.75-.75V3.25a.75.75 0 0 1 .75-.75Z" />
+      <path d="M5 2.5v3.25h5V2.5" />
+      <rect x="5" y="9" width="6" height="4.5" />
     </svg>
   );
 }

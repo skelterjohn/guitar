@@ -1503,7 +1503,8 @@ export default function PdfViewer({
                   className="viewer-annotation-sync"
                   onClick={() => void handleSyncAnnotations()}
                   disabled={syncBusy}
-                  aria-label={syncBusy ? 'Syncing annotations' : 'Sync annotations'}
+                  title="Save annotations"
+                  aria-label={syncBusy ? 'Saving annotations' : 'Save annotations'}
                   aria-busy={syncBusy || undefined}
                 >
                   <SyncIcon />
@@ -1513,7 +1514,8 @@ export default function PdfViewer({
                 type="button"
                 className="viewer-annotation-help"
                 onClick={() => setAnnotationHelpOpen(true)}
-                aria-label="Annotation help"
+                title="Information"
+                aria-label="Information"
               >
                 ?
               </button>
@@ -1522,7 +1524,8 @@ export default function PdfViewer({
                 className="viewer-print-button"
                 onClick={() => void handlePrint()}
                 disabled={printBusy}
-                aria-label={printBusy ? 'Preparing print' : 'Print'}
+                title="Print with annotations"
+                aria-label={printBusy ? 'Preparing print with annotations' : 'Print with annotations'}
                 aria-busy={printBusy || undefined}
               >
                 <PrintIcon />
@@ -1533,7 +1536,8 @@ export default function PdfViewer({
                   className="viewer-download-link"
                   onClick={() => void handleDownload()}
                   disabled={downloadBusy}
-                  aria-label={downloadBusy ? 'Downloading' : 'Download'}
+                  title="Download PDF"
+                  aria-label={downloadBusy ? 'Downloading PDF' : 'Download PDF'}
                   aria-busy={downloadBusy || undefined}
                 >
                   <DownloadIcon />
@@ -1544,7 +1548,8 @@ export default function PdfViewer({
                     href={downloadLink}
                     download={downloadName}
                     className="viewer-download-link"
-                    aria-label="Download"
+                    title="Download PDF"
+                    aria-label="Download PDF"
                   >
                     <DownloadIcon />
                   </a>

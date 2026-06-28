@@ -2278,6 +2278,52 @@ body {
   background: var(--color-surface);
 }
 
+.book-score-item--folded {
+  gap: 0;
+}
+
+.book-score-folded {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.book-score-folded-label {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.book-score-fold-toggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.book-score-fold-toggle:hover {
+  color: var(--color-text-heading);
+  background: var(--color-bg);
+}
+
 .book-score-header {
   display: flex;
   align-items: flex-start;

@@ -217,6 +217,7 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
   const linkedPiece = pieceForPdf(library, filename);
   const cardRef = useRef(null);
   const pieceFormRef = useRef(null);
+  const [folded, setFolded] = useState(true);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(linkedPiece?.name ?? '');
   const [composer, setComposer] = useState(linkedPiece?.composer ?? '');
@@ -458,10 +459,51 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
   };
 
   const busy = saving || adding || Boolean(removingMembership) || Boolean(deletingSubpartId);
+  const foldedLabel = [linkedPiece?.composer?.trim(), linkedPiece?.name?.trim()]
+    .filter(Boolean)
+    .join(' / ');
+
+  if (folded) {
+    return (
+      <li ref={cardRef} className="book-score-item book-score-item--folded">
+        <div className="book-score-folded">
+          <button
+            type="button"
+            className="book-score-fold-toggle"
+            onClick={() => setFolded(false)}
+            aria-expanded={false}
+            aria-label={`Expand ${filename}`}
+          >
+            ▸
+          </button>
+          <Link className="book-file-open" to={bookViewPath(filename)}>
+            {filename}
+          </Link>
+          {foldedLabel && (
+            <span className="book-score-folded-label">{foldedLabel}</span>
+          )}
+          {modifiedAt && (
+            <time className="book-file-uploaded" dateTime={modifiedAt}>
+              {formatUploadedAt(modifiedAt)}
+            </time>
+          )}
+        </div>
+      </li>
+    );
+  }
 
   return (
     <li ref={cardRef} className="book-score-item">
       <div className="book-score-header">
+        <button
+          type="button"
+          className="book-score-fold-toggle"
+          onClick={() => setFolded(true)}
+          aria-expanded
+          aria-label={`Collapse ${filename}`}
+        >
+          ▾
+        </button>
         <div className="book-score-title">
           <Link className="book-file-open" to={bookViewPath(filename)}>
             {filename}

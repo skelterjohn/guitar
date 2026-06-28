@@ -631,11 +631,14 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
 
         {memberships.length > 0 && (
           <ul className="book-score-memberships">
-            {memberships.map((membership) => (
+            {memberships.map((membership) => {
+              const showPartLabel = membership.type === 'subpart'
+                || (membership.type === 'piece' && (linkedPiece?.subparts ?? []).length > 0);
+              return (
               <li key={membership.key}>
                 <span>
                   {membership.book}
-                  {membership.type === 'subpart' ? ` (${membership.label})` : ''}
+                  {showPartLabel ? ` (${membership.label})` : ''}
                 </span>
                 <button
                   type="button"
@@ -645,7 +648,7 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
                   }}
                   disabled={busy || removingMembership === membership.key}
                   aria-label={
-                    membership.type === 'subpart'
+                    showPartLabel
                       ? `Remove ${membership.label} from ${membership.book}`
                       : `Remove from ${membership.book}`
                   }
@@ -653,7 +656,8 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
                   ×
                 </button>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
 

@@ -18,9 +18,9 @@ const (
 	annotationRasterFormat      = "webp"
 	annotationRasterContentType = "image/webp"
 	emptyAnnotationRastersHash  = "0"
-	maxAnnotationRasterBytes    = 5 << 20  // 5 MiB per raster
-	maxAnnotationStoreBytes     = 50 << 20 // 50 MiB per store request
-	maxAnnotationRasterFiles    = 500
+	maxAnnotationRasterBytes    = 2 << 20  // 2 MiB per raster
+	maxAnnotationStoreBytes     = 25 << 20 // 25 MiB per store request
+	maxAnnotationRasterFiles    = 250
 	maxAnnotationPage           = 9999
 )
 

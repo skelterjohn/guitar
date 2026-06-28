@@ -10,6 +10,7 @@ import TableOfContents from '../components/TableOfContents.jsx';
 import Toast from '../components/Toast.jsx';
 import {
   addPieceToBook,
+  addSubpartToBook,
   createPiece,
   createSubpart,
   deleteBook,
@@ -20,6 +21,7 @@ import {
   fetchUserLibrary,
   listBookPdfs,
   removePieceFromBook,
+  removeSubpartFromBook,
   updateBook,
   updatePiece,
   uploadBookPdf,
@@ -49,12 +51,63 @@ function pieceForPdf(library, pdfFilename) {
   return library.pieces.find((piece) => pdfFilesMatch(piece.pdf, pdfFilename)) ?? null;
 }
 
-/** @param {{ books: Array<{ name: string, pieces: Array<{ id: string }> }> }} library */
+/** @param {{ books: Array<{ name: string, pieces: Array<{ id: string }>, subparts?: Array<{ id: string, pieceId?: string }> }> }} library */
 function booksForPiece(library, piece) {
   if (!piece) return [];
-  return library.books
-    .filter((book) => book.pieces.some((entry) => entry.id === piece.id))
-    .map((book) => book.name);
+  const names = new Set();
+  for (const book of library.books) {
+    if (book.pieces.some((entry) => entry.id === piece.id)) {
+      names.add(book.name);
+    }
+    for (const subpart of book.subparts ?? []) {
+      if (
+        subpart.pieceId === piece.id
+        || (piece.subparts ?? []).some((entry) => entry.id === subpart.id)
+      ) {
+        names.add(book.name);
+      }
+    }
+  }
+  return [...names].sort((a, b) => a.localeCompare(b));
+}
+
+function subpartLabel(subpart) {
+  return subpart.part?.trim() || 'score';
+}
+
+/** @param {{ books: Array<{ name: string, pieces: Array<{ id: string }>, subparts?: Array<{ id: string, pieceId?: string, part?: string }> }> }} library */
+function bookMembershipsForPiece(library, piece) {
+  if (!piece) return [];
+  const entries = [];
+  for (const book of library.books) {
+    if (book.pieces.some((entry) => entry.id === piece.id)) {
+      entries.push({
+        key: `${book.name}:piece`,
+        book: book.name,
+        label: 'all parts',
+        type: 'piece',
+      });
+    }
+    for (const subpart of book.subparts ?? []) {
+      const owned = subpart.pieceId === piece.id
+        || (piece.subparts ?? []).some((entry) => entry.id === subpart.id);
+      if (!owned) continue;
+      entries.push({
+        key: `${book.name}:${subpart.id}`,
+        book: book.name,
+        label: subpartLabel(subpart),
+        type: 'subpart',
+        subpartId: subpart.id,
+      });
+    }
+  }
+  return entries.sort((a, b) => {
+    const bookCmp = a.book.localeCompare(b.book, undefined, { sensitivity: 'base' });
+    if (bookCmp !== 0) return bookCmp;
+    if (a.type === 'piece') return -1;
+    if (b.type === 'piece') return 1;
+    return a.label.localeCompare(b.label, undefined, { sensitivity: 'base' });
+  });
 }
 
 function uniqueSorted(names) {
@@ -169,9 +222,10 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
   const [composer, setComposer] = useState(linkedPiece?.composer ?? '');
   const [part, setPart] = useState(linkedPiece?.part ?? '');
   const [book, setBook] = useState('');
+  const [bookPart, setBookPart] = useState('__all__');
   const [saving, setSaving] = useState(false);
   const [adding, setAdding] = useState(false);
-  const [removingBook, setRemovingBook] = useState('');
+  const [removingMembership, setRemovingMembership] = useState('');
   const [itemError, setItemError] = useState('');
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -181,7 +235,7 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
   const [subpartError, setSubpartError] = useState('');
   const [deletingSubpartId, setDeletingSubpartId] = useState('');
 
-  const memberships = booksForPiece(library, linkedPiece);
+  const memberships = bookMembershipsForPiece(library, linkedPiece);
   const fieldId = collectionFieldId(filename);
   const pieceFormId = `book-score-piece-form-${fieldId}`;
   const bookOptions = uniqueSorted(library.books.map((entry) => entry.name));
@@ -282,15 +336,25 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
       setItemError('Save piece info first.');
       return;
     }
-    if (memberships.includes(bookName)) {
-      setItemError('Already in that book.');
+    const targetBook = library.books.find((entry) => entry.name === bookName);
+    if (bookPart === '__all__') {
+      if (targetBook?.pieces.some((entry) => entry.id === linkedPiece.id)) {
+        setItemError('Already in that book.');
+        return;
+      }
+    } else if (targetBook?.subparts?.some((entry) => entry.id === bookPart)) {
+      setItemError('That part is already in the book.');
       return;
     }
 
     setAdding(true);
     setItemError('');
     try {
-      await addPieceToBook(user, { book: bookName, piece: linkedPiece.name });
+      if (bookPart === '__all__') {
+        await addPieceToBook(user, { book: bookName, piece: linkedPiece.name });
+      } else {
+        await addSubpartToBook(user, { book: bookName, subpart: bookPart });
+      }
       setBook('');
       await onLibraryChange();
     } catch (addError) {
@@ -305,17 +369,21 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
     void handleAddToBook();
   };
 
-  const handleRemoveFromBook = async (bookName) => {
+  const handleRemoveFromBook = async (membership) => {
     if (!linkedPiece) return;
-    setRemovingBook(bookName);
+    setRemovingMembership(membership.key);
     setItemError('');
     try {
-      await removePieceFromBook(user, { book: bookName, piece: linkedPiece.name });
+      if (membership.type === 'piece') {
+        await removePieceFromBook(user, { book: membership.book, piece: linkedPiece.name });
+      } else {
+        await removeSubpartFromBook(user, { book: membership.book, subpart: membership.subpartId });
+      }
       await onLibraryChange();
     } catch (removeError) {
       setItemError(removeError.message);
     } finally {
-      setRemovingBook('');
+      setRemovingMembership('');
     }
   };
 
@@ -389,7 +457,7 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
     }
   };
 
-  const busy = saving || adding || Boolean(removingBook) || Boolean(deletingSubpartId);
+  const busy = saving || adding || Boolean(removingMembership) || Boolean(deletingSubpartId);
 
   return (
     <li ref={cardRef} className="book-score-item">
@@ -563,17 +631,24 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
 
         {memberships.length > 0 && (
           <ul className="book-score-memberships">
-            {memberships.map((bookName) => (
-              <li key={bookName}>
-                <span>{bookName}</span>
+            {memberships.map((membership) => (
+              <li key={membership.key}>
+                <span>
+                  {membership.book}
+                  {membership.type === 'subpart' ? ` (${membership.label})` : ''}
+                </span>
                 <button
                   type="button"
                   className="book-score-remove-book"
                   onClick={() => {
-                    void handleRemoveFromBook(bookName);
+                    void handleRemoveFromBook(membership);
                   }}
-                  disabled={busy}
-                  aria-label={`Remove from ${bookName}`}
+                  disabled={busy || removingMembership === membership.key}
+                  aria-label={
+                    membership.type === 'subpart'
+                      ? `Remove ${membership.label} from ${membership.book}`
+                      : `Remove from ${membership.book}`
+                  }
                 >
                   ×
                 </button>
@@ -599,6 +674,20 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
               <option key={bookName} value={bookName} />
             ))}
           </datalist>
+          <select
+            className="book-score-field book-score-field-part"
+            value={bookPart}
+            onChange={(event) => setBookPart(event.target.value)}
+            disabled={busy || !linkedPiece}
+            aria-label={`Part to add for ${filename}`}
+          >
+            <option value="__all__">all parts</option>
+            {(linkedPiece?.subparts ?? []).map((subpart) => (
+              <option key={subpart.id} value={subpart.id}>
+                {subpartLabel(subpart)}
+              </option>
+            ))}
+          </select>
           <button
             className="book-score-add-btn"
             type="submit"

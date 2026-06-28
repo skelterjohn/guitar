@@ -21,7 +21,7 @@ export function piecePdfs(piece) {
 
   for (const subpart of piece.subparts ?? []) {
     pdfs.push({
-      label: subpart.part,
+      label: subpart.part?.trim() || 'score',
       file: piece.pdf,
       pageStart: subpart.pageStart,
       pageEnd: subpart.pageEnd,
@@ -32,11 +32,25 @@ export function piecePdfs(piece) {
 }
 
 /**
+ * @param {{ part?: string, pageStart: number, pageEnd: number }} subpart
+ * @param {{ pdf: string }} piece
+ */
+export function subpartPdf(subpart, piece) {
+  return {
+    label: subpart.part?.trim() || 'score',
+    file: piece.pdf,
+    pageStart: subpart.pageStart,
+    pageEnd: subpart.pageEnd,
+  };
+}
+
+/**
  * Map a user library into catalog.yaml-shaped sections.
- * @param {{ pieces?: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string }>, books?: Array<{ id: string, name: string, pieces: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string }> }> }} library
+ * @param {{ pieces?: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string, subparts?: Array<{ id: string, part?: string, pageStart: number, pageEnd: number }> }>, books?: Array<{ id: string, name: string, pieces: Array<{ id: string, name: string, composer?: string, part?: string, pdf: string, subparts?: Array<{ id: string, part?: string, pageStart: number, pageEnd: number }> }>, subparts?: Array<{ id: string, pieceId?: string, part?: string, pageStart: number, pageEnd: number }> }> }} library
  */
 export function userCollectionToSections(library) {
   const usedIds = new Set();
+  const piecesById = new Map((library?.pieces ?? []).map((piece) => [piece.id, piece]));
 
   const uniqueSectionId = (name) => {
     let id = slugify(name);
@@ -49,31 +63,54 @@ export function userCollectionToSections(library) {
     return id;
   };
 
+  const pieceEntry = (piece, pdfs) => {
+    const entry = {
+      pieceKey: piece.name,
+      title: piece.name,
+      pdf: piece.pdf,
+      pdfs,
+    };
+    if (piece.composer) {
+      entry.composer = piece.composer;
+    }
+    return entry;
+  };
+
   return (library?.books ?? [])
     .map((book) => {
-      const pieces = (book.pieces ?? [])
-        .filter((piece) => piece.pdf)
-        .map((piece) => {
-          const entry = {
-            pieceKey: piece.name,
-            title: piece.name,
-            pdf: piece.pdf,
-            pdfs: piecePdfs(piece),
-          };
-          if (piece.composer) {
-            entry.composer = piece.composer;
-          }
-          return entry;
-        })
-        .filter((entry) => entry.pdf);
+      const wholePieceIds = new Set((book.pieces ?? []).map((piece) => piece.id));
+      const entries = [];
 
-      if (pieces.length === 0) return null;
+      for (const piece of book.pieces ?? []) {
+        if (!piece.pdf) continue;
+        entries.push(pieceEntry(piece, piecePdfs(piece)));
+      }
+
+      const subpartsByPieceId = new Map();
+      for (const subpart of book.subparts ?? []) {
+        const pieceId = subpart.pieceId;
+        if (!pieceId || wholePieceIds.has(pieceId)) continue;
+
+        const piece = piecesById.get(pieceId);
+        if (!piece?.pdf) continue;
+
+        if (!subpartsByPieceId.has(pieceId)) {
+          subpartsByPieceId.set(pieceId, { piece, subparts: [] });
+        }
+        subpartsByPieceId.get(pieceId).subparts.push(subpart);
+      }
+
+      for (const { piece, subparts } of subpartsByPieceId.values()) {
+        entries.push(pieceEntry(piece, subparts.map((subpart) => subpartPdf(subpart, piece))));
+      }
+
+      if (entries.length === 0) return null;
 
       return {
         id: uniqueSectionId(book.name),
         title: book.name,
         bookKey: book.name,
-        pieces,
+        pieces: entries,
       };
     })
     .filter(Boolean);

@@ -2789,6 +2789,10 @@ body {
   flex: 1 1 8rem;
 }
 
+.book-score-field-part {
+  flex: 0 1 7rem;
+}
+
 .book-score-field {
   flex: 1 1 5rem;
   min-width: 0;

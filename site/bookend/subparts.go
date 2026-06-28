@@ -16,14 +16,15 @@ import (
 )
 
 const (
-	fieldPageStart = "pageStart"
-	fieldPageEnd   = "pageEnd"
+	fieldPageStart              = "pageStart"
+	fieldPageEnd                = "pageEnd"
 	fieldNestedSubpartsMigrated = "nestedSubpartsMigrated"
-	maxPDFPage     = 9999
+	maxPDFPage                  = 9999
 )
 
 type userSubpart struct {
 	ID        string `json:"id"`
+	PieceID   string `json:"pieceId,omitempty"`
 	Part      string `json:"part"`
 	PageStart int    `json:"pageStart"`
 	PageEnd   int    `json:"pageEnd"`
@@ -39,6 +40,7 @@ func subpartFromSnapshot(snap *firestore.DocumentSnapshot) userSubpart {
 	data := snap.Data()
 	return userSubpart{
 		ID:        snap.Ref.ID,
+		PieceID:   stringField(data, fieldPieceID, ""),
 		Part:      stringField(data, fieldPart, ""),
 		PageStart: intField(data, fieldPageStart),
 		PageEnd:   intField(data, fieldPageEnd),
@@ -151,6 +153,44 @@ func (s *firestoreCollectionStore) listAllSubparts(ctx context.Context, email st
 	return byPiece, nil
 }
 
+func (s *firestoreCollectionStore) resolveSubpartRef(ctx context.Context, email, subpart string) (*firestore.DocumentRef, error) {
+	subpart = strings.TrimSpace(subpart)
+	if subpart == "" {
+		return nil, errors.New("missing subpart")
+	}
+
+	ref := s.subpartsCollection(email).Doc(subpart)
+	if _, err := ref.Get(ctx); err == nil {
+		return ref, nil
+	} else if status.Code(err) != codes.NotFound {
+		return nil, err
+	}
+	return nil, errNotFound
+}
+
+func (s *firestoreCollectionStore) removeSubpartFromAllBooks(ctx context.Context, email, subpartID string) error {
+	iter := s.booksCollection(email).Documents(ctx)
+	defer iter.Stop()
+
+	for {
+		doc, err := iter.Next()
+		if errors.Is(err, iterator.Done) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		ids := subpartIDsFromSnapshot(doc)
+		if !containsString(ids, subpartID) {
+			continue
+		}
+		next := removeString(ids, subpartID)
+		if _, err := doc.Ref.Update(ctx, []firestore.Update{{Path: fieldSubpartIDs, Value: next}}); err != nil {
+			return err
+		}
+	}
+}
+
 func (s *firestoreCollectionStore) deleteSubpartsForPiece(ctx context.Context, email, pieceID string) error {
 	iter := s.subpartsCollection(email).Where(fieldPieceID, "==", pieceID).Documents(ctx)
 	defer iter.Stop()
@@ -161,6 +201,9 @@ func (s *firestoreCollectionStore) deleteSubpartsForPiece(ctx context.Context, e
 			return nil
 		}
 		if err != nil {
+			return err
+		}
+		if err := s.removeSubpartFromAllBooks(ctx, email, doc.Ref.ID); err != nil {
 			return err
 		}
 		if _, err := doc.Ref.Delete(ctx); err != nil {
@@ -275,6 +318,9 @@ func (s *firestoreCollectionStore) DeleteSubpart(ctx context.Context, email, pie
 	}
 	if stringField(snap.Data(), fieldPieceID, "") != pieceRef.ID {
 		return errNotFound
+	}
+	if err := s.removeSubpartFromAllBooks(ctx, email, ref.ID); err != nil {
+		return err
 	}
 	_, err = ref.Delete(ctx)
 	return err

@@ -106,6 +106,8 @@ func main() {
 		r.Delete("/users/{email}/books/{book}", srv.handleDeleteLibraryBook)
 		r.Post("/users/{email}/books/{book}/pieces/{piece}", srv.handleAddBookPiece)
 		r.Delete("/users/{email}/books/{book}/pieces/{piece}", srv.handleRemoveBookPiece)
+		r.Post("/users/{email}/books/{book}/subparts/{subpart}", srv.handleAddBookSubpart)
+		r.Delete("/users/{email}/books/{book}/subparts/{subpart}", srv.handleRemoveBookSubpart)
 	})
 
 	addr := fmt.Sprintf("0.0.0.0:%s", port)

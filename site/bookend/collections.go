@@ -15,20 +15,21 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	firebase "firebase.google.com/go/v4"
 	"cloud.google.com/go/firestore"
+	firebase "firebase.google.com/go/v4"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 const (
-	fieldName     = "name"
-	fieldComposer = "composer"
-	fieldPart     = "part"
-	fieldPDF      = "pdf"
-	fieldPieceIDs = "pieceIds"
-	fieldPieceID  = "pieceId"
+	fieldName       = "name"
+	fieldComposer   = "composer"
+	fieldPart       = "part"
+	fieldPDF        = "pdf"
+	fieldPieceIDs   = "pieceIds"
+	fieldSubpartIDs = "subpartIds"
+	fieldPieceID    = "pieceId"
 )
 
 type collectionStore interface {
@@ -41,6 +42,8 @@ type collectionStore interface {
 	DeleteBook(ctx context.Context, email, bookKey string) error
 	AddPieceToBook(ctx context.Context, email, bookKey, pieceKey string) error
 	RemovePieceFromBook(ctx context.Context, email, bookKey, pieceKey string) error
+	AddSubpartToBook(ctx context.Context, email, bookKey, subpartKey string) error
+	RemoveSubpartFromBook(ctx context.Context, email, bookKey, subpartKey string) error
 	CreateSubpart(ctx context.Context, email, pieceKey string, subpart userSubpart) (userSubpart, error)
 	DeleteSubpart(ctx context.Context, email, pieceKey, subpartKey string) error
 }
@@ -55,9 +58,10 @@ type userPiece struct {
 }
 
 type userBook struct {
-	ID     string      `json:"id"`
-	Name   string      `json:"name"`
-	Pieces []userPiece `json:"pieces"`
+	ID       string        `json:"id"`
+	Name     string        `json:"name"`
+	Pieces   []userPiece   `json:"pieces"`
+	Subparts []userSubpart `json:"subparts"`
 }
 
 type userLibrary struct {
@@ -197,7 +201,7 @@ func pieceFromSnapshot(snap *firestore.DocumentSnapshot) userPiece {
 	}
 }
 
-func bookFromSnapshot(snap *firestore.DocumentSnapshot, piecesByID map[string]userPiece) userBook {
+func bookFromSnapshot(snap *firestore.DocumentSnapshot, piecesByID map[string]userPiece, subpartsByID map[string]userSubpart) userBook {
 	data := snap.Data()
 	book := userBook{
 		ID:   snap.Ref.ID,
@@ -213,11 +217,29 @@ func bookFromSnapshot(snap *firestore.DocumentSnapshot, piecesByID map[string]us
 		book.Pieces = []userPiece{}
 	}
 	sortPieces(book.Pieces)
+
+	for _, id := range stringIDsFromSnapshot(snap, fieldSubpartIDs) {
+		if subpart, ok := subpartsByID[id]; ok {
+			book.Subparts = append(book.Subparts, subpart)
+		}
+	}
+	if book.Subparts == nil {
+		book.Subparts = []userSubpart{}
+	}
+	sortSubparts(book.Subparts)
 	return book
 }
 
 func pieceIDsFromSnapshot(snap *firestore.DocumentSnapshot) []string {
-	raw, ok := snap.Data()[fieldPieceIDs]
+	return stringIDsFromSnapshot(snap, fieldPieceIDs)
+}
+
+func subpartIDsFromSnapshot(snap *firestore.DocumentSnapshot) []string {
+	return stringIDsFromSnapshot(snap, fieldSubpartIDs)
+}
+
+func stringIDsFromSnapshot(snap *firestore.DocumentSnapshot, field string) []string {
+	raw, ok := snap.Data()[field]
 	if !ok {
 		return nil
 	}
@@ -307,8 +329,12 @@ func (s *firestoreCollectionStore) ListUserLibrary(ctx context.Context, email st
 	piecesPhase := time.Since(piecesStart)
 
 	piecesByID := make(map[string]userPiece, len(pieces))
+	subpartsByID := make(map[string]userSubpart)
 	for _, piece := range pieces {
 		piecesByID[piece.ID] = piece
+		for _, subpart := range piece.Subparts {
+			subpartsByID[subpart.ID] = subpart
+		}
 	}
 
 	booksStart := time.Now()
@@ -324,7 +350,7 @@ func (s *firestoreCollectionStore) ListUserLibrary(ctx context.Context, email st
 		if err != nil {
 			return userLibrary{}, err
 		}
-		books = append(books, bookFromSnapshot(doc, piecesByID))
+		books = append(books, bookFromSnapshot(doc, piecesByID, subpartsByID))
 	}
 	booksPhase := time.Since(booksStart)
 	sortBooks(books)
@@ -420,8 +446,9 @@ func (s *firestoreCollectionStore) DeletePiece(ctx context.Context, email, piece
 func (s *firestoreCollectionStore) CreateBook(ctx context.Context, email, name string) (userBook, error) {
 	ref := s.bookRef(email, name)
 	_, err := ref.Set(ctx, map[string]any{
-		fieldName:     name,
-		fieldPieceIDs: []string{},
+		fieldName:       name,
+		fieldPieceIDs:   []string{},
+		fieldSubpartIDs: []string{},
 	})
 	if err != nil {
 		return userBook{}, err
@@ -430,7 +457,7 @@ func (s *firestoreCollectionStore) CreateBook(ctx context.Context, email, name s
 	if err != nil {
 		return userBook{}, err
 	}
-	return bookFromSnapshot(snap, map[string]userPiece{}), nil
+	return bookFromSnapshot(snap, map[string]userPiece{}, map[string]userSubpart{}), nil
 }
 
 func (s *firestoreCollectionStore) UpdateBook(ctx context.Context, email, bookKey, name string) (userBook, error) {
@@ -450,14 +477,18 @@ func (s *firestoreCollectionStore) UpdateBook(ctx context.Context, email, bookKe
 		return userBook{}, err
 	}
 	piecesByID := make(map[string]userPiece, len(pieces))
+	subpartsByID := make(map[string]userSubpart)
 	for _, piece := range pieces {
 		piecesByID[piece.ID] = piece
+		for _, subpart := range piece.Subparts {
+			subpartsByID[subpart.ID] = subpart
+		}
 	}
 	snap, err := ref.Get(ctx)
 	if err != nil {
 		return userBook{}, err
 	}
-	return bookFromSnapshot(snap, piecesByID), nil
+	return bookFromSnapshot(snap, piecesByID, subpartsByID), nil
 }
 
 func (s *firestoreCollectionStore) DeleteBook(ctx context.Context, email, bookKey string) error {
@@ -517,6 +548,48 @@ func (s *firestoreCollectionStore) RemovePieceFromBook(ctx context.Context, emai
 	}
 	ids := removeString(pieceIDsFromSnapshot(snap), pieceRef.ID)
 	_, err = bookRef.Update(ctx, []firestore.Update{{Path: fieldPieceIDs, Value: ids}})
+	return err
+}
+
+func (s *firestoreCollectionStore) AddSubpartToBook(ctx context.Context, email, bookKey, subpartKey string) error {
+	bookRef, err := s.resolveBookRef(ctx, email, bookKey)
+	if err != nil {
+		return err
+	}
+	subpartRef, err := s.resolveSubpartRef(ctx, email, subpartKey)
+	if err != nil {
+		return err
+	}
+
+	snap, err := bookRef.Get(ctx)
+	if err != nil {
+		return err
+	}
+	ids := subpartIDsFromSnapshot(snap)
+	if containsString(ids, subpartRef.ID) {
+		return nil
+	}
+	ids = append(ids, subpartRef.ID)
+	_, err = bookRef.Update(ctx, []firestore.Update{{Path: fieldSubpartIDs, Value: ids}})
+	return err
+}
+
+func (s *firestoreCollectionStore) RemoveSubpartFromBook(ctx context.Context, email, bookKey, subpartKey string) error {
+	bookRef, err := s.resolveBookRef(ctx, email, bookKey)
+	if err != nil {
+		return err
+	}
+	subpartRef, err := s.resolveSubpartRef(ctx, email, subpartKey)
+	if err != nil {
+		return err
+	}
+
+	snap, err := bookRef.Get(ctx)
+	if err != nil {
+		return err
+	}
+	ids := removeString(subpartIDsFromSnapshot(snap), subpartRef.ID)
+	_, err = bookRef.Update(ctx, []firestore.Update{{Path: fieldSubpartIDs, Value: ids}})
 	return err
 }
 
@@ -989,5 +1062,73 @@ func (s *server) handleRemoveBookPiece(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("book remove piece email=%q book=%q piece=%q", pathEmail, bookKey, pieceKey)
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *server) handleAddBookSubpart(w http.ResponseWriter, r *http.Request) {
+	pathEmail := bookParam(r, "email")
+	bookKey := bookParam(r, "book")
+	subpartKey := bookParam(r, "subpart")
+	if err := validateBookEmail(pathEmail); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(bookKey, "book"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(subpartKey, "subpart"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if !s.requirePathEmail(w, r, pathEmail) {
+		return
+	}
+
+	if err := s.collections.AddSubpartToBook(r.Context(), pathEmail, bookKey, subpartKey); err != nil {
+		if errors.Is(err, errNotFound) {
+			writeJSON(w, http.StatusNotFound, map[string]string{"error": "book or subpart not found"})
+			return
+		}
+		log.Printf("book add subpart failed email=%q book=%q subpart=%q err=%v", pathEmail, bookKey, subpartKey, err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not add subpart to book"})
+		return
+	}
+
+	log.Printf("book add subpart email=%q book=%q subpart=%q", pathEmail, bookKey, subpartKey)
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *server) handleRemoveBookSubpart(w http.ResponseWriter, r *http.Request) {
+	pathEmail := bookParam(r, "email")
+	bookKey := bookParam(r, "book")
+	subpartKey := bookParam(r, "subpart")
+	if err := validateBookEmail(pathEmail); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(bookKey, "book"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := validateCollectionSegment(subpartKey, "subpart"); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if !s.requirePathEmail(w, r, pathEmail) {
+		return
+	}
+
+	if err := s.collections.RemoveSubpartFromBook(r.Context(), pathEmail, bookKey, subpartKey); err != nil {
+		if errors.Is(err, errNotFound) {
+			writeJSON(w, http.StatusNotFound, map[string]string{"error": "book or subpart not found"})
+			return
+		}
+		log.Printf("book remove subpart failed email=%q book=%q subpart=%q err=%v", pathEmail, bookKey, subpartKey, err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not remove subpart from book"})
+		return
+	}
+
+	log.Printf("book remove subpart email=%q book=%q subpart=%q", pathEmail, bookKey, subpartKey)
 	w.WriteHeader(http.StatusNoContent)
 }

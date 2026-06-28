@@ -78,6 +78,12 @@ function libraryBookPieceEndpoint(email, { book, piece }) {
   return `${base}/v1/users/${enc(email)}/books/${enc(book)}/pieces/${enc(piece)}`;
 }
 
+function libraryBookSubpartEndpoint(email, { book, subpart }) {
+  const base = bookendBaseUrl.replace(/\/$/, '');
+  const enc = encodeURIComponent;
+  return `${base}/v1/users/${enc(email)}/books/${enc(book)}/subparts/${enc(subpart)}`;
+}
+
 function userLibraryEndpoint(email) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   return `${base}/v1/users/${encodeURIComponent(email)}`;
@@ -309,14 +315,15 @@ export async function downloadRemoteAnnotations(user, pdfFilename, remote) {
   };
 }
 
-/** @typedef {{ id: string, part: string, pageStart: number, pageEnd: number }} LibrarySubpart */
+/** @typedef {{ id: string, pieceId?: string, part: string, pageStart: number, pageEnd: number }} LibrarySubpart */
 /** @typedef {{ id: string, name: string, composer?: string, part?: string, pdf: string, subparts?: LibrarySubpart[] }} LibraryPiece */
-/** @typedef {{ id: string, name: string, pieces: LibraryPiece[] }} LibraryBook */
+/** @typedef {{ id: string, name: string, pieces: LibraryPiece[], subparts: LibrarySubpart[] }} LibraryBook */
 /** @typedef {{ pieces: LibraryPiece[], books: LibraryBook[] }} UserLibrary */
 
 function normalizeSubpart(subpart) {
   return {
     id: typeof subpart?.id === 'string' ? subpart.id : '',
+    pieceId: typeof subpart?.pieceId === 'string' ? subpart.pieceId : '',
     part: typeof subpart?.part === 'string' ? subpart.part : '',
     pageStart: Number.isFinite(subpart?.pageStart) ? subpart.pageStart : 0,
     pageEnd: Number.isFinite(subpart?.pageEnd) ? subpart.pageEnd : 0,
@@ -344,6 +351,9 @@ function normalizeUserLibrary(data) {
       id: typeof book?.id === 'string' ? book.id : '',
       name: typeof book?.name === 'string' ? book.name : '',
       pieces: (Array.isArray(book?.pieces) ? book.pieces : []).map(normalizePiece),
+      subparts: (Array.isArray(book?.subparts) ? book.subparts : [])
+        .map(normalizeSubpart)
+        .filter((entry) => entry.id),
     })),
   };
 }
@@ -451,6 +461,7 @@ export async function createBook(user, { name }) {
     id: typeof data?.id === 'string' ? data.id : '',
     name: typeof data?.name === 'string' ? data.name : name,
     pieces: [],
+    subparts: [],
   };
 }
 
@@ -502,5 +513,29 @@ export async function removePieceFromBook(user, { book, piece }) {
   });
   if (!res.ok) {
     throw new Error(await errorMessage(res, `Could not remove piece from book (${res.status}).`));
+  }
+}
+
+export async function addSubpartToBook(user, { book, subpart }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(libraryBookSubpartEndpoint(email, { book, subpart }), {
+    method: 'POST',
+    headers,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not add part to book (${res.status}).`));
+  }
+}
+
+export async function removeSubpartFromBook(user, { book, subpart }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(libraryBookSubpartEndpoint(email, { book, subpart }), {
+    method: 'DELETE',
+    headers,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not remove part from book (${res.status}).`));
   }
 }

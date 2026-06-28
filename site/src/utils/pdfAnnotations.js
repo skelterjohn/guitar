@@ -121,6 +121,10 @@ export async function setAnnotationSyncHash(pdfFile, syncHash) {
   return saveAnnotations(pdfFile, existing.pages, existing.color, syncHash || null);
 }
 
+export async function clearAnnotationSyncHash(pdfFile) {
+  return setAnnotationSyncHash(pdfFile, null);
+}
+
 export function createDebouncedSave(delayMs = 400, onResult) {
   let timer = null;
   let pending = null;

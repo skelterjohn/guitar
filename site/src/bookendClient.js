@@ -1,5 +1,6 @@
 import { bookendBaseUrl } from './config.js';
 import { auth } from './firebase.js';
+import { remoteAnnotationsToPages } from './utils/annotationSync.js';
 
 async function authHeaders(user) {
   const activeUser = user ?? auth?.currentUser;
@@ -31,6 +32,10 @@ function bookEndpoint(email, filename) {
 
 function bookAnnotationsEndpoint(email, filename) {
   return `${bookEndpoint(email, filename)}/annotations`;
+}
+
+function bookAnnotationRasterEndpoint(email, filename, rasterName) {
+  return `${bookAnnotationsEndpoint(email, filename)}/rasters/${encodeURIComponent(rasterName)}`;
 }
 
 function libraryBookEndpoint(email, book) {
@@ -225,6 +230,83 @@ export async function storeAnnotationRasters(user, pdfFilename, { hash, color, p
     throw new Error(await errorMessage(res, `Could not sync annotations (${res.status}).`));
   }
   return res.json();
+}
+
+function normalizeAnnotationRasterEntry(entry) {
+  return {
+    name: typeof entry?.name === 'string' ? entry.name : '',
+    page: Number.isFinite(entry?.page) ? entry.page : 0,
+    layer: typeof entry?.layer === 'string' ? entry.layer : '',
+    width: Number.isFinite(entry?.width) ? entry.width : 0,
+    height: Number.isFinite(entry?.height) ? entry.height : 0,
+  };
+}
+
+function normalizeRemoteAnnotations(data) {
+  if (!data || typeof data !== 'object') {
+    return null;
+  }
+
+  const result = {
+    pdf: typeof data.pdf === 'string' ? data.pdf : '',
+    hash: typeof data.hash === 'string' ? data.hash : '',
+    match: data.match === true,
+    color: typeof data.color === 'string' ? data.color : '',
+    pages: data.pages && typeof data.pages === 'object' ? data.pages : {},
+    rasters: Array.isArray(data.rasters)
+      ? data.rasters.map(normalizeAnnotationRasterEntry).filter((entry) => entry.name)
+      : [],
+  };
+
+  if (!result.hash) {
+    return null;
+  }
+
+  return result;
+}
+
+export async function getAnnotationRasters(user, pdfFilename, clientHash) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  let url = bookAnnotationsEndpoint(email, pdfFilename);
+  if (clientHash) {
+    url += `?hash=${encodeURIComponent(clientHash)}`;
+  }
+
+  const res = await fetch(url, { headers });
+  if (res.status === 404) {
+    return null;
+  }
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not load annotations (${res.status}).`));
+  }
+
+  return normalizeRemoteAnnotations(await res.json());
+}
+
+export async function fetchAnnotationRaster(user, pdfFilename, rasterName) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const res = await fetch(bookAnnotationRasterEndpoint(email, pdfFilename, rasterName), {
+    headers,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not load annotation raster (${res.status}).`));
+  }
+  return res.blob();
+}
+
+export async function downloadRemoteAnnotations(user, pdfFilename, remote) {
+  const rasterBlobsByName = {};
+  for (const raster of remote.rasters) {
+    rasterBlobsByName[raster.name] = await fetchAnnotationRaster(user, pdfFilename, raster.name);
+  }
+
+  return {
+    pages: remoteAnnotationsToPages(remote.pages, rasterBlobsByName, remote.rasters),
+    hash: remote.hash,
+    color: remote.color,
+  };
 }
 
 /** @typedef {{ id: string, part: string, pageStart: number, pageEnd: number }} LibrarySubpart */

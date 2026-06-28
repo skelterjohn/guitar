@@ -21,16 +21,16 @@ const (
 )
 
 type annotationPageDims struct {
-	Width  int `json:"width"`
-	Height int `json:"height"`
+	Width  int `firestore:"width" json:"width"`
+	Height int `firestore:"height" json:"height"`
 }
 
 type annotationRasterFile struct {
-	Name   string `json:"name"`
-	Page   int    `json:"page"`
-	Layer  string `json:"layer"`
-	Width  int    `json:"width"`
-	Height int    `json:"height"`
+	Name   string `firestore:"name" json:"name"`
+	Page   int    `firestore:"page" json:"page"`
+	Layer  string `firestore:"layer" json:"layer"`
+	Width  int    `firestore:"width" json:"width"`
+	Height int    `firestore:"height" json:"height"`
 }
 
 type annotationRasterRecord struct {

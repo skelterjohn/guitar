@@ -81,3 +81,31 @@ export async function buildAnnotationSyncPayload(pdfFilename, pages) {
   const hash = await computeAnnotationRastersHash(rasters);
   return { hash, pages: pagesMeta, rasters };
 }
+
+export const ANNOTATION_LAYER_HEX_BY_SLUG = Object.fromEntries(
+  Object.entries(ANNOTATION_LAYER_SLUG_BY_HEX).map(([hex, slug]) => [slug, hex]),
+);
+
+export function remoteAnnotationsToPages(pagesMeta, rasterBlobsByName, rasterList) {
+  const pages = {};
+
+  for (const raster of rasterList) {
+    const pageKey = String(raster.page);
+    const layerColor = ANNOTATION_LAYER_HEX_BY_SLUG[raster.layer];
+    const blob = rasterBlobsByName[raster.name];
+    if (!layerColor || !(blob instanceof Blob)) continue;
+
+    if (!pages[pageKey]) {
+      const dims = pagesMeta?.[pageKey];
+      pages[pageKey] = {
+        width: dims?.width ?? raster.width,
+        height: dims?.height ?? raster.height,
+        layers: {},
+      };
+    }
+
+    pages[pageKey].layers[layerColor] = { blob };
+  }
+
+  return pages;
+}

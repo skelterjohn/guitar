@@ -28,7 +28,7 @@ import {
   setAnnotationColorPreference,
 } from '../utils/annotationColorPreference.js';
 import { createDebouncedSave, createStrokeId, loadAnnotations, requestPersistentStorage, saveAnnotations, setAnnotationSyncHash as persistAnnotationSyncHash, clearAnnotationSyncHash } from '../utils/pdfAnnotations.js';
-import { buildAnnotationSyncPayload } from '../utils/annotationSync.js';
+import { buildAnnotationSyncPayload, EMPTY_ANNOTATION_RASTERS_HASH, isEmptyAnnotationRastersHash } from '../utils/annotationSync.js';
 import {
   downloadRemoteAnnotations,
   getAnnotationRasters,
@@ -163,6 +163,7 @@ export default function PdfViewer({
   const [annotationDownloadOffer, setAnnotationDownloadOffer] = useState(null);
   const [annotationDownloadBusy, setAnnotationDownloadBusy] = useState(false);
   const [annotationDownloadError, setAnnotationDownloadError] = useState('');
+  const [annotationSyncPending, setAnnotationSyncPending] = useState(false);
 
   const canCreateSubpart = viewContext === 'book' && bookPieceName && onCreateSubpart;
   const showNewPartButton = canCreateSubpart && pageStart == null;
@@ -171,7 +172,8 @@ export default function PdfViewer({
     () => Object.values(pageAnnotations).some((entry) => pageHasLayers(entry)),
     [pageAnnotations],
   );
-  const showSyncButton = Boolean(syncUser) && hasAnnotations && !annotationSyncHash;
+  const showSyncButton =
+    Boolean(syncUser) && !annotationSyncHash && (hasAnnotations || annotationSyncPending);
 
   const pdfZoomRef = useRef(1);
   const pendingZoomScrollRef = useRef(null);
@@ -288,38 +290,39 @@ export default function PdfViewer({
         const hasLocalAnnotations = Object.values(pages).some((entry) => pageHasLayers(entry));
         const localContentHash = hasLocalAnnotations
           ? (await buildAnnotationSyncPayload(currentFile, pages)).hash
-          : null;
+          : EMPTY_ANNOTATION_RASTERS_HASH;
 
         const remoteCheckHash =
-          localStoredHash && localContentHash && localStoredHash === localContentHash
-            ? localStoredHash
-            : undefined;
+          localStoredHash && localStoredHash === localContentHash ? localStoredHash : undefined;
         const remote = await getAnnotationRasters(syncUser, currentFile, remoteCheckHash);
         if (cancelled) return;
 
         if (!remote) {
           setAnnotationSyncHash(localStoredHash);
+          setAnnotationSyncPending(Boolean(localStoredHash) && localStoredHash !== localContentHash);
           return;
         }
 
-        const matchesRemote =
-          Boolean(localContentHash) && localContentHash === remote.hash;
-
-        if (remote.match || matchesRemote) {
+        if (remote.match || localContentHash === remote.hash) {
           setAnnotationSyncHash(remote.hash);
+          setAnnotationSyncPending(false);
           if (remote.hash !== localStoredHash) {
             void persistAnnotationSyncHash(filename, remote.hash);
           }
           return;
         }
 
-        if (remote.rasters.length > 0) {
+        const remoteHasSavedAnnotations =
+          !isEmptyAnnotationRastersHash(remote.hash) || remote.rasters.length > 0;
+        if (remoteHasSavedAnnotations) {
           setAnnotationSyncHash(null);
+          setAnnotationSyncPending(true);
           setAnnotationDownloadOffer(remote);
           return;
         }
 
         setAnnotationSyncHash(localStoredHash);
+        setAnnotationSyncPending(localContentHash !== localStoredHash);
       } catch (err) {
         console.warn('Could not check remote annotations:', err);
         setAnnotationSyncHash(localStoredHash);
@@ -360,6 +363,7 @@ export default function PdfViewer({
     setPageAnnotations({});
     pageRastersRef.current = {};
     setAnnotationSyncHash(null);
+    setAnnotationSyncPending(false);
     setAnnotationDownloadOffer(null);
     setAnnotationDownloadBusy(false);
     setAnnotationDownloadError('');
@@ -447,6 +451,7 @@ export default function PdfViewer({
     const storagePages = pagesToStoragePages(pages);
     if (invalidateSync) {
       setAnnotationSyncHash(null);
+      setAnnotationSyncPending(true);
       void clearAnnotationSyncHash(filename);
     }
     saveAnnotationsRef.current.schedule(
@@ -482,6 +487,7 @@ export default function PdfViewer({
       setPageAnnotations(remote.pages);
       setAnnotationColor(color);
       setAnnotationSyncHash(remote.hash);
+      setAnnotationSyncPending(false);
       setAnnotationDownloadOffer(null);
       setToast({ message: 'Annotations downloaded.', tone: 'info' });
     } catch (err) {
@@ -492,16 +498,13 @@ export default function PdfViewer({
   };
 
   const handleSyncAnnotations = async () => {
-    if (!syncUser || syncBusy || !hasAnnotations) return;
+    if (!syncUser || syncBusy || (!hasAnnotations && !annotationSyncPending)) return;
 
     setSyncBusy(true);
     setStorageWarning('');
     try {
       await saveAnnotationsRef.current.flushNow();
       const payload = await buildAnnotationSyncPayload(currentFile, pageRastersRef.current);
-      if (!payload.rasters.length) {
-        return;
-      }
 
       await storeAnnotationRasters(syncUser, currentFile, {
         hash: payload.hash,
@@ -515,6 +518,7 @@ export default function PdfViewer({
         throw new Error('Annotations could not be saved locally.');
       }
       setAnnotationSyncHash(payload.hash);
+      setAnnotationSyncPending(false);
       setToast({ message: 'Annotations saved.', tone: 'info' });
     } catch (err) {
       setStorageWarning(err.message ?? 'Could not sync annotations.');

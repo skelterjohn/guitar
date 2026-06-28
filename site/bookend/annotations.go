@@ -17,6 +17,7 @@ import (
 const (
 	annotationRasterFormat      = "webp"
 	annotationRasterContentType = "image/webp"
+	emptyAnnotationRastersHash  = "0"
 	maxAnnotationRasterBytes    = 5 << 20  // 5 MiB per raster
 	maxAnnotationStoreBytes     = 50 << 20 // 50 MiB per store request
 	maxAnnotationRasterFiles    = 500
@@ -125,16 +126,23 @@ func parseAnnotationRasterFilename(pdf, name string) (page int, layerSlug string
 	return page, layerSlug, true
 }
 
-func parseAnnotationPagesJSON(raw string) (map[string]annotationPageDims, error) {
+func isEmptyAnnotationRastersHash(hash string) bool {
+	return hash == emptyAnnotationRastersHash
+}
+
+func parseAnnotationPagesJSON(raw string, allowEmpty bool) (map[string]annotationPageDims, error) {
 	raw = strings.TrimSpace(raw)
 	if raw == "" {
+		if allowEmpty {
+			return map[string]annotationPageDims{}, nil
+		}
 		return nil, errors.New("missing pages metadata")
 	}
 	var pages map[string]annotationPageDims
 	if err := json.Unmarshal([]byte(raw), &pages); err != nil {
 		return nil, errors.New("invalid pages metadata")
 	}
-	if len(pages) == 0 {
+	if len(pages) == 0 && !allowEmpty {
 		return nil, errors.New("missing pages metadata")
 	}
 	for key, dims := range pages {
@@ -181,14 +189,14 @@ func readAnnotationStoreRequest(w http.ResponseWriter, r *http.Request, pdf stri
 		return "", "", nil, nil, false
 	}
 
-	parsedPages, err := parseAnnotationPagesJSON(r.FormValue("pages"))
+	parsedPages, err := parseAnnotationPagesJSON(r.FormValue("pages"), isEmptyAnnotationRastersHash(hash))
 	if err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return "", "", nil, nil, false
 	}
 
 	fileHeaders := r.MultipartForm.File["rasters"]
-	if len(fileHeaders) == 0 {
+	if len(fileHeaders) == 0 && !isEmptyAnnotationRastersHash(hash) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "missing raster files"})
 		return "", "", nil, nil, false
 	}

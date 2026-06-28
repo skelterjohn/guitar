@@ -115,7 +115,7 @@ export async function saveAnnotations(pdfFile, pages, color, syncHash) {
 
 export async function setAnnotationSyncHash(pdfFile, syncHash) {
   const existing = await loadAnnotations(pdfFile);
-  if (!existing?.pages) {
+  if (!existing || existing.pages == null) {
     return false;
   }
   return saveAnnotations(pdfFile, existing.pages, existing.color, syncHash || null);

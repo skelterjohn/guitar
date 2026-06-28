@@ -5,7 +5,7 @@ import (
 )
 
 func TestValidateAnnotationHash(t *testing.T) {
-	valid := []string{"abc123", "md5-deadbeef", "checksum_v1"}
+	valid := []string{"abc123", "md5-deadbeef", "checksum_v1", emptyAnnotationRastersHash}
 	for _, hash := range valid {
 		if err := validateAnnotationHash(hash); err != nil {
 			t.Fatalf("%q: expected valid, got %v", hash, err)
@@ -65,7 +65,7 @@ func TestAnnotationRasterObjectKey(t *testing.T) {
 }
 
 func TestParseAnnotationPagesJSON(t *testing.T) {
-	pages, err := parseAnnotationPagesJSON(`{"1":{"width":1536,"height":2048},"2":{"width":1536,"height":1200}}`)
+	pages, err := parseAnnotationPagesJSON(`{"1":{"width":1536,"height":2048},"2":{"width":1536,"height":1200}}`, false)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -73,7 +73,15 @@ func TestParseAnnotationPagesJSON(t *testing.T) {
 		t.Fatalf("unexpected pages: %#v", pages)
 	}
 
-	if _, err := parseAnnotationPagesJSON(`{"1":{"width":0,"height":10}}`); err == nil {
+	if _, err := parseAnnotationPagesJSON(`{"1":{"width":0,"height":10}}`, false); err == nil {
 		t.Fatal("expected invalid dimensions")
+	}
+
+	emptyPages, err := parseAnnotationPagesJSON(`{}`, true)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(emptyPages) != 0 {
+		t.Fatalf("expected empty pages, got %#v", emptyPages)
 	}
 }

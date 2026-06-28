@@ -10,6 +10,13 @@ export const ANNOTATION_LAYER_SLUG_BY_HEX = {
 
 const LAYER_SLUG_ORDER = ['black', 'green', 'blue', 'red'];
 
+/** Hash used when a PDF has no annotation rasters. */
+export const EMPTY_ANNOTATION_RASTERS_HASH = '0';
+
+export function isEmptyAnnotationRastersHash(hash) {
+  return hash === EMPTY_ANNOTATION_RASTERS_HASH;
+}
+
 export function annotationLayerSlug(hexColor) {
   return ANNOTATION_LAYER_SLUG_BY_HEX[hexColor] ?? null;
 }
@@ -58,7 +65,7 @@ export function collectAnnotationRasters(pdfFilename, pages) {
 
 export async function computeAnnotationRastersHash(rasters) {
   if (rasters.length === 0) {
-    return '';
+    return EMPTY_ANNOTATION_RASTERS_HASH;
   }
 
   const parts = await Promise.all(rasters.map((entry) => entry.blob.arrayBuffer()));

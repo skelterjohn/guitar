@@ -19,12 +19,16 @@ import ChevronIcon from './ChevronIcon.jsx';
 import DownloadIcon from './DownloadIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
 import PrintIcon from './PrintIcon.jsx';
+import SyncIcon from './SyncIcon.jsx';
+import Toast from './Toast.jsx';
 import {
   getAnnotationColorPreference,
   resolveAnnotationColor,
   setAnnotationColorPreference,
 } from '../utils/annotationColorPreference.js';
-import { createDebouncedSave, createStrokeId, loadAnnotations, requestPersistentStorage } from '../utils/pdfAnnotations.js';
+import { createDebouncedSave, createStrokeId, loadAnnotations, requestPersistentStorage, setAnnotationSyncHash as persistAnnotationSyncHash } from '../utils/pdfAnnotations.js';
+import { buildAnnotationSyncPayload } from '../utils/annotationSync.js';
+import { storeAnnotationRasters } from '../bookendClient.js';
 import { createPenScrollLock } from '../utils/penScrollLock.js';
 import { glyphDrawSpecFromDrop } from '../utils/annotationRaster.js';
 import {
@@ -70,6 +74,7 @@ export default function PdfViewer({
   pageEnd = null,
   bookPieceName = null,
   onCreateSubpart = null,
+  syncUser = null,
 }) {
   const currentFile = currentFileOverride ?? filename;
   const url = pdfUrlOverride ?? pdfUrl(filename, pdfHash);
@@ -147,9 +152,18 @@ export default function PdfViewer({
   const [subpartModalOpen, setSubpartModalOpen] = useState(false);
   const [subpartBusy, setSubpartBusy] = useState(false);
   const [subpartError, setSubpartError] = useState('');
+  const [annotationSyncHash, setAnnotationSyncHash] = useState(null);
+  const [syncBusy, setSyncBusy] = useState(false);
+  const [toast, setToast] = useState(null);
 
   const canCreateSubpart = viewContext === 'book' && bookPieceName && onCreateSubpart;
   const showNewPartButton = canCreateSubpart && pageStart == null;
+
+  const hasAnnotations = useMemo(
+    () => Object.values(pageAnnotations).some((entry) => pageHasLayers(entry)),
+    [pageAnnotations],
+  );
+  const showSyncButton = Boolean(syncUser) && hasAnnotations && !annotationSyncHash;
 
   const pdfZoomRef = useRef(1);
   const pendingZoomScrollRef = useRef(null);
@@ -250,6 +264,7 @@ export default function PdfViewer({
       pageRastersRef.current = pages;
       setPageAnnotations(pages);
       setAnnotationColor(resolveAnnotationColor(record?.color));
+      setAnnotationSyncHash(typeof record?.syncHash === 'string' ? record.syncHash : null);
       setStorageWarning('');
     });
 
@@ -286,6 +301,7 @@ export default function PdfViewer({
     setPdfZoom(1);
     setPageAnnotations({});
     pageRastersRef.current = {};
+    setAnnotationSyncHash(null);
     setAnnotationMenu(null);
     setGlyphDragActive(false);
     setGlyphDragPreview(null);
@@ -349,7 +365,11 @@ export default function PdfViewer({
     };
   }, [url, loadPdfBytes, pageRange]);
 
-  const persistPageAnnotations = (pages, color = annotationColorRef.current) => {
+  const persistPageAnnotations = (
+    pages,
+    color = annotationColorRef.current,
+    { invalidateSync = false } = {},
+  ) => {
     const storagePages = Object.fromEntries(
       Object.entries(pages).map(([key, page]) => {
         const layers = Object.fromEntries(
@@ -361,7 +381,47 @@ export default function PdfViewer({
         return [key, createPageLayersRecord(page.width, page.height, layers)];
       }),
     );
-    saveAnnotationsRef.current.schedule(filename, storagePages, color);
+    if (invalidateSync) {
+      setAnnotationSyncHash(null);
+    }
+    saveAnnotationsRef.current.schedule(
+      filename,
+      storagePages,
+      color,
+      invalidateSync ? null : undefined,
+    );
+  };
+
+  const handleSyncAnnotations = async () => {
+    if (!syncUser || syncBusy || !hasAnnotations) return;
+
+    setSyncBusy(true);
+    setStorageWarning('');
+    try {
+      await saveAnnotationsRef.current.flushNow();
+      const payload = await buildAnnotationSyncPayload(currentFile, pageRastersRef.current);
+      if (!payload.rasters.length) {
+        return;
+      }
+
+      await storeAnnotationRasters(syncUser, currentFile, {
+        hash: payload.hash,
+        color: annotationColorRef.current,
+        pages: payload.pages,
+        rasters: payload.rasters,
+      });
+
+      const saved = await persistAnnotationSyncHash(filename, payload.hash);
+      if (!saved) {
+        throw new Error('Annotations could not be saved locally.');
+      }
+      setAnnotationSyncHash(payload.hash);
+      setToast({ message: 'Annotations saved.', tone: 'info' });
+    } catch (err) {
+      setStorageWarning(err.message ?? 'Could not sync annotations.');
+    } finally {
+      setSyncBusy(false);
+    }
   };
 
   const handleAnnotationColorChange = (color) => {
@@ -415,7 +475,7 @@ export default function PdfViewer({
 
     pageRastersRef.current = next;
     setPageAnnotations(next);
-    persistPageAnnotations(next);
+    persistPageAnnotations(next, undefined, { invalidateSync: true });
   };
 
   const handleClearCurrentLayer = () => {
@@ -436,7 +496,7 @@ export default function PdfViewer({
     delete next[key];
     pageRastersRef.current = next;
     setPageAnnotations(next);
-    persistPageAnnotations(next);
+    persistPageAnnotations(next, undefined, { invalidateSync: true });
   };
 
   const handleGlyphDragPreview = (preview) => {
@@ -1334,6 +1394,18 @@ export default function PdfViewer({
               )}
             </div>
             <div className="viewer-toolbar-end" ref={toolbarEndRef}>
+              {showSyncButton && (
+                <button
+                  type="button"
+                  className="viewer-annotation-sync"
+                  onClick={() => void handleSyncAnnotations()}
+                  disabled={syncBusy}
+                  aria-label={syncBusy ? 'Syncing annotations' : 'Sync annotations'}
+                  aria-busy={syncBusy || undefined}
+                >
+                  <SyncIcon />
+                </button>
+              )}
               <button
                 type="button"
                 className="viewer-annotation-help"
@@ -1653,6 +1725,7 @@ export default function PdfViewer({
           ))}
         </div>
       )}
+      <Toast message={toast?.message} tone={toast?.tone} onDismiss={() => setToast(null)} />
     </div>
   );
 }

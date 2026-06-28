@@ -29,6 +29,10 @@ function bookEndpoint(email, filename) {
   return `${base}/v1/book/${encodeURIComponent(email)}/${encodeURIComponent(filename)}`;
 }
 
+function bookAnnotationsEndpoint(email, filename) {
+  return `${bookEndpoint(email, filename)}/annotations`;
+}
+
 function libraryBookEndpoint(email, book) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   const enc = encodeURIComponent;
@@ -197,6 +201,30 @@ export async function fetchBookPdfBytes(user, filename, onPhase) {
   onPhase?.('loading');
   const buffer = await blob.arrayBuffer();
   return new Uint8Array(buffer);
+}
+
+export async function storeAnnotationRasters(user, pdfFilename, { hash, color, pages, rasters }) {
+  const email = requireUserEmail(user);
+  const headers = await authHeaders(user);
+  const form = new FormData();
+  form.append('hash', hash);
+  if (color) {
+    form.append('color', color);
+  }
+  form.append('pages', JSON.stringify(pages));
+  for (const raster of rasters) {
+    form.append('rasters', raster.blob, raster.name);
+  }
+
+  const res = await fetch(bookAnnotationsEndpoint(email, pdfFilename), {
+    method: 'POST',
+    headers,
+    body: form,
+  });
+  if (!res.ok) {
+    throw new Error(await errorMessage(res, `Could not sync annotations (${res.status}).`));
+  }
+  return res.json();
 }
 
 /** @typedef {{ id: string, part: string, pageStart: number, pageEnd: number }} LibrarySubpart */

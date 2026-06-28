@@ -148,6 +148,7 @@ function ViewBookPdfInner({ user }) {
       backTo={bookPath()}
       backLabel={bookBackLabel}
       viewState={{ from: bookPath() }}
+      syncUser={user}
     />
   );
 }

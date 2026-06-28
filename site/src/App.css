@@ -258,6 +258,55 @@ body {
   margin-bottom: 2.5rem;
 }
 
+.catalog-section--folded {
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  background: var(--color-surface);
+}
+
+.catalog-section-folded {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.catalog-section-folded-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.15rem;
+  font-weight: normal;
+  letter-spacing: 0.04em;
+  color: var(--color-text-heading);
+}
+
+.catalog-section-folded-pieces {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.catalog-section-heading-row--foldable {
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.catalog-section-heading-row--foldable .catalog-section-heading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .book-page > .catalog-section:first-of-type {
   margin-top: 2.5rem;
 }

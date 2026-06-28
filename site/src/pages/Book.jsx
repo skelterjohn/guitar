@@ -1098,6 +1098,7 @@ function BookLibrary({ user }) {
                   onPieceDelete={handlePieceDelete}
                   onBookSave={handleBookSave}
                   onBookDelete={handleBookDelete}
+                  foldable
                 />
               ) : (
                 <p className="book-empty">No matches.</p>

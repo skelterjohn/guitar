@@ -168,38 +168,102 @@ export default function Catalog({
   onBookSave,
   onBookDelete,
   availableFiles,
+  foldable = false,
 }) {
   const [activeEditId, setActiveEditId] = useState(null);
+  const [expandedSectionIds, setExpandedSectionIds] = useState(() => new Set());
+
+  const expandSection = (sectionId) => {
+    setExpandedSectionIds((prev) => new Set(prev).add(sectionId));
+  };
+
+  const collapseSection = (sectionId) => {
+    setExpandedSectionIds((prev) => {
+      const next = new Set(prev);
+      next.delete(sectionId);
+      return next;
+    });
+    setActiveEditId((current) => (current === `book:${sectionId}` ? null : current));
+  };
 
   return (
     <>
-      {sections.map((section) => (
-        <section key={section.id} className="catalog-section">
-          <BookSectionHeading
-            title={section.title}
-            editing={activeEditId === `book:${section.id}`}
-            onStartEdit={() => setActiveEditId(`book:${section.id}`)}
-            onEndEdit={() => setActiveEditId(null)}
-            onBookSave={onBookSave ? (name) => onBookSave(section.bookKey ?? section.title, name) : undefined}
-            onBookDelete={onBookDelete ? () => onBookDelete(section.bookKey ?? section.title) : undefined}
-          />
-          {section.pieces.map((piece) => (
-            <CompositionCard
-              key={piece.title}
-              id={pieceId(section.id, piece.title)}
-              piece={piece}
-              viewState={viewState}
-              viewPrefix={viewPrefix}
-              availableFiles={availableFiles}
-              onPieceDelete={
-                onPieceDelete
-                  ? () => onPieceDelete(piece.pieceKey ?? piece.title)
-                  : undefined
-              }
-            />
-          ))}
-        </section>
-      ))}
+      {sections.map((section) => {
+        const expanded = !foldable || expandedSectionIds.has(section.id);
+        const pieceTitles = section.pieces.map((piece) => piece.title).filter(Boolean).join(', ');
+
+        if (foldable && !expanded) {
+          return (
+            <section key={section.id} className="catalog-section catalog-section--folded">
+              <div className="catalog-section-folded">
+                <button
+                  type="button"
+                  className="book-score-fold-toggle"
+                  onClick={() => expandSection(section.id)}
+                  aria-expanded={false}
+                  aria-label={`Expand ${section.title}`}
+                >
+                  ▸
+                </button>
+                <span className="catalog-section-folded-title">{section.title}</span>
+                {pieceTitles && (
+                  <span className="catalog-section-folded-pieces">{pieceTitles}</span>
+                )}
+              </div>
+            </section>
+          );
+        }
+
+        return (
+          <section key={section.id} className="catalog-section">
+            {foldable ? (
+              <div className="catalog-section-heading-row catalog-section-heading-row--foldable">
+                <button
+                  type="button"
+                  className="book-score-fold-toggle"
+                  onClick={() => collapseSection(section.id)}
+                  aria-expanded
+                  aria-label={`Collapse ${section.title}`}
+                >
+                  ▾
+                </button>
+                <BookSectionHeading
+                  title={section.title}
+                  editing={activeEditId === `book:${section.id}`}
+                  onStartEdit={() => setActiveEditId(`book:${section.id}`)}
+                  onEndEdit={() => setActiveEditId(null)}
+                  onBookSave={onBookSave ? (name) => onBookSave(section.bookKey ?? section.title, name) : undefined}
+                  onBookDelete={onBookDelete ? () => onBookDelete(section.bookKey ?? section.title) : undefined}
+                />
+              </div>
+            ) : (
+              <BookSectionHeading
+                title={section.title}
+                editing={activeEditId === `book:${section.id}`}
+                onStartEdit={() => setActiveEditId(`book:${section.id}`)}
+                onEndEdit={() => setActiveEditId(null)}
+                onBookSave={onBookSave ? (name) => onBookSave(section.bookKey ?? section.title, name) : undefined}
+                onBookDelete={onBookDelete ? () => onBookDelete(section.bookKey ?? section.title) : undefined}
+              />
+            )}
+            {section.pieces.map((piece) => (
+              <CompositionCard
+                key={piece.title}
+                id={pieceId(section.id, piece.title)}
+                piece={piece}
+                viewState={viewState}
+                viewPrefix={viewPrefix}
+                availableFiles={availableFiles}
+                onPieceDelete={
+                  onPieceDelete
+                    ? () => onPieceDelete(piece.pieceKey ?? piece.title)
+                    : undefined
+                }
+              />
+            ))}
+          </section>
+        );
+      })}
     </>
   );
 }

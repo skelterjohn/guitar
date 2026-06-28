@@ -8,6 +8,7 @@ import Catalog from '../components/Catalog.jsx';
 import PencilIcon from '../components/PencilIcon.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import Toast from '../components/Toast.jsx';
+import useFoldableCatalogSections from '../hooks/useFoldableCatalogSections.js';
 import {
   addPieceToBook,
   addSubpartToBook,
@@ -767,9 +768,20 @@ function BookLibrary({ user }) {
   const [sortField, setSortField] = useState('filename');
   const [sortDirection, setSortDirection] = useState('asc');
   const fileInputRef = useRef(null);
+  const {
+    expandedSectionIds: expandedCatalogSectionIds,
+    expandSection: expandCatalogSection,
+    collapseSection: collapseCatalogSection,
+    revealSection,
+  } = useFoldableCatalogSections();
 
   const showToast = useCallback((message) => setToast({ message, tone: 'info' }), []);
   const showError = useCallback((message) => setToast({ message, tone: 'error' }), []);
+
+  const revealCatalogSection = useCallback((sectionId) => {
+    setActiveTab('catalog');
+    revealSection(sectionId);
+  }, [revealSection]);
 
   const refreshLibrary = useCallback(async () => {
     try {
@@ -930,7 +942,11 @@ function BookLibrary({ user }) {
     <>
       <Toast message={toast?.message} tone={toast?.tone} onDismiss={() => setToast(null)} />
       {libraryLoaded && filteredSections.length > 0 && (
-        <TableOfContents sections={filteredSections} />
+        <TableOfContents
+          sections={filteredSections}
+          expandedSectionIds={expandedCatalogSectionIds}
+          onSectionActivate={revealCatalogSection}
+        />
       )}
       <main className="page book-page">
         <header className="page-header">
@@ -1099,6 +1115,9 @@ function BookLibrary({ user }) {
                   onBookSave={handleBookSave}
                   onBookDelete={handleBookDelete}
                   foldable
+                  expandedSectionIds={expandedCatalogSectionIds}
+                  onExpandSection={expandCatalogSection}
+                  onCollapseSection={collapseCatalogSection}
                 />
               ) : (
                 <p className="book-empty">No matches.</p>

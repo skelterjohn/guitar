@@ -110,6 +110,40 @@ body {
     color: var(--color-link-text);
     text-decoration: underline;
   }
+
+  .toc-section--folded + .toc-section,
+  .toc-section + .toc-section--folded {
+    margin-top: 0.5rem;
+  }
+
+  .toc-section-folded {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    min-width: 0;
+    line-height: 1.3;
+  }
+
+  .toc-section-folded-title {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .toc-section-folded-pieces {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-left: 0.35rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text-muted);
+  }
 }
 
 .page-header {
@@ -275,6 +309,7 @@ body {
 
 .catalog-section-folded-title {
   flex: 0 1 auto;
+  flex-shrink: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -286,12 +321,14 @@ body {
 }
 
 .catalog-section-folded-pieces {
-  flex: 1 1 auto;
+  flex: 1 1 0;
+  flex-shrink: 1000;
   min-width: 0;
   margin-left: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: right;
   font-family: system-ui, sans-serif;
   font-size: 0.85rem;
   color: var(--color-text-muted);

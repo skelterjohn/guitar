@@ -3,11 +3,19 @@ import BackToHome from '../components/BackToHome.jsx';
 import Catalog from '../components/Catalog.jsx';
 import JsonLd from '../components/JsonLd.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
+import useFoldableCatalogSections from '../hooks/useFoldableCatalogSections.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { buildHomeJsonLd } from '../homeJsonLd.js';
 import { catalogUrl, defaultDescription, siteHeading, siteTitle } from '../seo.js';
 
 export default function Home() {
+  const {
+    expandedSectionIds,
+    expandSection,
+    collapseSection,
+    revealSection,
+  } = useFoldableCatalogSections();
+
   usePageMeta({
     title: siteTitle,
     description: defaultDescription,
@@ -17,7 +25,11 @@ export default function Home() {
   return (
     <div className="page-shell">
       <JsonLd data={buildHomeJsonLd(catalog)} />
-      <TableOfContents sections={catalog.sections} />
+      <TableOfContents
+        sections={catalog.sections}
+        expandedSectionIds={expandedSectionIds}
+        onSectionActivate={revealSection}
+      />
       <main className="page">
         <header className="page-header">
           <div className="page-header-top">
@@ -39,7 +51,13 @@ export default function Home() {
           </div>
           <p>original compositions, arrangements, and transcriptions.</p>
         </header>
-        <Catalog sections={catalog.sections} />
+        <Catalog
+          sections={catalog.sections}
+          foldable
+          expandedSectionIds={expandedSectionIds}
+          onExpandSection={expandSection}
+          onCollapseSection={collapseSection}
+        />
       </main>
     </div>
   );

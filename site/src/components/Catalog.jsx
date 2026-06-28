@@ -169,32 +169,30 @@ export default function Catalog({
   onBookDelete,
   availableFiles,
   foldable = false,
+  expandedSectionIds,
+  onExpandSection,
+  onCollapseSection,
 }) {
   const [activeEditId, setActiveEditId] = useState(null);
-  const [expandedSectionIds, setExpandedSectionIds] = useState(() => new Set());
 
   const expandSection = (sectionId) => {
-    setExpandedSectionIds((prev) => new Set(prev).add(sectionId));
+    onExpandSection?.(sectionId);
   };
 
   const collapseSection = (sectionId) => {
-    setExpandedSectionIds((prev) => {
-      const next = new Set(prev);
-      next.delete(sectionId);
-      return next;
-    });
+    onCollapseSection?.(sectionId);
     setActiveEditId((current) => (current === `book:${sectionId}` ? null : current));
   };
 
   return (
     <>
       {sections.map((section) => {
-        const expanded = !foldable || expandedSectionIds.has(section.id);
+        const expanded = !foldable || expandedSectionIds?.has(section.id);
         const pieceTitles = section.pieces.map((piece) => piece.title).filter(Boolean).join(', ');
 
         if (foldable && !expanded) {
           return (
-            <section key={section.id} className="catalog-section catalog-section--folded">
+            <section key={section.id} id={section.id} className="catalog-section catalog-section--folded">
               <div className="catalog-section-folded">
                 <button
                   type="button"
@@ -215,7 +213,7 @@ export default function Catalog({
         }
 
         return (
-          <section key={section.id} className="catalog-section">
+          <section key={section.id} id={section.id} className="catalog-section">
             {foldable ? (
               <div className="catalog-section-heading-row catalog-section-heading-row--foldable">
                 <button

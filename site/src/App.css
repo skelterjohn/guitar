@@ -3051,6 +3051,19 @@ a.book-file-open {
   position: relative;
 }
 
+.viewer-content.is-zoomed .viewer-zoom-surface {
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: max-content;
+  min-width: 100%;
+}
+
+.viewer-content.is-zoomed .viewer-page-slot.is-current {
+  width: auto;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
 .viewer-page-scaler {
   position: relative;
   flex-shrink: 0;

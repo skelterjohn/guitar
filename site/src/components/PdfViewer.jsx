@@ -232,6 +232,9 @@ export default function PdfViewer({
 
     const applyScroll = () => {
       container.scrollTop = 0;
+      if (pdfZoomRef.current <= 1) {
+        container.scrollLeft = 0;
+      }
     };
 
     applyScroll();
@@ -1722,7 +1725,7 @@ export default function PdfViewer({
       <div
         className={`viewer-content${headerHidden ? ' is-header-hidden' : ''}${
           isTouchAnnotating ? ' is-touch-annotating' : ''
-        }${
+        }${pdfZoom > 1 ? ' is-zoomed' : ''}${
           showLoading ? ' is-loading' : ''
         }`}
         ref={containerRef}

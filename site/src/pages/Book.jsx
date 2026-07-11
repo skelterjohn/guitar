@@ -467,7 +467,13 @@ function BookScoreItem({ user, filename, modifiedAt, library, onLibraryChange, o
   if (folded) {
     return (
       <li ref={cardRef} className="book-score-item book-score-item--folded">
-        <div className="book-score-folded">
+        <div
+          className="book-score-folded"
+          onClick={(event) => {
+            if (event.target instanceof Element && event.target.closest('button, a')) return;
+            setFolded(false);
+          }}
+        >
           <button
             type="button"
             className="book-score-fold-toggle"

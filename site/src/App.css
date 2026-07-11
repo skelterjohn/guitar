@@ -298,6 +298,11 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 0.375rem;
   background: var(--color-surface);
+  cursor: pointer;
+}
+
+.catalog-section--folded:hover {
+  border-color: var(--color-text-muted);
 }
 
 .catalog-section-folded {
@@ -2366,6 +2371,11 @@ body {
 
 .book-score-item--folded {
   gap: 0;
+  cursor: pointer;
+}
+
+.book-score-item--folded:hover {
+  border-color: var(--color-text-muted);
 }
 
 .book-score-folded {
@@ -2373,6 +2383,7 @@ body {
   align-items: baseline;
   gap: 0.5rem;
   min-width: 0;
+  width: 100%;
 }
 
 .book-score-folded-label {

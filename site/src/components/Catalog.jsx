@@ -192,17 +192,25 @@ export default function Catalog({
 
         if (foldable && !expanded) {
           return (
-            <section key={section.id} id={section.id} className="catalog-section catalog-section--folded">
+            <section
+              key={section.id}
+              id={section.id}
+              className="catalog-section catalog-section--folded"
+              role="button"
+              tabIndex={0}
+              onClick={() => expandSection(section.id)}
+              onKeyDown={(event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                expandSection(section.id);
+              }}
+              aria-expanded={false}
+              aria-label={`Expand ${section.title}`}
+            >
               <div className="catalog-section-folded">
-                <button
-                  type="button"
-                  className="book-score-fold-toggle"
-                  onClick={() => expandSection(section.id)}
-                  aria-expanded={false}
-                  aria-label={`Expand ${section.title}`}
-                >
+                <span className="book-score-fold-toggle" aria-hidden="true">
                   ▸
-                </button>
+                </span>
                 <span className="catalog-section-folded-title">{section.title}</span>
                 {pieceTitles && (
                   <span className="catalog-section-folded-pieces">{pieceTitles}</span>

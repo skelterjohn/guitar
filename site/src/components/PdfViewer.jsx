@@ -189,6 +189,11 @@ export default function PdfViewer({
   const dismissTapPointerIdRef = useRef(null);
   const glyphDragActiveRef = useRef(false);
   const onSaveResultRef = useRef(() => {});
+  const renderControlRef = useRef({
+    forceRender: () => {},
+    refreshCurrentPage: () => {},
+  });
+  const prevRenderedPageRef = useRef(null);
 
   onSaveResultRef.current = (saved) => {
     if (saved === false) {
@@ -382,6 +387,7 @@ export default function PdfViewer({
     canvasRefs.current = [];
     slotRefs.current = [];
     pageBaseDisplaySizesRef.current = [];
+    prevRenderedPageRef.current = null;
     pdfDocRef.current = null;
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
@@ -706,7 +712,7 @@ export default function PdfViewer({
       );
     };
 
-    const renderPages = async () => {
+    const renderPages = async ({ onlyPage = null } = {}) => {
       const renderId = ++renderIdRef.current;
       const renderUrl = url;
 
@@ -731,7 +737,13 @@ export default function PdfViewer({
 
       const availableWidth = container.clientWidth;
       const availableHeight = container.clientHeight;
-      if (availableWidth === 0 || availableHeight === 0) return;
+      if (availableWidth === 0 || availableHeight === 0) {
+        if (onlyPage == null && renderAttempts < 5) {
+          renderAttempts += 1;
+          requestAnimationFrame(queueRender);
+        }
+        return;
+      }
 
       lastContainerWidth = availableWidth;
       lastContainerHeight = availableHeight;
@@ -827,6 +839,7 @@ export default function PdfViewer({
           const pageNum = index + 1;
           const bounds = bookViewNavBounds(numPages, pageRange);
           if (pageNum < bounds.min || pageNum > bounds.max) return null;
+          if (onlyPage != null && pageNum !== onlyPage) return null;
           return renderOnePage(pageNum);
         }),
       );
@@ -837,31 +850,42 @@ export default function PdfViewer({
         nextPageMediaSizes[result.pageNum - 1] = result.mediaSize;
       }
 
-      if (scrollToTopPendingRef.current) {
+      if (scrollToTopPendingRef.current && onlyPage == null) {
         container.scrollTop = 0;
       }
 
       if (cancelled || renderId !== renderIdRef.current) return;
 
       if (renderedCount > 0) {
-        setPageMediaSizes(nextPageMediaSizes);
-        setPageBaseDisplaySizes([...pageBaseDisplaySizesRef.current]);
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            if (cancelled || renderId !== renderIdRef.current) return;
-            resetPageScrollRef.current();
-            if (scrollToTopPendingRef.current) {
-              finishScrollToTopPending();
-            } else if (headerHiddenRef.current) {
-              resetPageScrollRef.current();
-            }
-            setDisplayReady(true);
-          });
+        setPageMediaSizes((prev) => {
+          if (onlyPage == null) return nextPageMediaSizes;
+          const merged = [...prev];
+          for (const result of results) {
+            if (!result) continue;
+            merged[result.pageNum - 1] = result.mediaSize;
+          }
+          return merged;
         });
+        setPageBaseDisplaySizes([...pageBaseDisplaySizesRef.current]);
+        if (onlyPage == null) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (cancelled || renderId !== renderIdRef.current) return;
+              resetPageScrollRef.current();
+              if (scrollToTopPendingRef.current) {
+                finishScrollToTopPending();
+              } else if (headerHiddenRef.current) {
+                resetPageScrollRef.current();
+              }
+              setDisplayReady(true);
+            });
+          });
+        }
       }
 
       if (
         renderedCount === 0 &&
+        onlyPage == null &&
         !cancelled &&
         renderId === renderIdRef.current
       ) {
@@ -887,12 +911,34 @@ export default function PdfViewer({
     const scheduleRender = () => {
       const width = container.clientWidth;
       const height = container.clientHeight;
-      if (width === 0 || height === 0) return;
+      if (width === 0 || height === 0) {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(scheduleRender, 100);
+        return;
+      }
       if (width === lastContainerWidth && height === lastContainerHeight) return;
 
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(queueRender, 100);
     };
+
+    const forceRender = () => {
+      lastContainerWidth = 0;
+      lastContainerHeight = 0;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(queueRender, 100);
+    };
+
+    const refreshCurrentPage = () => {
+      renderChain = renderChain
+        .then(() => renderPages({ onlyPage: currentPageRef.current }))
+        .catch((err) => {
+          if (String(err?.message ?? '').includes('Invalid page request')) return;
+          console.error('PDF render failed:', err);
+        });
+    };
+
+    renderControlRef.current = { forceRender, refreshCurrentPage };
 
     lastContainerWidth = container.clientWidth;
     lastContainerHeight = container.clientHeight;
@@ -902,6 +948,10 @@ export default function PdfViewer({
     observer.observe(container);
 
     return () => {
+      renderControlRef.current = {
+        forceRender: () => {},
+        refreshCurrentPage: () => {},
+      };
       cancelled = true;
       setDisplayReady(false);
       clearTimeout(resizeTimer);
@@ -913,6 +963,44 @@ export default function PdfViewer({
       renderTasksRef.current = [];
     };
   }, [status, pageCount, url, pageRange]);
+
+  useEffect(() => {
+    if (status !== 'ready' || !displayReady) return undefined;
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        renderControlRef.current.forceRender();
+      }
+    };
+
+    const onOrientationChange = () => {
+      renderControlRef.current.forceRender();
+    };
+
+    const onPageShow = (event) => {
+      if (event.persisted) {
+        renderControlRef.current.forceRender();
+      }
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('orientationchange', onOrientationChange);
+    window.addEventListener('pageshow', onPageShow);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('orientationchange', onOrientationChange);
+      window.removeEventListener('pageshow', onPageShow);
+    };
+  }, [status, displayReady]);
+
+  useEffect(() => {
+    if (status !== 'ready' || !displayReady) return;
+    const prev = prevRenderedPageRef.current;
+    prevRenderedPageRef.current = currentPage;
+    if (prev == null || prev === currentPage) return;
+    renderControlRef.current.refreshCurrentPage();
+  }, [currentPage, status, displayReady]);
 
   useEffect(() => {
     if (pageCount === 0) return;
@@ -1675,7 +1763,6 @@ export default function PdfViewer({
               <div
                 className={`viewer-page-slot${isCurrent ? ' is-current' : ''}`}
                 key={index}
-                hidden={!isCurrent}
                 aria-hidden={!isCurrent}
                 ref={(element) => {
                   slotRefs.current[index] = element;

@@ -27,7 +27,6 @@ const PUBLIC_LINKS = [
     label: 'Join the NJGO',
     url: 'https://docs.google.com/forms/d/e/1FAIpQLScaoHIsS4QA0h27dhL8k-moKiY4I3B_FiiC8TAJ4p-LlAYwJg/viewform',
   },
-  { label: 'Events', url: 'https://jaysonmartinez.org/events' },
   { label: 'Youtube', url: 'https://www.youtube.com/@newjerseyguitarorchestra/videos' },
 ];
 

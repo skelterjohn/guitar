@@ -133,19 +133,19 @@ export function emptyPages() {
 export function findPageFrameAt(clientX, clientY) {
   if (typeof document === 'undefined') return null;
 
-  const frames = document.querySelectorAll('.viewer-page-frame');
-  for (const frame of frames) {
-    const rect = frame.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) continue;
+  const frame = document.querySelector('.viewer-page-slot.is-current .viewer-page-frame');
+  if (!frame) return null;
 
-    if (
-      clientX >= rect.left &&
-      clientX <= rect.right &&
-      clientY >= rect.top &&
-      clientY <= rect.bottom
-    ) {
-      return frame;
-    }
+  const rect = frame.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return null;
+
+  if (
+    clientX >= rect.left &&
+    clientX <= rect.right &&
+    clientY >= rect.top &&
+    clientY <= rect.bottom
+  ) {
+    return frame;
   }
 
   return null;

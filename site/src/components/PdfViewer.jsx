@@ -1806,10 +1806,10 @@ export default function PdfViewer({
                     layerClearRequest={layerClearRequest}
                     annotationColor={annotationColor}
                     annotationTool={annotationTool}
-                    isAnnotationMenuOpen={Boolean(annotationMenu)}
-                    menuPointerActive={Boolean(annotationMenu)}
-                    touchDrawActive={isTouchAnnotating}
-                    isGlyphDragActive={glyphDragActive}
+                    isAnnotationMenuOpen={Boolean(annotationMenu) && isCurrent}
+                    menuPointerActive={Boolean(annotationMenu) && isCurrent}
+                    touchDrawActive={isTouchAnnotating && isCurrent}
+                    isGlyphDragActive={glyphDragActive && isCurrent}
                     lastPenTapRef={lastPenTapRef}
                     onRasterChange={handleRasterChange}
                     onOpenMenu={openAnnotationMenuAt}

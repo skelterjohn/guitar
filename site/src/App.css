@@ -3062,6 +3062,10 @@ a.book-file-open {
   position: relative;
 }
 
+.viewer-page-slot:not(.is-current) .annotation-overlay {
+  pointer-events: none !important;
+}
+
 .viewer-content.is-zoomed .viewer-zoom-surface {
   align-items: flex-start;
   justify-content: flex-start;

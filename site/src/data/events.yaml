@@ -5,6 +5,9 @@ events:
       date: 2026-06-20T16:00:00.000Z
       location: First Lutheran Church in Boston, MA
       map_link: https://maps.app.goo.gl/VvySrkNigzWD24av9
+      links:
+        - name: The Promise of Something New / Matthew Cochran
+          url: https://www.youtube.com/watch?v=bfjXSqpvh-Q
     - name: Kean GuitarFest
       date: 2026-06-13T23:00:00.000Z
       location: Enlow Hall in Union, NJ

@@ -346,6 +346,7 @@ export function drawStrokeOnCanvas(
   const outline = getStroke(inputPoints, {
     ...penStrokeOutlineOptions(stroke.pointerType, sizeScale),
     size: baseWidth,
+    last: true,
   });
 
   const pathData = getSvgPathFromStroke(outline);

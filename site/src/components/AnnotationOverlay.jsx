@@ -807,8 +807,9 @@ export default function AnnotationOverlay({
       if (!activeStrokeRef.current) return;
 
       const active = activeStrokeRef.current;
-      appendPoints(event);
-
+      // Do not append the lift sample: pointerup often reports pressure 0 (or
+      // other non-draw values) at the same place as the last move, which
+      // balloons the tip into a full-size dot.
       active.maxDeviation = Math.max(
         active.maxDeviation,
         Math.hypot(event.clientX - active.startX, event.clientY - active.startY),

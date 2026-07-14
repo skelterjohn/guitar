@@ -100,6 +100,7 @@ export default defineConfig({
     }),
   ],
   server: {
+    host: true,
     proxy: {
       '/pdf': {
         target: gcsPdfOrigin,

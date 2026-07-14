@@ -314,6 +314,18 @@ export async function drawGlyphOnCanvas(
   drawGlyphStampAt(ctx, stamp, normX, normY, layoutWidthPx, layoutHeightPx);
 }
 
+/** One sample (a tap/dot) is duplicated so perfect-freehand can form a stamped outline. */
+export function normalizeStrokePoints(points) {
+  if (!points?.length) return [];
+  if (points.length >= 2) return points;
+
+  const [x, y, pressure = 0.5] = points[0];
+  return [
+    [x, y, pressure],
+    [x, y, pressure],
+  ];
+}
+
 export function drawStrokeOnCanvas(
   ctx,
   stroke,
@@ -321,9 +333,10 @@ export function drawStrokeOnCanvas(
   layoutHeightPx,
   { displayWidth = 0 } = {},
 ) {
-  if (!stroke?.points?.length || stroke.points.length < 2) return;
+  const points = normalizeStrokePoints(stroke?.points);
+  if (points.length < 2) return;
 
-  const inputPoints = stroke.points.map(([x, y, pressure = 0.5]) => [
+  const inputPoints = points.map(([x, y, pressure = 0.5]) => [
     x * layoutWidthPx,
     y * layoutHeightPx,
     pressure,

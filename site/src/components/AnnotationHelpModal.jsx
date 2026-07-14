@@ -86,13 +86,14 @@ export default function AnnotationHelpModal({ open, onClose }) {
             <h3>Draw and erase</h3>
             <ul>
               <li>
-                Stylus pen draws directly on the score.
+                Stylus pen draws directly on the score, including short marks and
+                dots.
               </li>
               <li>
                 Pressure and speed control line thickness.
               </li>
               <li>
-                Double-tap with the pen to begin an eraser stroke.
+                Double-tap quickly with the pen to begin an eraser stroke.
               </li>
             </ul>
           </section>

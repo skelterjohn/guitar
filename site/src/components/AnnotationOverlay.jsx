@@ -16,6 +16,7 @@ import {
   tintEraserMaskForDisplay,
   GLYPH_DROP_SIZE_SCALE,
   loadBlobOntoCanvas,
+  normalizeStrokePoints,
   setCanvasPixelSize,
 } from '../utils/annotationRaster.js';
 import {
@@ -34,6 +35,8 @@ import {
 } from '../utils/stylusInput.js';
 
 const TAP_MOVE_THRESHOLD = 10;
+/** Quick lift with little movement = gestural tap (double-tap eraser candidate). */
+const TAP_MAX_DURATION_MS = 200;
 
 function getSvgPathFromStroke(stroke) {
   if (!stroke.length) return '';
@@ -52,9 +55,10 @@ function getSvgPathFromStroke(stroke) {
 }
 
 function strokeToPathData(stroke, width, height) {
-  if (!stroke?.points?.length || width === 0 || height === 0) return '';
+  const points = normalizeStrokePoints(stroke?.points);
+  if (!points.length || width === 0 || height === 0) return '';
 
-  const inputPoints = stroke.points.map(([x, y, pressure = 0.5]) => [
+  const inputPoints = points.map(([x, y, pressure = 0.5]) => [
     x * width,
     y * height,
     pressure,
@@ -467,11 +471,14 @@ export default function AnnotationOverlay({
       });
     };
 
-    const finishStroke = async () => {
-      const active = activeStrokeRef.current;
-      activeStrokeRef.current = null;
+    const finishStroke = async (strokeOverride = null) => {
+      const active = strokeOverride ?? activeStrokeRef.current;
+      if (!strokeOverride) {
+        activeStrokeRef.current = null;
+      }
 
-      if (!active || active.points.length < 2) {
+      const points = normalizeStrokePoints(active?.points);
+      if (!active || points.length < 2) {
         setDraftStroke(null);
         return;
       }
@@ -489,13 +496,33 @@ export default function AnnotationOverlay({
       const ctx = canvas.getContext('2d');
       drawStrokeOnCanvas(
         ctx,
-        active,
+        { ...active, points },
         resolvedReference.width,
         resolvedReference.height,
         { displayWidth: display.width },
       );
       setDraftStroke(null);
       await notifyLayerChange(annotationColorRef.current);
+    };
+
+    const recordPenTap = (clientX, clientY) => {
+      if (!lastPenTapRef) return;
+      lastPenTapRef.current = {
+        time: performance.now(),
+        x: clientX,
+        y: clientY,
+      };
+    };
+
+    const strokeFromClientPoint = (event, clientX, clientY) => {
+      const { x, y } = clientToNormalized(overlay, clientX, clientY);
+      return {
+        tool: 'pen',
+        pointerType: event.pointerType,
+        color: annotationColorRef.current,
+        baseWidth: PEN_BASE_WIDTH,
+        points: [[x, y, samplePressure(event)]],
+      };
     };
 
     const applyEraserSample = (event) => {
@@ -603,6 +630,7 @@ export default function AnnotationOverlay({
         points: [],
         startX,
         startY,
+        startTime: performance.now(),
         maxDeviation: Math.hypot(event.clientX - startX, event.clientY - startY),
       };
 
@@ -665,6 +693,7 @@ export default function AnnotationOverlay({
         pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
+        startTime: performance.now(),
         longPressTriggered: false,
         touchEraser: isToolEraser,
       };
@@ -737,6 +766,7 @@ export default function AnnotationOverlay({
           event.clientX - pending.startX,
           event.clientY - pending.startY,
         );
+        const tapDuration = performance.now() - (pending.startTime ?? performance.now());
         const isTouchDismissTap =
           event.pointerType === 'touch' &&
           !wasLongPress &&
@@ -756,12 +786,19 @@ export default function AnnotationOverlay({
         }
 
         if (!activeStrokeRef.current) {
-          if (lastPenTapRef && event.pointerType === 'pen') {
-            lastPenTapRef.current = {
-              time: performance.now(),
-              x: event.clientX,
-              y: event.clientY,
-            };
+          if (event.pointerType === 'pen') {
+            const gesturalTap =
+              tapMovement <= TAP_MOVE_THRESHOLD &&
+              tapDuration <= TAP_MAX_DURATION_MS;
+            const stroke = strokeFromClientPoint(
+              event,
+              pending.startX,
+              pending.startY,
+            );
+            void finishStroke(stroke);
+            if (gesturalTap) {
+              recordPenTap(pending.startX, pending.startY);
+            }
           }
           return;
         }
@@ -776,20 +813,14 @@ export default function AnnotationOverlay({
         active.maxDeviation,
         Math.hypot(event.clientX - active.startX, event.clientY - active.startY),
       );
-      const isTap = active.maxDeviation <= TAP_MOVE_THRESHOLD;
+      const duration = performance.now() - (active.startTime ?? performance.now());
+      const isGesturalTap =
+        event.pointerType === 'pen' &&
+        active.maxDeviation <= TAP_MOVE_THRESHOLD &&
+        duration <= TAP_MAX_DURATION_MS;
 
-      if (isTap) {
-        if (lastPenTapRef && event.pointerType === 'pen') {
-          lastPenTapRef.current = {
-            time: performance.now(),
-            x: event.clientX,
-            y: event.clientY,
-          };
-        }
-
-        activeStrokeRef.current = null;
-        setDraftStroke(null);
-        return;
+      if (isGesturalTap) {
+        recordPenTap(active.startX, active.startY);
       }
 
       void finishStroke();

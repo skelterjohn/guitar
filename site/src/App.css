@@ -3026,6 +3026,17 @@ a.book-file-open {
   overflow: hidden;
 }
 
+.viewer-content.is-loading .viewer-status {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background: var(--color-viewer-bg);
+}
+
 .viewer-zoom-surface {
   position: relative;
   width: 100%;
@@ -3040,6 +3051,7 @@ a.book-file-open {
   position: absolute;
   inset: 0;
   visibility: hidden;
+  opacity: 0;
   pointer-events: none;
 }
 

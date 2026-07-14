@@ -194,6 +194,7 @@ export default function PdfViewer({
     refreshCurrentPage: () => {},
   });
   const prevRenderedPageRef = useRef(null);
+  const revealPendingRef = useRef(false);
 
   onSaveResultRef.current = (saved) => {
     if (saved === false) {
@@ -391,6 +392,7 @@ export default function PdfViewer({
     slotRefs.current = [];
     pageBaseDisplaySizesRef.current = [];
     prevRenderedPageRef.current = null;
+    revealPendingRef.current = false;
     pdfDocRef.current = null;
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
@@ -719,6 +721,12 @@ export default function PdfViewer({
       const renderId = ++renderIdRef.current;
       const renderUrl = url;
 
+      if (onlyPage == null) {
+        revealPendingRef.current = false;
+        setDisplayReady(false);
+        setLoadPhase('rendering');
+      }
+
       await cancelActiveRenders();
       if (cancelled || renderId !== renderIdRef.current) return;
 
@@ -870,19 +878,9 @@ export default function PdfViewer({
           return merged;
         });
         setPageBaseDisplaySizes([...pageBaseDisplaySizesRef.current]);
+        // Reveal only after React commits these sizes and layout is measured.
         if (onlyPage == null) {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              if (cancelled || renderId !== renderIdRef.current) return;
-              resetPageScrollRef.current();
-              if (scrollToTopPendingRef.current) {
-                finishScrollToTopPending();
-              } else if (headerHiddenRef.current) {
-                resetPageScrollRef.current();
-              }
-              setDisplayReady(true);
-            });
-          });
+          revealPendingRef.current = true;
         }
       }
 
@@ -956,6 +954,7 @@ export default function PdfViewer({
         refreshCurrentPage: () => {},
       };
       cancelled = true;
+      revealPendingRef.current = false;
       setDisplayReady(false);
       clearTimeout(resizeTimer);
       renderIdRef.current += 1;
@@ -966,6 +965,32 @@ export default function PdfViewer({
       renderTasksRef.current = [];
     };
   }, [status, pageCount, url, pageRange]);
+
+  useLayoutEffect(() => {
+    if (!revealPendingRef.current) return;
+    if (status !== 'ready' || pageCount === 0) return;
+
+    const size = pageBaseDisplaySizes[currentPageRef.current - 1];
+    if (!size?.width || !size?.height) return;
+
+    const container = containerRef.current;
+    if (container) {
+      container.scrollTop = 0;
+      if (pdfZoomRef.current <= 1) {
+        container.scrollLeft = 0;
+      }
+    }
+
+    resetPageScrollRef.current();
+    if (scrollToTopPendingRef.current) {
+      finishScrollToTopPending();
+    } else if (headerHiddenRef.current) {
+      resetPageScrollRef.current();
+    }
+
+    revealPendingRef.current = false;
+    setDisplayReady(true);
+  }, [status, pageCount, pageBaseDisplaySizes]);
 
   useEffect(() => {
     if (status !== 'ready' || !displayReady) return undefined;

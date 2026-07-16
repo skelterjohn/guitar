@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import catalog from '../data/catalog.js';
 import repertoire from '../data/repertoire.js';
 import PdfViewer from '../components/PdfViewer.jsx';
 import RepPasswordGate from '../components/RepPasswordGate.jsx';
+import { auth, isFirebaseConfigured } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { catalogPath, pageTitle, repPath, viewPageUrl, viewPath } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
@@ -60,7 +62,7 @@ function viewerPageName(piece, pdf, filename) {
   return `${piece.title} (${pdf.label})`;
 }
 
-export default function ViewPdf() {
+function ViewPdfInner({ syncUser = null }) {
   const { filename } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -119,6 +121,7 @@ export default function ViewPdf() {
       backTo={fromRep ? repPath : catalogPath}
       backLabel={fromRep ? 'Repertoire' : 'Catalog'}
       viewState={fromRep ? { from: repPath } : undefined}
+      syncUser={syncUser}
     />
   );
 
@@ -127,4 +130,20 @@ export default function ViewPdf() {
   ) : (
     viewer
   );
+}
+
+function RepViewPdf() {
+  const [user] = useAuthState(auth);
+  return <ViewPdfInner syncUser={user?.email ? user : null} />;
+}
+
+export default function ViewPdf() {
+  const location = useLocation();
+  const fromRep = location.pathname.startsWith(`${repPath}/view/`);
+
+  if (fromRep && isFirebaseConfigured()) {
+    return <RepViewPdf />;
+  }
+
+  return <ViewPdfInner />;
 }

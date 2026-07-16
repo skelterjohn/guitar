@@ -4,7 +4,11 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { bookDescription, bookHeading } from '../seo.js';
 import { auth } from '../firebase.js';
 
-export default function BookSignInModal() {
+export default function BookSignInModal({
+  title = `Sign in to ${bookHeading}`,
+  description = bookDescription,
+  onClose = null,
+}) {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -15,6 +19,7 @@ export default function BookSignInModal() {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
+      onClose?.();
     } catch (signInError) {
       if (signInError?.code === 'auth/popup-closed-by-user') {
         return;
@@ -27,15 +32,19 @@ export default function BookSignInModal() {
   };
 
   return createPortal(
-    <div className="book-auth-backdrop">
+    <div
+      className="book-auth-backdrop"
+      onClick={onClose ? () => onClose() : undefined}
+    >
       <div
         className="book-auth-modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="book-auth-title"
+        onClick={(event) => event.stopPropagation()}
       >
-        <h2 id="book-auth-title">Sign in to {bookHeading}</h2>
-        <p className="book-auth-lead">{bookDescription}</p>
+        <h2 id="book-auth-title">{title}</h2>
+        <p className="book-auth-lead">{description}</p>
         <p
           className="book-auth-error"
           role={error ? 'alert' : undefined}

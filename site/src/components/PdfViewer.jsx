@@ -251,12 +251,13 @@ export default function PdfViewer({
     if (!scrollToTopPendingRef.current) return;
     scrollToTopPendingRef.current = false;
     resetPageScrollRef.current();
-    setCurrentPage(navBoundsRef.current.min);
   };
 
   useLayoutEffect(() => {
     scrollToTopPendingRef.current = true;
-    setCurrentPage(pageStart ?? 1);
+    if (pageStart != null) {
+      setCurrentPage(pageStart);
+    }
     const container = containerRef.current;
     if (container) {
       container.scrollTop = 0;
@@ -367,7 +368,6 @@ export default function PdfViewer({
     setPageCount(0);
     setPageMediaSizes([]);
     setPageBaseDisplaySizes([]);
-    setCurrentPage(1);
     setPdfZoom(1);
     setPageAnnotations({});
     pageRastersRef.current = {};
@@ -418,7 +418,12 @@ export default function PdfViewer({
         loadedUrlRef.current = url;
         setPageCount(doc.numPages);
         const bounds = bookViewNavBounds(doc.numPages, pageRange);
-        setCurrentPage(bounds.min);
+        setCurrentPage((prev) => {
+          if (pageStart != null) {
+            return Math.min(Math.max(pageStart, bounds.min), bounds.max);
+          }
+          return Math.min(Math.max(prev, bounds.min), bounds.max);
+        });
         setStatus('ready');
         setLoadPhase('rendering');
       } catch (err) {

@@ -42,8 +42,8 @@ type annotationRasterRecord struct {
 }
 
 type annotationStore interface {
-	GetAnnotationRasters(ctx context.Context, email, pdf string) (annotationRasterRecord, error)
-	PutAnnotationRasters(ctx context.Context, email, pdf string, record annotationRasterRecord) error
+	GetAnnotationRasters(ctx context.Context, email, site, pdf string) (annotationRasterRecord, error)
+	PutAnnotationRasters(ctx context.Context, email, site, pdf string, record annotationRasterRecord) error
 }
 
 type firestoreAnnotationStore struct {
@@ -58,12 +58,19 @@ func newFirestoreAnnotationStore(ctx context.Context, fbApp *firebase.App) (*fir
 	return &firestoreAnnotationStore{client: client}, nil
 }
 
-func (s *firestoreAnnotationStore) annotationRef(email, pdf string) *firestore.DocumentRef {
-	return s.client.Collection("users").Doc(collectionEmail(email)).Collection("annotationRasters").Doc(collectionDocID(pdf))
+func annotationScopeKey(site, pdf string) string {
+	if site == "" {
+		return pdf
+	}
+	return site + "/" + pdf
 }
 
-func (s *firestoreAnnotationStore) GetAnnotationRasters(ctx context.Context, email, pdf string) (annotationRasterRecord, error) {
-	snap, err := s.annotationRef(email, pdf).Get(ctx)
+func (s *firestoreAnnotationStore) annotationRef(email, site, pdf string) *firestore.DocumentRef {
+	return s.client.Collection("users").Doc(collectionEmail(email)).Collection("annotationRasters").Doc(collectionDocID(annotationScopeKey(site, pdf)))
+}
+
+func (s *firestoreAnnotationStore) GetAnnotationRasters(ctx context.Context, email, site, pdf string) (annotationRasterRecord, error) {
+	snap, err := s.annotationRef(email, site, pdf).Get(ctx)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
 			return annotationRasterRecord{}, errNotFound
@@ -73,7 +80,7 @@ func (s *firestoreAnnotationStore) GetAnnotationRasters(ctx context.Context, ema
 	return annotationRecordFromSnapshot(snap, pdf)
 }
 
-func (s *firestoreAnnotationStore) PutAnnotationRasters(ctx context.Context, email, pdf string, record annotationRasterRecord) error {
+func (s *firestoreAnnotationStore) PutAnnotationRasters(ctx context.Context, email, site, pdf string, record annotationRasterRecord) error {
 	data := map[string]any{
 		fieldAnnotationPDF:       pdf,
 		fieldAnnotationHash:      record.Hash,
@@ -86,7 +93,7 @@ func (s *firestoreAnnotationStore) PutAnnotationRasters(ctx context.Context, ema
 	if len(record.Pages) > 0 {
 		data[fieldAnnotationPages] = record.Pages
 	}
-	_, err := s.annotationRef(email, pdf).Set(ctx, data)
+	_, err := s.annotationRef(email, site, pdf).Set(ctx, data)
 	return err
 }
 

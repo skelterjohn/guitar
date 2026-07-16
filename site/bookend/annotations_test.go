@@ -57,10 +57,42 @@ func TestParseAnnotationRasterFilenameRejectsMismatch(t *testing.T) {
 }
 
 func TestAnnotationRasterObjectKey(t *testing.T) {
-	got := annotationRasterObjectKey("User@Example.com", "score.pdf-p1-black.webp")
+	got := annotationRasterObjectKey("User@Example.com", "", "score.pdf-p1-black.webp")
 	want := "user@example.com/rasters/score.pdf-p1-black.webp"
 	if got != want {
 		t.Fatalf("got %q, want %q", got, want)
+	}
+
+	got = annotationRasterObjectKey("User@Example.com", "rep", "score.pdf-p1-black.webp")
+	want = "user@example.com/rasters/rep/score.pdf-p1-black.webp"
+	if got != want {
+		t.Fatalf("got %q, want %q", got, want)
+	}
+}
+
+func TestValidateAnnotationSite(t *testing.T) {
+	if err := validateAnnotationSite(""); err != nil {
+		t.Fatalf("empty site: %v", err)
+	}
+	if err := validateAnnotationSite("rep"); err != nil {
+		t.Fatalf("rep site: %v", err)
+	}
+	if err := validateAnnotationSite("book"); err == nil {
+		t.Fatal("expected invalid for book")
+	}
+}
+
+func TestParseAnnotationRasterUsageKey(t *testing.T) {
+	site, name, ok := parseAnnotationRasterUsageKey("score.pdf-p1-black.webp")
+	if !ok || site != "" || name != "score.pdf-p1-black.webp" {
+		t.Fatalf("got site=%q name=%q ok=%v", site, name, ok)
+	}
+	site, name, ok = parseAnnotationRasterUsageKey("rep/score.pdf-p1-black.webp")
+	if !ok || site != "rep" || name != "score.pdf-p1-black.webp" {
+		t.Fatalf("got site=%q name=%q ok=%v", site, name, ok)
+	}
+	if _, _, ok := parseAnnotationRasterUsageKey("other/score.pdf-p1-black.webp"); ok {
+		t.Fatal("expected reject unknown site")
 	}
 }
 

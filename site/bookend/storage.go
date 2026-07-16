@@ -124,7 +124,7 @@ func (s *gcsStore) Usage(ctx context.Context, email string) (fileUsage, error) {
 		}
 		if strings.HasPrefix(attrs.Name, rasterPrefix) {
 			rasterName := strings.TrimPrefix(attrs.Name, rasterPrefix)
-			if err := validateAnnotationRasterName(rasterName); err != nil {
+			if _, _, ok := parseAnnotationRasterUsageKey(rasterName); !ok {
 				continue
 			}
 			usage.Files[rasterName] = attrs.Size

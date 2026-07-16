@@ -38,6 +38,14 @@ function bookAnnotationRasterEndpoint(email, filename, rasterName) {
   return `${bookAnnotationsEndpoint(email, filename)}/rasters/${encodeURIComponent(rasterName)}`;
 }
 
+function withAnnotationQuery(url, { hash, site } = {}) {
+  const params = new URLSearchParams();
+  if (hash) params.set('hash', hash);
+  if (site) params.set('site', site);
+  const query = params.toString();
+  return query ? `${url}?${query}` : url;
+}
+
 function libraryBookEndpoint(email, book) {
   const base = bookendBaseUrl.replace(/\/$/, '');
   const enc = encodeURIComponent;
@@ -214,7 +222,12 @@ export async function fetchBookPdfBytes(user, filename, onPhase) {
   return new Uint8Array(buffer);
 }
 
-export async function storeAnnotationRasters(user, pdfFilename, { hash, color, pages, rasters }) {
+export async function storeAnnotationRasters(
+  user,
+  pdfFilename,
+  { hash, color, pages, rasters },
+  { site } = {},
+) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
   const form = new FormData();
@@ -227,11 +240,14 @@ export async function storeAnnotationRasters(user, pdfFilename, { hash, color, p
     form.append('rasters', raster.blob, raster.name);
   }
 
-  const res = await fetch(bookAnnotationsEndpoint(email, pdfFilename), {
-    method: 'POST',
-    headers,
-    body: form,
-  });
+  const res = await fetch(
+    withAnnotationQuery(bookAnnotationsEndpoint(email, pdfFilename), { site }),
+    {
+      method: 'POST',
+      headers,
+      body: form,
+    },
+  );
   if (!res.ok) {
     throw new Error(await errorMessage(res, `Could not sync annotations (${res.status}).`));
   }
@@ -271,13 +287,13 @@ function normalizeRemoteAnnotations(data) {
   return result;
 }
 
-export async function getAnnotationRasters(user, pdfFilename, clientHash) {
+export async function getAnnotationRasters(user, pdfFilename, clientHash, { site } = {}) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
-  let url = bookAnnotationsEndpoint(email, pdfFilename);
-  if (clientHash) {
-    url += `?hash=${encodeURIComponent(clientHash)}`;
-  }
+  const url = withAnnotationQuery(bookAnnotationsEndpoint(email, pdfFilename), {
+    hash: clientHash,
+    site,
+  });
 
   const res = await fetch(url, { headers });
   if (res.status === 404) {
@@ -290,22 +306,30 @@ export async function getAnnotationRasters(user, pdfFilename, clientHash) {
   return normalizeRemoteAnnotations(await res.json());
 }
 
-export async function fetchAnnotationRaster(user, pdfFilename, rasterName) {
+export async function fetchAnnotationRaster(user, pdfFilename, rasterName, { site } = {}) {
   const email = requireUserEmail(user);
   const headers = await authHeaders(user);
-  const res = await fetch(bookAnnotationRasterEndpoint(email, pdfFilename, rasterName), {
-    headers,
-  });
+  const res = await fetch(
+    withAnnotationQuery(bookAnnotationRasterEndpoint(email, pdfFilename, rasterName), {
+      site,
+    }),
+    { headers },
+  );
   if (!res.ok) {
     throw new Error(await errorMessage(res, `Could not load annotation raster (${res.status}).`));
   }
   return res.blob();
 }
 
-export async function downloadRemoteAnnotations(user, pdfFilename, remote) {
+export async function downloadRemoteAnnotations(user, pdfFilename, remote, { site } = {}) {
   const rasterBlobsByName = {};
   for (const raster of remote.rasters) {
-    rasterBlobsByName[raster.name] = await fetchAnnotationRaster(user, pdfFilename, raster.name);
+    rasterBlobsByName[raster.name] = await fetchAnnotationRaster(
+      user,
+      pdfFilename,
+      raster.name,
+      { site },
+    );
   }
 
   return {

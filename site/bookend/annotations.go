@@ -31,12 +31,61 @@ var annotationLayerSlugByHex = map[string]string{
 	"#dc2626": "red",
 }
 
+func validateAnnotationSite(site string) error {
+	site = strings.TrimSpace(site)
+	if site == "" {
+		return nil
+	}
+	if site == "rep" {
+		return nil
+	}
+	return errors.New("invalid site")
+}
+
+func annotationSiteParam(r *http.Request) (string, error) {
+	site := strings.TrimSpace(r.URL.Query().Get("site"))
+	if err := validateAnnotationSite(site); err != nil {
+		return "", err
+	}
+	return site, nil
+}
+
 func annotationRasterPrefix(email string) string {
 	return bookObjectPrefix(email) + "rasters/"
 }
 
-func annotationRasterObjectKey(email, rasterName string) string {
-	return annotationRasterPrefix(email) + rasterName
+func annotationRasterObjectKey(email, site, rasterName string) string {
+	prefix := annotationRasterPrefix(email)
+	if site != "" {
+		return prefix + site + "/" + rasterName
+	}
+	return prefix + rasterName
+}
+
+func annotationRasterUsageKey(site, rasterName string) string {
+	if site == "" {
+		return rasterName
+	}
+	return site + "/" + rasterName
+}
+
+// parseAnnotationRasterUsageKey accepts either "name.webp" or "rep/name.webp".
+func parseAnnotationRasterUsageKey(relative string) (site, name string, ok bool) {
+	relative = strings.TrimSpace(relative)
+	if relative == "" || strings.Contains(relative, "..") {
+		return "", "", false
+	}
+	if !strings.Contains(relative, "/") {
+		if err := validateAnnotationRasterName(relative); err != nil {
+			return "", "", false
+		}
+		return "", relative, true
+	}
+	site, name, found := strings.Cut(relative, "/")
+	if !found || validateAnnotationSite(site) != nil || validateAnnotationRasterName(name) != nil {
+		return "", "", false
+	}
+	return site, name, true
 }
 
 func annotationRasterFilename(pdf string, page int, layerSlug string) string {
@@ -269,6 +318,11 @@ func readUploadedAnnotationRaster(pdf string, pages map[string]annotationPageDim
 func (s *server) handleStoreAnnotationRasters(w http.ResponseWriter, r *http.Request) {
 	pathEmail := bookParam(r, "email")
 	pdf := bookParam(r, "filename")
+	site, siteErr := annotationSiteParam(r)
+	if siteErr != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": siteErr.Error()})
+		return
+	}
 
 	if err := validateBookEmail(pathEmail); err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
@@ -289,30 +343,30 @@ func (s *server) handleStoreAnnotationRasters(w http.ResponseWriter, r *http.Req
 
 	incomingSizes := make(map[string]int64, len(uploads))
 	for _, upload := range uploads {
-		incomingSizes[upload.Name] = int64(len(upload.Data))
+		incomingSizes[annotationRasterUsageKey(site, upload.Name)] = int64(len(upload.Data))
 	}
 
 	usage, err := s.store.Usage(r.Context(), pathEmail)
 	if err != nil {
-		log.Printf("annotation store usage failed email=%q pdf=%q err=%v", pathEmail, pdf, err)
+		log.Printf("annotation store usage failed email=%q pdf=%q site=%q err=%v", pathEmail, pdf, site, err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not check storage usage"})
 		return
 	}
 	if err := checkStorageQuota(usage, incomingSizes); err != nil {
-		log.Printf("annotation store quota exceeded email=%q pdf=%q err=%v", pathEmail, pdf, err)
+		log.Printf("annotation store quota exceeded email=%q pdf=%q site=%q err=%v", pathEmail, pdf, site, err)
 		writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": err.Error()})
 		return
 	}
 
 	var previous annotationRasterRecord
 	var previousNames []string
-	if existing, err := s.annotations.GetAnnotationRasters(r.Context(), pathEmail, pdf); err == nil {
+	if existing, err := s.annotations.GetAnnotationRasters(r.Context(), pathEmail, site, pdf); err == nil {
 		previous = existing
 		for _, raster := range existing.Rasters {
 			previousNames = append(previousNames, raster.Name)
 		}
 	} else if !errors.Is(err, errNotFound) {
-		log.Printf("annotation store read existing failed email=%q pdf=%q err=%v", pathEmail, pdf, err)
+		log.Printf("annotation store read existing failed email=%q pdf=%q site=%q err=%v", pathEmail, pdf, site, err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not read existing annotations"})
 		return
 	}
@@ -324,9 +378,9 @@ func (s *server) handleStoreAnnotationRasters(w http.ResponseWriter, r *http.Req
 		Pages: pages,
 	}
 	for _, upload := range uploads {
-		objectKey := annotationRasterObjectKey(pathEmail, upload.Name)
+		objectKey := annotationRasterObjectKey(pathEmail, site, upload.Name)
 		if err := s.store.Write(r.Context(), objectKey, bytes.NewReader(upload.Data), annotationRasterContentType); err != nil {
-			log.Printf("annotation raster write failed email=%q pdf=%q name=%q err=%v", pathEmail, pdf, upload.Name, err)
+			log.Printf("annotation raster write failed email=%q pdf=%q site=%q name=%q err=%v", pathEmail, pdf, site, upload.Name, err)
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not store annotation rasters"})
 			return
 		}
@@ -339,8 +393,8 @@ func (s *server) handleStoreAnnotationRasters(w http.ResponseWriter, r *http.Req
 		})
 	}
 
-	if err := s.annotations.PutAnnotationRasters(r.Context(), pathEmail, pdf, record); err != nil {
-		log.Printf("annotation metadata write failed email=%q pdf=%q err=%v", pathEmail, pdf, err)
+	if err := s.annotations.PutAnnotationRasters(r.Context(), pathEmail, site, pdf, record); err != nil {
+		log.Printf("annotation metadata write failed email=%q pdf=%q site=%q err=%v", pathEmail, pdf, site, err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not store annotation metadata"})
 		return
 	}
@@ -353,24 +407,29 @@ func (s *server) handleStoreAnnotationRasters(w http.ResponseWriter, r *http.Req
 		if _, keep := newNames[oldName]; keep {
 			continue
 		}
-		if err := s.store.Delete(r.Context(), annotationRasterObjectKey(pathEmail, oldName)); err != nil && !errors.Is(err, errNotFound) {
-			log.Printf("annotation raster cleanup failed email=%q pdf=%q name=%q err=%v", pathEmail, pdf, oldName, err)
+		if err := s.store.Delete(r.Context(), annotationRasterObjectKey(pathEmail, site, oldName)); err != nil && !errors.Is(err, errNotFound) {
+			log.Printf("annotation raster cleanup failed email=%q pdf=%q site=%q name=%q err=%v", pathEmail, pdf, site, oldName, err)
 		}
 	}
 
-	log.Printf("annotation store email=%q pdf=%q hash=%q rasters=%d replaced=%d", pathEmail, pdf, hash, len(record.Rasters), len(previous.Rasters))
+	log.Printf("annotation store email=%q pdf=%q site=%q hash=%q rasters=%d replaced=%d", pathEmail, pdf, site, hash, len(record.Rasters), len(previous.Rasters))
 	writeJSON(w, http.StatusOK, map[string]any{
-		"pdf":      pdf,
-		"hash":     hash,
-		"color":    color,
-		"pages":    pages,
-		"rasters":  record.Rasters,
+		"pdf":     pdf,
+		"hash":    hash,
+		"color":   color,
+		"pages":   pages,
+		"rasters": record.Rasters,
 	})
 }
 
 func (s *server) handleGetAnnotationRasters(w http.ResponseWriter, r *http.Request) {
 	pathEmail := bookParam(r, "email")
 	pdf := bookParam(r, "filename")
+	site, siteErr := annotationSiteParam(r)
+	if siteErr != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": siteErr.Error()})
+		return
+	}
 
 	if err := validateBookEmail(pathEmail); err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
@@ -384,13 +443,13 @@ func (s *server) handleGetAnnotationRasters(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	record, err := s.annotations.GetAnnotationRasters(r.Context(), pathEmail, pdf)
+	record, err := s.annotations.GetAnnotationRasters(r.Context(), pathEmail, site, pdf)
 	if err != nil {
 		if errors.Is(err, errNotFound) {
 			writeJSON(w, http.StatusNotFound, map[string]string{"error": "annotations not found"})
 			return
 		}
-		log.Printf("annotation get failed email=%q pdf=%q err=%v", pathEmail, pdf, err)
+		log.Printf("annotation get failed email=%q pdf=%q site=%q err=%v", pathEmail, pdf, site, err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not read annotations"})
 		return
 	}
@@ -433,6 +492,11 @@ func (s *server) handleGetAnnotationRaster(w http.ResponseWriter, r *http.Reques
 	pathEmail := bookParam(r, "email")
 	pdf := bookParam(r, "filename")
 	rasterName := bookParam(r, "raster")
+	site, siteErr := annotationSiteParam(r)
+	if siteErr != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": siteErr.Error()})
+		return
+	}
 
 	if err := validateBookEmail(pathEmail); err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
@@ -454,13 +518,13 @@ func (s *server) handleGetAnnotationRaster(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	record, err := s.annotations.GetAnnotationRasters(r.Context(), pathEmail, pdf)
+	record, err := s.annotations.GetAnnotationRasters(r.Context(), pathEmail, site, pdf)
 	if err != nil {
 		if errors.Is(err, errNotFound) {
 			writeJSON(w, http.StatusNotFound, map[string]string{"error": "annotations not found"})
 			return
 		}
-		log.Printf("annotation raster lookup failed email=%q pdf=%q err=%v", pathEmail, pdf, err)
+		log.Printf("annotation raster lookup failed email=%q pdf=%q site=%q err=%v", pathEmail, pdf, site, err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not read annotations"})
 		return
 	}
@@ -477,13 +541,13 @@ func (s *server) handleGetAnnotationRaster(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	reader, err := s.store.Read(r.Context(), annotationRasterObjectKey(pathEmail, rasterName))
+	reader, err := s.store.Read(r.Context(), annotationRasterObjectKey(pathEmail, site, rasterName))
 	if err != nil {
 		if errors.Is(err, errNotFound) {
 			writeJSON(w, http.StatusNotFound, map[string]string{"error": "raster not found"})
 			return
 		}
-		log.Printf("annotation raster read failed email=%q pdf=%q name=%q err=%v", pathEmail, pdf, rasterName, err)
+		log.Printf("annotation raster read failed email=%q pdf=%q site=%q name=%q err=%v", pathEmail, pdf, site, rasterName, err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not read raster"})
 		return
 	}
@@ -492,6 +556,6 @@ func (s *server) handleGetAnnotationRaster(w http.ResponseWriter, r *http.Reques
 	w.Header().Set("Content-Type", annotationRasterContentType)
 	w.WriteHeader(http.StatusOK)
 	if _, err := io.Copy(w, reader); err != nil {
-		log.Printf("annotation raster stream failed email=%q pdf=%q name=%q err=%v", pathEmail, pdf, rasterName, err)
+		log.Printf("annotation raster stream failed email=%q pdf=%q site=%q name=%q err=%v", pathEmail, pdf, site, rasterName, err)
 	}
 }

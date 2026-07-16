@@ -28,7 +28,11 @@ import {
   setAnnotationColorPreference,
 } from '../utils/annotationColorPreference.js';
 import { createDebouncedSave, createStrokeId, loadAnnotations, requestPersistentStorage, saveAnnotations, setAnnotationSyncHash as persistAnnotationSyncHash, clearAnnotationSyncHash } from '../utils/pdfAnnotations.js';
-import { buildAnnotationSyncPayload, EMPTY_ANNOTATION_RASTERS_HASH, isEmptyAnnotationRastersHash } from '../utils/annotationSync.js';
+import {
+  buildAnnotationSyncPayload,
+  EMPTY_ANNOTATION_RASTERS_HASH,
+  isEmptyAnnotationRastersHash,
+} from '../utils/annotationSync.js';
 import {
   downloadRemoteAnnotations,
   getAnnotationRasters,
@@ -86,6 +90,9 @@ export default function PdfViewer({
   const downloadLink = downloadHref === undefined ? url : downloadHref;
   const downloadName = downloadNameOverride ?? viewRouteFilename(filename);
   const viewContext = backTo === repPath ? 'rep' : isBookPath(backTo) ? 'book' : 'catalog';
+  // Bookend annotation APIs use the plain PDF basename; rep syncs pass site=rep.
+  const syncFile = viewContext === 'rep' ? viewRouteFilename(currentFile) : currentFile;
+  const syncSite = viewContext === 'rep' ? 'rep' : undefined;
   const currentLabel = findPdfByFile(pdfs, currentFile)?.label;
 
   useEffect(() => {
@@ -299,12 +306,14 @@ export default function PdfViewer({
       try {
         const hasLocalAnnotations = Object.values(pages).some((entry) => pageHasLayers(entry));
         const localContentHash = hasLocalAnnotations
-          ? (await buildAnnotationSyncPayload(currentFile, pages)).hash
+          ? (await buildAnnotationSyncPayload(syncFile, pages)).hash
           : EMPTY_ANNOTATION_RASTERS_HASH;
 
         const remoteCheckHash =
           localStoredHash && localStoredHash === localContentHash ? localStoredHash : undefined;
-        const remote = await getAnnotationRasters(syncUser, currentFile, remoteCheckHash);
+        const remote = await getAnnotationRasters(syncUser, syncFile, remoteCheckHash, {
+          site: syncSite,
+        });
         if (cancelled) return;
 
         if (!remote) {
@@ -342,7 +351,7 @@ export default function PdfViewer({
     return () => {
       cancelled = true;
     };
-  }, [filename, status, syncUser, currentFile]);
+  }, [filename, status, syncUser, syncFile, syncSite]);
 
   useEffect(() => {
     if (status !== 'ready' || pageCount === 0) return undefined;
@@ -490,7 +499,12 @@ export default function PdfViewer({
     setAnnotationDownloadBusy(true);
     setAnnotationDownloadError('');
     try {
-      const remote = await downloadRemoteAnnotations(syncUser, currentFile, annotationDownloadOffer);
+      const remote = await downloadRemoteAnnotations(
+        syncUser,
+        syncFile,
+        annotationDownloadOffer,
+        { site: syncSite },
+      );
       const color = resolveAnnotationColor(remote.color);
       const storagePages = pagesToStoragePages(remote.pages);
 
@@ -520,14 +534,19 @@ export default function PdfViewer({
     setStorageWarning('');
     try {
       await saveAnnotationsRef.current.flushNow();
-      const payload = await buildAnnotationSyncPayload(currentFile, pageRastersRef.current);
+      const payload = await buildAnnotationSyncPayload(syncFile, pageRastersRef.current);
 
-      await storeAnnotationRasters(syncUser, currentFile, {
-        hash: payload.hash,
-        color: annotationColorRef.current,
-        pages: payload.pages,
-        rasters: payload.rasters,
-      });
+      await storeAnnotationRasters(
+        syncUser,
+        syncFile,
+        {
+          hash: payload.hash,
+          color: annotationColorRef.current,
+          pages: payload.pages,
+          rasters: payload.rasters,
+        },
+        { site: syncSite },
+      );
 
       const saved = await persistAnnotationSyncHash(filename, payload.hash);
       if (!saved) {

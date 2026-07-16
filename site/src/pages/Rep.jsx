@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import repertoire from '../data/repertoire.js';
@@ -12,9 +13,52 @@ import useFoldableCatalogSections from '../hooks/useFoldableCatalogSections.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { repDescription, repHeading, repPath, repTitle, repUrl } from '../seo.js';
 
+function RepSignInInfoModal({ onClose }) {
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  return createPortal(
+    <div
+      className="book-auth-backdrop"
+      onClick={() => onClose()}
+    >
+      <div
+        className="book-auth-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="rep-sign-in-info-title"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <h2 id="rep-sign-in-info-title">Why sign in?</h2>
+        <p className="book-auth-lead">
+          Sign in to sync your annotations to and from the cloud, so you can be
+          confident they won’t disappear if you clear browser data or switch
+          devices.
+        </p>
+        <div className="book-auth-actions">
+          <button className="book-auth-submit" type="button" onClick={onClose}>
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function RepAuthBar() {
   const [user, loading] = useAuthState(auth);
   const [signInOpen, setSignInOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
 
   if (loading) return null;
 
@@ -35,13 +79,24 @@ function RepAuthBar() {
             <span className="book-user-email">{user.email}</span>
           </>
         ) : (
-          <button
-            className="book-sign-out"
-            type="button"
-            onClick={() => setSignInOpen(true)}
-          >
-            sign in
-          </button>
+          <>
+            <button
+              type="button"
+              className="viewer-annotation-help"
+              onClick={() => setInfoOpen(true)}
+              title="Why sign in?"
+              aria-label="Why sign in?"
+            >
+              ?
+            </button>
+            <button
+              className="book-sign-out"
+              type="button"
+              onClick={() => setSignInOpen(true)}
+            >
+              sign in
+            </button>
+          </>
         )}
       </div>
       {signInOpen && !user && (
@@ -50,6 +105,9 @@ function RepAuthBar() {
           description={repDescription}
           onClose={() => setSignInOpen(false)}
         />
+      )}
+      {infoOpen && !user && (
+        <RepSignInInfoModal onClose={() => setInfoOpen(false)} />
       )}
     </>
   );

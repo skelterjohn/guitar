@@ -2068,7 +2068,7 @@ body {
   right: 1rem;
   z-index: 10;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.65rem;
   max-width: min(100vw - 2rem, 24rem);
   font-family: system-ui, sans-serif;

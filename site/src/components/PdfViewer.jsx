@@ -1192,8 +1192,22 @@ export default function PdfViewer({
 
       if (dx > TAP_MOVE_THRESHOLD || dy > TAP_MOVE_THRESHOLD) return;
 
-      const { left, width } = container.getBoundingClientRect();
-      if (event.clientX - left < width / 2) {
+      const frame = getCurrentPageFrame();
+      const rect = (frame ?? container).getBoundingClientRect();
+      if (rect.height <= 0 || rect.width <= 0) return;
+
+      const EDGE_FRACTION = 0.1;
+      const yRatio = (event.clientY - rect.top) / rect.height;
+      if (yRatio <= EDGE_FRACTION) {
+        goToStart();
+        return;
+      }
+      if (yRatio >= 1 - EDGE_FRACTION) {
+        goToEnd();
+        return;
+      }
+
+      if (event.clientX - rect.left < rect.width / 2) {
         goToPrev();
       } else {
         goToNext();

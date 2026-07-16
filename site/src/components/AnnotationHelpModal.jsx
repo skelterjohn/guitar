@@ -68,6 +68,11 @@ export default function AnnotationHelpModal({ open, onClose }) {
 				<li>
 					When that day arrives, it will say so here.
 				</li>
+				<li>
+					Tap the left or right half of the page to go previous or next.
+					Tap the top ~10% for the first page, or the bottom ~10% for the
+					last page.
+				</li>
 			</ul>
           </section>
           <section>

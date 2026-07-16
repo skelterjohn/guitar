@@ -42,9 +42,8 @@ export function effectivePressure(event) {
   // Real stylus pressure is in (0, 1). Some devices report 1 for full press.
   if (event.pressure > 0 && event.pressure < 1) return event.pressure;
   if (event.pressure === 1) return 1;
-  // pressure === 0 usually means tip lift / unavailable — keep tip thin rather than
-  // inventing a mid-pressure that balloons the stroke end into a fat dot.
-  if (event.pressure === 0) return 0;
+  // pressure === 0 is common on first contact and on lift. Lift samples are not
+  // appended to strokes; treat 0 as mid pressure so taps still make a visible dot.
   return 0.5;
 }
 

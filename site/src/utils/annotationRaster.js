@@ -317,9 +317,25 @@ export async function drawGlyphOnCanvas(
 /** One sample (a tap/dot) is duplicated so perfect-freehand can form a stamped outline. */
 export function normalizeStrokePoints(points) {
   if (!points?.length) return [];
-  if (points.length >= 2) return points;
 
-  const [x, y, pressure = 0.5] = points[0];
+  const asDot =
+    points.length === 1 ||
+    points.every(
+      ([x, y], index) =>
+        index === 0 ||
+        (Math.abs(x - points[0][0]) < 0.005 && Math.abs(y - points[0][1]) < 0.005),
+    );
+
+  const normalized = points.map(([x, y, pressure = 0.5]) => [
+    x,
+    y,
+    // Near-zero pressure stamps are invisible; use a readable mid pressure for dots.
+    asDot ? Math.max(pressure, 0.5) : pressure,
+  ]);
+
+  if (normalized.length >= 2) return normalized;
+
+  const [x, y, pressure] = normalized[0];
   return [
     [x, y, pressure],
     [x, y, pressure],

@@ -4,6 +4,7 @@
 #   - GCS bucket with public read (allUsers: storage.objectViewer)
 #   - nginx in the site image proxies /pdf/ to the bucket (no browser CORS needed)
 #   - catalog PDFs live under pub/ in the bucket; hidden dirs sync separately
+#   - repertoire.yaml is uploaded to the bucket root for runtime /rep config
 #   - Artifact Registry repo for container images
 #   - Cloud Build service account: storage.objectAdmin on bucket, Cloud Run Admin, AR Writer
 #
@@ -62,6 +63,18 @@ steps:
     args:
       - -c
       - cd site && npm ci && ENRICH_HASHES=1 npm run enrich && npm run validate
+
+  - name: gcr.io/cloud-builders/gsutil
+    id: sync-repertoire
+    waitFor: ['site-assets']
+    args:
+      - -h
+      - Cache-Control:no-cache
+      - -h
+      - Content-Type:text/yaml
+      - cp
+      - site/src/data/repertoire.yaml
+      - gs://${_PDF_BUCKET}/repertoire.yaml
 
   - name: gcr.io/cloud-builders/docker
     id: site-build

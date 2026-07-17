@@ -1,10 +1,10 @@
-import repertoire from '../data/repertoire.js';
+import { loadRepertoire } from '../data/repertoire.js';
 import { isRepPdfPath, resolveRepPdfPath } from './repPassword.js';
 
-function repProbePdfFile() {
-  for (const section of repertoire.sections) {
-    for (const piece of section.pieces) {
-      const pdf = piece.pdfs.find((entry) => isRepPdfPath(entry.file));
+function repProbePdfFile(repertoire) {
+  for (const section of repertoire.sections ?? []) {
+    for (const piece of section.pieces ?? []) {
+      const pdf = piece.pdfs?.find((entry) => isRepPdfPath(entry.file));
       if (pdf) return pdf.file;
     }
   }
@@ -30,7 +30,8 @@ export async function validateRepPassword(password) {
   const trimmed = password?.trim();
   if (!trimmed) return false;
 
-  const probe = repProbePdfFile();
+  const repertoire = await loadRepertoire();
+  const probe = repProbePdfFile(repertoire);
   if (!probe) return true;
 
   const url = pdfFetchUrl(resolveRepPdfPath(probe, trimmed));

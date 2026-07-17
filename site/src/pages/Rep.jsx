@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import repertoire from '../data/repertoire.js';
 import BackFromRep from '../components/BackFromRep.jsx';
 import BookSignInModal from '../components/BookSignInModal.jsx';
 import Catalog from '../components/Catalog.jsx';
@@ -11,6 +10,7 @@ import TableOfContents from '../components/TableOfContents.jsx';
 import { auth, isFirebaseConfigured } from '../firebase.js';
 import useFoldableCatalogSections from '../hooks/useFoldableCatalogSections.js';
 import usePageMeta from '../hooks/usePageMeta.js';
+import useRepertoire from '../hooks/useRepertoire.js';
 import { repDescription, repHeading, repPath, repTitle, repUrl } from '../seo.js';
 
 function RepSignInInfoModal({ onClose }) {
@@ -114,6 +114,7 @@ function RepAuthBar() {
 }
 
 export default function Rep() {
+  const { repertoire, loading } = useRepertoire();
   const {
     expandedSectionIds,
     expandSection,
@@ -128,15 +129,19 @@ export default function Rep() {
     noindex: true,
   });
 
+  const sections = repertoire?.sections ?? [];
+
   return (
     <RepPasswordGate>
       <div className="page-shell">
         {isFirebaseConfigured() && <RepAuthBar />}
-        <TableOfContents
-          sections={repertoire.sections}
-          expandedSectionIds={expandedSectionIds}
-          onSectionActivate={revealSection}
-        />
+        {!loading && (
+          <TableOfContents
+            sections={sections}
+            expandedSectionIds={expandedSectionIds}
+            onSectionActivate={revealSection}
+          />
+        )}
         <main className="page">
           <header className="page-header">
             <div className="page-header-top">
@@ -147,15 +152,19 @@ export default function Rep() {
             </div>
             <p>{repDescription}</p>
           </header>
-          <Catalog
-            sections={repertoire.sections}
-            viewState={{ from: repPath }}
-            viewPrefix={repPath}
-            foldable
-            expandedSectionIds={expandedSectionIds}
-            onExpandSection={expandSection}
-            onCollapseSection={collapseSection}
-          />
+          {loading ? (
+            <p className="book-empty">Loading repertoire…</p>
+          ) : (
+            <Catalog
+              sections={sections}
+              viewState={{ from: repPath }}
+              viewPrefix={repPath}
+              foldable
+              expandedSectionIds={expandedSectionIds}
+              onExpandSection={expandSection}
+              onCollapseSection={collapseSection}
+            />
+          )}
         </main>
       </div>
     </RepPasswordGate>

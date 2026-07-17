@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import catalog from '../data/catalog.js';
-import repertoire from '../data/repertoire.js';
 import PdfViewer from '../components/PdfViewer.jsx';
 import RepPasswordGate from '../components/RepPasswordGate.jsx';
 import { auth, isFirebaseConfigured } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
+import useRepertoire from '../hooks/useRepertoire.js';
 import { catalogPath, pageTitle, repPath, viewPageUrl, viewPath } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
 import {
@@ -29,9 +29,9 @@ function findPdfInSections(sections, filename) {
   return null;
 }
 
-function findPdf(filename, preferRepertoire = false) {
-  const primary = preferRepertoire ? repertoire.sections : catalog.sections;
-  const secondary = preferRepertoire ? catalog.sections : repertoire.sections;
+function findPdf(filename, repertoireSections, preferRepertoire = false) {
+  const primary = preferRepertoire ? repertoireSections : catalog.sections;
+  const secondary = preferRepertoire ? catalog.sections : repertoireSections;
 
   return (
     findPdfInSections(primary, filename) ??
@@ -67,14 +67,20 @@ function ViewPdfInner({ syncUser = null }) {
   const location = useLocation();
   const navigate = useNavigate();
   const fromRep = location.pathname.startsWith(`${repPath}/view/`);
+  const { repertoire, loading: repertoireLoading } = useRepertoire();
   const decoded = decodeURIComponent(filename);
   const routeName = viewRouteFilename(decoded);
-  const { section, piece, pdf } = findPdf(routeName, fromRep);
+  const repertoireSections = repertoire?.sections ?? [];
+  const { section, piece, pdf } = repertoireLoading
+    ? { section: null, piece: null, pdf: null }
+    : findPdf(routeName, repertoireSections, fromRep);
   const pieceKey =
     section && piece ? pieceId(section.id, piece.title) : null;
   const storageFile = pdf?.file ?? decoded;
 
   useEffect(() => {
+    if (repertoireLoading) return;
+
     if (routeName !== decoded) {
       navigate(viewPath(routeName, fromRep ? 'rep' : 'catalog'), {
         replace: true,
@@ -95,7 +101,16 @@ function ViewPdfInner({ syncUser = null }) {
       replace: true,
       state: location.state,
     });
-  }, [decoded, routeName, fromRep, location.state, navigate, piece, pieceKey]);
+  }, [
+    decoded,
+    routeName,
+    fromRep,
+    location.state,
+    navigate,
+    piece,
+    pieceKey,
+    repertoireLoading,
+  ]);
 
   const name = viewerPageName(piece, pdf, routeName);
   const description =
@@ -109,6 +124,10 @@ function ViewPdfInner({ syncUser = null }) {
       : viewPageUrl(routeName),
     noindex: fromRep,
   });
+
+  if (fromRep && repertoireLoading) {
+    return <p className="book-empty">Loading repertoire…</p>;
+  }
 
   const viewer = (
     <PdfViewer

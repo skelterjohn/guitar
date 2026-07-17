@@ -2,6 +2,21 @@ sections:
   - id: njgo2027
     title: NJGO 2027
     pieces:
+      - title: Fireflies
+        description: Steven Sabet
+        pdfs:
+          - label: score
+            file: PASSWORD/fireflies_score.pdf
+          - label: guitar 1
+            file: PASSWORD/fireflies_1.pdf
+          - label: guitar 2
+            file: PASSWORD/fireflies_2.pdf
+          - label: guitar 3
+            file: PASSWORD/fireflies_3.pdf
+          - label: guitar 4
+            file: PASSWORD/fireflies_4.pdf
+          - label: bass
+            file: PASSWORD/fireflies_bass.pdf
       - title: Breakfast around the Sun
         description: John Asmuth
         pdfs:

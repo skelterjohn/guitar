@@ -13,7 +13,7 @@ mezzanine_one_a={
       R2. |
       R2. |
 	  b''4 b'' b'' |
-	  \grace { b''16( } e''2.) |
+	  \appoggiatura { b''32 } <e''-0>2. |
 	  \textSpannerUp
 	  \stringNumberSpanner "2"
 	  a''4\startTextSpan gis'' fis''\stopTextSpan |

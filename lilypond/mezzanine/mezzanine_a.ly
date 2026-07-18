@@ -35,7 +35,7 @@ mezzanine_one_a={
 	  b'4 b' b' |
 	  \appoggiatura { b'32 } <cis''-0>2. |
 	  e''4. d''8 cis'' d'' |
-	  b'8 cis'' d'' cis'' b' cis'' |
+	  b'8 cis'' d''4 cis''8 b' |
       \break
 
 	  <a'>2. |

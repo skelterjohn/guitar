@@ -1,8 +1,8 @@
 
 mezzanine_one_a={
   \set Staff.connectArpeggios = ##t
-  \time 4/4
-  \key c \major
+  \time 3/4
+  \key d \major
   \tempo 4=72
   <<
     \new Voice { \voiceOne
@@ -11,7 +11,7 @@ mezzanine_one_a={
       
       \mark \markup { \circle "A" }
       
-      R1 |
+      R2. |
       \bar "||"
     }
   >>
@@ -21,8 +21,8 @@ mezzanine_one_a={
 mezzanine_two_a={
   \set Staff.connectArpeggios = ##t
   \tempo 4=72
-  \key c \major
-  \time 4/4
+  \key d \major
+  \time 3/4
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
@@ -30,7 +30,7 @@ mezzanine_two_a={
       
       \mark \markup { \circle "A" }
       
-      R1 |
+      R2. |
       \bar "||"
     }
   >>
@@ -39,8 +39,8 @@ mezzanine_two_a={
 mezzanine_three_a={
   \set Staff.connectArpeggios = ##t
   \tempo 4=72
-  \key c \major
-  \time 4/4
+  \key d \major
+  \time 3/4
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
@@ -48,7 +48,7 @@ mezzanine_three_a={
       
       \mark \markup { \circle "A" }
       
-      R1 |
+      R2. |
       \bar "||"
     }
   >>
@@ -57,8 +57,8 @@ mezzanine_three_a={
 mezzanine_four_a={
   \set Staff.connectArpeggios = ##t
   \tempo 4=72
-  \key c \major
-  \time 4/4
+  \key d \major
+  \time 3/4
   <<
     \new Voice { \voiceOne
       \set fingeringOrientations = #'(left)
@@ -66,7 +66,7 @@ mezzanine_four_a={
       
       \mark \markup { \circle "A" }
       
-      R1 |
+      R2. |
       \bar "||"
     }
   >>

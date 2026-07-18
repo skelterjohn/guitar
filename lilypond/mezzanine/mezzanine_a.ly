@@ -9,7 +9,6 @@ mezzanine_one_a={
       \mark \markup { \circle "A" }
       
       R2. |
-      \bar "||"
     }
   >>
 }
@@ -25,7 +24,6 @@ mezzanine_two_a={
       \mark \markup { \circle "A" }
       
       R2. |
-      \bar "||"
     }
   >>
 }
@@ -39,8 +37,12 @@ mezzanine_three_a={
     \new Voice { \voiceOne
       \mark \markup { \circle "A" }
       
-      R2. |
-      \bar "||"
+      a'8 cis'' b' e'' b' cis'' |
+    }
+    \new Voice { \voiceTwo
+      \mark \markup { \circle "A" }
+      
+      a'4 s2 |
     }
   >>
 }
@@ -55,7 +57,6 @@ mezzanine_four_a={
       \mark \markup { \circle "A" }
       
       R2. |
-      \bar "||"
     }
   >>
 }

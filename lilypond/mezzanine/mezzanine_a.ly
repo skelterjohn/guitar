@@ -14,7 +14,9 @@ mezzanine_one_a={
       R2. |
 	  b''4 b'' b'' |
 	  \grace { b''16( } e''2.) |
-	  a''4\2 gis'' fis'' |
+	  \textSpannerUp
+	  \stringNumberSpanner "2"
+	  a''4\startTextSpan gis'' fis''\stopTextSpan |
 	  <e''-3\3> <fis''-1\2>\glissando \once \override NoteColumn.glissando-skip = ##t <b'\3-3> |
 	  <cis''-1>2. |
       R2. |
@@ -102,10 +104,12 @@ mezzanine_four_a={
       R2. |
       R2. |
       R2. |
-      cis''2\4 b'8 \glissando a'( |
+      \textSpannerUp
+      \stringNumberSpanner "4"
+      cis''2\startTextSpan b'8 \glissando a'( |
 	  b'2) a'8 \glissando g'( |
 	  a'2) g'8 \glissando fis'( |
-	  g'2.) 
+	  g'2.)\stopTextSpan 
     }
   >>
 }

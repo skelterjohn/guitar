@@ -78,7 +78,7 @@ mezzanine_two_a={
 
 	  \break
       
-      <g cis' d' e'>4\arpeggio cis'8 d' cis' d' |
+      <a cis' d' e'>4\arpeggio cis'8 d' cis' d' |
 	  g2. |
       r4 cis'8 d' cis' d' |
 	  a2. |
@@ -92,7 +92,7 @@ mezzanine_two_a={
 
 	  \break
       
-      <g cis' d' e'>4\arpeggio cis'8 d' cis' d' |
+      <a cis' d' e'>4\arpeggio cis'8 d' cis' d' |
 	  g2. |
       r4 cis'8 d' cis' d' |
 	  a2. |

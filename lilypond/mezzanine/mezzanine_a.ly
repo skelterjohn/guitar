@@ -36,8 +36,26 @@ mezzanine_two_a={
     \new Voice { \voiceOne
       \mark \markup { \circle "A" }
       
-      R2. |
-      R2. |
+      r4 cis''8 d'' cis'' d'' |
+	  b'2. |
+      r4 cis''8 d'' cis'' d'' |
+	  a'2. |
+
+	  \break
+      
+      r4 cis''8 d'' cis'' d'' |
+	  b'2. |
+      r4 cis''8 d'' cis'' d'' |
+	  a'2. |
+
+	  \break
+      
+      r4 cis''8 d'' cis'' d'' |
+	  b'2. |
+      r4 cis''8 d'' cis'' d'' |
+	  a'2. |
+
+
     }
   >>
 }
@@ -100,10 +118,10 @@ mezzanine_four_a={
       R2. |
       R2. |
       R2. |
-      R2. |
-      R2. |
-      R2. |
-      R2. |
+      a'2. |
+      g'2. |
+      fis'2. |
+      e'2. |
       \textSpannerUp
       \stringNumberSpanner "4"
       cis''2\startTextSpan b'8 \glissando a'( |

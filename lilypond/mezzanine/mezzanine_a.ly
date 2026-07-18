@@ -17,7 +17,7 @@ mezzanine_one_a={
       \break
 
 	  b'4 b' b' |
-	  \appoggiatura { b'32 } <e'-0>2. |
+	  \appoggiatura { b'8 } <e'-0>2. |
 	  \textSpannerUp
 	  \stringNumberSpanner "2"
 	  a'4\startTextSpan gis' fis'\stopTextSpan |
@@ -33,7 +33,7 @@ mezzanine_one_a={
       \break
 
 	  b'4 b' b' |
-	  \appoggiatura { b'32 } <cis''-0>2. |
+	  \appoggiatura { b'8 } <cis''>2. |
 	  e''4. d''8 cis'' d'' |
 	  b'8 cis'' d''4 cis''8 b' |
       \break

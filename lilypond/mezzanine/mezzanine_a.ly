@@ -38,22 +38,22 @@ mezzanine_two_a={
     \new Voice { \voiceOne
       \mark \markup { \circle "A" }
       
+      r4 <cis'-3\3>8 <d'-1\2> cis' d' |
+	  <g-2\4>2. |
       r4 cis'8 d' cis' d' |
-	  b2. |
+	  <a-4>2. |
+
+	  \break
+      
+      <g cis' d' e'>4\arpeggio cis'8 d' cis' d' |
+	  g2. |
       r4 cis'8 d' cis' d' |
 	  a2. |
 
 	  \break
       
       r4 cis'8 d' cis' d' |
-	  b2. |
-      r4 cis'8 d' cis' d' |
-	  a2. |
-
-	  \break
-      
-      r4 cis'8 d' cis' d' |
-	  b2. |
+	  g2. |
       r4 cis'8 d' cis' d' |
 	  a2. |
 

@@ -15,6 +15,13 @@ mezzanine_one_a={
       R2. |
 
       \break
+      
+      R2. |
+      R2. |
+      R2. |
+      R2. |
+
+      \break
 
 	  b'4 b' b' |
 	  \appoggiatura { b'8 } <e'-0>2. |
@@ -59,6 +66,13 @@ mezzanine_two_a={
       
       r4 <cis'-3\3>8 <d'-1\2> cis' d' |
 	  <g-2\4>2. |
+      r4 cis'8 d' cis' d' |
+	  <a-4>2. |
+
+	  \break
+      
+      r4 <cis'>8 <d'-1> cis' d' |
+	  <g-2>2. |
       r4 cis'8 d' cis' d' |
 	  <a-4>2. |
 
@@ -119,6 +133,13 @@ mezzanine_three_a={
 
       a8 cis' b e' b cis' |
       g8 cis' b e' b cis' |
+      a8 cis' b e' b cis' |
+      g8 cis' b e' b cis' |
+
+	  \break
+
+      a8 cis' b e' b cis' |
+      g8 cis' b e' b cis' |
       e8 cis' b e' b cis' |
       d8 cis' b e' b cis' |
 
@@ -137,6 +158,12 @@ mezzanine_three_a={
       d8 cis' b e' b cis' |
     }
     \new Voice { \voiceTwo
+      a4 s2 |
+      g4 s2 |
+      a4 s2 |
+      g4 s2 |
+
+      \break
       a4 s2 |
       g4 s2 |
       a4 s2 |
@@ -182,6 +209,13 @@ mezzanine_four_a={
   <<
     \new Voice { \voiceOne
       \mark \markup { \circle "A" }
+      
+      R2. |
+      R2. |
+      R2. |
+      R2. |
+
+      \break
       
       R2. |
       R2. |

@@ -10,4 +10,12 @@
 \include "../bbarred.ly"
 #(define RH rightHandFinger)
 
+\layout {
+  \context {
+    \Voice
+    fingeringOrientations = #'(left)
+    stringNumberOrientations = #'(up)
+  }
+}
+
 \include "mezzanine_a.ly"

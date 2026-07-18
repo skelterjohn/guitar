@@ -6,9 +6,6 @@ mezzanine_one_a={
   \tempo 4=72
   <<
     \new Voice { \voiceOne
-      \set fingeringOrientations = #'(left)
-      \set stringNumberOrientations = #'(up)
-      
       \mark \markup { \circle "A" }
       
       R2. |
@@ -25,9 +22,6 @@ mezzanine_two_a={
   \time 3/4
   <<
     \new Voice { \voiceOne
-      \set fingeringOrientations = #'(left)
-      \set stringNumberOrientations = #'(up)
-      
       \mark \markup { \circle "A" }
       
       R2. |
@@ -43,9 +37,6 @@ mezzanine_three_a={
   \time 3/4
   <<
     \new Voice { \voiceOne
-      \set fingeringOrientations = #'(left)
-      \set stringNumberOrientations = #'(up)
-      
       \mark \markup { \circle "A" }
       
       R2. |
@@ -61,9 +52,6 @@ mezzanine_four_a={
   \time 3/4
   <<
     \new Voice { \voiceOne
-      \set fingeringOrientations = #'(left)
-      \set stringNumberOrientations = #'(up)
-      
       \mark \markup { \circle "A" }
       
       R2. |

@@ -3,8 +3,7 @@
 solopage={}
 \include "mezzanine_common.ly"
 
-\score {
-  <<
+mezzanineMusic = <<
   \new Staff \with {
     \consists "Span_arpeggio_engraver"
     instrumentName = #"Guitar 1"
@@ -42,7 +41,14 @@ solopage={}
     \mezzanine_four_a
     \bar "|."
   }
-  >>
+>>
+
+\score {
+  \mezzanineMusic
   \layout { }
+}
+
+\score {
+  \removeWithTag #'print \mezzanineMusic
   \midi { }
 }

@@ -18,7 +18,7 @@ mezzanine_one_a={
 	  \textSpannerUp
 	  \stringNumberSpanner "2"
 	  a'4\startTextSpan gis' fis'\stopTextSpan |
-	  <e'-3\3> <fis'-1\2>\glissando \once \override NoteColumn.glissando-skip = ##t <b\3-3> |
+	  <e'-3\3> <fis'-1\2>\tag #'print { \glissando \once \override NoteColumn.glissando-skip = ##t } <b\3-3> |
 	  <cis'-1>2. |
       R2. |
       R2. |
@@ -128,9 +128,9 @@ mezzanine_four_a={
       e2. |
       \textSpannerUp
       \stringNumberSpanner "4"
-      cis'2\startTextSpan b8 \glissando a( |
-	  b2) a8 \glissando g( |
-	  a2) g8 \glissando fis( |
+      cis'2\startTextSpan b8 \tag #'print \glissando a( |
+	  b2) a8 \tag #'print \glissando g( |
+	  a2) g8 \tag #'print \glissando fis( |
 	  g2.)\stopTextSpan 
     }
   >>

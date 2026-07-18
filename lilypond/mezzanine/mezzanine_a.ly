@@ -16,7 +16,10 @@ mezzanine_one_a={
 	  \grace { b''16( } e''2.) |
 	  a''4\2 gis'' fis'' |
 	  <e''-3\3> <fis''-1\2>\glissando \once \override NoteColumn.glissando-skip = ##t <b'\3-3> |
-	  cis''2. |
+	  <cis''-1>2. |
+      R2. |
+      R2. |
+      R2. |
     }
   >>
 }
@@ -93,6 +96,16 @@ mezzanine_four_a={
       
       R2. |
       R2. |
+      R2. |
+      R2. |
+      R2. |
+      R2. |
+      R2. |
+      R2. |
+      cis''2\4 b'8 \glissando a'( |
+	  b'2) a'8 \glissando g'( |
+	  a'2) g'8 \glissando fis'( |
+	  g'2.) 
     }
   >>
 }

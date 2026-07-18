@@ -21,7 +21,7 @@ mezzanine_one_a={
 	  \textSpannerUp
 	  \stringNumberSpanner "2"
 	  a'4\startTextSpan gis' fis'\stopTextSpan |
-	  <e'-3\3> <fis'-1\2>\tag #'print { \glissando \once \override NoteColumn.glissando-skip = ##t } <b\3-3> |
+	  <e'-3\3> <fis'-1\2>\tag #'print \glissando \once \override NoteColumn.glissando-skip = ##t <b\3-3> |
 
       \break
 

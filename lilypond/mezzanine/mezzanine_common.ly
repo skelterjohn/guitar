@@ -20,6 +20,10 @@ stringNumberSpanner =
       \markup { \circle \number #StringNumber }
   #})
 
+guitarSetup = {
+  \clef "treble_8"
+}
+
 \layout {
   \context {
     \Voice

@@ -33,18 +33,15 @@ mezzanine_one_a={
       \break
 
 	  b'4 b' b' |
-	  \appoggiatura { b'32 } <e'-0>2. |
-	  \textSpannerUp
-	  \stringNumberSpanner "2"
-	  a'4\startTextSpan gis' fis'\stopTextSpan |
-	  <e'-3\3> <fis'-1\2>\tag #'print { \glissando \once \override NoteColumn.glissando-skip = ##t } <b\3-3> |
-
+	  \appoggiatura { b'32 } <cis''-0>2. |
+	  e''4. d''8 cis'' d'' |
+	  b'8 cis'' d'' cis'' b' cis'' |
       \break
 
-	  <cis'-1>2. |
-      R2. |
-      R2. |
-      R2. |
+	  <a'>2. |
+      g'2. |
+      e'2. |
+      d'2. |
     }
   >>
 }

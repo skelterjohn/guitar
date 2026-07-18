@@ -23,29 +23,30 @@ mezzanine_one_a={
 
 			\break
 
-		b'4 b' b' |
-		\appoggiatura { b'8 } <e'-0>2. |
-		\textSpannerUp
-		\stringNumberSpanner "2"
-		a'4\startTextSpan gis' fis'\stopTextSpan |
-		<e'-3\3> <fis'-1\2>\tag #'print \glissando \once \override NoteColumn.glissando-skip = ##t <b\3-3> |
+			b'4 b' b' |
+			\appoggiatura { b'8 } <e'-0>2. |
+			\textSpannerUp
+			\stringNumberSpanner "2"
+			a'4\startTextSpan gis' fis'\stopTextSpan |
+			<e'-3\3> <fis'-1\2>\tag #'print \glissando \once \override NoteColumn.glissando-skip = ##t <b\3-3> |
 
 			\break
 
-		<cis'-1>2. |
+			<cis'-1>2. |
 			R2. |
 			R2. |
 			R2. |
 
 			\break
 
-		b'4 b' b' |
-		\appoggiatura { b'8 } <cis''>2. |
-		e''4. d''8 cis'' d'' |
-		b'8 cis'' d''4 cis''8 b' |
+			b'4 b' b' |
+			\appoggiatura { b'8 } <cis''>2. |
+			e''4. d''8 cis'' d'' |
+			b'8 cis'' d''4 cis''8 b' |
+
 			\break
 
-		<a'>2. |
+			<a'>2. |
 			g'2. |
 			e'2. |
 			d'2. |
@@ -65,44 +66,44 @@ mezzanine_two_a={
 			\mark \markup { \circle "A" }
 			
 			r4 <cis'-3\3>8 <d'-1\2> cis' d' |
-		<g-2\4>2. |
+			<g-2\4>2. |
 			r4 cis'8 d' cis' d' |
-		<a-4>2. |
+			<a-4>2. |
 
-		\break
+			\break
 			
 			r4 <cis'>8 <d'-1> cis' d' |
-		<g-2>2. |
+			<g-2>2. |
 			r4 cis'8 d' cis' d' |
-		<a-4>2. |
+			<a-4>2. |
 
-		\break
+			\break
 			
 			<a cis' d' e'>4\arpeggio cis'8 d' cis' d' |
-		g2. |
+			g2. |
 			r4 cis'8 d' cis' d' |
-		a2. |
+			a2. |
 
-		\break
+			\break
 			
 			r4 cis'8 d' cis' d' |
-		g2. |
+			g2. |
 			r4 cis'8 d' cis' d' |
-		a2. |
+			a2. |
 
-		\break
+			\break
 			
 			<a cis' d' e'>4\arpeggio cis'8 d' cis' d' |
-		g2. |
+			g2. |
 			r4 cis'8 d' cis' d' |
-		a2. |
+			a2. |
 
-		\break
+			\break
 			
 			r4 cis'8 d' cis' d' |
-		g2. |
+			g2. |
 			r4 cis'8 d' cis' d' |
-		a2. |
+			a2. |
 		}
 	>>
 }
@@ -122,35 +123,35 @@ mezzanine_three_a={
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
 
-		\break
+			\break
 
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
 
-		\break
+			\break
 
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
 
-		\break
+			\break
 
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
 			e8 cis' b e' b cis' |
 			d8 cis' b e' b cis' |
 
-		\break
+			\break
 
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
 
-		\break
+			\break
 
 			a8 cis' b e' b cis' |
 			g8 cis' b e' b cis' |
@@ -234,9 +235,9 @@ mezzanine_four_a={
 			\textSpannerUp
 			\stringNumberSpanner "4"
 			cis'2\startTextSpan b8 \tag #'print \glissando a( |
-		b2) a8 \tag #'print \glissando g( |
-		a2) g8 \tag #'print \glissando fis( |
-		g2.)\stopTextSpan 
+			b2) a8 \tag #'print \glissando g( |
+			a2) g8 \tag #'print \glissando fis( |
+			g2.)\stopTextSpan 
 
 			\break
 
@@ -250,9 +251,9 @@ mezzanine_four_a={
 			\textSpannerUp
 			\stringNumberSpanner "4"
 			cis'2\startTextSpan b8 \tag #'print \glissando a( |
-		b2) a8 \tag #'print \glissando g( |
-		a2) g8 \tag #'print \glissando fis( |
-		g2.)\stopTextSpan 
+			b2) a8 \tag #'print \glissando g( |
+			a2) g8 \tag #'print \glissando fis( |
+			g2.)\stopTextSpan 
 		}
 	>>
 }

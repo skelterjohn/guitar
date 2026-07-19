@@ -6,7 +6,7 @@ mezzanine_one_a={
 	\key d \major
 	\tempo 4=130
 	<<
-		\new Voice { \voiceOne
+		\new Voice { \oneVoice
 			\mark \markup { \circle "A" }
 			
 			R2. |
@@ -62,7 +62,7 @@ mezzanine_two_a={
 	\key d \major
 	\time 3/4
 	<<
-		\new Voice { \voiceOne
+		\new Voice { \oneVoice
 			\mark \markup { \circle "A" }
 			
 			r4 <cis'-3\3>8 <d'-1\2> cis' d' |
@@ -208,7 +208,7 @@ mezzanine_four_a={
 	\key d \major
 	\time 3/4
 	<<
-		\new Voice { \voiceOne
+		\new Voice { \oneVoice
 			\mark \markup { \circle "A" }
 			
 			R2. |

@@ -50,6 +50,13 @@ mezzanine_one_a={
 			g'2. |
 			e'2. |
 			d'2. |
+			
+			\break
+
+			R2. |
+			R2. |
+			R2. |
+			R2. |
 		}
 	>>
 }
@@ -101,6 +108,13 @@ mezzanine_two_a={
 			\break
 			
 			r4 cis'8 d' cis' d' |
+			g2. |
+			r4 cis'8 d' cis' d' |
+			a2. |
+
+			\break
+			
+			<a cis' d' e'>4\arpeggio cis'8 d' cis' d' |
 			g2. |
 			r4 cis'8 d' cis' d' |
 			a2. |
@@ -157,6 +171,13 @@ mezzanine_three_a={
 			g8 cis' b e' b cis' |
 			e8 cis' b e' b cis' |
 			d8 cis' b e' b cis' |
+
+			\break
+
+			a8 cis' b e' b cis' |
+			g8 cis' b e' b cis' |
+			e8 cis' b e' b cis' |
+			d8 cis' b e' b cis' |
 		}
 		\new Voice { \voiceTwo
 			a4 s2 |
@@ -190,6 +211,13 @@ mezzanine_three_a={
 			g4 s2 |
 			a4 s2 |
 			g4 s2 |
+
+			\break
+
+			a4 s2 |
+			g4 s2 |
+			e4 s2 |
+			d4 s2 |
 
 			\break
 
@@ -254,6 +282,13 @@ mezzanine_four_a={
 			b2) a8 \tag #'print \glissando g( |
 			a2) g8 \tag #'print \glissando fis( |
 			g2.)\stopTextSpan 
+
+			\break
+
+			R2. |
+			R2. |
+			R2. |
+			R2. |
 		}
 	>>
 }

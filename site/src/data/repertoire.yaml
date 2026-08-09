@@ -6,23 +6,23 @@ sections:
         description: Steven Sabet
         pdfs:
           - label: score
-            file: PASSWORD/Fireflies-Full Score.pdf
-            hash: 2026-07-17
+            file: PASSWORD/fireflies_score.pdf
+            hash: 2026-08-09
           - label: guitar 1
-            file: PASSWORD/Fireflies - Gtr 1.pdf
-            hash: 2026-07-17
+            file: PASSWORD/fireflies_1.pdf
+            hash: 2026-08-09
           - label: guitar 2
-            file: PASSWORD/Fireflies - Gtr 2.pdf
-            hash: 2026-07-17
+            file: PASSWORD/fireflies_2.pdf
+            hash: 2026-08-09
           - label: guitar 3
-            file: PASSWORD/Fireflies - Gtr 3.pdf
-            hash: 2026-07-17
+            file: PASSWORD/fireflies_3.pdf
+            hash: 2026-08-09
           - label: guitar 4
-            file: PASSWORD/Fireflies - Gtr 4.pdf
-            hash: 2026-07-17a
+            file: PASSWORD/fireflies_4.pdf
+            hash: 2026-08-09
           - label: bass
-            file: PASSWORD/Fireflies - Bass.pdf
-            hash: 2026-07-17
+            file: PASSWORD/fireflies_bass.pdf
+            hash: 2026-08-09
       - title: Breakfast around the Sun
         description: John Asmuth
         pdfs:

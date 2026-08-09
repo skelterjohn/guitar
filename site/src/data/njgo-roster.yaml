@@ -373,3 +373,13 @@ members:
       
       www.vindownes.com
 
+  - name: "Eli Oesterheld"
+    image: /roster/eli_oesterheld.jpg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.3
+    bio: |-
+      Eli Oesterheld is a classical guitarist and music theorist originally from Encinitas, California. He was a member of the Encinitas Guitar Orchestra for many years and studied with Peter Pupping and Kenneth Bender.  In 2025, Eli graduated from Northwestern University, where, in addition to earning degrees in music theory, music cognition, and linguistics, he studied classical guitar with Anne Waller and was a member of numerous guitar duos, trios, and small groups. Eli is currently pursuing a PhD in Musicology at Princeton University, where his research focuses on the language of musical description and on cross-modal representations of musical features. He joined the NJGO in 2026 as a section two guitarist.
+

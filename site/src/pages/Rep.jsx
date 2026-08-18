@@ -5,6 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import BackFromRep from '../components/BackFromRep.jsx';
 import BookSignInModal from '../components/BookSignInModal.jsx';
 import Catalog from '../components/Catalog.jsx';
+import RepEditorPanel from '../components/RepEditorPanel.jsx';
 import RepPasswordGate from '../components/RepPasswordGate.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import { auth, isFirebaseConfigured } from '../firebase.js';
@@ -114,6 +115,7 @@ function RepAuthBar() {
 }
 
 export default function Rep() {
+  const [user] = useAuthState(auth);
   const { repertoire, loading } = useRepertoire();
   const {
     expandedSectionIds,
@@ -135,6 +137,7 @@ export default function Rep() {
     <RepPasswordGate>
       <div className="page-shell">
         {isFirebaseConfigured() && <RepAuthBar />}
+        {isFirebaseConfigured() && user && <RepEditorPanel user={user} />}
         {!loading && (
           <TableOfContents
             sections={sections}

@@ -15,11 +15,13 @@ type contextKey string
 const userEmailKey contextKey = "userEmail"
 
 type server struct {
-	auth        *auth.Client
-	bucket      string
-	store       objectStore
-	collections collectionStore
-	annotations annotationStore
+	auth            *auth.Client
+	bucket          string
+	store           objectStore
+	collections     collectionStore
+	annotations     annotationStore
+	repStore        objectStore
+	repSecretPrefix string
 }
 
 func (s *server) requireAuth(next http.Handler) http.Handler {

@@ -10,6 +10,7 @@ require (
 	github.com/go-chi/cors v1.2.2
 	google.golang.org/api v0.279.0
 	google.golang.org/grpc v1.81.1
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

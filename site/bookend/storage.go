@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"sort"
 	"strings"
 	"time"
 
 	"cloud.google.com/go/storage"
+	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iterator"
 )
 
@@ -29,6 +31,7 @@ type fileUsage struct {
 type bookFile struct {
 	Name       string    `json:"name"`
 	ModifiedAt time.Time `json:"modifiedAt"`
+	Size       int64     `json:"size,omitempty"`
 }
 
 type objectStore interface {
@@ -37,7 +40,12 @@ type objectStore interface {
 	Read(ctx context.Context, objectKey string) (io.ReadCloser, error)
 	Write(ctx context.Context, objectKey string, r io.Reader, contentType string) error
 	Delete(ctx context.Context, objectKey string) error
+	ListPrefix(ctx context.Context, prefix string) ([]bookFile, error)
+	WriteIfAbsent(ctx context.Context, objectKey string, r io.Reader, contentType string) error
+	WriteNoCache(ctx context.Context, objectKey string, r io.Reader, contentType string) error
 }
+
+var errAlreadyExists = errors.New("object already exists")
 
 func projectedStorageUsage(usage fileUsage, incoming map[string]int64) int64 {
 	projected := usage.Total
@@ -159,6 +167,72 @@ func (s *gcsStore) Write(ctx context.Context, objectKey string, r io.Reader, con
 	obj := s.client.Bucket(s.bucket).Object(objectKey)
 	writer := obj.NewWriter(ctx)
 	writer.ContentType = contentType
+	if _, err := io.Copy(writer, r); err != nil {
+		_ = writer.Close()
+		return err
+	}
+	return writer.Close()
+}
+
+// ListPrefix lists objects directly under prefix (no nested "directories"),
+// without the email/filename filtering that List applies for book uploads.
+func (s *gcsStore) ListPrefix(ctx context.Context, prefix string) ([]bookFile, error) {
+	it := s.client.Bucket(s.bucket).Objects(ctx, &storage.Query{Prefix: prefix})
+
+	var files []bookFile
+	for {
+		attrs, err := it.Next()
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		name := strings.TrimPrefix(attrs.Name, prefix)
+		if name == "" || strings.Contains(name, "/") {
+			continue
+		}
+		files = append(files, bookFile{
+			Name:       name,
+			ModifiedAt: attrs.Updated,
+			Size:       attrs.Size,
+		})
+	}
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].Name < files[j].Name
+	})
+	return files, nil
+}
+
+// WriteIfAbsent writes objectKey only if it does not already exist,
+// enforced atomically by GCS via a DoesNotExist precondition. Returns
+// errAlreadyExists if the object is already present.
+func (s *gcsStore) WriteIfAbsent(ctx context.Context, objectKey string, r io.Reader, contentType string) error {
+	obj := s.client.Bucket(s.bucket).Object(objectKey).If(storage.Conditions{DoesNotExist: true})
+	writer := obj.NewWriter(ctx)
+	writer.ContentType = contentType
+	if _, err := io.Copy(writer, r); err != nil {
+		_ = writer.Close()
+		return err
+	}
+	if err := writer.Close(); err != nil {
+		var apiErr *googleapi.Error
+		if errors.As(err, &apiErr) && apiErr.Code == http.StatusPreconditionFailed {
+			return errAlreadyExists
+		}
+		return err
+	}
+	return nil
+}
+
+// WriteNoCache writes objectKey with Cache-Control: no-cache, for objects
+// (like repertoire.yaml) that runtime clients fetch directly and must never
+// see a stale cached copy of.
+func (s *gcsStore) WriteNoCache(ctx context.Context, objectKey string, r io.Reader, contentType string) error {
+	obj := s.client.Bucket(s.bucket).Object(objectKey)
+	writer := obj.NewWriter(ctx)
+	writer.ContentType = contentType
+	writer.CacheControl = "no-cache"
 	if _, err := io.Copy(writer, r); err != nil {
 		_ = writer.Close()
 		return err

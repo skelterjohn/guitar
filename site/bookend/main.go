@@ -25,6 +25,8 @@ func main() {
 	}
 
 	bookBucket := strings.TrimSpace(os.Getenv("BOOK_BUCKET"))
+	pdfBucket := strings.TrimSpace(os.Getenv("PDF_BUCKET"))
+	repSecretPrefix := strings.TrimSpace(os.Getenv("REP_PDF_SECRET_PREFIX"))
 
 	ctx := context.Background()
 	fbApp, err := firebase.NewApp(ctx, &firebase.Config{ProjectID: projectID})
@@ -52,12 +54,27 @@ func main() {
 		log.Fatalf("firestore annotations init: %v", err)
 	}
 
+	var repStore objectStore
+	if pdfBucket != "" {
+		repStore, err = newGCSStore(ctx, pdfBucket)
+		if err != nil {
+			log.Fatalf("rep storage init: %v", err)
+		}
+	} else {
+		log.Printf("PDF_BUCKET not set; njgo repertoire editing endpoints will be unavailable")
+	}
+	if repSecretPrefix == "" {
+		log.Printf("REP_PDF_SECRET_PREFIX not set; njgo pdf uploads will be unavailable")
+	}
+
 	srv := &server{
-		auth:        authClient,
-		bucket:      bookBucket,
-		store:       store,
-		collections: collections,
-		annotations: annotations,
+		auth:            authClient,
+		bucket:          bookBucket,
+		store:           store,
+		collections:     collections,
+		annotations:     annotations,
+		repStore:        repStore,
+		repSecretPrefix: repSecretPrefix,
 	}
 
 	r := chi.NewRouter()
@@ -108,6 +125,15 @@ func main() {
 		r.Delete("/users/{email}/books/{book}/pieces/{piece}", srv.handleRemoveBookPiece)
 		r.Post("/users/{email}/books/{book}/subparts/{subpart}", srv.handleAddBookSubpart)
 		r.Delete("/users/{email}/books/{book}/subparts/{subpart}", srv.handleRemoveBookSubpart)
+	})
+
+	r.Route("/v1/njgo", func(r chi.Router) {
+		r.Use(srv.requireAuth)
+		r.Use(srv.requireNjgoEditor)
+		r.Get("/repertoire", srv.handleGetRepertoire)
+		r.Post("/repertoire", srv.handlePostRepertoire)
+		r.Get("/pdfs", srv.handleListNjgoPdfs)
+		r.Post("/pdfs/{filename}", srv.handleUploadNjgoPdf)
 	})
 
 	addr := fmt.Sprintf("0.0.0.0:%s", port)

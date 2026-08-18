@@ -9,6 +9,23 @@
 #   - Artifact Registry repo for container images
 #   - Cloud Build service account: storage.objectAdmin on bucket, Cloud Run Admin, AR Writer
 #
+#   - bookend also writes to _PDF_BUCKET now (authorized njgo repertoire
+#     editing). Two things below are set up by hand, NOT by this pipeline,
+#     since they're either secret or a one-time IAM grant:
+#       1. Grant the bookend service account write access to _PDF_BUCKET
+#          (it likely only has access to _BOOK_BUCKET today):
+#            gsutil iam ch \
+#              serviceAccount:bookend@skelterjohnguitar.iam.gserviceaccount.com:roles/storage.objectAdmin \
+#              gs://skelterjohnguitar-pdf
+#       2. Set the real secret folder name (the one "PASSWORD/" in
+#          repertoire.yaml resolves to) as a Cloud Run env var directly —
+#          never commit this value here:
+#            gcloud run services update guitar-bookend --region=us-east4 \
+#              --update-env-vars=REP_PDF_SECRET_PREFIX=<the-secret-folder-name>
+#     Note the bookend-deploy step below uses --update-env-vars (merge), not
+#     --set-env-vars (replace), specifically so redeploys never wipe out the
+#     REP_PDF_SECRET_PREFIX set here.
+#
 # Substitutions (set when triggering the build):
 #   _REGION        — e.g. us-east4
 #   _AR_REPO       — e.g. us-east4-docker.pkg.dev/PROJECT/guitar
@@ -168,7 +185,7 @@ steps:
       - --revision-suffix=v$SHORT_SHA
       - --service-account=bookend@skelterjohnguitar.iam.gserviceaccount.com
       - --port=8080
-      - --set-env-vars=FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID},BOOK_BUCKET=${_BOOK_BUCKET}
+      - --update-env-vars=FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID},BOOK_BUCKET=${_BOOK_BUCKET},PDF_BUCKET=${_PDF_BUCKET}
 
 images:
   - ${_AR_REPO}/site:v$SHORT_SHA

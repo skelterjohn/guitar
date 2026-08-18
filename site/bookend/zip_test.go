@@ -81,6 +81,38 @@ func (f *fakeObjectStore) Delete(ctx context.Context, objectKey string) error {
 	return nil
 }
 
+func (f *fakeObjectStore) ListPrefix(ctx context.Context, prefix string) ([]bookFile, error) {
+	var files []bookFile
+	for key := range f.objects {
+		if !strings.HasPrefix(key, prefix) {
+			continue
+		}
+		name := strings.TrimPrefix(key, prefix)
+		if name == "" || strings.Contains(name, "/") {
+			continue
+		}
+		files = append(files, bookFile{
+			Name:       name,
+			ModifiedAt: time.Unix(0, 0).UTC(),
+		})
+	}
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].Name < files[j].Name
+	})
+	return files, nil
+}
+
+func (f *fakeObjectStore) WriteIfAbsent(ctx context.Context, objectKey string, r io.Reader, contentType string) error {
+	if _, ok := f.objects[objectKey]; ok {
+		return errAlreadyExists
+	}
+	return f.Write(ctx, objectKey, r, contentType)
+}
+
+func (f *fakeObjectStore) WriteNoCache(ctx context.Context, objectKey string, r io.Reader, contentType string) error {
+	return f.Write(ctx, objectKey, r, contentType)
+}
+
 func TestBookZipFilename(t *testing.T) {
 	got := bookZipFilename("User@Example.com")
 	want := "bluebridge-user@example.com-export.zip"

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -10,6 +11,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -126,6 +128,12 @@ func (s *server) handlePostRepertoire(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := s.backupRepertoire(r.Context()); err != nil {
+		log.Printf("njgo repertoire backup failed: %v", err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not back up existing repertoire"})
+		return
+	}
+
 	if err := s.repStore.WriteNoCache(r.Context(), repertoireObjectKey, bytes.NewReader(data), "text/yaml; charset=utf-8"); err != nil {
 		log.Printf("njgo repertoire save failed: %v", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "could not save repertoire"})
@@ -134,6 +142,31 @@ func (s *server) handlePostRepertoire(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("njgo repertoire saved by=%q bytes=%d", userEmail(r), len(data))
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// backupRepertoire copies the current repertoire.yaml (if any) to a
+// timestamped object before it gets overwritten, so every save keeps a
+// recoverable prior version. A no-op if repertoire.yaml doesn't exist yet.
+func (s *server) backupRepertoire(ctx context.Context) error {
+	reader, err := s.repStore.Read(ctx, repertoireObjectKey)
+	if errors.Is(err, errNotFound) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("read current repertoire: %w", err)
+	}
+	defer reader.Close()
+
+	data, err := io.ReadAll(reader)
+	if err != nil {
+		return fmt.Errorf("read current repertoire: %w", err)
+	}
+
+	backupKey := fmt.Sprintf("repertoire_%s.yaml", time.Now().UTC().Format("20060102_1504"))
+	if err := s.repStore.Write(ctx, backupKey, bytes.NewReader(data), "text/yaml; charset=utf-8"); err != nil {
+		return fmt.Errorf("write backup %q: %w", backupKey, err)
+	}
+	return nil
 }
 
 func (s *server) handleListNjgoPdfs(w http.ResponseWriter, r *http.Request) {

@@ -18,6 +18,22 @@ $ErrorActionPreference = 'Stop'
 $bookendDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $binary = Join-Path $bookendDir 'bookend.exe'
 
+if (-not $RepPdfSecretPrefix) {
+    # The rep PDF secret is just the sole directory name under
+    # site/src/data/hidden/ — the same folder name njgo's uploaded PDFs
+    # live under in GCS. Detected automatically so nobody has to type or
+    # store the actual value anywhere.
+    $hiddenDir = Join-Path $bookendDir '..\src\data\hidden'
+    if (Test-Path -LiteralPath $hiddenDir) {
+        $hiddenSubdirs = @(Get-ChildItem -LiteralPath $hiddenDir -Directory -ErrorAction SilentlyContinue)
+        if ($hiddenSubdirs.Count -eq 1) {
+            $RepPdfSecretPrefix = $hiddenSubdirs[0].Name
+        } elseif ($hiddenSubdirs.Count -gt 1) {
+            Write-Warning "Multiple directories under site/src/data/hidden/; pass -RepPdfSecretPrefix explicitly."
+        }
+    }
+}
+
 Push-Location $bookendDir
 try {
     if (-not $SkipBuild) {

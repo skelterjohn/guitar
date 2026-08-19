@@ -2228,14 +2228,13 @@ body {
   color: var(--color-text-muted);
 }
 
-.njgo-upload-history {
+.njgo-upload-current {
+  margin: 0;
   font-size: 0.8125rem;
   color: var(--color-text-muted);
 }
 
-.njgo-upload-history ul {
-  margin: 0.35rem 0 0;
-  padding-left: 1.1rem;
+.njgo-upload-current code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 

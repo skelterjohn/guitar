@@ -22,7 +22,9 @@ const maxRepertoireYAMLBytes = 2 << 20 // 2 MiB
 // NJGO repertoire catalog and upload its PDFs. Keep this short and update it
 // by redeploying bookend.
 var njgoEditors = map[string]bool{
-	"jasmuth@gmail.com": true,
+	"jasmuth@gmail.com":        true,
+	"steven_sabet@yahoo.com":   true,
+	"jaysonmartinez@gmail.com": true,
 }
 
 func (s *server) requireNjgoEditor(next http.Handler) http.Handler {

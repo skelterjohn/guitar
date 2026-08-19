@@ -4,13 +4,13 @@ import { listNjgoPdfs, uploadNjgoPdf, NjgoPdfAlreadyExistsError } from '../booke
 import {
   buildNjgoPdfBase,
   buildNjgoPdfFilename,
-  nextNjgoPdfVersion,
+  nextNjgoPdfSuffix,
   todayDateStamp,
+  todayFilenameDateStamp,
 } from '../utils/njgoPdfFilename.js';
 
 export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUploaded }) {
-  const [existingNames, setExistingNames] = useState([]);
-  const [version, setVersion] = useState(1);
+  const [suffix, setSuffix] = useState('');
   const [filenameOverride, setFilenameOverride] = useState('');
   const [file, setFile] = useState(null);
   const [uploaded, setUploaded] = useState(false);
@@ -21,6 +21,7 @@ export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUpload
     () => buildNjgoPdfBase({ composer: piece.description, piece: piece.title, part: pdf.label }),
     [piece.description, piece.title, pdf.label],
   );
+  const dateStamp = useMemo(() => todayFilenameDateStamp(), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -28,16 +29,15 @@ export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUpload
       .then((files) => {
         if (cancelled) return;
         const names = files.map((entry) => entry.name);
-        setExistingNames(names);
-        setVersion(nextNjgoPdfVersion(names, base));
+        setSuffix(nextNjgoPdfSuffix(names, base, dateStamp));
       })
       .catch(() => {
-        // Version history is a convenience; fall back to version 1 silently.
+        // Version history is a convenience; fall back to no letter suffix silently.
       });
     return () => {
       cancelled = true;
     };
-  }, [user, base]);
+  }, [user, base, dateStamp]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -51,8 +51,15 @@ export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUpload
   }, [busy, onClose]);
 
   const generatedFilename = useMemo(
-    () => buildNjgoPdfFilename({ composer: piece.description, piece: piece.title, part: pdf.label, version }),
-    [piece.description, piece.title, pdf.label, version],
+    () =>
+      buildNjgoPdfFilename({
+        composer: piece.description,
+        piece: piece.title,
+        part: pdf.label,
+        dateStamp,
+        suffix,
+      }),
+    [piece.description, piece.title, pdf.label, dateStamp, suffix],
   );
   const filename = filenameOverride || generatedFilename;
 
@@ -71,7 +78,7 @@ export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUpload
       onClose();
     } catch (uploadError) {
       if (uploadError instanceof NjgoPdfAlreadyExistsError) {
-        setError(`"${filename}" already exists — bump the version number.`);
+        setError(`"${filename}" already exists — edit the filename above to make it unique.`);
       } else if (uploaded) {
         setError(`Uploaded, but could not update repertoire.yaml: ${uploadError.message}`);
       } else {
@@ -104,18 +111,9 @@ export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUpload
           versions stay recoverable.
         </p>
 
-        {existingNames.length > 0 && (
-          <details className="njgo-upload-history">
-            <summary>Existing versions ({existingNames.length})</summary>
-            <ul>
-              {existingNames
-                .filter((name) => name.startsWith(`${base}_`))
-                .map((name) => (
-                  <li key={name}>{name}</li>
-                ))}
-            </ul>
-          </details>
-        )}
+        <p className="njgo-upload-current">
+          Current file: <code>{pdf.file.split('/').pop()}</code>
+        </p>
 
         <label className="njgo-upload-field">
           Filename

@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -45,11 +44,12 @@ func njgoPdfPrefix(secretPrefix string) string {
 	return secretPrefix + "/"
 }
 
-// njgoPdfFilenamePattern enforces the versioned-filename convention used to
-// store every upload permanently, e.g. "asmuth_breakfast_g3_2.pdf": lowercase
-// letters/digits/underscores only, at least two underscore-separated
-// segments, ending in ".pdf".
-var njgoPdfFilenamePattern = regexp.MustCompile(`^[a-z0-9]+(?:_[a-z0-9]+)+\.pdf$`)
+// njgoPdfFilenamePattern enforces the dated-filename convention used to
+// store every upload permanently, e.g. "asmuth_breakfast_g3_20260819.pdf"
+// (optionally "…20260819a.pdf" for a second same-day upload): lowercase
+// letters/digits/underscores only, ending in an 8-digit date and an
+// optional single disambiguating letter, then ".pdf".
+var njgoPdfFilenamePattern = regexp.MustCompile(`^[a-z0-9]+(?:_[a-z0-9]+)*_\d{8}[a-z]?\.pdf$`)
 
 func validateNjgoPdfFilename(filename string) error {
 	filename = strings.TrimSpace(filename)
@@ -60,14 +60,7 @@ func validateNjgoPdfFilename(filename string) error {
 		return errors.New("filename is too long")
 	}
 	if !njgoPdfFilenamePattern.MatchString(filename) {
-		return errors.New("filename must look like composer_piece_part_version.pdf (lowercase letters, digits, underscores only)")
-	}
-
-	base := strings.TrimSuffix(filename, ".pdf")
-	segments := strings.Split(base, "_")
-	version, err := strconv.Atoi(segments[len(segments)-1])
-	if err != nil || version < 1 {
-		return errors.New("filename must end with a version number, e.g. _2.pdf")
+		return errors.New("filename must look like name_YYYYMMDD.pdf or name_YYYYMMDDa.pdf (lowercase letters, digits, underscores only)")
 	}
 	return nil
 }

@@ -41,6 +41,8 @@ export default function PdfLinkList({
   availableFiles,
   pageStart = null,
   pageEnd = null,
+  editMode = false,
+  onSelectPdf,
 }) {
   const linkState = { ...viewState, explicitPdf: true };
   const viewContext = viewContextForPrefix(viewPrefix);
@@ -57,8 +59,23 @@ export default function PdfLinkList({
         const active = pdfLinkIsActive(pdf, currentFile, pageStart, pageEnd);
         const classes = ['pdf-link'];
         if (active) classes.push('pdf-link-active');
-        if (missing) classes.push('pdf-link-missing');
+        if (missing && !editMode) classes.push('pdf-link-missing');
         const linkKey = `${pdf.file}:${pdf.label}:${pdf.pageStart ?? ''}:${pdf.pageEnd ?? ''}`;
+
+        if (editMode) {
+          classes.push('pdf-link-edit');
+          return (
+            <button
+              key={linkKey}
+              type="button"
+              className={classes.join(' ')}
+              onClick={() => onSelectPdf?.(pdf)}
+              title={`Upload a new version of ${pdf.label}`}
+            >
+              {pdf.label}
+            </button>
+          );
+        }
 
         if (missing) {
           return (

@@ -172,6 +172,9 @@ export default function Catalog({
   expandedSectionIds,
   onExpandSection,
   onCollapseSection,
+  njgoEditor = false,
+  njgoUser = null,
+  onNjgoPdfVersionUploaded,
 }) {
   const [activeEditId, setActiveEditId] = useState(null);
 
@@ -265,6 +268,9 @@ export default function Catalog({
                     ? () => onPieceDelete(piece.pieceKey ?? piece.title)
                     : undefined
                 }
+                njgoEditor={njgoEditor}
+                njgoUser={njgoUser}
+                onNjgoPdfVersionUploaded={onNjgoPdfVersionUploaded}
               />
             ))}
           </section>

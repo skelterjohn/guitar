@@ -41,3 +41,8 @@ export function buildNjgoPdfFilename({ composer, piece, part, version } = {}) {
   if (!base || !version) return '';
   return `${base}_${version}.pdf`;
 }
+
+/** YYYY-MM-DD, matching the manual cache-bust convention already used for `hash:` in repertoire.yaml. */
+export function todayDateStamp(date = new Date()) {
+  return date.toISOString().slice(0, 10);
+}

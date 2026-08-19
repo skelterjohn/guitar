@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import CloseIcon from './CloseIcon.jsx';
 import ConfirmDeleteModal from './ConfirmDeleteModal.jsx';
 import DeleteIcon from './DeleteIcon.jsx';
 import ExternalLinkIcon from './ExternalLinkIcon.jsx';
+import NjgoPdfUploadModal from './NjgoPdfUploadModal.jsx';
 import PencilIcon from './PencilIcon.jsx';
 import PdfLinkList from './PdfLinkList.jsx';
 import SaveIcon from './SaveIcon.jsx';
@@ -17,7 +19,12 @@ export default function CompositionCard({
   editing = false,
   onStartEdit,
   onEndEdit,
+  njgoEditor = false,
+  njgoUser = null,
+  onNjgoPdfVersionUploaded,
 }) {
+  const [pdfEditMode, setPdfEditMode] = useState(false);
+  const [uploadTarget, setUploadTarget] = useState(null);
   const paragraphs = piece.description?.split('\n\n').filter(Boolean) ?? [];
   const links = piece.links ?? [];
   const [title, setTitle] = useState(piece.title);
@@ -176,6 +183,17 @@ export default function CompositionCard({
               <PencilIcon />
             </button>
           )}
+          {njgoEditor && (
+            <button
+              type="button"
+              className="composition-card-edit"
+              onClick={() => setPdfEditMode((current) => !current)}
+              aria-label={pdfEditMode ? 'Stop editing PDFs' : 'Edit PDFs'}
+              aria-pressed={pdfEditMode}
+            >
+              {pdfEditMode ? <CloseIcon /> : <PencilIcon />}
+            </button>
+          )}
         </div>
       )}
       {error && (
@@ -211,7 +229,20 @@ export default function CompositionCard({
         viewState={viewState}
         viewPrefix={viewPrefix}
         availableFiles={availableFiles}
+        editMode={pdfEditMode}
+        onSelectPdf={setUploadTarget}
       />
+      {uploadTarget && (
+        <NjgoPdfUploadModal
+          user={njgoUser}
+          piece={piece}
+          pdf={uploadTarget}
+          onClose={() => setUploadTarget(null)}
+          onUploaded={async (result) => {
+            await onNjgoPdfVersionUploaded?.(piece, uploadTarget, result);
+          }}
+        />
+      )}
       {links.length > 0 && (
         <div className="external-links">
           {links.map((link) => (

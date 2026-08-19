@@ -19,5 +19,5 @@ export default function useRepertoire() {
     };
   }, []);
 
-  return { repertoire, loading };
+  return { repertoire, loading, setRepertoire };
 }

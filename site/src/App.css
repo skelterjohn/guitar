@@ -2176,82 +2176,70 @@ body {
   color: #b91c1c;
 }
 
-.rep-editor {
-  grid-column: 2;
-  margin: 1rem 0;
-  padding: 0.75rem 1rem;
+.pdf-link-edit {
+  font: inherit;
+  cursor: pointer;
+  color: var(--color-text-heading);
+  background: var(--color-bg);
+  border-style: dashed;
+}
+
+.pdf-link-edit:hover {
+  background: var(--color-link-bg);
+  border-color: var(--color-link-border);
+}
+
+.njgo-upload-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 45%);
+}
+
+.njgo-upload-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(100%, 26rem);
+  padding: 1.25rem;
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   background: var(--color-surface);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 20%);
+  color: var(--color-text);
   font-family: system-ui, sans-serif;
 }
 
-.rep-editor-summary {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text-heading);
-  cursor: pointer;
-}
-
-.rep-editor-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
-
-.rep-editor-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border);
-}
-
-.rep-editor-section:first-child {
-  padding-top: 0;
-  border-top: none;
-}
-
-.rep-editor-heading {
+.njgo-upload-modal h2 {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--color-text-heading);
 }
 
-.rep-editor-label {
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-}
-
-.rep-editor-hint {
+.njgo-upload-hint {
   margin: 0;
   font-size: 0.8125rem;
   line-height: 1.45;
   color: var(--color-text-muted);
 }
 
-.rep-editor-yaml {
-  width: 100%;
-  padding: 0.625rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+.njgo-upload-history {
   font-size: 0.8125rem;
-  line-height: 1.4;
-  color: var(--color-text);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
-  resize: vertical;
+  color: var(--color-text-muted);
 }
 
-.rep-editor-fields {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+.njgo-upload-history ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-.rep-editor-field {
+.njgo-upload-field {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -2259,7 +2247,7 @@ body {
   color: var(--color-text-muted);
 }
 
-.rep-editor-field input {
+.njgo-upload-field input {
   padding: 0.4rem 0.5rem;
   font: inherit;
   font-size: 0.875rem;
@@ -2269,58 +2257,55 @@ body {
   border-radius: 0.375rem;
 }
 
-.rep-editor-field-version input {
-  width: 5rem;
-}
-
-.rep-editor-error {
+.njgo-upload-error {
   margin: 0;
   font-size: 0.8125rem;
   color: #b91c1c;
 }
 
-.rep-editor-success {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: #166534;
-}
-
-.rep-editor-actions {
+.njgo-upload-actions {
   display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
-.rep-editor-submit {
-  padding: 0.4rem 0.875rem;
+.njgo-upload-cancel,
+.njgo-upload-submit {
+  padding: 0.5rem 0.875rem;
   font-family: system-ui, sans-serif;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #fff;
-  background: var(--color-link-text);
-  border: 1px solid var(--color-link-text);
+  line-height: 1.25;
   border-radius: 0.375rem;
   cursor: pointer;
 }
 
-.rep-editor-submit:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+.njgo-upload-cancel {
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
 }
 
-.rep-editor-submit:not(:disabled):hover {
+.njgo-upload-cancel:hover:not(:disabled) {
+  background: var(--color-surface);
+}
+
+.njgo-upload-submit {
+  color: #fff;
+  background: var(--color-link-text);
+  border: 1px solid var(--color-link-text);
+}
+
+.njgo-upload-submit:not(:disabled):hover {
   background: #1e3a8a;
   border-color: #1e3a8a;
 }
 
-.rep-editor-history-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
+.njgo-upload-cancel:disabled,
+.njgo-upload-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .book-dropzone {

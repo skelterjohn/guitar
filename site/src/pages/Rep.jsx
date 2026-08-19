@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import yaml from 'js-yaml';
+import { saveNjgoRepertoireYaml } from '../bookendNjgoClient.js';
 import BackFromRep from '../components/BackFromRep.jsx';
 import BookSignInModal from '../components/BookSignInModal.jsx';
 import Catalog from '../components/Catalog.jsx';
-import RepEditorPanel from '../components/RepEditorPanel.jsx';
 import RepPasswordGate from '../components/RepPasswordGate.jsx';
 import TableOfContents from '../components/TableOfContents.jsx';
 import { auth, isFirebaseConfigured } from '../firebase.js';
 import useFoldableCatalogSections from '../hooks/useFoldableCatalogSections.js';
+import useNjgoEditor from '../hooks/useNjgoEditor.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import useRepertoire from '../hooks/useRepertoire.js';
 import { repDescription, repHeading, repPath, repTitle, repUrl } from '../seo.js';
+import { REP_PDF_PREFIX } from '../utils/repPassword.js';
 
 function RepSignInInfoModal({ onClose }) {
   useEffect(() => {
@@ -116,7 +119,8 @@ function RepAuthBar() {
 
 export default function Rep() {
   const [user] = useAuthState(auth);
-  const { repertoire, loading } = useRepertoire();
+  const { repertoire, loading, setRepertoire } = useRepertoire();
+  const njgoEditor = useNjgoEditor(user);
   const {
     expandedSectionIds,
     expandSection,
@@ -133,11 +137,33 @@ export default function Rep() {
 
   const sections = repertoire?.sections ?? [];
 
+  const handleNjgoPdfVersionUploaded = useCallback(
+    async (piece, pdf, { filename, hash }) => {
+      const nextRepertoire = {
+        ...repertoire,
+        sections: repertoire.sections.map((section) => ({
+          ...section,
+          pieces: section.pieces.map((p) => {
+            if (p !== piece) return p;
+            return {
+              ...p,
+              pdfs: p.pdfs.map((entry) =>
+                entry === pdf ? { ...entry, file: `${REP_PDF_PREFIX}/${filename}`, hash } : entry,
+              ),
+            };
+          }),
+        })),
+      };
+      await saveNjgoRepertoireYaml(user, yaml.dump(nextRepertoire));
+      setRepertoire(nextRepertoire);
+    },
+    [repertoire, user, setRepertoire],
+  );
+
   return (
     <RepPasswordGate>
       <div className="page-shell">
         {isFirebaseConfigured() && <RepAuthBar />}
-        {isFirebaseConfigured() && user && <RepEditorPanel user={user} />}
         {!loading && (
           <TableOfContents
             sections={sections}
@@ -166,6 +192,9 @@ export default function Rep() {
               expandedSectionIds={expandedSectionIds}
               onExpandSection={expandSection}
               onCollapseSection={collapseSection}
+              njgoEditor={njgoEditor}
+              njgoUser={user}
+              onNjgoPdfVersionUploaded={handleNjgoPdfVersionUploaded}
             />
           )}
         </main>

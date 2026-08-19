@@ -61,3 +61,7 @@ After deploying to `https://njgo.org`:
 **Current:** `allUsers` has **Storage Legacy Object Reader** (direct read by exact object URL only). **Storage Legacy Bucket Reader** was removed so the bucket cannot be listed anonymously. “Secret” scores rely on unguessable object prefixes (e.g. `pub/…` vs other prefixes), not real auth.
 
 **TODO:** Lock this down properly one day — remove public object read, make the bucket private, and have the site nginx proxy authenticate to GCS as `skelterjohnguitar-site@…` (e.g. nginx njs + metadata-server token on `/pdf/`). Update dev (`vite.config.js` `/pdf` proxy) accordingly. Grant `skelterjohnguitar-site` **Storage Object Viewer** on `skelterjohnguitar-pdf` only.
+
+## Local dev bucket (`skelterjohnguitar-dev`)
+
+Local dev never touches the production buckets (`skelterjohnguitar-pdf`, `skelterjohnguitar-book`) by default — both the vite `/pdf` proxy (`vite.config.js`, override with `PDF_DEV_BUCKET`) and `bookend/run-local.ps1`'s `BOOK_BUCKET`/`PDF_BUCKET` defaults point at a single sandbox bucket, `skelterjohnguitar-dev`, seeded and IAM-granted by hand (not via `build-site.yaml`, which is prod-only). `REP_PDF_SECRET_PREFIX` for local njgo-editor testing is passed via `run-local.ps1 -RepPdfSecretPrefix` or the env var of the same name — never hardcode a real secret value here.

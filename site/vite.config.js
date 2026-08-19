@@ -3,7 +3,10 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defaultDescription, siteOrigin, siteTitle } from './src/seo.js';
 
-const gcsPdfOrigin = 'https://storage.googleapis.com/skelterjohnguitar-pdf';
+// Local dev reads/writes a sandbox bucket by default, never the production
+// skelterjohnguitar-pdf bucket — set PDF_DEV_BUCKET to override.
+const pdfDevBucket = process.env.PDF_DEV_BUCKET ?? 'skelterjohnguitar-dev';
+const gcsPdfOrigin = `https://storage.googleapis.com/${pdfDevBucket}`;
 const bookendDevOrigin = process.env.BOOKEND_DEV_ORIGIN ?? 'http://localhost:8081';
 
 function devPwaQuiet() {

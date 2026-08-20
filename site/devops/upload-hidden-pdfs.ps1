@@ -9,7 +9,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$repoRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+$scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+$repoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 if (-not $HiddenDir) {
     $HiddenDir = if ($env:HIDDEN_DIR) { $env:HIDDEN_DIR } else { Join-Path $repoRoot 'site\src\data\hidden' }
 }

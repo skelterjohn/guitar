@@ -18,8 +18,8 @@ Environment:
 EOF
 }
 
-ROOT="$(cd "$(dirname "$0")" && pwd)"
-PDF_DIR="${PDF_DIR:-$ROOT/pdf}"
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+PDF_DIR="${PDF_DIR:-$REPO_ROOT/pdf}"
 PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
 RSYNC_MODE=(-d)
 

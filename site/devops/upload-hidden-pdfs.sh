@@ -21,8 +21,8 @@ Environment:
 EOF
 }
 
-ROOT="$(cd "$(dirname "$0")" && pwd)"
-HIDDEN_DIR="${HIDDEN_DIR:-$ROOT/site/src/data/hidden}"
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+HIDDEN_DIR="${HIDDEN_DIR:-$REPO_ROOT/site/src/data/hidden}"
 PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
 RSYNC_MODE=()
 

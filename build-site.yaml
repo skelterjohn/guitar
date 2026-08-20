@@ -4,8 +4,14 @@
 #   - GCS bucket with public read (allUsers: storage.objectViewer)
 #   - nginx in the site image proxies /pdf/ to the bucket (no browser CORS needed)
 #   - catalog PDFs live under pub/ in the bucket; hidden dirs sync separately
-#   - repertoire.yaml and njgo-roster.yaml are uploaded to the bucket root for
-#     runtime config (PWA fetches them via /pdf/ without a hard refresh)
+#   - repertoire.yaml and njgo-roster.yaml live at the bucket root for runtime
+#     config (PWA fetches them via /pdf/ without a hard refresh). This
+#     pipeline does NOT sync them — repertoire.yaml is live-edited via the
+#     site's njgo editor (bookend writes straight to GCS), so an
+#     unconditional deploy-time overwrite would silently discard those
+#     edits. Use site/devops/download-yaml-config.sh/.ps1 and
+#     site/devops/upload-yaml-config.sh/.ps1 to manually pull/push either
+#     file when hand-editing.
 #   - Artifact Registry repo for container images
 #   - Cloud Build service account: storage.objectAdmin on bucket, Cloud Run Admin, AR Writer
 #
@@ -81,30 +87,6 @@ steps:
     args:
       - -c
       - cd site && npm ci && ENRICH_HASHES=1 npm run enrich && npm run validate
-
-  - name: gcr.io/cloud-builders/gsutil
-    id: sync-repertoire
-    waitFor: ['site-assets']
-    args:
-      - -h
-      - Cache-Control:no-cache
-      - -h
-      - Content-Type:text/yaml
-      - cp
-      - site/src/data/repertoire.yaml
-      - gs://${_PDF_BUCKET}/repertoire.yaml
-
-  - name: gcr.io/cloud-builders/gsutil
-    id: sync-njgo-roster
-    waitFor: ['site-assets']
-    args:
-      - -h
-      - Cache-Control:no-cache
-      - -h
-      - Content-Type:text/yaml
-      - cp
-      - site/src/data/njgo-roster.yaml
-      - gs://${_PDF_BUCKET}/njgo-roster.yaml
 
   - name: gcr.io/cloud-builders/docker
     id: site-build

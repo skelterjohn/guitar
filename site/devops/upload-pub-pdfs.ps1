@@ -9,7 +9,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$repoRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+$scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+$repoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 if (-not $PdfDir) {
     $PdfDir = if ($env:PDF_DIR) { $env:PDF_DIR } else { Join-Path $repoRoot 'pdf' }
 }

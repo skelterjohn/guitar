@@ -7,8 +7,8 @@ Download repertoire.yaml and njgo-roster.yaml from gs://BUCKET/ into
 site/src/data/, overwriting the local copies.
 
 Use this after live edits (e.g. via the site's njgo repertoire editor, or
-by hand with gsutil) to pull those changes back into git for versioning,
-before hand-editing further or committing.
+by hand with gcloud storage) to pull those changes back into git for
+versioning, before hand-editing further or committing.
 
 Usage:
   ./download-yaml-config.sh [BUCKET]
@@ -31,5 +31,5 @@ PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
 for name in repertoire.yaml njgo-roster.yaml; do
   dest="$DATA_DIR/$name"
   echo "Downloading gs://$PDF_BUCKET/$name -> $dest"
-  gsutil cp "gs://$PDF_BUCKET/$name" "$dest"
+  gcloud storage cp "gs://$PDF_BUCKET/$name" "$dest"
 done

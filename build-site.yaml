@@ -20,9 +20,9 @@
 #     since they're either secret or a one-time IAM grant:
 #       1. Grant the bookend service account write access to _PDF_BUCKET
 #          (it likely only has access to _BOOK_BUCKET today):
-#            gsutil iam ch \
-#              serviceAccount:bookend@skelterjohnguitar.iam.gserviceaccount.com:roles/storage.objectAdmin \
-#              gs://skelterjohnguitar-pdf
+#            gcloud storage buckets add-iam-policy-binding gs://skelterjohnguitar-pdf \
+#              --member=serviceAccount:bookend@skelterjohnguitar.iam.gserviceaccount.com \
+#              --role=roles/storage.objectAdmin
 #       2. Set the real secret folder name (the one "PASSWORD/" in
 #          repertoire.yaml resolves to) as a Cloud Run env var directly —
 #          never commit this value here:
@@ -67,7 +67,7 @@ substitutions:
 
 steps:
   # --- PDF sync (independent; runs concurrently) ---
-  - name: gcr.io/cloud-builders/gsutil
+  - name: gcr.io/cloud-builders/gcloud
     id: sync-pdfs
     waitFor: ['-']
     entrypoint: bash
@@ -77,7 +77,7 @@ steps:
         set -euo pipefail
         staging=$$(mktemp -d)
         cp pdf/*.pdf "$$staging/"
-        gsutil -m rsync -r -d "$$staging/" "gs://${_PDF_BUCKET}/pub/"
+        gcloud storage rsync "$$staging/" "gs://${_PDF_BUCKET}/pub/" --recursive --delete-unmatched-destination-objects
 
   # --- Frontend pipeline (runs concurrently with backend) ---
   - name: node:22-alpine

@@ -27,9 +27,9 @@ try {
     Copy-Item -Path (Join-Path $PdfDir '*.pdf') -Destination $staging -Force
     $src = ($staging.TrimEnd('\', '/') + '/')
     $dest = "gs://$PdfBucket/pub/"
-    $rsyncMode = if ($DryRun) { '-n' } else { '-d' }
+    $rsyncFlags = if ($DryRun) { @('--recursive', '--dry-run') } else { @('--recursive', '--delete-unmatched-destination-objects') }
     Write-Host "Syncing $src -> $dest"
-    & gsutil -m rsync -r $rsyncMode $src $dest
+    & gcloud storage rsync $src $dest @rsyncFlags
 } finally {
     Remove-Item -LiteralPath $staging -Recurse -Force -ErrorAction SilentlyContinue
 }

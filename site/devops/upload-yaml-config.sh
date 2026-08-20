@@ -41,5 +41,5 @@ for name in repertoire.yaml njgo-roster.yaml; do
     continue
   fi
   echo "Uploading $src -> $dest"
-  gsutil -h "Cache-Control:no-cache" -h "Content-Type:text/yaml" cp "$src" "$dest"
+  gcloud storage cp "$src" "$dest" --cache-control=no-cache --content-type=text/yaml
 done

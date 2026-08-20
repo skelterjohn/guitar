@@ -26,11 +26,11 @@ if ($dirs.Count -eq 0) {
     exit 1
 }
 
-$rsyncArgs = if ($DryRun) { @('-n') } else { @() }
+$rsyncFlags = if ($DryRun) { @('--recursive', '--dry-run') } else { @('--recursive') }
 
 foreach ($dir in $dirs) {
     $src = ($dir.FullName.TrimEnd('\', '/') + '/')
     $dest = "gs://$PdfBucket/$($dir.Name)/"
     Write-Host "Syncing $src -> $dest"
-    & gsutil -m rsync -r @rsyncArgs $src $dest
+    & gcloud storage rsync $src $dest @rsyncFlags
 }

@@ -14,14 +14,14 @@ Usage:
 Environment:
   PDF_BUCKET / _PDF_BUCKET   Bucket name (default: skelterjohnguitar-pdf)
   PDF_DIR                      Source directory (default: repo/pdf)
-  DRY_RUN=1                    Pass -n to gsutil (preview only, no changes)
+  DRY_RUN=1                    Pass --dry-run to gcloud storage (preview only, no changes)
 EOF
 }
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 PDF_DIR="${PDF_DIR:-$REPO_ROOT/pdf}"
 PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
-RSYNC_MODE=(-d)
+RSYNC_FLAGS=(--recursive --delete-unmatched-destination-objects)
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   usage
@@ -29,7 +29,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
 fi
 
 if [[ "${DRY_RUN:-}" == "1" ]]; then
-  RSYNC_MODE=(-n)
+  RSYNC_FLAGS=(--recursive --dry-run)
 fi
 
 if [[ ! -d "$PDF_DIR" ]]; then
@@ -42,4 +42,4 @@ trap 'rm -rf "$staging"' EXIT
 
 cp "$PDF_DIR"/*.pdf "$staging/"
 echo "Syncing $staging/ -> gs://$PDF_BUCKET/pub/"
-gsutil -m rsync -r "${RSYNC_MODE[@]}" "$staging/" "gs://$PDF_BUCKET/pub/"
+gcloud storage rsync "$staging/" "gs://$PDF_BUCKET/pub/" "${RSYNC_FLAGS[@]}"

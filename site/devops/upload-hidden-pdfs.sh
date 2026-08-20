@@ -17,14 +17,14 @@ Usage:
 Environment:
   PDF_BUCKET / _PDF_BUCKET   Bucket name (default: skelterjohnguitar-pdf)
   HIDDEN_DIR                 Source directory (default: repo/site/src/data/hidden)
-  DRY_RUN=1                  Pass -n to gsutil (preview only, no changes)
+  DRY_RUN=1                  Pass --dry-run to gcloud storage (preview only, no changes)
 EOF
 }
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 HIDDEN_DIR="${HIDDEN_DIR:-$REPO_ROOT/site/src/data/hidden}"
 PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
-RSYNC_MODE=()
+RSYNC_FLAGS=(--recursive)
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   usage
@@ -32,7 +32,7 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
 fi
 
 if [[ "${DRY_RUN:-}" == "1" ]]; then
-  RSYNC_MODE=(-n)
+  RSYNC_FLAGS=(--recursive --dry-run)
 fi
 
 if [[ ! -d "$HIDDEN_DIR" ]]; then
@@ -54,5 +54,5 @@ for dir in "${dirs[@]}"; do
   src="${dir%/}/"
   dest="gs://${PDF_BUCKET}/${name}/"
   echo "Syncing $src -> $dest"
-  gsutil -m rsync -r "${RSYNC_MODE[@]}" "$src" "$dest"
+  gcloud storage rsync "$src" "$dest" "${RSYNC_FLAGS[@]}"
 done

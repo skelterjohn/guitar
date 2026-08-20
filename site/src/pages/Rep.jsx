@@ -138,7 +138,7 @@ export default function Rep() {
   const sections = repertoire?.sections ?? [];
 
   const handleNjgoPdfVersionUploaded = useCallback(
-    async (piece, pdf, { filename, hash }) => {
+    async (piece, pdf, { filename, updated }) => {
       const nextRepertoire = {
         ...repertoire,
         sections: repertoire.sections.map((section) => ({
@@ -147,9 +147,13 @@ export default function Rep() {
             if (p !== piece) return p;
             return {
               ...p,
-              pdfs: p.pdfs.map((entry) =>
-                entry === pdf ? { ...entry, file: `${REP_PDF_PREFIX}/${filename}`, hash } : entry,
-              ),
+              pdfs: p.pdfs.map((entry) => {
+                if (entry !== pdf) return entry;
+                // Drop any legacy `hash` (the old, unrelated MD5-hash
+                // convention) now that this entry has a fresh `updated` date.
+                const { hash: _legacyHash, ...rest } = entry;
+                return { ...rest, file: `${REP_PDF_PREFIX}/${filename}`, updated };
+              }),
             };
           }),
         })),

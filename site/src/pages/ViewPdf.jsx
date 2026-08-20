@@ -132,7 +132,7 @@ function ViewPdfInner({ syncUser = null }) {
   const viewer = (
     <PdfViewer
       filename={storageFile}
-      pdfHash={pdf?.hash}
+      pdfHash={pdf?.updated ?? pdf?.hash}
       pdfs={piece?.pdfs ?? []}
       pieceKey={pieceKey}
       sectionPieces={sectionPiecesForNav(section, piece)}

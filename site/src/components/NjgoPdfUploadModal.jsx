@@ -74,7 +74,7 @@ export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUpload
         await uploadNjgoPdf(user, filename, file);
         setUploaded(true);
       }
-      await onUploaded({ filename, hash: todayDateStamp() });
+      await onUploaded({ filename, updated: todayDateStamp() });
       onClose();
     } catch (uploadError) {
       if (uploadError instanceof NjgoPdfAlreadyExistsError) {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { loadRepertoire } from '../data/repertoire.js';
+import bundledRepertoire, { loadRepertoire } from '../data/repertoire.js';
 
 export default function useRepertoire() {
-  const [repertoire, setRepertoire] = useState(null);
+  const [repertoire, setRepertoire] = useState(bundledRepertoire);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -10,7 +10,9 @@ export default function useRepertoire() {
 
     loadRepertoire().then((data) => {
       if (cancelled) return;
-      setRepertoire(data);
+      setRepertoire((prev) =>
+        JSON.stringify(prev) === JSON.stringify(data) ? prev : data,
+      );
       setLoading(false);
     });
 

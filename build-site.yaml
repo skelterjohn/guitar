@@ -112,11 +112,27 @@ steps:
       - .
 
   - name: gcr.io/cloud-builders/docker
+    id: bookend-build
+    waitFor: ['-']
+    dir: site/bookend
+    args:
+      - build
+      - --tag=${_AR_REPO}/bookend:v$SHORT_SHA
+      - .
+
+  - name: gcr.io/cloud-builders/docker
     id: site-push
     waitFor: ['site-build']
     args:
       - push
       - ${_AR_REPO}/site:v$SHORT_SHA
+
+  - name: gcr.io/cloud-builders/docker
+    id: bookend-push
+    waitFor: ['bookend-build']
+    args:
+      - push
+      - ${_AR_REPO}/bookend:v$SHORT_SHA
 
   - name: gcr.io/cloud-builders/gcloud
     id: site-deploy
@@ -134,23 +150,6 @@ steps:
       - --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com
       - --port=8080
       - --set-env-vars=BOOKEND_ORIGIN=${_BOOKEND_ORIGIN}
-
-  # --- Backend pipeline (runs concurrently with frontend) ---
-  - name: gcr.io/cloud-builders/docker
-    id: bookend-build
-    waitFor: ['-']
-    dir: site/bookend
-    args:
-      - build
-      - --tag=${_AR_REPO}/bookend:v$SHORT_SHA
-      - .
-
-  - name: gcr.io/cloud-builders/docker
-    id: bookend-push
-    waitFor: ['bookend-build']
-    args:
-      - push
-      - ${_AR_REPO}/bookend:v$SHORT_SHA
 
   - name: gcr.io/cloud-builders/gcloud
     id: bookend-deploy

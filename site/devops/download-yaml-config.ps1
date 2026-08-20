@@ -6,12 +6,10 @@
 # versioning, before hand-editing further or committing.
 #
 # Usage:
-#   .\download-yaml-config.ps1 [BUCKET]
-#   $env:PDF_BUCKET = 'my-bucket'; .\download-yaml-config.ps1
+#   .\download-yaml-config.ps1 [-PdfBucket BUCKET]
 
 param(
-    [Parameter(Position = 0)]
-    [string] $PdfBucket = $(if ($env:PDF_BUCKET) { $env:PDF_BUCKET } elseif ($env:_PDF_BUCKET) { $env:_PDF_BUCKET } else { 'skelterjohnguitar-pdf' })
+    [string] $PdfBucket = 'skelterjohnguitar-pdf'
 )
 
 $ErrorActionPreference = 'Stop'

@@ -9,13 +9,10 @@
 # hand-editing either file locally.
 #
 # Usage:
-#   .\upload-yaml-config.ps1 [BUCKET]
-#   $env:PDF_BUCKET = 'my-bucket'; .\upload-yaml-config.ps1
-#   .\upload-yaml-config.ps1 -DryRun
+#   .\upload-yaml-config.ps1 [-PdfBucket BUCKET] [-DryRun]
 
 param(
-    [Parameter(Position = 0)]
-    [string] $PdfBucket = $(if ($env:PDF_BUCKET) { $env:PDF_BUCKET } elseif ($env:_PDF_BUCKET) { $env:_PDF_BUCKET } else { 'skelterjohnguitar-pdf' }),
+    [string] $PdfBucket = 'skelterjohnguitar-pdf',
 
     [switch] $DryRun
 )

@@ -1,6 +1,5 @@
 param(
-    [Parameter(Position = 0)]
-    [string] $PdfBucket = $(if ($env:PDF_BUCKET) { $env:PDF_BUCKET } elseif ($env:_PDF_BUCKET) { $env:_PDF_BUCKET } else { 'skelterjohnguitar-pdf' }),
+    [string] $PdfBucket = 'skelterjohnguitar-pdf',
 
     [string] $PdfDir = $null,
 
@@ -12,7 +11,7 @@ $ErrorActionPreference = 'Stop'
 $scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $repoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 if (-not $PdfDir) {
-    $PdfDir = if ($env:PDF_DIR) { $env:PDF_DIR } else { Join-Path $repoRoot 'pdf' }
+    $PdfDir = Join-Path $repoRoot 'pdf'
 }
 
 if (-not (Test-Path -LiteralPath $PdfDir -PathType Container)) {

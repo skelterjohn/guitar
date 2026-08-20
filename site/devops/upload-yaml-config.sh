@@ -14,29 +14,46 @@ overwrite would silently discard those edits. Run this manually after
 hand-editing either file locally.
 
 Usage:
-  ./upload-yaml-config.sh [BUCKET]
-  PDF_BUCKET=my-bucket ./upload-yaml-config.sh
-  DRY_RUN=1 ./upload-yaml-config.sh
+  ./upload-yaml-config.sh [--pdf-bucket BUCKET] [--dry-run]
 
-Environment:
-  PDF_BUCKET / _PDF_BUCKET   Bucket name (default: skelterjohnguitar-pdf)
-  DRY_RUN=1                  Print what would run without uploading
+Flags:
+  --pdf-bucket BUCKET   Bucket name (default: skelterjohnguitar-pdf)
+  --dry-run             Print what would run without uploading
+  -h, --help            Show this help
 EOF
 }
 
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  usage
-  exit 0
-fi
-
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 DATA_DIR="$REPO_ROOT/site/src/data"
-PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
+PDF_BUCKET="skelterjohnguitar-pdf"
+DRY_RUN=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --pdf-bucket)
+      PDF_BUCKET="$2"
+      shift 2
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "error: unknown argument: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
 
 for name in repertoire.yaml njgo-roster.yaml; do
   src="$DATA_DIR/$name"
   dest="gs://$PDF_BUCKET/$name"
-  if [[ "${DRY_RUN:-}" == "1" ]]; then
+  if [[ "$DRY_RUN" == "1" ]]; then
     echo "[dry run] would upload $src -> $dest"
     continue
   fi

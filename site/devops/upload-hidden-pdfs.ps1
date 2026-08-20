@@ -1,6 +1,5 @@
 param(
-    [Parameter(Position = 0)]
-    [string] $PdfBucket = $(if ($env:PDF_BUCKET) { $env:PDF_BUCKET } elseif ($env:_PDF_BUCKET) { $env:_PDF_BUCKET } else { 'skelterjohnguitar-pdf' }),
+    [string] $PdfBucket = 'skelterjohnguitar-pdf',
 
     [string] $HiddenDir = $null,
 
@@ -12,7 +11,7 @@ $ErrorActionPreference = 'Stop'
 $scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $repoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 if (-not $HiddenDir) {
-    $HiddenDir = if ($env:HIDDEN_DIR) { $env:HIDDEN_DIR } else { Join-Path $repoRoot 'site\src\data\hidden' }
+    $HiddenDir = Join-Path $repoRoot 'site\src\data\hidden'
 }
 
 if (-not (Test-Path -LiteralPath $HiddenDir -PathType Container)) {

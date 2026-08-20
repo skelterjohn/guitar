@@ -11,22 +11,35 @@ by hand with gcloud storage) to pull those changes back into git for
 versioning, before hand-editing further or committing.
 
 Usage:
-  ./download-yaml-config.sh [BUCKET]
-  PDF_BUCKET=my-bucket ./download-yaml-config.sh
+  ./download-yaml-config.sh [--pdf-bucket BUCKET]
 
-Environment:
-  PDF_BUCKET / _PDF_BUCKET   Bucket name (default: skelterjohnguitar-pdf)
+Flags:
+  --pdf-bucket BUCKET   Bucket name (default: skelterjohnguitar-pdf)
+  -h, --help            Show this help
 EOF
 }
 
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  usage
-  exit 0
-fi
-
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 DATA_DIR="$REPO_ROOT/site/src/data"
-PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
+PDF_BUCKET="skelterjohnguitar-pdf"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --pdf-bucket)
+      PDF_BUCKET="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "error: unknown argument: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
 
 for name in repertoire.yaml njgo-roster.yaml; do
   dest="$DATA_DIR/$name"

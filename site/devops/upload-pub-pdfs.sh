@@ -8,27 +8,49 @@ Upload top-level catalog PDFs to gs://BUCKET/pub/
 Only pdf/*.pdf is synced (subdirectories such as hidden/ and arpeggio/ are skipped).
 
 Usage:
-  ./upload-pub-pdfs.sh [BUCKET]
-  PDF_BUCKET=my-bucket ./upload-pub-pdfs.sh
+  ./upload-pub-pdfs.sh [--pdf-bucket BUCKET] [--pdf-dir DIR] [--dry-run]
 
-Environment:
-  PDF_BUCKET / _PDF_BUCKET   Bucket name (default: skelterjohnguitar-pdf)
-  PDF_DIR                      Source directory (default: repo/pdf)
-  DRY_RUN=1                    Pass --dry-run to gcloud storage (preview only, no changes)
+Flags:
+  --pdf-bucket BUCKET   Bucket name (default: skelterjohnguitar-pdf)
+  --pdf-dir DIR         Source directory (default: repo/pdf)
+  --dry-run             Preview only, no changes
+  -h, --help            Show this help
 EOF
 }
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-PDF_DIR="${PDF_DIR:-$REPO_ROOT/pdf}"
-PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
+PDF_BUCKET="skelterjohnguitar-pdf"
+PDF_DIR="$REPO_ROOT/pdf"
+DRY_RUN=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --pdf-bucket)
+      PDF_BUCKET="$2"
+      shift 2
+      ;;
+    --pdf-dir)
+      PDF_DIR="$2"
+      shift 2
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "error: unknown argument: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
 RSYNC_FLAGS=(--recursive --delete-unmatched-destination-objects)
-
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  usage
-  exit 0
-fi
-
-if [[ "${DRY_RUN:-}" == "1" ]]; then
+if [[ "$DRY_RUN" == "1" ]]; then
   RSYNC_FLAGS=(--recursive --dry-run)
 fi
 

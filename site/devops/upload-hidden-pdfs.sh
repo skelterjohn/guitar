@@ -11,27 +11,49 @@ Each hidden subdirectory is rsync'd independently. Local files are uploaded and
 replaced when they differ; remote-only files are left in place.
 
 Usage:
-  ./upload-hidden-pdfs.sh [BUCKET]
-  PDF_BUCKET=my-bucket ./upload-hidden-pdfs.sh
+  ./upload-hidden-pdfs.sh [--pdf-bucket BUCKET] [--hidden-dir DIR] [--dry-run]
 
-Environment:
-  PDF_BUCKET / _PDF_BUCKET   Bucket name (default: skelterjohnguitar-pdf)
-  HIDDEN_DIR                 Source directory (default: repo/site/src/data/hidden)
-  DRY_RUN=1                  Pass --dry-run to gcloud storage (preview only, no changes)
+Flags:
+  --pdf-bucket BUCKET   Bucket name (default: skelterjohnguitar-pdf)
+  --hidden-dir DIR      Source directory (default: repo/site/src/data/hidden)
+  --dry-run             Preview only, no changes
+  -h, --help            Show this help
 EOF
 }
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-HIDDEN_DIR="${HIDDEN_DIR:-$REPO_ROOT/site/src/data/hidden}"
-PDF_BUCKET="${1:-${PDF_BUCKET:-${_PDF_BUCKET:-skelterjohnguitar-pdf}}}"
+PDF_BUCKET="skelterjohnguitar-pdf"
+HIDDEN_DIR="$REPO_ROOT/site/src/data/hidden"
+DRY_RUN=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --pdf-bucket)
+      PDF_BUCKET="$2"
+      shift 2
+      ;;
+    --hidden-dir)
+      HIDDEN_DIR="$2"
+      shift 2
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "error: unknown argument: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
 RSYNC_FLAGS=(--recursive)
-
-if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
-  usage
-  exit 0
-fi
-
-if [[ "${DRY_RUN:-}" == "1" ]]; then
+if [[ "$DRY_RUN" == "1" ]]; then
   RSYNC_FLAGS=(--recursive --dry-run)
 fi
 

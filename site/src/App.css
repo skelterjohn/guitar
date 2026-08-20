@@ -2177,15 +2177,16 @@ body {
 }
 
 .pdf-link-edit {
-  font: inherit;
+  appearance: none;
+  line-height: inherit;
   cursor: pointer;
-  color: var(--color-text-heading);
-  background: var(--color-bg);
+  color: #6b7280;
+  background: #f3f4f6;
   border-style: dashed;
 }
 
 .pdf-link-edit:hover {
-  background: var(--color-link-bg);
+  background: #e5e7eb;
   border-color: var(--color-link-border);
 }
 

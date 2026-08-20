@@ -120,7 +120,7 @@ steps:
 
   - name: gcr.io/cloud-builders/gcloud
     id: site-deploy
-    waitFor: ['site-push']
+    waitFor: ['site-push', 'bookend-push']
     args:
       - -q
       - run
@@ -154,7 +154,7 @@ steps:
 
   - name: gcr.io/cloud-builders/gcloud
     id: bookend-deploy
-    waitFor: ['bookend-push']
+    waitFor: ['bookend-push', 'site-push']
     args:
       - -q
       - run

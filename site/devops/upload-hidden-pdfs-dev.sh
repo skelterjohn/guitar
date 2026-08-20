@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+# Upload each site/src/data/hidden/<name>/ subdirectory to
+# gs://skelterjohnguitar-dev/<name>/.
 set -euo pipefail
-
-# Convenience wrapper for upload-hidden-pdfs.sh that defaults to the
-# skelterjohnguitar-dev sandbox bucket instead of production. Pass your own
-# --pdf-bucket to override (the real script keeps the last one it sees).
-exec "$(cd "$(dirname "$0")" && pwd)/upload-hidden-pdfs.sh" --pdf-bucket skelterjohnguitar-dev "$@"
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+for dir in "$REPO_ROOT"/site/src/data/hidden/*/; do
+  name="$(basename "$dir")"
+  gcloud storage rsync "$dir" "gs://skelterjohnguitar-dev/$name/" --recursive
+done

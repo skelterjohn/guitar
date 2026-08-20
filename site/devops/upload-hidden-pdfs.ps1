@@ -1,35 +1,6 @@
-param(
-    [string] $PdfBucket = 'skelterjohnguitar-pdf',
-
-    [string] $HiddenDir = $null,
-
-    [switch] $DryRun
-)
-
-$ErrorActionPreference = 'Stop'
-
-$scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
-$repoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
-if (-not $HiddenDir) {
-    $HiddenDir = Join-Path $repoRoot 'site\src\data\hidden'
-}
-
-if (-not (Test-Path -LiteralPath $HiddenDir -PathType Container)) {
-    Write-Error "hidden directory not found: $HiddenDir"
-    exit 1
-}
-
-$dirs = Get-ChildItem -LiteralPath $HiddenDir -Directory
-if ($dirs.Count -eq 0) {
-    Write-Error "no subdirectories found in $HiddenDir"
-    exit 1
-}
-
-$rsyncFlags = if ($DryRun) { @('--recursive', '--dry-run') } else { @('--recursive') }
-
-foreach ($dir in $dirs) {
-    $src = ($dir.FullName.TrimEnd('\', '/') + '/')
-    $dest = "gs://$PdfBucket/$($dir.Name)/"
-    Write-Host "Syncing $src -> $dest"
-    & gcloud storage rsync $src $dest @rsyncFlags
+# Upload each site\src\data\hidden\<name>\ subdirectory to
+# gs://skelterjohnguitar-pdf/<name>/.
+$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+foreach ($dir in Get-ChildItem -LiteralPath (Join-Path $repoRoot 'site\src\data\hidden') -Directory) {
+    & gcloud storage rsync "$($dir.FullName)\" "gs://skelterjohnguitar-pdf/$($dir.Name)/" --recursive
 }

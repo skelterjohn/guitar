@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
+# Upload site/src/data/repertoire.yaml and njgo-roster.yaml to
+# gs://skelterjohnguitar-dev/, overwriting the live copies.
 set -euo pipefail
-
-# Convenience wrapper for upload-yaml-config.sh that defaults to the
-# skelterjohnguitar-dev sandbox bucket instead of production. Pass your own
-# --pdf-bucket to override (the real script keeps the last one it sees).
-exec "$(cd "$(dirname "$0")" && pwd)/upload-yaml-config.sh" --pdf-bucket skelterjohnguitar-dev "$@"
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+gcloud storage cp "$REPO_ROOT/site/src/data/repertoire.yaml" gs://skelterjohnguitar-dev/repertoire.yaml --cache-control=no-cache --content-type=text/yaml
+gcloud storage cp "$REPO_ROOT/site/src/data/njgo-roster.yaml" gs://skelterjohnguitar-dev/njgo-roster.yaml --cache-control=no-cache --content-type=text/yaml

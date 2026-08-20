@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
+# Upload pdf/*.pdf to gs://skelterjohnguitar-dev/pub/.
 set -euo pipefail
-
-# Convenience wrapper for upload-pub-pdfs.sh that defaults to the
-# skelterjohnguitar-dev sandbox bucket instead of production. Pass your own
-# --pdf-bucket to override (the real script keeps the last one it sees).
-exec "$(cd "$(dirname "$0")" && pwd)/upload-pub-pdfs.sh" --pdf-bucket skelterjohnguitar-dev "$@"
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+gcloud storage rsync "$REPO_ROOT/pdf/" gs://skelterjohnguitar-dev/pub/ --recursive --delete-unmatched-destination-objects

@@ -629,8 +629,8 @@ sections:
           - label: solo
             file: PASSWORD/los_angeles_III_solo.pdf
             hash: 2026-07-17
-  - id: njgo2021
-    title: NJGO 2021
+  - id: njgo2022
+    title: NJGO 2022
     pieces:
       - title: Playground
         description: Andrew York

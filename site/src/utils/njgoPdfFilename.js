@@ -1,9 +1,10 @@
 /**
  * Filename convention for authorized njgo repertoire PDF uploads:
- * lastname_firstword_part_YYYYMMDD.pdf (e.g. "asmuth_breakfast_g3_20260819.pdf"
- * for "Breakfast around the Sun" by John Asmuth, uploaded 2026-08-19). If a
- * same-day upload already used that exact name, a letter suffix
- * disambiguates (…_20260819a.pdf, …_20260819b.pdf, …). Uploads are
+ * key_part_YYYYMMDD.pdf, e.g. "breakfast_around_3_20260820.pdf" for the
+ * "guitar 3" part of the piece with key "breakfast_around", uploaded
+ * 2026-08-20 (the "guitar" word is dropped from the part). If that exact
+ * name is already taken (a same-day re-upload), a letter suffix
+ * disambiguates (…_20260820a.pdf, …_20260820b.pdf, …). Uploads are
  * append-only — bookend rejects re-uploading an existing filename — so this
  * scheme is what keeps every upload unique and prior versions recoverable.
  */
@@ -18,31 +19,20 @@ export function slug(text) {
     .replace(/^_+|_+$/g, '');
 }
 
-function lastWord(text) {
-  const words = (text ?? '').toString().trim().split(/\s+/).filter(Boolean);
-  return words[words.length - 1] ?? '';
+/** "guitar 3" -> "3"; anything else (e.g. "score", "bass") passes through unchanged. */
+function dropGuitarWord(text) {
+  return (text ?? '')
+    .toString()
+    .replace(/\bguitar\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-function firstWord(text) {
-  const words = (text ?? '').toString().trim().split(/\s+/).filter(Boolean);
-  return words[0] ?? '';
+export function buildNjgoPdfBase({ key = '', part = '' } = {}) {
+  return [slug(key), slug(dropGuitarWord(part))].filter(Boolean).join('_');
 }
 
-/** "guitar 3" -> "g3"; anything else (e.g. "score", "bass") passes through unchanged. */
-function abbreviatePart(text) {
-  const trimmed = (text ?? '').toString().trim();
-  const match = /^guitar\s+(\d+)$/i.exec(trimmed);
-  return match ? `g${match[1]}` : trimmed;
-}
-
-export function buildNjgoPdfBase({ composer = '', piece = '', part = '' } = {}) {
-  return [lastWord(composer), firstWord(piece), abbreviatePart(part)]
-    .map(slug)
-    .filter(Boolean)
-    .join('_');
-}
-
-/** YYYY-MM-DD, matching the manual cache-bust convention already used for `hash:` in repertoire.yaml. */
+/** YYYY-MM-DD, matching the manual cache-bust convention used for `updated:` in repertoire.yaml. */
 export function todayDateStamp(date = new Date()) {
   return date.toISOString().slice(0, 10);
 }
@@ -53,8 +43,8 @@ export function todayFilenameDateStamp(date = new Date()) {
 }
 
 /**
- * The letter to disambiguate same-day re-uploads of the same base+date
- * ('' for the first upload that day, then 'a', 'b', 'c', ...).
+ * The letter to disambiguate a same-day re-upload that would otherwise
+ * collide ('' for the first upload of this base+date, then 'a', 'b', 'c', ...).
  */
 export function nextNjgoPdfSuffix(existingFilenames = [], base = '', dateStamp = todayFilenameDateStamp()) {
   if (!base) return '';
@@ -68,13 +58,12 @@ export function nextNjgoPdfSuffix(existingFilenames = [], base = '', dateStamp =
 }
 
 export function buildNjgoPdfFilename({
-  composer,
-  piece,
+  key,
   part,
   dateStamp = todayFilenameDateStamp(),
   suffix = '',
 } = {}) {
-  const base = buildNjgoPdfBase({ composer, piece, part });
+  const base = buildNjgoPdfBase({ key, part });
   if (!base) return '';
   return `${base}_${dateStamp}${suffix}.pdf`;
 }

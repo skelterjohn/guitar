@@ -18,8 +18,8 @@ export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUpload
   const [error, setError] = useState('');
 
   const base = useMemo(
-    () => buildNjgoPdfBase({ composer: piece.description, piece: piece.title, part: pdf.label }),
-    [piece.description, piece.title, pdf.label],
+    () => buildNjgoPdfBase({ key: piece.key, part: pdf.label }),
+    [piece.key, pdf.label],
   );
   const dateStamp = useMemo(() => todayFilenameDateStamp(), []);
 
@@ -51,15 +51,8 @@ export default function NjgoPdfUploadModal({ user, piece, pdf, onClose, onUpload
   }, [busy, onClose]);
 
   const generatedFilename = useMemo(
-    () =>
-      buildNjgoPdfFilename({
-        composer: piece.description,
-        piece: piece.title,
-        part: pdf.label,
-        dateStamp,
-        suffix,
-      }),
-    [piece.description, piece.title, pdf.label, dateStamp, suffix],
+    () => buildNjgoPdfFilename({ key: piece.key, part: pdf.label, dateStamp, suffix }),
+    [piece.key, pdf.label, dateStamp, suffix],
   );
   const filename = filenameOverride || generatedFilename;
 

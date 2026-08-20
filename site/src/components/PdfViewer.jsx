@@ -158,6 +158,15 @@ export default function PdfViewer({
   const [annotationHelpOpen, setAnnotationHelpOpen] = useState(false);
   const [printSheets, setPrintSheets] = useState(null);
   const [printBusy, setPrintBusy] = useState(false);
+  const printPageStyle = useMemo(() => {
+    if (!printSheets?.length) return '';
+    const [first] = printSheets;
+    // Sized in px (matching the sheet images' own pixel dimensions) rather than
+    // physical units, so the page box and the image box resolve from the same
+    // numbers instead of two independently-rounded unit conversions — a mismatch
+    // there is what was producing a blank page after every real one.
+    return `@page { size: ${first.width}px ${first.height}px; margin: 0; }`;
+  }, [printSheets]);
   const [downloadBusy, setDownloadBusy] = useState(false);
   const [newPartStart, setNewPartStart] = useState(null);
   const [newPartLabel, setNewPartLabel] = useState('');
@@ -1987,6 +1996,7 @@ export default function PdfViewer({
       )}
       {printSheets && (
         <div className="viewer-print-sheets" aria-hidden="true">
+          <style>{printPageStyle}</style>
           {printSheets.map((sheet, index) => (
             <div className="viewer-print-sheet" key={index}>
               <img src={sheet.src} alt="" width={sheet.width} height={sheet.height} />

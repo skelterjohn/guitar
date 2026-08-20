@@ -3899,10 +3899,6 @@ a.book-file-open {
 }
 
 @media print {
-  @page {
-    margin: 0.4in;
-  }
-
   .viewer-chrome,
   .viewer-content,
   .viewer-footer-chrome,
@@ -3922,6 +3918,8 @@ a.book-file-open {
   }
 
   .viewer-print-sheet {
+    margin: 0;
+    padding: 0;
     break-inside: avoid;
     page-break-after: always;
   }

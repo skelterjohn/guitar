@@ -22,9 +22,12 @@ export default function CompositionCard({
   njgoEditor = false,
   njgoUser = null,
   onNjgoPdfVersionUploaded,
+  onNjgoPieceSave,
 }) {
   const [pdfEditMode, setPdfEditMode] = useState(false);
   const [uploadTarget, setUploadTarget] = useState(null);
+  const [njgoTitle, setNjgoTitle] = useState(piece.title);
+  const [njgoComposer, setNjgoComposer] = useState(piece.description ?? '');
   const paragraphs = piece.description?.split('\n\n').filter(Boolean) ?? [];
   const links = piece.links ?? [];
   const [title, setTitle] = useState(piece.title);
@@ -99,6 +102,51 @@ export default function CompositionCard({
     startEditing();
   };
 
+  const handleTogglePdfEditMode = () => {
+    const next = !pdfEditMode;
+    if (next) {
+      setNjgoTitle(piece.title);
+      setNjgoComposer(piece.description ?? '');
+      setError('');
+    }
+    setPdfEditMode(next);
+  };
+
+  const handleNjgoPieceSave = async () => {
+    const nextTitle = njgoTitle.trim();
+    if (!nextTitle) {
+      setError('Piece title is required.');
+      return;
+    }
+
+    const nextComposer = njgoComposer.trim();
+    if (nextTitle === piece.title && nextComposer === (piece.description ?? '')) {
+      setPdfEditMode(false);
+      return;
+    }
+
+    setBusy(true);
+    setError('');
+    try {
+      await onNjgoPieceSave?.(piece, { title: nextTitle, composer: nextComposer });
+      setPdfEditMode(false);
+    } catch (saveError) {
+      setError(saveError.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleNjgoFieldKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      handleTogglePdfEditMode();
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      void handleNjgoPieceSave();
+    }
+  };
+
   const handleDeleteConfirm = async () => {
     if (!onPieceDelete) return;
     setDeleteBusy(true);
@@ -164,6 +212,45 @@ export default function CompositionCard({
             </div>
           )}
         </form>
+      ) : njgoEditor && pdfEditMode ? (
+        <>
+          <div className="composition-card-header composition-card-edit-form">
+            <div className="composition-card-heading">
+              <input
+                className="composition-title-input composition-title-input-solo"
+                type="text"
+                value={njgoTitle}
+                onChange={(event) => setNjgoTitle(event.target.value)}
+                onKeyDown={handleNjgoFieldKeyDown}
+                disabled={busy}
+                aria-label="Piece title"
+              />
+            </div>
+            <div className="composition-card-edit-actions">
+              <button
+                type="button"
+                className="composition-card-edit"
+                onClick={handleTogglePdfEditMode}
+                disabled={busy}
+                aria-label="Stop editing PDFs"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+          </div>
+          <div className="composition-description composition-description-edit">
+            <input
+              className="composition-composer-input"
+              type="text"
+              placeholder="composer"
+              value={njgoComposer}
+              onChange={(event) => setNjgoComposer(event.target.value)}
+              onKeyDown={handleNjgoFieldKeyDown}
+              disabled={busy}
+              aria-label="Composer"
+            />
+          </div>
+        </>
       ) : (
         <div className="composition-card-header">
           <div className="composition-card-heading">
@@ -187,11 +274,11 @@ export default function CompositionCard({
             <button
               type="button"
               className="composition-card-edit"
-              onClick={() => setPdfEditMode((current) => !current)}
-              aria-label={pdfEditMode ? 'Stop editing PDFs' : 'Edit PDFs'}
-              aria-pressed={pdfEditMode}
+              onClick={handleTogglePdfEditMode}
+              aria-label="Edit PDFs"
+              aria-pressed={false}
             >
-              {pdfEditMode ? <CloseIcon /> : <PencilIcon />}
+              <PencilIcon />
             </button>
           )}
         </div>
@@ -217,7 +304,7 @@ export default function CompositionCard({
           void handleDeleteConfirm();
         }}
       />
-      {paragraphs.length > 0 && (
+      {paragraphs.length > 0 && !(njgoEditor && pdfEditMode) && (
         <div className="composition-description">
           {paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>

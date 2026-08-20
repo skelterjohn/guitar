@@ -175,6 +175,7 @@ export default function Catalog({
   njgoEditor = false,
   njgoUser = null,
   onNjgoPdfVersionUploaded,
+  onNjgoPieceSave,
 }) {
   const [activeEditId, setActiveEditId] = useState(null);
 
@@ -271,6 +272,7 @@ export default function Catalog({
                 njgoEditor={njgoEditor}
                 njgoUser={njgoUser}
                 onNjgoPdfVersionUploaded={onNjgoPdfVersionUploaded}
+                onNjgoPieceSave={onNjgoPieceSave}
               />
             ))}
           </section>

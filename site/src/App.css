@@ -526,9 +526,23 @@ body {
   color: var(--color-text-heading);
 }
 
+.composition-title-input-solo {
+  margin-bottom: 0;
+}
+
 .composition-composer-input {
   font-family: system-ui, sans-serif;
   font-size: 0.9rem;
+}
+
+.composition-description-edit {
+  /* Match the title input's available width: the header row reserves
+     2rem for the single action button plus a 0.75rem gap. */
+  padding-right: 2.75rem;
+}
+
+.composition-description-edit .composition-composer-input {
+  padding: 0.03rem 0.5rem;
 }
 
 .composition-title-input:disabled,

@@ -160,6 +160,23 @@ export default function Rep() {
     [repertoire, user, setRepertoire],
   );
 
+  const handleNjgoPieceSave = useCallback(
+    async (piece, { title, composer }) => {
+      const nextRepertoire = {
+        ...repertoire,
+        sections: repertoire.sections.map((section) => ({
+          ...section,
+          pieces: section.pieces.map((p) =>
+            p !== piece ? p : { ...p, title, description: composer },
+          ),
+        })),
+      };
+      await saveNjgoRepertoireYaml(user, yaml.dump(nextRepertoire));
+      setRepertoire(nextRepertoire);
+    },
+    [repertoire, user, setRepertoire],
+  );
+
   return (
     <RepPasswordGate>
       <div className="page-shell">
@@ -195,6 +212,7 @@ export default function Rep() {
               njgoEditor={njgoEditor}
               njgoUser={user}
               onNjgoPdfVersionUploaded={handleNjgoPdfVersionUploaded}
+              onNjgoPieceSave={handleNjgoPieceSave}
             />
           )}
         </main>

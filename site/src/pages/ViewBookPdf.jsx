@@ -4,7 +4,7 @@ import BookAuthGate from '../components/BookAuthGate.jsx';
 import PdfViewer from '../components/PdfViewer.jsx';
 import { createSubpart, downloadBookPdf, fetchBookPdfBytes, fetchUserLibrary } from '../bookendClient.js';
 import usePageMeta from '../hooks/usePageMeta.js';
-import { bookBackLabel, bookPath, bookTitle, bookViewPath, pageTitle, parseBookViewPageRange } from '../seo.js';
+import { bookBackLabel, bookPath, bookTitle, bookViewPath, parseBookViewPageRange } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
 import { pdfFilesMatch } from '../utils/pieceLabelPreference.js';
 import { userCollectionToSections, piecePdfs } from '../utils/collectionCatalog.js';
@@ -92,6 +92,29 @@ function ViewBookPdfInner({ user }) {
     return null;
   }, [section, piece, libraryPiece]);
 
+  const currentPdf = useMemo(() => {
+    const candidates = viewerPdfs.filter((entry) => pdfFilesMatch(entry.file, decoded));
+    if (candidates.length <= 1) return candidates[0] ?? null;
+    if (!pageRange) return candidates.find((entry) => entry.pageStart == null) ?? candidates[0];
+    return (
+      candidates.find(
+        (entry) => entry.pageStart === pageRange.pageStart && entry.pageEnd === pageRange.pageEnd,
+      ) ?? candidates[0]
+    );
+  }, [viewerPdfs, decoded, pageRange]);
+
+  const viewerTitle = useMemo(() => {
+    const pieceName = piece?.title ?? libraryPiece?.name;
+    if (!pieceName) return decoded;
+
+    const composer = piece?.composer ?? libraryPiece?.composer;
+    const partLabel = currentPdf?.label?.trim();
+    const segments = [pieceName];
+    if (composer) segments.push(composer);
+    if (partLabel && partLabel !== 'score') segments.push(partLabel);
+    return segments.join(' - ');
+  }, [piece, libraryPiece, currentPdf, decoded]);
+
   const annotationKey = useMemo(
     () => bookAnnotationKey(user.email, decoded),
     [user.email, decoded],
@@ -123,7 +146,7 @@ function ViewBookPdfInner({ user }) {
   );
 
   usePageMeta({
-    title: pageTitle(decoded),
+    title: viewerTitle,
     description: `${decoded} — ${bookTitle}`,
     url: `${window.location.origin}${bookViewPath(decoded, pageRange ?? {})}`,
     noindex: true,

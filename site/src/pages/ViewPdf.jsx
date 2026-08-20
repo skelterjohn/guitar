@@ -7,7 +7,7 @@ import RepPasswordGate from '../components/RepPasswordGate.jsx';
 import { auth, isFirebaseConfigured } from '../firebase.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import useRepertoire from '../hooks/useRepertoire.js';
-import { catalogPath, pageTitle, repPath, viewPageUrl, viewPath } from '../seo.js';
+import { catalogPath, repPath, viewPageUrl, viewPath } from '../seo.js';
 import { pieceId } from '../utils/pieceId.js';
 import {
   getPieceLabelPreference,
@@ -58,8 +58,9 @@ function sectionPiecesForNav(section, currentPiece) {
 
 function viewerPageName(piece, pdf, filename) {
   if (!piece || !pdf) return filename;
-  if (pdf.label === 'score') return piece.title;
-  return `${piece.title} (${pdf.label})`;
+  const base = piece.composer ? `${piece.title} - ${piece.composer}` : piece.title;
+  if (pdf.label === 'score') return base;
+  return `${base} (${pdf.label})`;
 }
 
 function ViewPdfInner({ syncUser = null }) {
@@ -117,7 +118,7 @@ function ViewPdfInner({ syncUser = null }) {
     piece?.description?.split('\n\n').find(Boolean) ?? `${name} — guitar score PDF`;
 
   usePageMeta({
-    title: pageTitle(name),
+    title: name,
     description,
     url: fromRep
       ? `${window.location.origin}${location.pathname}`

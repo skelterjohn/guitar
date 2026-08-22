@@ -50,6 +50,7 @@ import {
 import { PEN_COLOR } from '../utils/stylusInput.js';
 import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { buildPrintSheets } from '../utils/printPdf.js';
+import { getLastPage, setLastPage } from '../utils/pdfLastPagePreference.js';
 import { bookViewNavBounds, catalogPath, isBookPath, repPath, viewPath } from '../seo.js';
 
 function loadStatusMessage(phase) {
@@ -436,11 +437,15 @@ export default function PdfViewer({
         loadedUrlRef.current = url;
         setPageCount(doc.numPages);
         const bounds = bookViewNavBounds(doc.numPages, pageRange);
-        setCurrentPage((prev) => {
+        setCurrentPage(() => {
           if (pageStart != null) {
             return Math.min(Math.max(pageStart, bounds.min), bounds.max);
           }
-          return Math.min(Math.max(prev, bounds.min), bounds.max);
+          const remembered = getLastPage(filename);
+          if (remembered != null) {
+            return Math.min(Math.max(remembered, bounds.min), bounds.max);
+          }
+          return bounds.min;
         });
         setStatus('ready');
         setLoadPhase('rendering');
@@ -462,7 +467,7 @@ export default function PdfViewer({
       pdfDocRef.current = null;
       releasePdfDocument(url);
     };
-  }, [url, loadPdfBytes, pageRange]);
+  }, [url, loadPdfBytes, pageRange, filename, pageStart]);
 
   const pagesToStoragePages = (pages) =>
     Object.fromEntries(
@@ -1062,6 +1067,17 @@ export default function PdfViewer({
     if (prev == null || prev === currentPage) return;
     renderControlRef.current.refreshCurrentPage();
   }, [currentPage, status, displayReady]);
+
+  useEffect(() => {
+    // loadedUrlRef only matches `url` once the doc for THIS url has finished
+    // loading — guards against a transitional render where `filename` has
+    // already updated to the next doc but `status`/`currentPage` are still
+    // the previous doc's (the reset that clears them runs in a layout effect
+    // that hasn't fired yet), which would otherwise save the old page number
+    // under the new file's key.
+    if (status !== 'ready' || pageRange || loadedUrlRef.current !== url) return;
+    setLastPage(filename, currentPage);
+  }, [filename, currentPage, status, pageRange, url]);
 
   useEffect(() => {
     if (pageCount === 0) return;

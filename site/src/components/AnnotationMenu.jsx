@@ -9,6 +9,7 @@ import {
   ANNOTATION_NOTE_GLYPHS,
   ANNOTATION_NUMBER_GLYPHS,
   ANNOTATION_REST_GLYPHS,
+  ANNOTATION_TEXT_PRESETS,
   annotationGlyphSizePx,
   TEXT_GLYPH_DEFAULT,
   TEXT_GLYPH_FONT,
@@ -730,6 +731,30 @@ export default function AnnotationMenu({
                 spellCheck={false}
                 tabIndex={chordModeActive ? -1 : 0}
               />
+              <select
+                className="annotation-menu-text-select"
+                style={{ fontFamily: TEXT_GLYPH_FONT }}
+                value=""
+                onChange={(event) => {
+                  const term = event.target.value;
+                  if (!term) return;
+                  setMenuText(term);
+                  textInputRef.current?.focus();
+                  textInputRef.current?.select();
+                }}
+                onPointerDown={(event) => event.stopPropagation()}
+                aria-label="Insert common term"
+                tabIndex={chordModeActive ? -1 : 0}
+              >
+                <option value="" disabled>
+                  …
+                </option>
+                {ANNOTATION_TEXT_PRESETS.map((term) => (
+                  <option key={term} value={term}>
+                    {term}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div

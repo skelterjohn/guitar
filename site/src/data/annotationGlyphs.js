@@ -164,6 +164,40 @@ export const TEXT_GLYPH_ID = 'text';
 export const TEXT_GLYPH_DEFAULT = 'text';
 export const TEXT_GLYPH_FONT = CHORD_ROMAN_NUMERAL_FONT;
 
+/** Common terms offered as quick picks for the free text glyph. */
+export const ANNOTATION_TEXT_PRESETS = [
+  'pizz.',
+  'sub.',
+  'rit.',
+  'rall.',
+  'accel.',
+  'a tempo',
+  'rubato',
+  'cal.',
+  'string.',
+  'cresc.',
+  'dim.',
+  'sfz',
+  'fp',
+  'dolce',
+  'espr.',
+  'morendo',
+  'stacc.',
+  'ten.',
+  'sim.',
+  'legato',
+  'D.C.',
+  'D.S.',
+  'Fine',
+  'attacca',
+  'ord.',
+  'gliss.',
+  'vib.',
+  '8va',
+  '8vb',
+  'loco',
+];
+
 export function isChordGlyph(typeOrGlyph) {
   const type = typeof typeOrGlyph === 'string' ? typeOrGlyph : typeOrGlyph?.type;
   return type === CHORD_GLYPH_ID;

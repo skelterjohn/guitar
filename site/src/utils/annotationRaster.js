@@ -234,6 +234,7 @@ export async function buildGlyphStamp(
     let fontStyle;
     let fontWeight;
     let fontSize = sizePx;
+    let circled = false;
 
     if (isTextGlyph(spec.glyphId)) {
       label = spec.text?.trim() || TEXT_GLYPH_DEFAULT;
@@ -248,9 +249,47 @@ export async function buildGlyphStamp(
       fontFamily = glyphDef.fontFamily ?? MUSIC_GLYPH_FONT;
       fontStyle = glyphDef.fontStyle;
       fontWeight = glyphDef.fontWeight;
+      circled = glyphDef.circled === true;
       if (fontFamily === MUSIC_GLYPH_FONT) {
         await ensureMusicFontLoaded();
       }
+    }
+
+    if (circled) {
+      const letterFontSize = fontSize * 0.68;
+      const measureCanvas = document.createElement('canvas');
+      const measureCtx = measureCanvas.getContext('2d');
+      configureTextContext(measureCtx, letterFontSize, fontFamily, fontStyle, fontWeight);
+      const letterWidth = measureCtx.measureText(label).width;
+      const diameter = Math.ceil(Math.max(fontSize, letterWidth + fontSize * 0.5));
+      const lineWidth = Math.max(1, fontSize * 0.07);
+      const canvasSize = diameter + Math.ceil(lineWidth * 2);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = canvasSize;
+      canvas.height = canvasSize;
+      const ctx = canvas.getContext('2d');
+      const center = canvasSize / 2;
+
+      ctx.strokeStyle = spec.color;
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      ctx.arc(center, center, diameter / 2, 0, Math.PI * 2);
+      ctx.stroke();
+
+      configureTextContext(ctx, letterFontSize, fontFamily, fontStyle, fontWeight);
+      ctx.fillStyle = spec.color;
+      // 'middle' baseline centers on the font's full ascent/descent, which sits
+      // visually high for caps-only text (no descenders) — nudge down to balance.
+      ctx.fillText(label, center, center + letterFontSize * 0.14);
+
+      return {
+        canvas,
+        width: canvas.width,
+        height: canvas.height,
+        anchorX: canvas.width / 2,
+        anchorY: canvas.height / 2,
+      };
     }
 
     const measureCanvas = document.createElement('canvas');

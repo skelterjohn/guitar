@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   ANNOTATION_ACCIDENTAL_GLYPHS,
+  ANNOTATION_CIRCLED_LETTER_GLYPHS,
   ANNOTATION_CIRCLED_NUMBER_GLYPHS,
   ANNOTATION_DYNAMIC_GLYPHS,
   ANNOTATION_FINGERING_GLYPHS,
@@ -701,6 +702,9 @@ export default function AnnotationMenu({
             </div>
             <div className="annotation-menu-glyphs">
               {ANNOTATION_DYNAMIC_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
+            </div>
+            <div className="annotation-menu-glyphs">
+              {ANNOTATION_CIRCLED_LETTER_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}
             </div>
             <div className="annotation-menu-glyphs">
               {ANNOTATION_NOTE_GLYPHS.map((glyph) => renderMenuGlyph(glyph))}

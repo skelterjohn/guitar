@@ -61,6 +61,18 @@ export const ANNOTATION_CIRCLED_NUMBER_GLYPHS = [1, 2, 3, 4, 5, 6].map((digit) =
   fontFamily: 'system-ui, sans-serif',
 }));
 
+// Drawn as a circle stroked around a plain letter (rather than the Unicode
+// "circled Latin capital letter" block) because those codepoints render with
+// a fixed, mostly sans-serif letterform in every common font regardless of
+// font-family — a serif face has no visible effect on them.
+export const ANNOTATION_CIRCLED_LETTER_GLYPHS = ['T', 'P', 'N'].map((letter) => ({
+  id: `circled-${letter.toLowerCase()}`,
+  label: `Circled ${letter}`,
+  symbol: letter,
+  circled: true,
+  fontFamily: DYNAMIC_GLYPH_FONT,
+}));
+
 export const ANNOTATION_FINGERING_GLYPHS = ['p', 'a', 'm', 'i', 'n'].map((letter) => ({
   id: `finger-${letter}`,
   label: letter,
@@ -137,6 +149,7 @@ export const ANNOTATION_GLYPHS = [
   ...ANNOTATION_ACCIDENTAL_GLYPHS,
   ...ANNOTATION_NUMBER_GLYPHS,
   ...ANNOTATION_CIRCLED_NUMBER_GLYPHS,
+  ...ANNOTATION_CIRCLED_LETTER_GLYPHS,
   ...ANNOTATION_FINGERING_GLYPHS,
   ...ANNOTATION_DYNAMIC_GLYPHS,
   ...ANNOTATION_NOTE_GLYPHS,

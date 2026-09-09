@@ -260,7 +260,14 @@ export async function buildGlyphStamp(
       const measureCanvas = document.createElement('canvas');
       const measureCtx = measureCanvas.getContext('2d');
       configureTextContext(measureCtx, letterFontSize, fontFamily, fontStyle, fontWeight);
-      const letterWidth = measureCtx.measureText(label).width;
+      // actualBoundingBox* is measured relative to whichever baseline is
+      // active — must match the 'alphabetic' baseline used below, or the
+      // ascent/descent figures describe the wrong reference line entirely.
+      measureCtx.textBaseline = 'alphabetic';
+      const letterMetrics = measureCtx.measureText(label);
+      const letterWidth = letterMetrics.width;
+      const ascent = letterMetrics.actualBoundingBoxAscent ?? letterFontSize * 0.72;
+      const descent = letterMetrics.actualBoundingBoxDescent ?? 0;
       const diameter = Math.ceil(Math.max(fontSize, letterWidth + fontSize * 0.5));
       const lineWidth = Math.max(1, fontSize * 0.07);
       const canvasSize = diameter + Math.ceil(lineWidth * 2);
@@ -278,10 +285,12 @@ export async function buildGlyphStamp(
       ctx.stroke();
 
       configureTextContext(ctx, letterFontSize, fontFamily, fontStyle, fontWeight);
+      ctx.textBaseline = 'alphabetic';
       ctx.fillStyle = spec.color;
-      // 'middle' baseline centers on the font's full ascent/descent, which sits
-      // visually high for caps-only text (no descenders) — nudge down to balance.
-      ctx.fillText(label, center, center + letterFontSize * 0.14);
+      // Center on the glyph's actual ink bounds rather than the font's full
+      // ascent/descent box, which sits visually high for caps-only text (no
+      // descenders) — this holds at any render size, unlike a fixed ratio.
+      ctx.fillText(label, center, center + (ascent - descent) / 2);
 
       return {
         canvas,

@@ -167,6 +167,7 @@ export const TEXT_GLYPH_FONT = CHORD_ROMAN_NUMERAL_FONT;
 /** Common terms offered as quick picks for the free text glyph. */
 export const ANNOTATION_TEXT_PRESETS = [
   'pizz.',
+  'ord.',
   'sub.',
   'rit.',
   'rall.',
@@ -174,7 +175,6 @@ export const ANNOTATION_TEXT_PRESETS = [
   'a tempo',
   'cresc.',
   'dim.',
-  'ord.',
 ];
 
 export function isChordGlyph(typeOrGlyph) {

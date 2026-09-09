@@ -48,7 +48,7 @@ export default defineConfig({
     react({ jsxRuntime: 'automatic' }),
     devPwaQuiet(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: [
         'favicon.svg',
         'robots.txt',

@@ -7,6 +7,7 @@ import Rep from './pages/Rep.jsx';
 import ViewBookPdf from './pages/ViewBookPdf.jsx';
 import ViewPdf from './pages/ViewPdf.jsx';
 import StylusDiagnostics from './pages/StylusDiagnostics.jsx';
+import UpdateAvailableBanner from './components/UpdateAvailableBanner.jsx';
 import { catalogPath, njgoPath } from './seo.js';
 import { isBluebridgeDomain, isNjgoDomain } from './utils/siteDomain.js';
 
@@ -52,6 +53,7 @@ export default function App() {
         <Route path="/view/:filename" element={<ViewRoute />} />
         <Route path="/dev/stylus" element={<StylusDiagnostics />} />
       </Routes>
+      <UpdateAvailableBanner />
     </div>
   );
 }

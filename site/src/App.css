@@ -2397,6 +2397,43 @@ body {
   background: #fef2f2;
 }
 
+.update-banner {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: min(26rem, calc(100vw - 2rem));
+  padding: 0.625rem 0.75rem 0.625rem 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 18%);
+  transform: translateX(-50%);
+}
+
+.update-banner-refresh {
+  flex: 0 0 auto;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #f8fafc;
+  background: #2563eb;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.update-banner-refresh:hover {
+  background: #1d4ed8;
+}
+
 .book-tabs {
   margin-top: 1.5rem;
 }

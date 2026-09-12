@@ -1,5 +1,14 @@
 # Events sourced from https://jaysonmartinez.org/events
 events:
+  '2027':
+    - name: Kean GuitarFest
+      date: 2027-06-12T23:00:00.000Z
+      location: Enlow Hall in Union, NJ
+      map_link: https://maps.app.goo.gl/uP7bpRVeU77os3Ry9
+    - name: WPU GuitarFest
+      date: 2027-04-24T16:00:00.000Z
+      location: Shea Center for Performing Arts in Wayne, NJ
+      map_link: https://maps.app.goo.gl/Jszy2ND8UGNgtsqy7
   '2026':
     - name: Louisville Guitarfest
       date: 2026-10-10T23:30:00.000Z

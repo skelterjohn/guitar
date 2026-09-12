@@ -9,6 +9,7 @@ events:
     - name: WPU GuitarFest
       date: 2027-04-24T17:00:00.000Z
       location: Shea Center for Performing Arts in Wayne, NJ
+      image: himmelhoch.png
       map_link: https://maps.app.goo.gl/Jszy2ND8UGNgtsqy7
   '2026':
     - name: Louisville Guitarfest

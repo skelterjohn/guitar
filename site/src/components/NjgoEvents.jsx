@@ -10,8 +10,8 @@ function EventCard({ event }) {
   const formattedDate = formatEventDate(event.date);
   const dateTimeAttr = eventDateTimeAttr(event.date);
   const mapUrl = normalizeMapLink(event.map_link ?? event.address);
-  const calendarUrl = eventGoogleCalendarUrl(event);
   const isUpcoming = isFutureEventDate(event.date);
+  const calendarUrl = isUpcoming ? eventGoogleCalendarUrl(event) : null;
 
   return (
     <article

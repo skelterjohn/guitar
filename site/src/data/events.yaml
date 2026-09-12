@@ -23,8 +23,11 @@ events:
     - name: Boston GuitarFest
       date: 2026-06-20T16:00:00.000Z
       location: First Lutheran Church in Boston, MA
+      image: boston_2026.png
       map_link: https://maps.app.goo.gl/VvySrkNigzWD24av9
       links:
+        - name: Boston GuitarFest 2026
+          url: https://efgamusic.org/events/bgfest-2026
         - name: The Promise of Something New / Matthew Cochran
           url: https://www.youtube.com/watch?v=bfjXSqpvh-Q
     - name: Kean GuitarFest

@@ -52,7 +52,7 @@ After deploying to `https://njgo.org`:
 2. Submit the sitemap: `https://njgo.org/njgo-sitemap.xml`
 3. Request indexing for the homepage after deploys that change NJGO content or SEO tags.
 
-`/rep` is private: `robots.txt` disallows it, nginx sends `X-Robots-Tag: noindex`, and repertoire pages set `noindex` in meta.
+`/rep` is private (password-gated), not deindexed: `robots.txt` disallows it and repertoire pages set `noindex` in meta, but nginx does not actually send `X-Robots-Tag: noindex` — the `add_header` in its location block is dropped by the internal redirect to `/index.html` (confirmed live; not considered worth fixing).
 
 `robots.txt`, `sitemap.xml`, and `njgo-sitemap.xml` are generated at build time (`scripts/generate-sitemap.mjs`).
 

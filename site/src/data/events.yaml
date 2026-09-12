@@ -1,6 +1,10 @@
 # Events sourced from https://jaysonmartinez.org/events
 events:
   '2026':
+    - name: Louisville Guitarfest
+      date: 2026-10-10T23:30:00.000Z
+      location: University of Louisville in Louisville, KY
+      map_link: University of Louisville, 2301 S 3rd St, Louisville, KY 40292, USA
     - name: Boston GuitarFest
       date: 2026-06-20T16:00:00.000Z
       location: First Lutheran Church in Boston, MA

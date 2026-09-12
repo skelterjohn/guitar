@@ -6,6 +6,9 @@ events:
       location: Enlow Hall in Union, NJ
       image: guitarfest-at-enlow-hall-kean-university-2025-06-14.jpeg
       map_link: https://maps.app.goo.gl/uP7bpRVeU77os3Ry9
+      links:
+        - name: Kean GuitarFest
+          url: https://www.kean.edu/guitarfest
     - name: WPU GuitarFest
       date: 2027-04-24T17:00:00.000Z
       location: Shea Center for Performing Arts in Wayne, NJ

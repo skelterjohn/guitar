@@ -14,6 +14,7 @@ events:
     - name: Louisville Guitarfest
       date: 2026-10-10T23:30:00.000Z
       location: University of Louisville in Louisville, KY
+      image: louisville.png
       map_link: University of Louisville, 2301 S 3rd St, Louisville, KY 40292, USA
       links:
         - name: Guitar Festival and Competition

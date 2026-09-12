@@ -2,7 +2,12 @@ import ExternalLinkIcon from './ExternalLinkIcon.jsx';
 import NjgoEventPhoto from './NjgoEventPhoto.jsx';
 import { eventGoogleCalendarUrl } from '../utils/eventCalendar.js';
 import { eventTitle, normalizeMapLink } from '../utils/eventLocation.js';
-import { eventDateTimeAttr, formatEventDate, isFutureEventDate } from '../utils/formatEventDate.js';
+import {
+  eventBadgeLabel,
+  eventDateTimeAttr,
+  formatEventDate,
+  isFutureEventDate,
+} from '../utils/formatEventDate.js';
 
 const NJGO_LOGO = '/njgo/logo_black.png';
 
@@ -12,6 +17,7 @@ function EventCard({ event }) {
   const mapUrl = normalizeMapLink(event.map_link ?? event.address);
   const isUpcoming = isFutureEventDate(event.date);
   const calendarUrl = isUpcoming ? eventGoogleCalendarUrl(event) : null;
+  const badgeLabel = eventBadgeLabel(event.date);
 
   return (
     <article
@@ -21,7 +27,7 @@ function EventCard({ event }) {
         event.image ? 'njgo-event--has-image' : '',
       ].filter(Boolean).join(' ')}
     >
-      {isUpcoming && <span className="njgo-event-upcoming-badge">Upcoming!</span>}
+      {badgeLabel && <span className="njgo-event-upcoming-badge">{badgeLabel}</span>}
       {event.image && <NjgoEventPhoto src={event.image} />}
       <div className="njgo-roster-card-body">
         {(mapUrl || calendarUrl) && (

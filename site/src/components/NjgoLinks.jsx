@@ -11,13 +11,7 @@ const PUBLIC_LINKS = [
   { label: 'Youtube', url: 'https://www.youtube.com/@newjerseyguitarorchestra/videos' },
 ];
 
-const MEMBERS_ONLY_LINKS = [
-  { label: 'Repertoire', to: repPath },
-  {
-    label: 'Google Drive',
-    url: 'https://drive.google.com/drive/folders/11ZELfmvoDKx2DguiJBllHKZuQDzNGorW',
-  },
-];
+const MEMBERS_ONLY_LINKS = [{ label: 'Repertoire', to: repPath }];
 
 function linkKey(link) {
   return link.to ?? link.url;

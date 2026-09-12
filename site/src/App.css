@@ -1082,6 +1082,22 @@ body {
   }
 }
 
+.njgo-event-upcoming-badge {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 1;
+  padding: 0.2rem 0.55rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: var(--color-link-text);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
 .njgo-event-name {
   margin: 0 0 0.35rem;
   font-size: 1.05rem;

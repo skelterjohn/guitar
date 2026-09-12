@@ -33,3 +33,8 @@ export function eventDateTimeAttr(value) {
   const date = parseEventDate(value);
   return date ? date.toISOString() : null;
 }
+
+export function isFutureEventDate(value) {
+  const date = parseEventDate(value);
+  return date ? date.getTime() > Date.now() : false;
+}

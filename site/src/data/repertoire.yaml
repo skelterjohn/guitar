@@ -137,6 +137,88 @@ sections:
         links:
           - label: ASU Guitar Orchestra
             url: https://www.youtube.com/watch?v=RQgFKNLj3ho
+  - id: njgo2026louisville
+    title: NJGO 2026 - Louisville
+    pieces:
+      - title: Breakfast around the Sun
+        key: breakfast_around
+        description: John Asmuth
+        pdfs:
+          - label: score
+            file: PASSWORD/breakfast_around_score.pdf
+            hash: 2026-07-17
+          - label: guitar 1
+            file: PASSWORD/breakfast_around_1.pdf
+            hash: 2026-07-17
+          - label: guitar 2
+            file: PASSWORD/breakfast_around_2.pdf
+            hash: 2026-07-17
+          - label: guitar 3
+            file: PASSWORD/breakfast_around_3.pdf
+            hash: 2026-07-17
+          - label: guitar 4
+            file: PASSWORD/breakfast_around_4.pdf
+            hash: 2026-07-17
+      - title: Strummed Heat, Midnight Feet
+        key: strummed_heat
+        description: Mark Houghton
+        pdfs:
+          - label: score
+            file: PASSWORD/strummed_heat_score.pdf
+            hash: 2026-07-17
+          - label: guitar 1
+            file: PASSWORD/strummed_heat_1.pdf
+            hash: 2026-07-17
+          - label: guitar 2
+            file: PASSWORD/strummed_heat_2.pdf
+            hash: 2026-07-17
+          - label: guitar 3
+            file: PASSWORD/strummed_heat_3.pdf
+            hash: 2026-07-17
+          - label: guitar 4
+            file: PASSWORD/strummed_heat_4.pdf
+            hash: 2026-07-17
+        links:
+          - label: GCC Guitar Ensembles
+            url: https://www.youtube.com/watch?v=ZxzjLE_K4YQ
+      - title: The Promise of Something New
+        key: promise
+        description: Matthew Cochran
+        pdfs:
+          - label: score
+            file: PASSWORD/promise_score.pdf
+            hash: 2026-07-17
+          - label: guitar 1
+            file: PASSWORD/promise_1.pdf
+            hash: 2026-07-17
+          - label: guitar 2
+            file: PASSWORD/promise_2.pdf
+            hash: 2026-07-17
+          - label: guitar 3
+            file: PASSWORD/promise_3.pdf
+            hash: 2026-07-17
+          - label: guitar 4
+            file: PASSWORD/promise_4.pdf
+            hash: 2026-07-17
+      - title: Sail Off the Edge
+        key: sail_off
+        description: Andrew York
+        pdfs:
+          - label: score
+            file: PASSWORD/sail_off_score.pdf
+            hash: 2026-07-17
+          - label: guitar 1
+            file: PASSWORD/sail_off_1.pdf
+            hash: 2026-07-17
+          - label: guitar 2
+            file: PASSWORD/sail_off_2.pdf
+            hash: 2026-07-17
+          - label: guitar 3
+            file: PASSWORD/sail_off_3.pdf
+            hash: 2026-07-17
+          - label: guitar 4
+            file: PASSWORD/sail_off_4.pdf
+            hash: 2026-07-17
   - id: njgo2026
     title: NJGO 2026
     pieces:

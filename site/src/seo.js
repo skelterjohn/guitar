@@ -53,12 +53,13 @@ export function pageTitle(name) {
   return name === siteTitle ? siteTitle : `${name} — ${siteTitle}`;
 }
 
-export function viewPath(file, context = 'catalog') {
+export function viewPath(file, context = 'catalog', sessionId = null) {
   if (context === 'book') {
     return bookViewPath(file);
   }
   const base = context === 'rep' ? repPath : catalogPath;
-  return `${base}/view/${encodeURIComponent(viewRouteFilename(file))}`;
+  const path = `${base}/view/${encodeURIComponent(viewRouteFilename(file))}`;
+  return sessionId ? `${path}?session=${encodeURIComponent(sessionId)}` : path;
 }
 
 export function bookViewPath(filename, { pageStart, pageEnd } = {}) {

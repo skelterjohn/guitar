@@ -77,6 +77,7 @@ export default function PdfViewer({
   pieceKey = null,
   sectionPieces = [],
   sectionTitle = null,
+  sectionId = null,
   backTo = catalogPath,
   backLabel = 'Catalog',
   viewState,
@@ -1651,6 +1652,7 @@ export default function PdfViewer({
                     <PdfLinkList
                       pdfs={pdfs}
                       currentFile={currentFile}
+                      sectionId={sectionId}
                       pageStart={pageStart}
                       pageEnd={pageEnd}
                       viewState={viewState}
@@ -1943,7 +1945,7 @@ export default function PdfViewer({
                     <Link
                       key={entry.title}
                       className={className}
-                      to={viewPath(file, viewContext)}
+                      to={viewPath(file, viewContext, sectionId)}
                       state={viewState}
                     >
                       {entry.title}

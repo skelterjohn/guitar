@@ -29,7 +29,15 @@ function findPdfInSections(sections, filename) {
   return null;
 }
 
-function findPdf(filename, repertoireSections, preferRepertoire = false) {
+function findPdf(filename, repertoireSections, preferRepertoire = false, sessionId = null) {
+  if (sessionId) {
+    const preferredSection = repertoireSections.find((section) => section.id === sessionId);
+    const preferredMatch = preferredSection
+      ? findPdfInSections([preferredSection], filename)
+      : null;
+    if (preferredMatch) return preferredMatch;
+  }
+
   const primary = preferRepertoire ? repertoireSections : catalog.sections;
   const secondary = preferRepertoire ? catalog.sections : repertoireSections;
 
@@ -72,9 +80,10 @@ function ViewPdfInner({ syncUser = null }) {
   const decoded = decodeURIComponent(filename);
   const routeName = viewRouteFilename(decoded);
   const repertoireSections = repertoire?.sections ?? [];
+  const sessionId = new URLSearchParams(location.search).get('session');
   const { section, piece, pdf } = repertoireLoading
     ? { section: null, piece: null, pdf: null }
-    : findPdf(routeName, repertoireSections, fromRep);
+    : findPdf(routeName, repertoireSections, fromRep, sessionId);
   const pieceKey =
     section && piece ? pieceId(section.id, piece.title) : null;
   const storageFile = pdf?.file ?? decoded;
@@ -83,7 +92,7 @@ function ViewPdfInner({ syncUser = null }) {
     if (repertoireLoading) return;
 
     if (routeName !== decoded) {
-      navigate(viewPath(routeName, fromRep ? 'rep' : 'catalog'), {
+      navigate(`${viewPath(routeName, fromRep ? 'rep' : 'catalog')}${location.search}`, {
         replace: true,
         state: location.state,
       });
@@ -98,7 +107,7 @@ function ViewPdfInner({ syncUser = null }) {
     );
     if (!preferredFile || pdfFilesMatch(preferredFile, routeName)) return;
 
-    navigate(viewPath(preferredFile, fromRep ? 'rep' : 'catalog'), {
+    navigate(`${viewPath(preferredFile, fromRep ? 'rep' : 'catalog')}${location.search}`, {
       replace: true,
       state: location.state,
     });
@@ -106,6 +115,7 @@ function ViewPdfInner({ syncUser = null }) {
     decoded,
     routeName,
     fromRep,
+    location.search,
     location.state,
     navigate,
     piece,
@@ -138,6 +148,7 @@ function ViewPdfInner({ syncUser = null }) {
       pieceKey={pieceKey}
       sectionPieces={sectionPiecesForNav(section, piece)}
       sectionTitle={section?.title ?? null}
+      sectionId={fromRep ? section?.id ?? null : null}
       backTo={fromRep ? repPath : catalogPath}
       backLabel={fromRep ? 'Repertoire' : 'Catalog'}
       viewState={fromRep ? { from: repPath } : undefined}

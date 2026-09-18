@@ -261,6 +261,7 @@ export default function Catalog({
                 key={piece.title}
                 id={pieceId(section.id, piece.title)}
                 piece={piece}
+                sectionId={section.id}
                 viewState={viewState}
                 viewPrefix={viewPrefix}
                 availableFiles={availableFiles}

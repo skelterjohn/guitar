@@ -11,6 +11,7 @@ import SaveIcon from './SaveIcon.jsx';
 export default function CompositionCard({
   piece,
   id,
+  sectionId,
   viewState,
   viewPrefix,
   onPieceSave,
@@ -313,6 +314,7 @@ export default function CompositionCard({
       )}
       <PdfLinkList
         pdfs={piece.pdfs}
+        sectionId={sectionId}
         viewState={viewState}
         viewPrefix={viewPrefix}
         availableFiles={availableFiles}

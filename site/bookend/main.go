@@ -27,6 +27,10 @@ func main() {
 	bookBucket := strings.TrimSpace(os.Getenv("BOOK_BUCKET"))
 	pdfBucket := strings.TrimSpace(os.Getenv("PDF_BUCKET"))
 	repSecretPrefix := strings.TrimSpace(os.Getenv("REP_PDF_SECRET_PREFIX"))
+	usersCollection := strings.TrimSpace(os.Getenv("FIRESTORE_USERS_COLLECTION"))
+	if usersCollection == "" {
+		usersCollection = "users"
+	}
 
 	ctx := context.Background()
 	fbApp, err := firebase.NewApp(ctx, &firebase.Config{ProjectID: projectID})
@@ -44,12 +48,12 @@ func main() {
 		log.Fatalf("storage init: %v", err)
 	}
 
-	collections, err := newFirestoreCollectionStore(ctx, fbApp)
+	collections, err := newFirestoreCollectionStore(ctx, fbApp, usersCollection)
 	if err != nil {
 		log.Fatalf("firestore init: %v", err)
 	}
 
-	annotations, err := newFirestoreAnnotationStore(ctx, fbApp)
+	annotations, err := newFirestoreAnnotationStore(ctx, fbApp, usersCollection)
 	if err != nil {
 		log.Fatalf("firestore annotations init: %v", err)
 	}
@@ -137,7 +141,7 @@ func main() {
 	})
 
 	addr := fmt.Sprintf("0.0.0.0:%s", port)
-	log.Printf("bookend listening on %s (project=%s bucket=%s)", addr, projectID, bookBucket)
+	log.Printf("bookend listening on %s (project=%s bucket=%s firestoreUsers=%s)", addr, projectID, bookBucket, usersCollection)
 	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatal(err)
 	}

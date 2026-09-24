@@ -47,15 +47,16 @@ type annotationStore interface {
 }
 
 type firestoreAnnotationStore struct {
-	client *firestore.Client
+	client          *firestore.Client
+	usersCollection string
 }
 
-func newFirestoreAnnotationStore(ctx context.Context, fbApp *firebase.App) (*firestoreAnnotationStore, error) {
+func newFirestoreAnnotationStore(ctx context.Context, fbApp *firebase.App, usersCollection string) (*firestoreAnnotationStore, error) {
 	client, err := fbApp.Firestore(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return &firestoreAnnotationStore{client: client}, nil
+	return &firestoreAnnotationStore{client: client, usersCollection: usersCollection}, nil
 }
 
 func annotationScopeKey(site, pdf string) string {
@@ -66,7 +67,7 @@ func annotationScopeKey(site, pdf string) string {
 }
 
 func (s *firestoreAnnotationStore) annotationRef(email, site, pdf string) *firestore.DocumentRef {
-	return s.client.Collection("users").Doc(collectionEmail(email)).Collection("annotationRasters").Doc(collectionDocID(annotationScopeKey(site, pdf)))
+	return s.client.Collection(s.usersCollection).Doc(collectionEmail(email)).Collection("annotationRasters").Doc(collectionDocID(annotationScopeKey(site, pdf)))
 }
 
 func (s *firestoreAnnotationStore) GetAnnotationRasters(ctx context.Context, email, site, pdf string) (annotationRasterRecord, error) {

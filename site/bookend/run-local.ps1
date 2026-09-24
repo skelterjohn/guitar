@@ -8,6 +8,10 @@ param(
 
     [string] $PdfBucket = $(if ($env:PDF_BUCKET) { $env:PDF_BUCKET } else { 'skelterjohnguitar-dev' }),
 
+    # Same project as prod, but a separate top-level Firestore collection —
+    # keeps local testing (annotations, book library) out of real user data.
+    [string] $FirestoreUsersCollection = $(if ($env:FIRESTORE_USERS_COLLECTION) { $env:FIRESTORE_USERS_COLLECTION } else { 'users-dev' }),
+
     [string] $RepPdfSecretPrefix = $(if ($env:REP_PDF_SECRET_PREFIX) { $env:REP_PDF_SECRET_PREFIX } else { '' }),
 
     [switch] $SkipBuild
@@ -48,6 +52,7 @@ try {
     $env:FIREBASE_PROJECT_ID = $FirebaseProjectId
     $env:BOOK_BUCKET = $BookBucket
     $env:PDF_BUCKET = $PdfBucket
+    $env:FIRESTORE_USERS_COLLECTION = $FirestoreUsersCollection
     if ($RepPdfSecretPrefix) {
         $env:REP_PDF_SECRET_PREFIX = $RepPdfSecretPrefix
     }
@@ -56,6 +61,7 @@ try {
     Write-Host "FIREBASE_PROJECT_ID=$FirebaseProjectId"
     Write-Host "BOOK_BUCKET=$BookBucket"
     Write-Host "PDF_BUCKET=$PdfBucket"
+    Write-Host "FIRESTORE_USERS_COLLECTION=$FirestoreUsersCollection"
     if ($env:REP_PDF_SECRET_PREFIX) {
         Write-Host "REP_PDF_SECRET_PREFIX=<set>"
     } else {

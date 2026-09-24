@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-export default function AnnotationDownloadModal({
+export default function AnnotationSaveConflictModal({
   open,
   filename,
   busy = false,
   busyAction = null,
   error = '',
-  onKeepCurrent,
+  onCancel,
   onMerge,
-  onDownload,
+  onOverwrite,
 }) {
   useEffect(() => {
     if (!open) return undefined;
@@ -17,13 +17,13 @@ export default function AnnotationDownloadModal({
     const handleKeyDown = (event) => {
       if (event.key === 'Escape' && !busy) {
         event.preventDefault();
-        onKeepCurrent();
+        onCancel();
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, busy, onKeepCurrent]);
+  }, [open, busy, onCancel]);
 
   if (!open) return null;
 
@@ -32,7 +32,7 @@ export default function AnnotationDownloadModal({
       className="book-delete-pdf-backdrop"
       onPointerDown={(event) => {
         if (event.target === event.currentTarget && !busy) {
-          onKeepCurrent();
+          onCancel();
         }
       }}
     >
@@ -40,17 +40,17 @@ export default function AnnotationDownloadModal({
         className="book-delete-pdf-modal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="annotation-download-title"
+        aria-labelledby="annotation-save-conflict-title"
       >
-        <h2 id="annotation-download-title">Download annotations?</h2>
+        <h2 id="annotation-save-conflict-title">Saved version has changed</h2>
         <p className="book-delete-pdf-lead">
-          Saved annotations for{' '}
-          <strong className="book-delete-pdf-filename">{filename}</strong> differ from what is on
-          this device.
+          The saved annotations for{' '}
+          <strong className="book-delete-pdf-filename">{filename}</strong> differ from what you
+          started with.
         </p>
         <p className="book-delete-pdf-warning">
-          Keep your local markings, merge both sets together, or download and replace with the
-          saved version.
+          Merge both sets of markings together, or overwrite the saved version with what's on this
+          device.
         </p>
         {error && (
           <p className="book-delete-pdf-error" role="alert">
@@ -61,28 +61,26 @@ export default function AnnotationDownloadModal({
           <button
             type="button"
             className="book-delete-pdf-cancel"
-            onClick={onKeepCurrent}
+            onClick={onCancel}
             disabled={busy}
           >
-            Keep current
+            Cancel
           </button>
-          {onMerge && (
-            <button
-              type="button"
-              className="book-delete-pdf-cancel"
-              onClick={() => void onMerge()}
-              disabled={busy}
-            >
-              {busy && busyAction === 'merge' ? 'Merging…' : 'Merge'}
-            </button>
-          )}
+          <button
+            type="button"
+            className="book-delete-pdf-cancel"
+            onClick={() => void onMerge()}
+            disabled={busy}
+          >
+            {busy && busyAction === 'merge' ? 'Merging…' : 'Merge'}
+          </button>
           <button
             type="button"
             className="book-delete-pdf-confirm"
-            onClick={() => void onDownload()}
+            onClick={() => void onOverwrite()}
             disabled={busy}
           >
-            {busy && busyAction === 'download' ? 'Downloading…' : 'Download'}
+            {busy && busyAction === 'overwrite' ? 'Saving…' : 'Overwrite'}
           </button>
         </div>
       </div>

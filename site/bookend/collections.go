@@ -70,19 +70,20 @@ type userLibrary struct {
 }
 
 type firestoreCollectionStore struct {
-	client *firestore.Client
+	client          *firestore.Client
+	usersCollection string
 }
 
-func newFirestoreCollectionStore(ctx context.Context, fbApp *firebase.App) (*firestoreCollectionStore, error) {
+func newFirestoreCollectionStore(ctx context.Context, fbApp *firebase.App, usersCollection string) (*firestoreCollectionStore, error) {
 	client, err := fbApp.Firestore(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return &firestoreCollectionStore{client: client}, nil
+	return &firestoreCollectionStore{client: client, usersCollection: usersCollection}, nil
 }
 
 func (s *firestoreCollectionStore) userRef(email string) *firestore.DocumentRef {
-	return s.client.Collection("users").Doc(collectionEmail(email))
+	return s.client.Collection(s.usersCollection).Doc(collectionEmail(email))
 }
 
 func (s *firestoreCollectionStore) piecesCollection(email string) *firestore.CollectionRef {

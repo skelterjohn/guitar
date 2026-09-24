@@ -12,6 +12,7 @@ import {
   setPieceLabelPreference,
 } from '../utils/pieceLabelPreference.js';
 import AnnotationDownloadModal from './AnnotationDownloadModal.jsx';
+import AnnotationSaveConflictModal from './AnnotationSaveConflictModal.jsx';
 import AnnotationHelpModal from './AnnotationHelpModal.jsx';
 import AnnotationOverlay from './AnnotationOverlay.jsx';
 import AnnotationMenu from './AnnotationMenu.jsx';
@@ -40,6 +41,7 @@ import {
 } from '../bookendClient.js';
 import { createPenScrollLock } from '../utils/penScrollLock.js';
 import { glyphDrawSpecFromDrop } from '../utils/annotationRaster.js';
+import { mergeAnnotationPages } from '../utils/annotationMerge.js';
 import {
   createLayerRasterRecord,
   createPageLayersRecord,
@@ -180,8 +182,18 @@ export default function PdfViewer({
   const [toast, setToast] = useState(null);
   const [annotationDownloadOffer, setAnnotationDownloadOffer] = useState(null);
   const [annotationDownloadBusy, setAnnotationDownloadBusy] = useState(false);
+  const [annotationDownloadBusyAction, setAnnotationDownloadBusyAction] = useState(null);
   const [annotationDownloadError, setAnnotationDownloadError] = useState('');
   const [annotationSyncPending, setAnnotationSyncPending] = useState(false);
+  // Remote annotations that are known to differ from what's on this device —
+  // set as soon as a diff is detected, and kept around (even after "Keep
+  // current" dismisses the initial modal) so Save can offer merge/overwrite
+  // instead of silently clobbering them.
+  const [annotationRemoteConflict, setAnnotationRemoteConflict] = useState(null);
+  const [saveConflictPrompt, setSaveConflictPrompt] = useState(null);
+  const [saveConflictBusy, setSaveConflictBusy] = useState(false);
+  const [saveConflictBusyAction, setSaveConflictBusyAction] = useState(null);
+  const [saveConflictError, setSaveConflictError] = useState('');
 
   const canCreateSubpart = viewContext === 'book' && bookPieceName && onCreateSubpart;
   const showNewPartButton = canCreateSubpart && pageStart == null;
@@ -191,7 +203,10 @@ export default function PdfViewer({
     [pageAnnotations],
   );
   const showSyncButton =
-    Boolean(syncUser) && !annotationSyncHash && (hasAnnotations || annotationSyncPending);
+    Boolean(syncUser) &&
+    !annotationSyncHash &&
+    !saveConflictPrompt &&
+    (hasAnnotations || annotationSyncPending);
 
   const pdfZoomRef = useRef(1);
   const pendingZoomScrollRef = useRef(null);
@@ -308,6 +323,9 @@ export default function PdfViewer({
       setStorageWarning('');
       setAnnotationDownloadOffer(null);
       setAnnotationDownloadError('');
+      setAnnotationRemoteConflict(null);
+      setSaveConflictPrompt(null);
+      setSaveConflictError('');
 
       if (!syncUser) {
         setAnnotationSyncHash(localStoredHash);
@@ -348,6 +366,7 @@ export default function PdfViewer({
           setAnnotationSyncHash(null);
           setAnnotationSyncPending(true);
           setAnnotationDownloadOffer(remote);
+          setAnnotationRemoteConflict(remote);
           return;
         }
 
@@ -363,6 +382,66 @@ export default function PdfViewer({
       cancelled = true;
     };
   }, [filename, status, syncUser, syncFile, syncSite]);
+
+  // Edits made while offline never got checked against the server at load
+  // time, so reconnecting needs its own check — same diff/merge/download
+  // offer as arriving on the page would have given, just triggered later.
+  useEffect(() => {
+    if (!syncUser || status !== 'ready') return undefined;
+
+    const handleOnline = () => {
+      if (annotationDownloadOffer || saveConflictPrompt || syncBusy || annotationDownloadBusy) {
+        return;
+      }
+
+      void (async () => {
+        try {
+          const pages = pageRastersRef.current;
+          const hasLocalAnnotations = Object.values(pages).some((entry) => pageHasLayers(entry));
+          const localContentHash = hasLocalAnnotations
+            ? (await buildAnnotationSyncPayload(syncFile, pages)).hash
+            : EMPTY_ANNOTATION_RASTERS_HASH;
+
+          const remote = await getAnnotationRasters(syncUser, syncFile, undefined, {
+            site: syncSite,
+          });
+          if (!remote) return;
+
+          if (remote.match || remote.hash === localContentHash) {
+            setAnnotationSyncHash(remote.hash);
+            setAnnotationSyncPending(false);
+            setAnnotationRemoteConflict(null);
+            void persistAnnotationSyncHash(filename, remote.hash);
+            return;
+          }
+
+          const remoteHasSavedAnnotations =
+            !isEmptyAnnotationRastersHash(remote.hash) || remote.rasters.length > 0;
+          if (remoteHasSavedAnnotations) {
+            setAnnotationSyncHash(null);
+            setAnnotationSyncPending(true);
+            setAnnotationDownloadOffer(remote);
+            setAnnotationRemoteConflict(remote);
+          }
+        } catch (err) {
+          console.warn('Could not check remote annotations after reconnecting:', err);
+        }
+      })();
+    };
+
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [
+    syncUser,
+    status,
+    syncFile,
+    syncSite,
+    filename,
+    annotationDownloadOffer,
+    saveConflictPrompt,
+    syncBusy,
+    annotationDownloadBusy,
+  ]);
 
   useEffect(() => {
     if (status !== 'ready' || pageCount === 0) return undefined;
@@ -395,7 +474,13 @@ export default function PdfViewer({
     setAnnotationSyncPending(false);
     setAnnotationDownloadOffer(null);
     setAnnotationDownloadBusy(false);
+    setAnnotationDownloadBusyAction(null);
     setAnnotationDownloadError('');
+    setAnnotationRemoteConflict(null);
+    setSaveConflictPrompt(null);
+    setSaveConflictBusy(false);
+    setSaveConflictBusyAction(null);
+    setSaveConflictError('');
     setAnnotationMenu(null);
     setGlyphDragActive(false);
     setGlyphDragPreview(null);
@@ -506,12 +591,15 @@ export default function PdfViewer({
     if (annotationDownloadBusy) return;
     setAnnotationDownloadOffer(null);
     setAnnotationDownloadError('');
+    // annotationRemoteConflict is intentionally left set — Save will offer
+    // merge/overwrite against it rather than clobbering the remote copy.
   };
 
   const handleDownloadRemoteAnnotations = async () => {
     if (!syncUser || !annotationDownloadOffer || annotationDownloadBusy) return;
 
     setAnnotationDownloadBusy(true);
+    setAnnotationDownloadBusyAction('download');
     setAnnotationDownloadError('');
     try {
       const remote = await downloadRemoteAnnotations(
@@ -534,16 +622,85 @@ export default function PdfViewer({
       setAnnotationSyncHash(remote.hash);
       setAnnotationSyncPending(false);
       setAnnotationDownloadOffer(null);
+      setAnnotationRemoteConflict(null);
       setToast({ message: 'Annotations downloaded.', tone: 'info' });
     } catch (err) {
       setAnnotationDownloadError(err.message ?? 'Could not download annotations.');
     } finally {
       setAnnotationDownloadBusy(false);
+      setAnnotationDownloadBusyAction(null);
     }
   };
 
+  const handleMergeRemoteAnnotations = async () => {
+    if (!syncUser || !annotationDownloadOffer || annotationDownloadBusy) return;
+
+    setAnnotationDownloadBusy(true);
+    setAnnotationDownloadBusyAction('merge');
+    setAnnotationDownloadError('');
+    try {
+      const remote = await downloadRemoteAnnotations(
+        syncUser,
+        syncFile,
+        annotationDownloadOffer,
+        { site: syncSite },
+      );
+      const mergedPages = await mergeAnnotationPages(pageRastersRef.current, remote.pages);
+      const storagePages = pagesToStoragePages(mergedPages);
+
+      // Merged content matches neither hash, so leave the sync hash unset —
+      // it still needs to be pushed with Save.
+      const saved = await saveAnnotations(filename, storagePages, annotationColorRef.current, null);
+      if (!saved) {
+        throw new Error('Annotations could not be saved locally.');
+      }
+
+      pageRastersRef.current = mergedPages;
+      setPageAnnotations(mergedPages);
+      setAnnotationSyncHash(null);
+      setAnnotationSyncPending(true);
+      setAnnotationDownloadOffer(null);
+      setAnnotationRemoteConflict(null);
+      setToast({ message: 'Annotations merged. Save to sync the combined version.', tone: 'info' });
+    } catch (err) {
+      setAnnotationDownloadError(err.message ?? 'Could not merge annotations.');
+    } finally {
+      setAnnotationDownloadBusy(false);
+      setAnnotationDownloadBusyAction(null);
+    }
+  };
+
+  const commitAnnotationSave = async (payload) => {
+    await storeAnnotationRasters(
+      syncUser,
+      syncFile,
+      {
+        hash: payload.hash,
+        color: annotationColorRef.current,
+        pages: payload.pages,
+        rasters: payload.rasters,
+      },
+      { site: syncSite },
+    );
+
+    const saved = await persistAnnotationSyncHash(filename, payload.hash);
+    if (!saved) {
+      throw new Error('Annotations could not be saved locally.');
+    }
+    setAnnotationSyncHash(payload.hash);
+    setAnnotationSyncPending(false);
+    setToast({ message: 'Annotations saved.', tone: 'info' });
+  };
+
   const handleSyncAnnotations = async () => {
-    if (!syncUser || syncBusy || (!hasAnnotations && !annotationSyncPending)) return;
+    if (
+      !syncUser ||
+      syncBusy ||
+      saveConflictPrompt ||
+      (!hasAnnotations && !annotationSyncPending)
+    ) {
+      return;
+    }
 
     setSyncBusy(true);
     setStorageWarning('');
@@ -551,29 +708,93 @@ export default function PdfViewer({
       await saveAnnotationsRef.current.flushNow();
       const payload = await buildAnnotationSyncPayload(syncFile, pageRastersRef.current);
 
-      await storeAnnotationRasters(
-        syncUser,
-        syncFile,
-        {
-          hash: payload.hash,
-          color: annotationColorRef.current,
-          pages: payload.pages,
-          rasters: payload.rasters,
-        },
-        { site: syncSite },
-      );
+      // Always re-check against the live server, not a remembered diff from
+      // whenever the page loaded — edits made offline and saved after
+      // reconnecting need this to be fresh, or a stale "no conflict" gets
+      // trusted when the remote has actually moved on since.
+      const remote = await getAnnotationRasters(syncUser, syncFile, undefined, {
+        site: syncSite,
+      });
+      const remoteHasContent =
+        remote && (!isEmptyAnnotationRastersHash(remote.hash) || remote.rasters.length > 0);
 
-      const saved = await persistAnnotationSyncHash(filename, payload.hash);
-      if (!saved) {
-        throw new Error('Annotations could not be saved locally.');
+      if (remoteHasContent && remote.hash !== payload.hash) {
+        setAnnotationRemoteConflict(remote);
+        setSaveConflictPrompt({ payload });
+        return;
       }
-      setAnnotationSyncHash(payload.hash);
-      setAnnotationSyncPending(false);
-      setToast({ message: 'Annotations saved.', tone: 'info' });
+
+      await commitAnnotationSave(payload);
+      setAnnotationRemoteConflict(null);
     } catch (err) {
       setStorageWarning(err.message ?? 'Could not sync annotations.');
     } finally {
       setSyncBusy(false);
+    }
+  };
+
+  const handleCancelSaveConflict = () => {
+    if (saveConflictBusy) return;
+    setSaveConflictPrompt(null);
+    setSaveConflictError('');
+  };
+
+  const handleOverwriteAnnotations = async () => {
+    if (!saveConflictPrompt || saveConflictBusy) return;
+
+    setSaveConflictBusy(true);
+    setSaveConflictBusyAction('overwrite');
+    setSaveConflictError('');
+    try {
+      await commitAnnotationSave(saveConflictPrompt.payload);
+      setSaveConflictPrompt(null);
+      setAnnotationRemoteConflict(null);
+    } catch (err) {
+      setSaveConflictError(err.message ?? 'Could not save annotations.');
+    } finally {
+      setSaveConflictBusy(false);
+      setSaveConflictBusyAction(null);
+    }
+  };
+
+  const handleMergeAndSaveAnnotations = async () => {
+    if (!saveConflictPrompt || !annotationRemoteConflict || !syncUser || saveConflictBusy) return;
+
+    setSaveConflictBusy(true);
+    setSaveConflictBusyAction('merge');
+    setSaveConflictError('');
+    try {
+      const remote = await downloadRemoteAnnotations(
+        syncUser,
+        syncFile,
+        annotationRemoteConflict,
+        { site: syncSite },
+      );
+      const mergedPages = await mergeAnnotationPages(pageRastersRef.current, remote.pages);
+      const mergedPayload = await buildAnnotationSyncPayload(syncFile, mergedPages);
+      const storagePages = pagesToStoragePages(mergedPages);
+
+      const savedLocally = await saveAnnotations(
+        filename,
+        storagePages,
+        annotationColorRef.current,
+        null,
+      );
+      if (!savedLocally) {
+        throw new Error('Annotations could not be saved locally.');
+      }
+
+      pageRastersRef.current = mergedPages;
+      setPageAnnotations(mergedPages);
+
+      await commitAnnotationSave(mergedPayload);
+      setSaveConflictPrompt(null);
+      setAnnotationRemoteConflict(null);
+    } catch (err) {
+      setSaveConflictError(err.message ?? 'Could not merge annotations.');
+    } finally {
+      setSaveConflictBusy(false);
+      setSaveConflictBusyAction(null);
     }
   };
 
@@ -1994,9 +2215,21 @@ export default function PdfViewer({
         open={Boolean(annotationDownloadOffer)}
         filename={currentFile}
         busy={annotationDownloadBusy}
+        busyAction={annotationDownloadBusyAction}
         error={annotationDownloadError}
         onKeepCurrent={handleKeepCurrentAnnotations}
+        onMerge={handleMergeRemoteAnnotations}
         onDownload={handleDownloadRemoteAnnotations}
+      />
+      <AnnotationSaveConflictModal
+        open={Boolean(saveConflictPrompt)}
+        filename={currentFile}
+        busy={saveConflictBusy}
+        busyAction={saveConflictBusyAction}
+        error={saveConflictError}
+        onCancel={handleCancelSaveConflict}
+        onMerge={handleMergeAndSaveAnnotations}
+        onOverwrite={handleOverwriteAnnotations}
       />
       {canCreateSubpart && (
         <BookNewSubpartModal

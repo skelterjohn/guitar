@@ -83,17 +83,26 @@ export async function saveAnnotations(pdfFile, pages, color, syncHash) {
     record.color = color;
   }
 
+  // Loaded once and reused below for both syncHash carry-forward and the
+  // prompted-remote-hash marker, which is orthogonal to sync state and must
+  // survive ordinary content edits (drawing invalidates syncHash on every
+  // stroke, but shouldn't make the app forget it already asked the user
+  // about a given remote version).
+  let existing = null;
   if (syncHash === undefined) {
-    try {
-      const existing = await loadAnnotations(pdfFile);
-      if (existing?.syncHash) {
-        record.syncHash = existing.syncHash;
-      }
-    } catch {
-      // Best-effort only.
+    existing = await loadAnnotations(pdfFile);
+    if (existing?.syncHash) {
+      record.syncHash = existing.syncHash;
     }
   } else if (syncHash) {
     record.syncHash = syncHash;
+  }
+
+  if (existing === null) {
+    existing = await loadAnnotations(pdfFile);
+  }
+  if (existing?.promptedRemoteHash) {
+    record.promptedRemoteHash = existing.promptedRemoteHash;
   }
 
   try {
@@ -119,6 +128,49 @@ export async function setAnnotationSyncHash(pdfFile, syncHash) {
     return false;
   }
   return saveAnnotations(pdfFile, existing.pages, existing.color, syncHash || null);
+}
+
+/**
+ * Remembers the remote annotation hash the user was last asked to
+ * merge/overwrite/download against for a given PDF, so the same question
+ * isn't repeated every time the remote still hasn't changed.
+ */
+export async function getPromptedRemoteHash(pdfFile) {
+  const record = await loadAnnotations(pdfFile);
+  return typeof record?.promptedRemoteHash === 'string' ? record.promptedRemoteHash : null;
+}
+
+export async function setPromptedRemoteHash(pdfFile, hash) {
+  const key = annotationKey(pdfFile);
+  const existing = await loadAnnotations(pdfFile);
+  const record = {
+    pdfFile,
+    pages: existing?.pages ?? {},
+    updatedAt: existing?.updatedAt ?? new Date().toISOString(),
+    promptedRemoteHash: hash,
+  };
+  if (existing?.color) {
+    record.color = existing.color;
+  }
+  if (existing?.syncHash) {
+    record.syncHash = existing.syncHash;
+  }
+
+  try {
+    const db = await openDb();
+    await new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.put(record, key);
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error ?? new Error('Failed to save prompt marker'));
+    });
+    return true;
+  } catch (err) {
+    console.warn('Failed to save prompted remote hash:', err);
+    return false;
+  }
 }
 
 export async function clearAnnotationSyncHash(pdfFile) {

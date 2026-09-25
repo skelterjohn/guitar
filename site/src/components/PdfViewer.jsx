@@ -28,7 +28,7 @@ import {
   resolveAnnotationColor,
   setAnnotationColorPreference,
 } from '../utils/annotationColorPreference.js';
-import { createDebouncedSave, createStrokeId, loadAnnotations, requestPersistentStorage, saveAnnotations, setAnnotationSyncHash as persistAnnotationSyncHash, clearAnnotationSyncHash } from '../utils/pdfAnnotations.js';
+import { createDebouncedSave, createStrokeId, loadAnnotations, requestPersistentStorage, saveAnnotations, setAnnotationSyncHash as persistAnnotationSyncHash, clearAnnotationSyncHash, getPromptedRemoteHash, setPromptedRemoteHash } from '../utils/pdfAnnotations.js';
 import {
   buildAnnotationSyncPayload,
   EMPTY_ANNOTATION_RASTERS_HASH,
@@ -365,8 +365,13 @@ export default function PdfViewer({
         if (remoteHasSavedAnnotations) {
           setAnnotationSyncHash(null);
           setAnnotationSyncPending(true);
-          setAnnotationDownloadOffer(remote);
           setAnnotationRemoteConflict(remote);
+          // Already asked about this exact remote version and got an
+          // answer — don't pop the same question again every load.
+          const promptedHash = await getPromptedRemoteHash(filename);
+          if (promptedHash !== remote.hash) {
+            setAnnotationDownloadOffer(remote);
+          }
           return;
         }
 
@@ -420,8 +425,11 @@ export default function PdfViewer({
           if (remoteHasSavedAnnotations) {
             setAnnotationSyncHash(null);
             setAnnotationSyncPending(true);
-            setAnnotationDownloadOffer(remote);
             setAnnotationRemoteConflict(remote);
+            const promptedHash = await getPromptedRemoteHash(filename);
+            if (promptedHash !== remote.hash) {
+              setAnnotationDownloadOffer(remote);
+            }
           }
         } catch (err) {
           console.warn('Could not check remote annotations after reconnecting:', err);
@@ -589,6 +597,9 @@ export default function PdfViewer({
 
   const handleKeepCurrentAnnotations = () => {
     if (annotationDownloadBusy) return;
+    if (annotationDownloadOffer) {
+      void setPromptedRemoteHash(filename, annotationDownloadOffer.hash);
+    }
     setAnnotationDownloadOffer(null);
     setAnnotationDownloadError('');
     // annotationRemoteConflict is intentionally left set — Save will offer
@@ -623,6 +634,7 @@ export default function PdfViewer({
       setAnnotationSyncPending(false);
       setAnnotationDownloadOffer(null);
       setAnnotationRemoteConflict(null);
+      void setPromptedRemoteHash(filename, remote.hash);
       setToast({ message: 'Annotations downloaded.', tone: 'info' });
     } catch (err) {
       setAnnotationDownloadError(err.message ?? 'Could not download annotations.');
@@ -661,6 +673,7 @@ export default function PdfViewer({
       setAnnotationSyncPending(true);
       setAnnotationDownloadOffer(null);
       setAnnotationRemoteConflict(null);
+      void setPromptedRemoteHash(filename, remote.hash);
       setToast({ message: 'Annotations merged. Save to sync the combined version.', tone: 'info' });
     } catch (err) {
       setAnnotationDownloadError(err.message ?? 'Could not merge annotations.');
@@ -719,6 +732,17 @@ export default function PdfViewer({
         remote && (!isEmptyAnnotationRastersHash(remote.hash) || remote.rasters.length > 0);
 
       if (remoteHasContent && remote.hash !== payload.hash) {
+        // Already asked about this exact remote version (e.g. "Keep
+        // current" on load, or this same version turned up on an earlier
+        // Save attempt) — proceed with the already-made decision instead of
+        // asking again.
+        const promptedHash = await getPromptedRemoteHash(filename);
+        if (promptedHash === remote.hash) {
+          await commitAnnotationSave(payload);
+          setAnnotationRemoteConflict(null);
+          return;
+        }
+
         setAnnotationRemoteConflict(remote);
         setSaveConflictPrompt({ payload });
         return;

@@ -216,6 +216,12 @@ export default function PdfViewer({
   const lastPenTapRef = useRef(null);
   const saveAnnotationsRef = useRef(null);
   const pageRastersRef = useRef({});
+  // The remote annotation hash last actually observed from the server —
+  // the baseline conflict checks compare against. Deliberately NOT the
+  // hash of what's about to be uploaded: local always differs from remote
+  // the moment there's anything new to save, so comparing against the
+  // upload payload itself would flag every ordinary save as a "conflict".
+  const lastKnownRemoteHashRef = useRef(null);
   const annotationColorRef = useRef(annotationColor);
   const annotationMenuRef = useRef(null);
   const annotationToolRef = useRef(null);
@@ -346,10 +352,13 @@ export default function PdfViewer({
         if (cancelled) return;
 
         if (!remote) {
+          lastKnownRemoteHashRef.current = EMPTY_ANNOTATION_RASTERS_HASH;
           setAnnotationSyncHash(localStoredHash);
           setAnnotationSyncPending(Boolean(localStoredHash) && localStoredHash !== localContentHash);
           return;
         }
+
+        lastKnownRemoteHashRef.current = remote.hash;
 
         if (remote.match || localContentHash === remote.hash) {
           setAnnotationSyncHash(remote.hash);
@@ -410,7 +419,11 @@ export default function PdfViewer({
           const remote = await getAnnotationRasters(syncUser, syncFile, undefined, {
             site: syncSite,
           });
-          if (!remote) return;
+          if (!remote) {
+            lastKnownRemoteHashRef.current = EMPTY_ANNOTATION_RASTERS_HASH;
+            return;
+          }
+          lastKnownRemoteHashRef.current = remote.hash;
 
           if (remote.match || remote.hash === localContentHash) {
             setAnnotationSyncHash(remote.hash);
@@ -478,6 +491,7 @@ export default function PdfViewer({
     setPdfZoom(1);
     setPageAnnotations({});
     pageRastersRef.current = {};
+    lastKnownRemoteHashRef.current = null;
     setAnnotationSyncHash(null);
     setAnnotationSyncPending(false);
     setAnnotationDownloadOffer(null);
@@ -700,6 +714,7 @@ export default function PdfViewer({
     if (!saved) {
       throw new Error('Annotations could not be saved locally.');
     }
+    lastKnownRemoteHashRef.current = payload.hash;
     setAnnotationSyncHash(payload.hash);
     setAnnotationSyncPending(false);
     setToast({ message: 'Annotations saved.', tone: 'info' });
@@ -728,16 +743,26 @@ export default function PdfViewer({
       const remote = await getAnnotationRasters(syncUser, syncFile, undefined, {
         site: syncSite,
       });
+      const remoteHash = remote ? remote.hash : EMPTY_ANNOTATION_RASTERS_HASH;
       const remoteHasContent =
         remote && (!isEmptyAnnotationRastersHash(remote.hash) || remote.rasters.length > 0);
 
-      if (remoteHasContent && remote.hash !== payload.hash) {
+      // Compare against the last hash we actually *observed* from the
+      // server, not against the payload we're about to upload — local
+      // almost always differs from remote's last-saved state the moment
+      // there's something new to save, and that's normal, not a conflict.
+      // A real conflict is remote having moved since we last looked.
+      const baseline = lastKnownRemoteHashRef.current;
+      const remoteMovedSinceBaseline =
+        baseline == null ? remoteHash !== payload.hash : remoteHash !== baseline;
+
+      if (remoteHasContent && remoteMovedSinceBaseline) {
         // Already asked about this exact remote version (e.g. "Keep
         // current" on load, or this same version turned up on an earlier
         // Save attempt) — proceed with the already-made decision instead of
         // asking again.
         const promptedHash = await getPromptedRemoteHash(filename);
-        if (promptedHash === remote.hash) {
+        if (promptedHash === remoteHash) {
           await commitAnnotationSave(payload);
           setAnnotationRemoteConflict(null);
           return;

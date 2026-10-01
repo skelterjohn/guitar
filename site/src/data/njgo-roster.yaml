@@ -385,3 +385,34 @@ members:
     bio: |-
       Eli Oesterheld is a classical guitarist and music theorist originally from Encinitas, California. He was a member of the Encinitas Guitar Orchestra for many years and studied with Peter Pupping and Kenneth Bender.  In 2025, Eli graduated from Northwestern University, where, in addition to earning degrees in music theory, music cognition, and linguistics, he studied classical guitar with Anne Waller and was a member of numerous guitar duos, trios, and small groups. Eli is currently pursuing a PhD in Musicology at Princeton University, where his research focuses on the language of musical description and on cross-modal representations of musical features. He joined the NJGO in 2026 as a section two guitarist.
 
+  - name: "Miguel Rios"
+    image: /roster/miguel_rios.jpg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.0
+    bio: |-
+      Miguel Rios is a relative newcomer to classical guitar. Having grown up in a family of requintists and
+      guitarists, Spanish and Latin American music was the soundtrack of his youth. Though encouraged to
+      study guitar, Miguel chose a different path. After suffering an injury in 2018 that left him immobile for
+      several months, he decided to do one of the few things he was physically able to do while
+      convalescing: pick up a guitar. It became his lifeline. A big fan of Django Reinhardt and Jazz
+      Manouche, Miguel initially set out to learn jazz. However, after hearing John Williams' rendition of
+      Agustin Barrios' haunting masterpiece, “La Catedral” he knew he would dedicate the rest of his life to
+      studying classical guitar. He has been studying with Daryl Hester since 2020 and is a member of the
+      New Jersey and Philadelphia Classical Guitar Societies.
+
+      When not playing guitar, Miguel can be found serving his hometown. A 22-year veteran of the fire
+      service, he is currently employed as a Battalion Chief with the Jersey City Fire Department. In
+      addition, he teaches martial arts and is the Mid-Atlantic Director for a large, international karate
+      organization.
+  
+  - name: Rorie Sherman
+    image: /roster/rorie_sherman.jpg
+    crop:
+      aspect_ratio: "4:3"
+      focal_point:
+        x: 0.5
+        y: 0.3
+    

@@ -4,13 +4,11 @@ import NjgoRoster from '../components/NjgoRoster.jsx';
 import director from '../data/njgo-director.js';
 import events from '../data/events.js';
 import overview from '../data/njgo-overview.js';
-import useNjgoRoster from '../hooks/useNjgoRoster.js';
+import roster from '../data/njgo-roster.js';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { njgoDescription, njgoPageTitle, njgoUrl } from '../seo.js';
 
 export default function Njgo() {
-  const { roster } = useNjgoRoster();
-
   usePageMeta({
     title: njgoPageTitle,
     description: njgoDescription,

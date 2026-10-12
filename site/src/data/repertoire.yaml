@@ -232,6 +232,9 @@ sections:
           - label: guitar 4
             file: PASSWORD/sail_off_4.pdf
             hash: 2026-07-17
+        links:
+          - label: NJGO
+            url: https://www.youtube.com/watch?v=FBFyZn2gcQc
   - id: njgo2026
     title: NJGO 2026
     pieces:

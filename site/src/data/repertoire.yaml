@@ -43,6 +43,9 @@ sections:
           - label: guitar 4
             file: PASSWORD/breakfast_around_4.pdf
             hash: 2026-07-17
+        links:
+          - label: NJGO
+            url: https://www.youtube.com/watch?v=gJtySyCX2AU
       - title: Strummed Heat, Midnight Feet
         key: strummed_heat
         description: Mark Houghton
@@ -159,6 +162,9 @@ sections:
           - label: guitar 4
             file: PASSWORD/breakfast_around_4.pdf
             hash: 2026-07-17
+        links:
+          - label: NJGO
+            url: https://www.youtube.com/watch?v=gJtySyCX2AU
       - title: Strummed Heat, Midnight Feet
         key: strummed_heat
         description: Mark Houghton

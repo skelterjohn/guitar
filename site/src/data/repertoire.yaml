@@ -68,6 +68,8 @@ sections:
         links:
           - label: GCC Guitar Ensembles
             url: https://www.youtube.com/watch?v=ZxzjLE_K4YQ
+          - label: NJGO
+            url: https://www.youtube.com/watch?v=WXe4IKXCUqs
       - title: Détours
         key: detours
         description: Bernard Piris
@@ -187,6 +189,8 @@ sections:
         links:
           - label: GCC Guitar Ensembles
             url: https://www.youtube.com/watch?v=ZxzjLE_K4YQ
+          - label: NJGO
+            url: https://www.youtube.com/watch?v=WXe4IKXCUqs
       - title: The Promise of Something New
         key: promise
         description: Matthew Cochran
@@ -206,6 +210,9 @@ sections:
           - label: guitar 4
             file: PASSWORD/promise_4.pdf
             hash: 2026-07-17
+        links:
+          - label: NJGO
+            url: https://www.youtube.com/watch?v=2gZKiWdBKHw
       - title: Sail Off the Edge
         key: sail_off
         description: Andrew York

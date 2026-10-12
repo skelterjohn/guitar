@@ -23,6 +23,8 @@ events:
       links:
         - name: Guitar Festival and Competition
           url: https://music.louisville.edu/community/events/guitar-festival-and-competition
+        - name: Breakfast Around the Sun / John Asmuth
+          url: https://www.youtube.com/watch?v=gJtySyCX2AU
     - name: Boston GuitarFest
       date: 2026-06-20T16:00:00.000Z
       location: First Lutheran Church in Boston, MA

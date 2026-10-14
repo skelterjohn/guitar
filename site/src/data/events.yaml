@@ -14,6 +14,11 @@ events:
       location: Shea Center for Performing Arts in Wayne, NJ
       image: himmelhoch.png
       map_link: https://maps.app.goo.gl/Jszy2ND8UGNgtsqy7
+    - name: Zlock Performance Hall
+      date: 2027-02-06T20:00:00.000Z
+      location: Zlock Performance Hall in Newtown, PA
+      image: zlock.png
+      map_link: https://maps.app.goo.gl/v59K6oPHMxovZAkE6
   '2026':
     - name: Louisville Guitarfest
       date: 2026-10-10T23:30:00.000Z

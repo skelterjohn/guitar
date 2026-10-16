@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { pdfUrl } from '../config.js';
 import { acquirePdfDocument, releasePdfDocument } from '../pdfDocumentCache.js';
-import { getCachedRender, setCachedRender } from '../pdfRenderCache.js';
+import { getCachedRender, setCachedRender, clearRenderCacheForUrl } from '../pdfRenderCache.js';
 import {
   findPdfByFile,
   getPieceLabelPreference,
@@ -54,6 +54,13 @@ import { viewRouteFilename } from '../utils/pdfPaths.js';
 import { buildPrintSheets } from '../utils/printPdf.js';
 import { getLastPage, setLastPage } from '../utils/pdfLastPagePreference.js';
 import { bookViewNavBounds, catalogPath, isBookPath, repPath, viewPath } from '../seo.js';
+
+// How long a full render pass gets before it's treated as stuck. Generous
+// relative to how long these PDFs actually take to render (seconds, not
+// this), so it only fires on a genuine stall — e.g. a canvas whose backing
+// store got silently corrupted or evicted by the browser under GPU memory
+// pressure, which never throws a JS error and never completes on its own.
+const RENDER_WATCHDOG_MS = 10000;
 
 function loadStatusMessage(phase) {
   switch (phase) {
@@ -144,6 +151,14 @@ export default function PdfViewer({
   const [status, setStatus] = useState('loading');
   const [loadPhase, setLoadPhase] = useState('loading');
   const [displayReady, setDisplayReady] = useState(false);
+  // Bumped to force fresh <canvas> DOM nodes (via the page slot `key`) when
+  // a render pass is stuck — a corrupted or GPU-evicted canvas can't be
+  // recovered by rendering into it again, it needs to be replaced.
+  const [canvasEpoch, setCanvasEpoch] = useState(0);
+  // Set only after an auto-remediation attempt also fails to produce a
+  // frame, so the viewer can offer the same reload a user would otherwise
+  // have to discover on their own.
+  const [renderStuck, setRenderStuck] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [headerHidden, setHeaderHidden] = useState(false);
   const [footerHidden, setFooterHidden] = useState(true);
@@ -234,6 +249,18 @@ export default function PdfViewer({
   });
   const prevRenderedPageRef = useRef(null);
   const revealPendingRef = useRef(false);
+  const displayReadyRef = useRef(false);
+  const renderWatchdogRef = useRef(null);
+  const renderRemediationAttemptedRef = useRef(false);
+
+  displayReadyRef.current = displayReady;
+
+  const clearRenderWatchdog = () => {
+    if (renderWatchdogRef.current) {
+      clearTimeout(renderWatchdogRef.current);
+      renderWatchdogRef.current = null;
+    }
+  };
 
   onSaveResultRef.current = (saved) => {
     if (saved === false) {
@@ -521,6 +548,9 @@ export default function PdfViewer({
     prevRenderedPageRef.current = null;
     revealPendingRef.current = false;
     pdfDocRef.current = null;
+    clearRenderWatchdog();
+    renderRemediationAttemptedRef.current = false;
+    setRenderStuck(false);
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
     }
@@ -1034,6 +1064,7 @@ export default function PdfViewer({
         revealPendingRef.current = false;
         setDisplayReady(false);
         setLoadPhase('rendering');
+        armRenderWatchdog(renderId);
       }
 
       await cancelActiveRenders();
@@ -1239,6 +1270,42 @@ export default function PdfViewer({
       resizeTimer = setTimeout(queueRender, 100);
     };
 
+    const handleStuckRender = (targetRenderId) => {
+      if (cancelled || targetRenderId !== renderIdRef.current) return;
+      if (loadedUrlRef.current !== url || displayReadyRef.current) return;
+
+      if (renderRemediationAttemptedRef.current) {
+        console.warn('[pdf] render watchdog: retry also stalled, offering reload', url);
+        setRenderStuck(true);
+        return;
+      }
+
+      console.warn('[pdf] render watchdog: no frame after', RENDER_WATCHDOG_MS, 'ms — retrying with fresh canvases', url);
+      renderRemediationAttemptedRef.current = true;
+      // Invalidate the stalled pass's renderId *now*, not when the next
+      // renderPages() call happens to start (which forceRender delays by
+      // ~100ms). Otherwise the old pass — still running in the background,
+      // never actually cancelled since it has no render task tracked yet —
+      // can finish on its own just after this point, still see itself as
+      // "current", and reset renderRemediationAttemptedRef via the success
+      // path. The next watchdog tick then wrongly treats itself as a first
+      // failure again, forever, instead of ever reaching "give up".
+      renderIdRef.current += 1;
+      clearRenderCacheForUrl(url);
+      setCanvasEpoch((epoch) => epoch + 1);
+      // Give React a tick to commit the fresh <canvas> nodes (from the
+      // bumped epoch's key change) before rendering into them.
+      requestAnimationFrame(() => requestAnimationFrame(forceRender));
+    };
+
+    const armRenderWatchdog = (targetRenderId) => {
+      clearRenderWatchdog();
+      renderWatchdogRef.current = setTimeout(() => {
+        renderWatchdogRef.current = null;
+        handleStuckRender(targetRenderId);
+      }, RENDER_WATCHDOG_MS);
+    };
+
     const refreshCurrentPage = () => {
       renderChain = renderChain
         .then(() => renderPages({ onlyPage: currentPageRef.current }))
@@ -1265,6 +1332,7 @@ export default function PdfViewer({
       cancelled = true;
       revealPendingRef.current = false;
       setDisplayReady(false);
+      clearRenderWatchdog();
       clearTimeout(resizeTimer);
       renderIdRef.current += 1;
       observer.disconnect();
@@ -1299,6 +1367,9 @@ export default function PdfViewer({
 
     revealPendingRef.current = false;
     setDisplayReady(true);
+    clearRenderWatchdog();
+    renderRemediationAttemptedRef.current = false;
+    setRenderStuck(false);
   }, [status, pageCount, pageBaseDisplaySizes]);
 
   useEffect(() => {
@@ -2093,6 +2164,18 @@ export default function PdfViewer({
         {showLoading && (
           <p className="viewer-status" role="status" aria-live="polite">
             {loadStatusMessage(loadPhase)}
+            {renderStuck && (
+              <>
+                <br />
+                <button
+                  type="button"
+                  className="viewer-status-reload"
+                  onClick={() => window.location.reload()}
+                >
+                  Still stuck — reload
+                </button>
+              </>
+            )}
           </p>
         )}
         {status === 'error' && (
@@ -2125,7 +2208,7 @@ export default function PdfViewer({
               return (
               <div
                 className={`viewer-page-slot${isCurrent ? ' is-current' : ''}`}
-                key={index}
+                key={`${canvasEpoch}-${index}`}
                 aria-hidden={!isCurrent}
                 ref={(element) => {
                   slotRefs.current[index] = element;

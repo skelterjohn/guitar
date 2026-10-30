@@ -6,7 +6,6 @@ pdfjs.GlobalWorkerOptions.workerPort = new PdfjsWorker();
 
 const MAX_DOCS = 15;
 const docCache = new Map();
-const inflight = new Map();
 
 function evictOldestDocument() {
   let oldestKey = null;
@@ -14,6 +13,9 @@ function evictOldestDocument() {
 
   for (const [key, entry] of docCache) {
     if ((entry.refCount ?? 0) > 0) continue;
+    // Still loading — not safe to destroy() yet, and it'll clean itself up
+    // in acquirePdfDocument() once the load settles if still unwanted.
+    if (!entry.doc) continue;
     if (entry.lastAccess < oldestAccess) {
       oldestAccess = entry.lastAccess;
       oldestKey = key;
@@ -50,34 +52,48 @@ async function loadDocument(url, options) {
 
 export async function acquirePdfDocument(url, options = {}) {
   const resolved = resolvePdfUrl(url);
-  const cached = docCache.get(resolved);
-  if (cached) {
-    cached.refCount = (cached.refCount ?? 0) + 1;
-    cached.lastAccess = Date.now();
-    console.log(`[pdf] cache hit (parsed): ${pdfLogLabel(resolved)}`);
-    return cached.doc;
+
+  // The cache entry is created synchronously, before the (possibly slow)
+  // load even starts, so a releasePdfDocument() that arrives while it's
+  // still loading — e.g. the user flips to a different score before this
+  // one finishes parsing — always has a real entry to decrement. Creating
+  // the entry only after the load resolved (the previous approach) left
+  // that release with nothing to decrement, silently discarding it; the
+  // load then landed anyway and pinned itself at refCount 1 forever, since
+  // nothing was left to release it. Enough quick flips between scores leak
+  // enough permanently-pinned parsed documents in the single shared pdf.js
+  // worker to eventually wedge it, which is what was producing renders that
+  // stall and never recover even after the watchdog's fresh-canvas retry.
+  let entry = docCache.get(resolved);
+  if (entry) {
+    entry.refCount = (entry.refCount ?? 0) + 1;
+    entry.lastAccess = Date.now();
+    if (!entry.pending) {
+      console.log(`[pdf] cache hit (parsed): ${pdfLogLabel(resolved)}`);
+      return entry.doc;
+    }
+    return entry.pending;
   }
 
-  // Rapidly switching back to a PDF that's still being loaded must join the
-  // existing load rather than start a second pdfjs.getDocument() for the
-  // same bytes — concurrent calls race on the shared worker port and one of
-  // them can hang forever instead of resolving or throwing.
-  let pending = inflight.get(resolved);
-  if (!pending) {
-    pending = loadDocument(url, options);
-    inflight.set(resolved, pending);
-  }
+  entry = { doc: null, loadingTask: null, byteLength: 0, lastAccess: Date.now(), refCount: 1 };
+  docCache.set(resolved, entry);
 
-  try {
-    const { doc, loadingTask, byteLength } = await pending;
+  entry.pending = loadDocument(url, options)
+    .then(({ doc, loadingTask, byteLength }) => {
+      entry.doc = doc;
+      entry.loadingTask = loadingTask;
+      entry.byteLength = byteLength;
+      entry.pending = null;
 
-    let entry = docCache.get(resolved);
-    if (!entry) {
-      entry = { doc, loadingTask, lastAccess: Date.now(), byteLength, refCount: 0 };
-      docCache.set(resolved, entry);
+      if ((entry.refCount ?? 0) <= 0) {
+        // Every viewer that wanted this navigated away before the load
+        // finished — nobody is left to release it, so clean up now instead
+        // of leaving it pinned with no owner.
+        if (docCache.get(resolved) === entry) docCache.delete(resolved);
+        void doc.destroy();
+        return doc;
+      }
 
-      // If every entry is pinned (refCount > 0), nothing is evictable — stop
-      // instead of spinning forever waiting for room that will never free up.
       while (docCache.size > MAX_DOCS && evictOldestDocument()) {
         // keep evicting
       }
@@ -88,16 +104,15 @@ export async function acquirePdfDocument(url, options = {}) {
           ? `${count}/${MAX_DOCS} pdfs, ${formatBytes(bytes)}`
           : `${count}/${MAX_DOCS} pdfs`;
       console.log(`[pdf] cache add (parsed): ${pdfLogLabel(resolved)} [${sizeLabel}]`);
-    }
+      return doc;
+    })
+    .catch((err) => {
+      entry.pending = null;
+      if (docCache.get(resolved) === entry) docCache.delete(resolved);
+      throw err;
+    });
 
-    entry.refCount = (entry.refCount ?? 0) + 1;
-    entry.lastAccess = Date.now();
-    return entry.doc;
-  } finally {
-    if (inflight.get(resolved) === pending) {
-      inflight.delete(resolved);
-    }
-  }
+  return entry.pending;
 }
 
 export function releasePdfDocument(url) {

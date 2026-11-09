@@ -26,6 +26,7 @@ export const catalogUrl = `${siteOrigin}${catalogPath}`;
 export const repUrl = `${siteOrigin}${repPath}`;
 export const njgoUrl = `${njgoOrigin}/`;
 export const njgoPublicUrl = `${njgoOrigin}${njgoPath}`;
+export const njgoImageUrl = `${njgoOrigin}/njgo-pwa-512x512.png`;
 export const defaultDescription =
   'Classical guitar scores — original compositions, arrangements, and transcriptions by skelterjohn. Free PDFs.';
 

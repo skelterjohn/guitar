@@ -9,7 +9,7 @@ import { eventTitle, normalizeMapLink } from '../src/utils/eventLocation.js';
 import { eventDateTimeAttr, formatEventDate } from '../src/utils/formatEventDate.js';
 import { eventYearsFromData } from '../src/utils/eventYears.js';
 import { NJGO_DEFAULT_TAB, NJGO_TABS, NJGO_TAB_IDS } from '../src/utils/njgoTabs.js';
-import { njgoDescription, njgoPageTitle, njgoUrl } from '../src/seo.js';
+import { njgoDescription, njgoImageUrl, njgoPageTitle, njgoUrl } from '../src/seo.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distIndex = join(__dirname, '../dist/index.html');
@@ -322,6 +322,13 @@ function setNjgoHead(page) {
     .replace(
       /<meta property="og:url" content="[^"]*"\s*\/>/,
       `<meta property="og:url" content="${njgoUrl}" />`,
+    )
+    .replace(
+      '<meta property="og:type" content="website" />',
+      `<meta property="og:type" content="website" />
+    <meta property="og:image" content="${njgoImageUrl}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content="${njgoImageUrl}" />`,
     );
 }
 

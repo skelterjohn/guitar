@@ -50,15 +50,6 @@
 #     --substitutions=...,_PDF_BASE_URL=/pdf
 
 substitutions:
-  # Defaults to the triggering commit's SHA, so normal push-triggered builds
-  # keep producing human-readable, commit-traceable tags/revisions. The
-  # monthly scheduled rebuild (Pub/Sub-triggered, no new commit) overrides
-  # this to a value derived from $BUILD_ID instead — reusing the commit-SHA
-  # tag there would retag an already-published image with different
-  # contents (same SHA, refreshed base-image layers) and, worse, collide
-  # with the existing Cloud Run revision suffix of the same name, which
-  # Cloud Run rejects outright.
-  _BUILD_TAG: v$SHORT_SHA
   _REGION: us-east4
   _AR_REPO: us-east4-docker.pkg.dev/skelterjohnguitar/guitar
   _SERVICE: guitar-site
@@ -117,7 +108,7 @@ steps:
       - VITE_FIREBASE_MESSAGING_SENDER_ID=${_FIREBASE_MESSAGING_SENDER_ID}
       - --build-arg
       - VITE_FIREBASE_APP_ID=${_FIREBASE_APP_ID}
-      - --tag=${_AR_REPO}/site:${_BUILD_TAG}
+      - --tag=${_AR_REPO}/site:v$SHORT_SHA
       - .
 
   - name: gcr.io/cloud-builders/docker
@@ -126,7 +117,7 @@ steps:
     dir: site/bookend
     args:
       - build
-      - --tag=${_AR_REPO}/bookend:${_BUILD_TAG}
+      - --tag=${_AR_REPO}/bookend:v$SHORT_SHA
       - .
 
   - name: gcr.io/cloud-builders/docker
@@ -134,52 +125,70 @@ steps:
     waitFor: ['site-build']
     args:
       - push
-      - ${_AR_REPO}/site:${_BUILD_TAG}
+      - ${_AR_REPO}/site:v$SHORT_SHA
 
   - name: gcr.io/cloud-builders/docker
     id: bookend-push
     waitFor: ['bookend-build']
     args:
       - push
-      - ${_AR_REPO}/bookend:${_BUILD_TAG}
+      - ${_AR_REPO}/bookend:v$SHORT_SHA
 
+  # Revision suffix is normally just v$SHORT_SHA. The monthly scheduled
+  # rebuild (see the site-scheduled-rebuild trigger) reuses the same image
+  # tag — it's still built from the same commit, just with refreshed base
+  # image layers — but needs a *different* revision suffix, since Cloud Run
+  # rejects deploying a revision suffix that already exists. $TRIGGER_NAME
+  # is how a step tells the two apart at build time.
   - name: gcr.io/cloud-builders/gcloud
     id: site-deploy
     waitFor: ['site-push', 'bookend-push']
+    entrypoint: bash
     args:
-      - -q
-      - run
-      - deploy
-      - ${_SERVICE}
-      - --image=${_AR_REPO}/site:${_BUILD_TAG}
-      - --platform=managed
-      - --region=${_REGION}
-      - --allow-unauthenticated
-      - --revision-suffix=${_BUILD_TAG}
-      - --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com
-      - --port=8080
-      - --set-env-vars=BOOKEND_ORIGIN=${_BOOKEND_ORIGIN}
+      - -c
+      - |
+        set -euo pipefail
+        SUFFIX="v${SHORT_SHA}"
+        if [ "$TRIGGER_NAME" = "site-scheduled-rebuild" ]; then
+          SUFFIX="$${SUFFIX}-$$(date -u +%Y%m%d)"
+        fi
+        gcloud run deploy ${_SERVICE} \
+          --image=${_AR_REPO}/site:v${SHORT_SHA} \
+          --platform=managed \
+          --region=${_REGION} \
+          --allow-unauthenticated \
+          --revision-suffix="$$SUFFIX" \
+          --service-account=skelterjohnguitar-site@skelterjohnguitar.iam.gserviceaccount.com \
+          --port=8080 \
+          --set-env-vars=BOOKEND_ORIGIN=${_BOOKEND_ORIGIN} \
+          -q
 
   - name: gcr.io/cloud-builders/gcloud
     id: bookend-deploy
     waitFor: ['bookend-push', 'site-push']
+    entrypoint: bash
     args:
-      - -q
-      - run
-      - deploy
-      - ${_BOOKEND_SERVICE}
-      - --image=${_AR_REPO}/bookend:${_BUILD_TAG}
-      - --platform=managed
-      - --region=${_REGION}
-      - --allow-unauthenticated
-      - --revision-suffix=${_BUILD_TAG}
-      - --service-account=bookend@skelterjohnguitar.iam.gserviceaccount.com
-      - --port=8080
-      - --update-env-vars=FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID},BOOK_BUCKET=${_BOOK_BUCKET},PDF_BUCKET=${_PDF_BUCKET}
+      - -c
+      - |
+        set -euo pipefail
+        SUFFIX="v${SHORT_SHA}"
+        if [ "$TRIGGER_NAME" = "site-scheduled-rebuild" ]; then
+          SUFFIX="$${SUFFIX}-$$(date -u +%Y%m%d)"
+        fi
+        gcloud run deploy ${_BOOKEND_SERVICE} \
+          --image=${_AR_REPO}/bookend:v${SHORT_SHA} \
+          --platform=managed \
+          --region=${_REGION} \
+          --allow-unauthenticated \
+          --revision-suffix="$$SUFFIX" \
+          --service-account=bookend@skelterjohnguitar.iam.gserviceaccount.com \
+          --port=8080 \
+          --update-env-vars=FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID},BOOK_BUCKET=${_BOOK_BUCKET},PDF_BUCKET=${_PDF_BUCKET} \
+          -q
 
 images:
-  - ${_AR_REPO}/site:${_BUILD_TAG}
-  - ${_AR_REPO}/bookend:${_BUILD_TAG}
+  - ${_AR_REPO}/site:v$SHORT_SHA
+  - ${_AR_REPO}/bookend:v$SHORT_SHA
 
 options:
   logging: CLOUD_LOGGING_ONLY

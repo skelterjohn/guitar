@@ -7,6 +7,7 @@ The build runs `scripts/prerender-catalog.mjs`, `scripts/prerender-home.mjs`, an
 - `dist/index.html` — landing page with links to catalog
 - `dist/catalog.html` — prerendered catalog for `/catalog` (crawlers and first paint)
 - `dist/njgo.html` — prerendered NJGO overview + roster for `njgo.org/` and `/njgo`
+- `dist/rep.html` — meta-only shell (title/description/og tags) for `njgo.org/rep`; the repertoire itself stays password-gated and client-rendered, nothing private is prerendered
 - `dist/catalog/view/*.html` — prerendered score viewer pages for `/catalog/view/…`
 
 **Keep `scripts/prerender-catalog.mjs` in sync** when you change homepage catalog layout or markup in:
@@ -30,6 +31,8 @@ The build runs `scripts/prerender-catalog.mjs`, `scripts/prerender-home.mjs`, an
 - `src/components/NjgoRoster.jsx`
 - `src/data/njgo-overview.yaml`
 - `src/data/njgo-roster.yaml`
+
+**Keep `scripts/prerender-rep.mjs` in sync** when you change `repTitle`/`repDescription`/`repPath` in `src/seo.js` — it only mirrors those head values, it doesn't prerender `Rep.jsx` content.
 
 After layout changes, run `npm run build` and confirm `dist/index.html` (landing), `dist/catalog.html` (catalog), `dist/catalog/view/*.html` (score pages), and `dist/njgo.html` (NJGO) still reflect the expected structure.
 

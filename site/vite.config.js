@@ -100,6 +100,8 @@ export default defineConfig({
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/pdf/],
         clientsClaim: true,
+        // steven_sabet.png (roster photo) is 2.13 MB, just over the 2 MiB default.
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
     }),
   ],

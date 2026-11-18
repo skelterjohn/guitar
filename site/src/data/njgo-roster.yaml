@@ -297,15 +297,29 @@ members:
         y: 0.5
     bio: "Juan’s first guitar teacher was Ramiro Isaza Mejía, from the National University of Colombia. He studied Music with emphasis in classical guitar with Carlos Rocca Lynn at Universidad de los Andes. He has taken master classes with classical guitarists such as Aniello Desiderio, Betho Davezac, Carlos Barbosa Lima, Costas Cotsiolis, Fábio Zanon, Sharon Isbin, Ricardo Cobo, Lito Romero, Michael Newman, among others. Juan Carlos stopped playing the guitar for few years to dedicate himself to his other great passion: literature. He holds a master's degree in literature and a doctorate in literature, both from the Universidad de los Andes as well. Over time, Juan Carlos has become a passionate poetry reader who very occasionally comes up with a good idea and/or with a kind of descent verse. He has written two completely unknown poetry books: Selfies: Plumas de la voluntad (2017), and another whose title is a little long and he does not even want to bother mentioning. He has been writing a third attempt of his first novel for a few years and at this moment he does not even know if he is going to finish it. In any case, he is not in a big a hurry. Juan Carlos has studied literature with personalities such as Sophocles, Aeschylus, Aristotle, Horace, Virgil, and Sappho, to mention only some of the first ones. He has worked in the literary archives of Colombian writers like the poet María Mercedes Carranza and Rafael Humberto Moreno-Durán. His academic interests, among many others, are the theory of autobiography, and the impossibility of the novel of the second half of the XXI century in Latin America (he is not that optimistic). He thinks that this little “bio” could not be written if he had not come across “Autobiography as De-Facedment” by Paul de Man. That is why he really enjoys thinking about people´s bios and, above all, epitaphs. Like everyone, Juan Carlos is a multifaceted person, so he usually rejoices when recalling one of his friends (Vicente Guedes) when he said: “My soul is a hidden orchestra; I don’t know what instruments, what violins and harps —[and guitars!]— drums and tambours, sound and clash inside me. I know myself only as a Symphony.” In 2021 he moved to the United States since his mother, his sister and her two adorable children are living here. He had the opportunity to teach Spanish at Monmouth University in 2023, although he is still waiting for other opportunities. In 2023 he also joined this amazing group of people who is the NJGO, where he serves as a section one guitarist."
 
-  - name: "Dr. Steve Sabet"
-    image: /roster/steve_sabet.jpeg
+  - name: "Dr. Steven Sabet"
+    image: /roster/steven_sabet.png
     crop:
       aspect_ratio: "4:3"
       focal_point:
         x: 0.5500260552371027
         y: 0.16501425836946755
-    bio: "Dr. Steven Sabet is a music teacher at the Thomas Jefferson Arts Academy where he teaches guitar and music technology. He is also adjunct professor at Kean University and has taught at Rutgers where he received a Doctorate in Music Education. His doctoral research was published by the Journal of Popular Music Education. Sabet’s guitar work can be heard on several studio albums on platforms like Apple Music and Spotify. He studied guitar at The Hartt School and Florida State University before becoming a teacher and performer. Dr. Sabet serves as concertmaster for the NJGO."
+    bio: |-
+      Steven Sabet is a guitarist, composer, educator, and scholar. He holds degrees from The Hartt
+      School, Florida State University, and Rutgers University, where he earned his Doctorate in
+      Music Education. His doctoral research on student music composition using GarageBand for
+      iPad was published in the Journal of Popular Music Education.
 
+      With 25 years of experience in the Elizabeth Public Schools, Sabet has directed guitar programs
+      and ensembles while specializing in modern band, music technology, live sound, and sound
+      design. His teaching has been recognized with a Teacher of the Year award and an official
+      nomination for Princeton University's Distinguished Secondary School Teaching Award. He also
+      serves as an adjunct professor at Kean University.
+
+      As a performer, Sabet is concertmaster of the New Jersey Guitar Orchestra and a member of
+      the New Jersey Guitar Quartet. He is also a songwriter and composer with the musical
+      partnership Sabet and Doherty, whose original music was named an official finalist in the
+      instrumental category of the Great American Song Contest.
   - name: "Alex Sieira"
     image: /roster/alex_sieira.jpeg
     crop:

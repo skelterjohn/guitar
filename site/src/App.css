@@ -3255,20 +3255,29 @@ a.book-file-open {
 }
 
 .viewer-page-slot {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   width: 100%;
   flex-shrink: 0;
   position: absolute;
   inset: 0;
-  visibility: hidden;
   pointer-events: none;
   overflow-anchor: none;
 }
 
+/* display:none (not visibility:hidden) for non-current pages — every page
+ * of a document gets its own canvas (plus several annotation-layer canvases
+ * per page) rendered up front, not just the current one. visibility:hidden
+ * keeps those in the render tree, which tends to keep their GPU-backed
+ * canvas surfaces resident even though nothing is drawn on screen; on a
+ * large-screen device the canvases are correspondingly larger (canvas size
+ * tracks the on-screen display size, not the source PDF), so a multi-page
+ * score can retain a lot of invisible GPU memory this way. display:none
+ * actually removes the element from the render tree, which is far more
+ * likely to let the browser reclaim that memory for pages not being shown. */
 .viewer-page-slot.is-current {
-  visibility: visible;
+  display: flex;
   pointer-events: auto;
   position: relative;
 }
